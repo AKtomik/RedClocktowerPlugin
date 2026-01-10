@@ -113,9 +113,9 @@ enum BloodDayPeriod {
 @NullMarked
 class BloodDayPeriodArgument implements CustomArgumentType.Converted<BloodDayPeriod, String> {
 
-	private static final DynamicCommandExceptionType ERROR_INVALID_PERIOD = new DynamicCommandExceptionType(flavor -> {
-		return MessageComponentSerializer.message().serialize(Component.text(flavor + " is not a blood day period!"));
-	});
+	private static final DynamicCommandExceptionType ERROR_INVALID_PERIOD = new DynamicCommandExceptionType(period ->
+		MessageComponentSerializer.message().serialize(Component.text(period + " is not a blood day period!"))
+	);
 
 	@Override
 	public BloodDayPeriod convert(String nativeType) throws CommandSyntaxException {
@@ -131,7 +131,6 @@ class BloodDayPeriodArgument implements CustomArgumentType.Converted<BloodDayPer
 		for (BloodDayPeriod flavor : BloodDayPeriod.values()) {
 			String name = flavor.toString();
 
-			// Only suggest if the flavor name matches the user input
 			if (name.startsWith(builder.getRemainingLowerCase())) {
 				builder.suggest(flavor.toString());
 			}
