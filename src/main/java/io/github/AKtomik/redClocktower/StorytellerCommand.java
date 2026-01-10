@@ -51,50 +51,50 @@ public class StorytellerCommand implements CommandExecutor {
 
         // error
         sender.sendMessage(
-                Component.text("the argument ").color(NamedTextColor.RED)
-                        .append(Component.text(args[0]).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
-                        .append(Component.text(" does not exist!").color(NamedTextColor.RED))
+        Component.text("the argument ").color(NamedTextColor.RED)
+        .append(Component.text(args[0]).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
+        .append(Component.text(" does not exist!").color(NamedTextColor.RED))
         );
         return true;
     }
 
     Map<String, Consumer<World>> timeIdToAction = Map.ofEntries(
-            Map.entry("morning", (world) -> {
-                Bukkit.getServer().broadcast(
-                    Component.text("it's the morning!").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
-                );
-                Bukkit.getServer().broadcast(
-                    Component.text("everyone to the townhall").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
-                );
-                world.setTime(0);
-            }),
-            Map.entry("free", (world) -> {
-                Bukkit.getServer().broadcast(
-                    Component.text("wonder time").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
-                );
-                Bukkit.getServer().broadcast(
-                    Component.text("you are free to go").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
-                );
-                world.setTime(6000);
-            }),
-            Map.entry("talk", (world) -> {
-                Bukkit.getServer().broadcast(
-                        Component.text("debate time").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
-                );
-                Bukkit.getServer().broadcast(
-                        Component.text("everyone to the townhall").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
-                );
-                world.setTime(12000);
-            }),
-            Map.entry("night", (world) -> {
-                Bukkit.getServer().broadcast(
-                        Component.text("the moon is rising...").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
-                );
-                Bukkit.getServer().broadcast(
-                        Component.text("go to your house and sleep well").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
-                );
-                world.setTime(18000);
-            })
+    Map.entry("morning", (world) -> {
+        Bukkit.getServer().broadcast(
+        Component.text("it's the morning!").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
+        );
+        Bukkit.getServer().broadcast(
+        Component.text("everyone to the townhall").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
+        );
+        world.setTime(0);
+    }),
+    Map.entry("free", (world) -> {
+        Bukkit.getServer().broadcast(
+        Component.text("wonder time").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
+        );
+        Bukkit.getServer().broadcast(
+        Component.text("you are free to go").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
+        );
+        world.setTime(6000);
+    }),
+    Map.entry("talk", (world) -> {
+        Bukkit.getServer().broadcast(
+        Component.text("debate time").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
+        );
+        Bukkit.getServer().broadcast(
+        Component.text("everyone to the townhall").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
+        );
+        world.setTime(12000);
+    }),
+    Map.entry("night", (world) -> {
+        Bukkit.getServer().broadcast(
+        Component.text("the moon is rising...").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
+        );
+        Bukkit.getServer().broadcast(
+        Component.text("go to your house and sleep well").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
+        );
+        world.setTime(18000);
+    })
     );
 
     boolean subCommandTime(@NonNull CommandSender sender, @NonNull Command command, String @NonNull [] args)
@@ -108,9 +108,9 @@ public class StorytellerCommand implements CommandExecutor {
         if (!timeIdToAction.containsKey(args[0]))
         {
             sender.sendMessage(
-                    Component.text("the time ").color(NamedTextColor.RED)
-                            .append(Component.text(args[0]).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
-                            .append(Component.text(" does not exist!").color(NamedTextColor.RED))
+            Component.text("the time ").color(NamedTextColor.RED)
+            .append(Component.text(args[0]).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
+            .append(Component.text(" does not exist!").color(NamedTextColor.RED))
             );
             return true;
         }
@@ -124,9 +124,9 @@ public class StorytellerCommand implements CommandExecutor {
             world = getWorlds().getFirst();
 
         sender.sendMessage(
-                Component.text("switching to time ").color(NamedTextColor.LIGHT_PURPLE)
-                        .append(Component.text(args[0]).color(NamedTextColor.LIGHT_PURPLE).decorate(TextDecoration.BOLD))
-                        .append(Component.text("").color(NamedTextColor.LIGHT_PURPLE))
+        Component.text("switching to time ").color(NamedTextColor.LIGHT_PURPLE)
+        .append(Component.text(args[0]).color(NamedTextColor.LIGHT_PURPLE).decorate(TextDecoration.BOLD))
+        .append(Component.text("").color(NamedTextColor.LIGHT_PURPLE))
         );
         timeIdToAction.get(args[0]).accept(world);
         return  true;

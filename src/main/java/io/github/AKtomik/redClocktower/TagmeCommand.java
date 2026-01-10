@@ -34,18 +34,18 @@ public class TagmeCommand extends CommandBrigadierBase {
     public LiteralArgumentBuilder<CommandSourceStack> root() {
         return base()
         .then(
-            Commands.argument("myname", StringArgumentType.word())
-            .executes(
-            ctx -> {
-                Entity executor = ctx.getSource().getExecutor();
-                assert (executor != null);
-                String displayName = StringArgumentType.getString(ctx, "myname");
-                executor.sendMessage(
-                        Component.text("changing your display name to ").color(NamedTextColor.GREEN)
-                        .append(Component.text(displayName).decorate(TextDecoration.BOLD))
-                );
-                return Command.SINGLE_SUCCESS;
-            })
+        Commands.argument("myname", StringArgumentType.word())
+        .executes(
+        ctx -> {
+            Entity executor = ctx.getSource().getExecutor();
+            assert (executor != null);
+            String displayName = StringArgumentType.getString(ctx, "myname");
+            executor.sendMessage(
+            Component.text("changing your display name to ").color(NamedTextColor.GREEN)
+            .append(Component.text(displayName).decorate(TextDecoration.BOLD))
+            );
+            return Command.SINGLE_SUCCESS;
+        })
         );
     }
 }
