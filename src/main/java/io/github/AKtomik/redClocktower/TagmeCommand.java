@@ -8,14 +8,16 @@ import net.kyori.adventure.text.Component;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 
+import java.util.List;
+
 public class TagmeCommand extends CommandBrigadierBase {
 
     // register
     public String name() {
         return "tagme";
     }
-    public String[] aliases() {
-        return new String[]{"iam"};
+    public List<String> aliases() {
+        return List.of("iam");
     }
 
     // root

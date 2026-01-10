@@ -11,13 +11,13 @@ commands:
       - blood
       - redclocktower
 
-  tagme:
-    description: Define your name
-    usage: /<command> <name>
-    permission: redclocktower.player
-    aliases:
-      # brigader aliases execution are not handled here
-      - iam
+  # brigader aliases execution are not handled here
+#  tagme:
+#    description: Define your name
+#    usage: /<command> <name>
+#    permission: redclocktower.player
+#    aliases:
+#      - iam
 
 permissions:
   redclocktower.player:

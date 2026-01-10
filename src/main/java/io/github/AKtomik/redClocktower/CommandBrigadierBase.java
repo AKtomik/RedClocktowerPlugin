@@ -1,9 +1,8 @@
 package io.github.AKtomik.redClocktower;
 
-import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.papermc.paper.command.brigadier.CommandSourceStack;
+import java.util.List;
 
 public abstract class CommandBrigadierBase extends SubBrigadierBase {
     public abstract String name();
-    public abstract String[] aliases();
+    public abstract List<String> aliases();
 }

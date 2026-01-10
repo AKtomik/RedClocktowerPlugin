@@ -36,11 +36,7 @@ public final class RedClocktower extends JavaPlugin {
             for (CommandBrigadierBase brigadier : bridgeCommandsSource)
             {
                 LiteralCommandNode<CommandSourceStack> build = brigadier.build();
-                commands.registrar().register(build);
-                for (String alias : brigadier.aliases())
-                {
-                        commands.registrar().register(Commands.literal(alias).redirect(build).build());
-                }
+                commands.registrar().register(build, brigadier.aliases());
             }
         });
     }
