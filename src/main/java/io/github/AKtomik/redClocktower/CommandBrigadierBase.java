@@ -8,13 +8,11 @@ import net.kyori.adventure.text.Component;
 import java.util.List;
 
 public abstract class CommandBrigadierBase extends SubBrigadierBase {
-    public abstract String name();
-    public abstract List<String> aliases();
+    abstract List<String> aliases();
+    abstract String permission();
+    abstract Component description();
 
-    public abstract String permission();
-    public abstract Component description();
-
-    public LiteralArgumentBuilder<CommandSourceStack> base()
+    LiteralArgumentBuilder<CommandSourceStack> base()
     {
         return Commands.literal(name()).requires(
             sender -> {
