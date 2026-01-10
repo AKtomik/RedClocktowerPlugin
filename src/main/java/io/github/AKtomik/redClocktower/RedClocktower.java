@@ -22,15 +22,12 @@ public final class RedClocktower extends JavaPlugin {
         // Plugin startup logic
         getLogger().info("Enabled!");
 
-        // load bukkit commands
-        loadCommand("storyteller", new StorytellerCommand());
-
 //        this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
 //            commands.registrar().register(new TagmeCommand().root.build());
 //        });
 
         // load bridge commands
-        List<CommandBrigadierBase> bridgeCommandsSource = List.of(new TagmeCommand(), new WhosendCommand());
+        List<CommandBrigadierBase> bridgeCommandsSource = List.of(new TagmeCommand(), new WhosendCommand(), new StorytellerCommand());
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             for (CommandBrigadierBase brigadier : bridgeCommandsSource)

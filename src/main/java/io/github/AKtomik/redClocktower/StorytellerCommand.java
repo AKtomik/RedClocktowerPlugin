@@ -1,65 +1,60 @@
 package io.github.AKtomik.redClocktower;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.ArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
+import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
+import io.papermc.paper.command.brigadier.Commands;
+import io.papermc.paper.command.brigadier.MessageComponentSerializer;
+import io.papermc.paper.command.brigadier.argument.CustomArgumentType;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.Style;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
-import org.bukkit.Server;
+import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.CommandBlock;
-import org.bukkit.command.Command;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
+import org.bukkit.entity.Entity;
 import org.jspecify.annotations.NonNull;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
-import java.util.concurrent.Callable;
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
-import static org.bukkit.Bukkit.getWorlds;
+public class StorytellerCommand extends CommandBrigadierBase {
 
-public class StorytellerCommand implements CommandExecutor {
-
-    @Override
-    public boolean onCommand(@NonNull CommandSender sender, @NonNull Command command, @NonNull String label, String @NonNull [] args) {
-
-        // permission
-        assert command.getPermission() != null;
-        if (!sender.hasPermission(command.getPermission()))
-        {
-            sender.sendMessage(Component.text("you don't have the permission to storytell!").color(NamedTextColor.RED));
-            return false;
-        }
-
-        // error
-        if (args.length == 0)
-        {
-            sender.sendMessage(Component.text("give a first argument!").color(NamedTextColor.RED));
-            return true;
-        }
-
-        // subcommands
-        switch (args[0])
-        {
-            case "time":
-            {
-                return subCommandTime(sender, command, Arrays.stream(args, 1, args.length).toArray(String[]::new));
-            }
-        }
-
-        // error
-        sender.sendMessage(
-        Component.text("the argument ").color(NamedTextColor.RED)
-        .append(Component.text(args[0]).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
-        .append(Component.text(" does not exist!").color(NamedTextColor.RED))
-        );
-        return true;
+    // register
+    public String name() {
+        return "storyteller";
+    }
+    public List<String> aliases() {
+        return List.of("blood", "redclocktower");
+    }
+    public String permission() {
+        return "redclocktower.storyteller";
+    }
+    public Component description() {
+        return Component.text("storyteller action for red clocktower");
     }
 
-    Map<String, Consumer<World>> timeIdToAction = Map.ofEntries(
-    Map.entry("morning", (world) -> {
+    // root
+    public LiteralArgumentBuilder<CommandSourceStack> root() {
+        return base()
+        .then(subTime);
+    }
+
+    // time subcommand
+    Map<BloodDayPeriod, Consumer<World>> dayPeriodsStartAction = Map.ofEntries(
+    Map.entry(BloodDayPeriod.MORNING, (world) -> {
         Bukkit.getServer().broadcast(
         Component.text("it's the morning!").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
         );
@@ -68,7 +63,7 @@ public class StorytellerCommand implements CommandExecutor {
         );
         world.setTime(0);
     }),
-    Map.entry("free", (world) -> {
+    Map.entry(BloodDayPeriod.FREE, (world) -> {
         Bukkit.getServer().broadcast(
         Component.text("wonder time").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
         );
@@ -77,7 +72,7 @@ public class StorytellerCommand implements CommandExecutor {
         );
         world.setTime(6000);
     }),
-    Map.entry("talk", (world) -> {
+    Map.entry(BloodDayPeriod.MEET, (world) -> {
         Bukkit.getServer().broadcast(
         Component.text("debate time").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
         );
@@ -86,7 +81,7 @@ public class StorytellerCommand implements CommandExecutor {
         );
         world.setTime(12000);
     }),
-    Map.entry("night", (world) -> {
+    Map.entry(BloodDayPeriod.NIGHT, (world) -> {
         Bukkit.getServer().broadcast(
         Component.text("the moon is rising...").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
         );
@@ -97,38 +92,72 @@ public class StorytellerCommand implements CommandExecutor {
     })
     );
 
-    boolean subCommandTime(@NonNull CommandSender sender, @NonNull Command command, String @NonNull [] args)
-    {
-        if (args.length == 0)
-        {
-            sender.sendMessage(Component.text("give a time to switch!").color(NamedTextColor.RED));
-            return true;
-        }
-
-        if (!timeIdToAction.containsKey(args[0]))
-        {
-            sender.sendMessage(
-            Component.text("the time ").color(NamedTextColor.RED)
-            .append(Component.text(args[0]).color(NamedTextColor.RED).decorate(TextDecoration.BOLD))
-            .append(Component.text(" does not exist!").color(NamedTextColor.RED))
-            );
-            return true;
-        }
-
+    public LiteralArgumentBuilder<CommandSourceStack> subTime = Commands.literal("time")
+    .then(Commands.argument("period", new BloodDayPeriodArgument())
+    .executes(ctx -> {
         World world;
-        if (sender instanceof Player)
-            world = ((Player) sender).getWorld();
-        else if (sender instanceof CommandBlock)
-            world = ((CommandBlock) sender).getWorld();
-        else
-            world = getWorlds().getFirst();
+        CommandSender sender = ctx.getSource().getSender();
+        Entity executor = ctx.getSource().getExecutor();
+
+        Location location = ctx.getSource().getLocation();
+        world = location.getWorld();
+        final BloodDayPeriod dayPeriod = ctx.getArgument("period", BloodDayPeriod.class);
 
         sender.sendMessage(
         Component.text("switching to time ").color(NamedTextColor.LIGHT_PURPLE)
-        .append(Component.text(args[0]).color(NamedTextColor.LIGHT_PURPLE).decorate(TextDecoration.BOLD))
+        .append(Component.text(dayPeriod.toString()).color(NamedTextColor.LIGHT_PURPLE).decorate(TextDecoration.BOLD))
         .append(Component.text("").color(NamedTextColor.LIGHT_PURPLE))
         );
-        timeIdToAction.get(args[0]).accept(world);
-        return  true;
+        dayPeriodsStartAction.get(dayPeriod).accept(world);
+        return Command.SINGLE_SUCCESS;
+    }));
+}
+
+@NullMarked
+enum BloodDayPeriod {
+    MORNING,
+    FREE,
+    MEET,
+    NIGHT;
+
+    @Override
+    public String toString() {
+        return name().toLowerCase();
+    }
+}
+
+@NullMarked
+class BloodDayPeriodArgument implements CustomArgumentType.Converted<BloodDayPeriod, String> {
+
+    private static final DynamicCommandExceptionType ERROR_INVALID_FLAVOR = new DynamicCommandExceptionType(flavor -> {
+        return MessageComponentSerializer.message().serialize(Component.text(flavor + " is not a blood day period!"));
+    });
+
+    @Override
+    public BloodDayPeriod convert(String nativeType) throws CommandSyntaxException {
+        try {
+            return BloodDayPeriod.valueOf(nativeType.toUpperCase(Locale.ROOT));
+        } catch (IllegalArgumentException ignored) {
+            throw ERROR_INVALID_FLAVOR.create(nativeType);
+        }
+    }
+
+    @Override
+    public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
+        for (BloodDayPeriod flavor : BloodDayPeriod.values()) {
+            String name = flavor.toString();
+
+            // Only suggest if the flavor name matches the user input
+            if (name.startsWith(builder.getRemainingLowerCase())) {
+                builder.suggest(flavor.toString());
+            }
+        }
+
+        return builder.buildFuture();
+    }
+
+    @Override
+    public ArgumentType<String> getNativeType() {
+        return StringArgumentType.word();
     }
 }
