@@ -30,7 +30,7 @@ public final class RedClocktower extends JavaPlugin {
 //        });
 
         // load bridge commands
-        List<CommandBrigadierBase> bridgeCommandsSource = List.of(new TagmeCommand());
+        List<CommandBrigadierBase> bridgeCommandsSource = List.of(new TagmeCommand(), new WhosendCommand());
 
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
             for (CommandBrigadierBase brigadier : bridgeCommandsSource)

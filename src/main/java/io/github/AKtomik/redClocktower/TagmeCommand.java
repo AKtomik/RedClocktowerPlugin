@@ -1,10 +1,14 @@
 package io.github.AKtomik.redClocktower;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
+import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 
@@ -29,18 +33,19 @@ public class TagmeCommand extends CommandBrigadierBase {
     // root
     public LiteralArgumentBuilder<CommandSourceStack> root() {
         return base()
+        .then(
+            Commands.argument("myname", StringArgumentType.word())
             .executes(
-                ctx -> {
-                    Entity executor = ctx.getSource().getExecutor();
-                    CommandSender sender = ctx.getSource().getExecutor();
-                    assert (sender != null);
-                    sender.sendMessage(Component.text("hi you bridge sender"));
-                    if (executor != null)
-                    {
-                        executor.sendMessage(Component.text("hi you bridge executor"));
-                    }
-                    return Command.SINGLE_SUCCESS;
-                }
-            );
+            ctx -> {
+                Entity executor = ctx.getSource().getExecutor();
+                assert (executor != null);
+                String displayName = StringArgumentType.getString(ctx, "myname");
+                executor.sendMessage(
+                        Component.text("changing your display name to ").color(NamedTextColor.GREEN)
+                        .append(Component.text(displayName).decorate(TextDecoration.BOLD))
+                );
+                return Command.SINGLE_SUCCESS;
+            })
+        );
     }
 }
