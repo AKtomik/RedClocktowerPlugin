@@ -19,11 +19,16 @@ public class TagmeCommand extends CommandBrigadierBase {
     public List<String> aliases() {
         return List.of("iam");
     }
+    public String permission() {
+        return "redclocktower.player";
+    }
+    public Component description() {
+        return Component.text("define your name");
+    }
 
     // root
     public LiteralArgumentBuilder<CommandSourceStack> root() {
-        return Commands.
-            literal(name())
+        return base()
             .executes(
                 ctx -> {
                     Entity executor = ctx.getSource().getExecutor();
