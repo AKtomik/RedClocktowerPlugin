@@ -1,0 +1,20 @@
+name: RedClocktower
+version: '0.1.0'
+main: io.github.AKtomik.redClocktower.RedClocktower
+api-version: '1.21'
+commands:
+  storyteller:
+    description: Storyteller action for red clocktower
+    usage: /<command> <action> [more]
+    permission: redclocktower.storyteller
+    aliases:
+      - blood
+      - redclocktower
+
+permissions:
+  redclocktower.player:
+    description: Storyteller permission
+    default: op
+  redclocktower.storyteller:
+    description: Storyteller permission
+    default: op
