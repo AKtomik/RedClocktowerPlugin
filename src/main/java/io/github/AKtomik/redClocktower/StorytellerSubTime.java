@@ -36,7 +36,7 @@ public class StorytellerSubTime extends SubBrigadierBase {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return Commands.literal("time")
-		.then(Commands.argument("period", new BloodDayPeriodArgument())
+		.then(Commands.argument("period", EnumArgument.simple(BloodDayPeriod.class))
 		.executes(ctx -> {
 			World world;
 			CommandSender sender = ctx.getSource().getSender();
@@ -107,40 +107,5 @@ enum BloodDayPeriod {
 	@Override
 	public String toString() {
 		return name().toLowerCase();
-	}
-}
-
-@NullMarked
-class BloodDayPeriodArgument implements CustomArgumentType.Converted<BloodDayPeriod, String> {
-
-	private static final DynamicCommandExceptionType ERROR_INVALID_PERIOD = new DynamicCommandExceptionType(period ->
-		MessageComponentSerializer.message().serialize(Component.text(period + " is not a blood day period!"))
-	);
-
-	@Override
-	public BloodDayPeriod convert(String nativeType) throws CommandSyntaxException {
-		try {
-			return BloodDayPeriod.valueOf(nativeType.toUpperCase(Locale.ROOT));
-		} catch (IllegalArgumentException ignored) {
-			throw ERROR_INVALID_PERIOD.create(nativeType);
-		}
-	}
-
-	@Override
-	public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-		for (BloodDayPeriod flavor : BloodDayPeriod.values()) {
-			String name = flavor.toString();
-
-			if (name.startsWith(builder.getRemainingLowerCase())) {
-				builder.suggest(flavor.toString());
-			}
-		}
-
-		return builder.buildFuture();
-	}
-
-	@Override
-	public ArgumentType<String> getNativeType() {
-		return StringArgumentType.word();
 	}
 }
