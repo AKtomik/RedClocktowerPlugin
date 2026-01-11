@@ -2,7 +2,6 @@ package io.github.AKtomik.redclocktower.command.storyteller;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.AKtomik.redclocktower.brigadier.CommandBrigadierBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
-import net.kyori.adventure.text.Component;
 
 import java.util.List;
 

@@ -6,13 +6,8 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.AKtomik.redclocktower.brigadier.CommandBrigadierBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.TextDecoration;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 
-import java.awt.datatransfer.StringSelection;
 import java.util.List;
 
 public class RichmessageCommand extends CommandBrigadierBase {
