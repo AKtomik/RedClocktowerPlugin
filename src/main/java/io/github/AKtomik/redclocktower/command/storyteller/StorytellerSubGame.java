@@ -6,11 +6,13 @@ import io.github.AKtomik.redclocktower.brigadier.EnumArgument;
 import io.github.AKtomik.redclocktower.brigadier.SubBrigadierBase;
 import io.github.AKtomik.redclocktower.game.BloodGame;
 import io.github.AKtomik.redclocktower.game.BloodGameAction;
+import io.github.AKtomik.redclocktower.game.BloodGameState;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 
@@ -25,20 +27,28 @@ public class StorytellerSubGame extends SubBrigadierBase {
 		.executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
-			Location location = ctx.getSource().getLocation();
-			World world = location.getWorld();
-			BloodGame game = BloodGame.WorldGame(world);
+			BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
 			final BloodGameAction gameAction = ctx.getArgument("action", BloodGameAction.class);
 
-
+			// execution
 			sender.sendMessage(
 			Component.text("doing action ").color(NamedTextColor.LIGHT_PURPLE)
 			.append(Component.text(gameAction.toString()).color(NamedTextColor.LIGHT_PURPLE).decorate(TextDecoration.BOLD))
 			.append(Component.text("").color(NamedTextColor.LIGHT_PURPLE))
 			);
 			game.doAction(gameAction);
+
+			// return
 			return Command.SINGLE_SUCCESS;
 		})).executes(ctx -> {
+			// arguments
+			CommandSender sender = ctx.getSource().getSender();
+			BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
+
+			BloodGameState gameState = game.getGameState();
+			sender.sendRichMessage("game is in state <b><state></b>",
+			Placeholder.component("state", Component.text(gameState.toString()))
+			);
 
 			return Command.SINGLE_SUCCESS;
 		});
