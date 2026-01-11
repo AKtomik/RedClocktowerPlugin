@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.AKtomik.redclocktower.brigadier.EnumArgument;
 import io.github.AKtomik.redclocktower.brigadier.SubBrigadierBase;
+import io.github.AKtomik.redclocktower.game.BloodGame;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
@@ -28,19 +29,25 @@ public class StorytellerSubTime extends SubBrigadierBase {
 		return base()
 		.then(Commands.argument("period", EnumArgument.simple(BloodDayPeriod.class, "Invalid blood period"))
 		.executes(ctx -> {
-			World world;
+			// arguments
 			CommandSender sender = ctx.getSource().getSender();
-
-			Location location = ctx.getSource().getLocation();
-			world = location.getWorld();
+			BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
 			final BloodDayPeriod dayPeriod = ctx.getArgument("period", BloodDayPeriod.class);
 
+			//	checks
+			if (!game.isPlaying())
+			{
+				sender.sendRichMessage("<r>the game is not started!");
+				return Command.SINGLE_SUCCESS;
+			}
+
+			// execute
 			sender.sendMessage(
 			Component.text("switching to time ").color(NamedTextColor.LIGHT_PURPLE)
 			.append(Component.text(dayPeriod.toString()).color(NamedTextColor.LIGHT_PURPLE).decorate(TextDecoration.BOLD))
 			.append(Component.text("").color(NamedTextColor.LIGHT_PURPLE))
 			);
-			dayPeriodsStartAction.get(dayPeriod).accept(world);
+			dayPeriodsStartAction.get(dayPeriod).accept(game.world);
 			return Command.SINGLE_SUCCESS;
 		}));
 	}
