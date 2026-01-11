@@ -18,9 +18,7 @@ public class StorytellerCommand extends CommandBrigadierBase {
     public String permission() {
         return "redclocktower.storyteller";
     }
-    public Component description() {
-        return Component.text("storyteller action for red clocktower");
-    }
+    public String description() { return "storyteller action for red clocktower"; }
 
     // root
     public LiteralArgumentBuilder<CommandSourceStack> root() {

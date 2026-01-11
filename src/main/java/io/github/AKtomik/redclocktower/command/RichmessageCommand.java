@@ -27,9 +27,7 @@ public class RichmessageCommand extends CommandBrigadierBase {
 	public String permission() {
 		return "redclocktower.player";
 	}
-	public Component description() {
-		return Component.text("test command to send rich message to yourself");
-	}
+	public String description() { return "test command to send rich message to yourself"; }
 
 	// root
 	public LiteralArgumentBuilder<CommandSourceStack> root() {

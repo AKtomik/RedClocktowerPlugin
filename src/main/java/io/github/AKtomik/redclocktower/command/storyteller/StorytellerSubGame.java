@@ -41,7 +41,7 @@ public class StorytellerSubGame extends SubBrigadierBase {
 			// execute
 			BloodGameState gameState = game.getState();
 			sender.sendRichMessage("game is in state <b><state></b>",
-			Placeholder.component("state", Component.text(gameState.toString()))
+			Placeholder.parsed("state", gameState.toString())
 			);
 			return Command.SINGLE_SUCCESS;
 		});

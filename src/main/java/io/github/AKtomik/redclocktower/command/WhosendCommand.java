@@ -23,8 +23,8 @@ public class WhosendCommand extends CommandBrigadierBase {
     public String permission() {
         return "redclocktower.player";
     }
-    public Component description() {
-        return Component.text("test command to check executor and sender");
+    public String description() {
+        return "test command to check executor and sender";
     }
 
     // root

@@ -49,7 +49,7 @@ public class StorytellerSubTime extends SubBrigadierBase {
 			// execute
 			BloodGamePeriod gamePeriod = game.getTime();
 			sender.sendRichMessage("game is in <b><period></b> time",
-			Placeholder.component("period", Component.text(gamePeriod.toString()))
+			Placeholder.parsed("period", gamePeriod.toString())
 			);
 			return Command.SINGLE_SUCCESS;
 		});

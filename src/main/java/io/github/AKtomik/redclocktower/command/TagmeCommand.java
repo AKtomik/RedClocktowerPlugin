@@ -26,9 +26,7 @@ public class TagmeCommand extends CommandBrigadierBase {
     public String permission() {
         return "redclocktower.player";
     }
-    public Component description() {
-        return Component.text("define your name");
-    }
+    public String description() { return "define your name"; }
 
     // root
     public LiteralArgumentBuilder<CommandSourceStack> root() {

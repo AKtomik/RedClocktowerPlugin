@@ -10,7 +10,7 @@ import java.util.List;
 public abstract class CommandBrigadierBase extends SubBrigadierBase {
     public abstract List<String> aliases();
     public abstract String permission();
-    public abstract Component description();
+    public abstract String description();
 
     public LiteralArgumentBuilder<CommandSourceStack> base()
     {

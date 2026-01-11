@@ -39,11 +39,11 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 				if (targets.size() == 1)
 					sender.sendRichMessage("you added <b><target></b>.",
-					Placeholder.component("target", Component.text(targets.getFirst().getName()))
+					Placeholder.parsed("target", targets.getFirst().getName())
 					);
 				else
 					sender.sendRichMessage("you added <b><amount></b> players.",
-					Placeholder.component("amount", Component.text(targets.size()))
+					Placeholder.parsed("amount", Integer.toString(targets.size()))
 					);
 				return Command.SINGLE_SUCCESS;
 			}
@@ -67,11 +67,11 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 				if (targets.size() == 1)
 					sender.sendRichMessage("you removed <b><target></b>.",
-					Placeholder.component("target", Component.text(targets.getFirst().getName()))
+					Placeholder.parsed("target", targets.getFirst().getName())
 					);
 				else
 					sender.sendRichMessage("you removed <b><amount></b> players.",
-					Placeholder.component("amount", Component.text(targets.size()))
+					Placeholder.parsed("amount", Integer.toString(targets.size()))
 					);
 				return Command.SINGLE_SUCCESS;
 			}
