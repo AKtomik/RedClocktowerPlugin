@@ -4,6 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.AKtomik.redclocktower.brigadier.EnumArgument;
 import io.github.AKtomik.redclocktower.brigadier.SubBrigadierBase;
+import io.github.AKtomik.redclocktower.game.BloodGame;
 import io.github.AKtomik.redclocktower.game.BloodGameAction;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -12,10 +13,6 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
-import org.jspecify.annotations.NullMarked;
-
-import java.util.Map;
-import java.util.function.Consumer;
 
 public class StorytellerSubGame extends SubBrigadierBase {
 	public String name() {
@@ -24,44 +21,26 @@ public class StorytellerSubGame extends SubBrigadierBase {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.argument("state", EnumArgument.simple(BloodGameAction.class, "Invalid blood period"))
+		.then(Commands.argument("action", EnumArgument.simple(BloodGameAction.class, "Invalid blood period"))
 		.executes(ctx -> {
-			World world;
+			// arguments
 			CommandSender sender = ctx.getSource().getSender();
-
 			Location location = ctx.getSource().getLocation();
-			world = location.getWorld();
-			final BloodGameAction gameState = ctx.getArgument("state", BloodGameAction.class);
+			World world = location.getWorld();
+			BloodGame game = BloodGame.WorldGame(world);
+			final BloodGameAction gameAction = ctx.getArgument("action", BloodGameAction.class);
+
 
 			sender.sendMessage(
-			Component.text("switching to state ").color(NamedTextColor.LIGHT_PURPLE)
-			.append(Component.text(gameState.toString()).color(NamedTextColor.LIGHT_PURPLE).decorate(TextDecoration.BOLD))
+			Component.text("doing action ").color(NamedTextColor.LIGHT_PURPLE)
+			.append(Component.text(gameAction.toString()).color(NamedTextColor.LIGHT_PURPLE).decorate(TextDecoration.BOLD))
 			.append(Component.text("").color(NamedTextColor.LIGHT_PURPLE))
 			);
-			gameEnterState.get(gameState).accept(world);
+			game.doAction(gameAction);
 			return Command.SINGLE_SUCCESS;
-		}));
+		})).executes(ctx -> {
+
+			return Command.SINGLE_SUCCESS;
+		});
 	}
-
-
-	static Map<BloodGameAction, Consumer<World>> gameEnterState = Map.ofEntries(
-	Map.entry(BloodGameAction.SETUP, (world) -> {
-		world.setGameRule(GameRules.ADVANCE_TIME, false);
-	}),
-	Map.entry(BloodGameAction.RESET, (world) -> {
-		StorytellerSubGame.gameEnterState.get(BloodGameAction.SETUP);
-		world.setTime(12000);
-	}),
-	Map.entry(BloodGameAction.START, (world) -> {
-		StorytellerSubGame.gameEnterState.get(BloodGameAction.RESET);
-		Bukkit.getServer().broadcast(
-		Component.text("are you ready to bleed?").color(NamedTextColor.RED).decorate(TextDecoration.BOLD)
-		);
-	}),
-	Map.entry(BloodGameAction.FINISH, (world) -> {
-		StorytellerSubGame.gameEnterState.get(BloodGameAction.RESET);
-		Bukkit.getServer().broadcast(
-		Component.text("the game is over!").color(NamedTextColor.RED).decorate(TextDecoration.BOLD)
-		);
-	}));
 }
