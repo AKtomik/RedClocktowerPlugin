@@ -10,7 +10,8 @@ public enum DataKey {
 	GAME_PERIOD("game_period"),
 	GAME_ROUND_COUNT("game_round_count"),
 	GAME_ROUND_ID("game_round_id"),
-	PLAYER_ROUND_ID("player_round_id"),
+	GAME_PLAYERS_UUID("game_players_uuid"),
+	//PLAYER_ROUND_ID("player_round_id"),
 	PLAYER_ALIVE("player_alive");
 
 	// system

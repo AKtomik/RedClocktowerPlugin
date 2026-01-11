@@ -5,18 +5,25 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRules;
 import org.bukkit.World;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.List;
 import java.util.Map;
 import java.util.function.Consumer;
 
 public class BloodGame {
 
 	// class
+	public static MiniMessage mini = MiniMessage.miniMessage();
+
 	final public World world;
 	private final PersistentDataContainer pdc;
+
 	private String roundId;
+
 	private BloodGame(World world)
 	{
 		this.world = world;
@@ -26,7 +33,6 @@ public class BloodGame {
 	{
 		return new BloodGame(world);
 	}
-	public static MiniMessage mini = MiniMessage.miniMessage();
 
 	// get & set
 	public void setState(BloodGameState gameState)
@@ -58,13 +64,13 @@ public class BloodGame {
 		return pdc.getOrDefault(DataKey.GAME_ROUND_COUNT.key, PersistentDataType.INTEGER, 0);
 	}
 
-	private void setRoundId(String newRondId)
+	private void setPlayersUuid(List<String> uuids)
 	{
-		roundId = newRondId;
+		pdc.set(DataKey.GAME_PLAYERS_UUID.key, PersistentDataType.LIST.strings(), uuids);
 	}
-	private String getRoundId()
+	public List<String> getPlayersUuid()
 	{
-		return roundId;
+		return pdc.getOrDefault(DataKey.GAME_PLAYERS_UUID.key, PersistentDataType.LIST.strings(), List.of());
 	}
 
 	// if
@@ -79,6 +85,21 @@ public class BloodGame {
 		int incrementedRoundCount = getRoundCount() + 1;
 		setRoundCount(incrementedRoundCount);
 		roundId =  "%s:%s".formatted(world.getName(), Integer.toString(incrementedRoundCount));
+	}
+
+	// players
+	private void addPlayer(String uuid)
+	{
+		List<String> uuids = getPlayersUuid();
+		uuids.add(uuid);
+		setPlayersUuid(uuids);
+	}
+
+	private void removePlayer(String uuid)
+	{
+		List<String> uuids = getPlayersUuid();
+		uuids.remove(uuid);
+		setPlayersUuid(uuids);
 	}
 
 	// runs
