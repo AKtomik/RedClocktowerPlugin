@@ -8,18 +8,8 @@ import io.github.AKtomik.redclocktower.game.BloodGame;
 import io.github.AKtomik.redclocktower.game.BloodGamePeriod;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Bukkit;
-import org.bukkit.Location;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.jspecify.annotations.NullMarked;
-
-import java.util.Map;
-import java.util.function.Consumer;
 
 public class StorytellerSubTime extends SubBrigadierBase {
 
@@ -34,7 +24,7 @@ public class StorytellerSubTime extends SubBrigadierBase {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
 			BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
-			final BloodGamePeriod dayPeriod = ctx.getArgument("period", BloodGamePeriod.class);
+			final BloodGamePeriod period = ctx.getArgument("period", BloodGamePeriod.class);
 
 			//	checks
 			if (!game.isPlaying())
@@ -44,50 +34,11 @@ public class StorytellerSubTime extends SubBrigadierBase {
 			}
 
 			// execute
-			sender.sendRichMessage("<light_purple>switching to time <b><period></b>",
-			Placeholder.parsed("period",dayPeriod.toString())
+			sender.sendRichMessage("<light_purple>switching to <b><period></b> time",
+			Placeholder.parsed("period", period.toString())
 			);
-			dayPeriodsStartAction.get(dayPeriod).accept(game.world);
+			game.switchTime(period);
 			return Command.SINGLE_SUCCESS;
 		}));
 	}
-
-	static Map<BloodGamePeriod, Consumer<World>> dayPeriodsStartAction = Map.ofEntries(
-	Map.entry(BloodGamePeriod.MORNING, (world) -> {
-		Bukkit.getServer().broadcast(
-		Component.text("it's the morning!").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
-		);
-		Bukkit.getServer().broadcast(
-		Component.text("everyone to the townhall").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
-		);
-		world.setTime(0);
-	}),
-	Map.entry(BloodGamePeriod.FREE, (world) -> {
-		Bukkit.getServer().broadcast(
-		Component.text("wonder time").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
-		);
-		Bukkit.getServer().broadcast(
-		Component.text("you are free to go").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
-		);
-		world.setTime(6000);
-	}),
-	Map.entry(BloodGamePeriod.MEET, (world) -> {
-		Bukkit.getServer().broadcast(
-		Component.text("debate time").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
-		);
-		Bukkit.getServer().broadcast(
-		Component.text("everyone to the townhall").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
-		);
-		world.setTime(12000);
-	}),
-	Map.entry(BloodGamePeriod.NIGHT, (world) -> {
-		Bukkit.getServer().broadcast(
-		Component.text("the moon is rising...").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
-		);
-		Bukkit.getServer().broadcast(
-		Component.text("go to your house and sleep well").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
-		);
-		world.setTime(18000);
-	})
-	);
 }

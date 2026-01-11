@@ -39,6 +39,16 @@ public class BloodGame {
 		return BloodGameState.values()[ordinal];
 	}
 
+	private void setTime(BloodGamePeriod gameState)
+	{
+		pdc.set(DataKey.GAME_PERIOD.key, PersistentDataType.INTEGER, gameState.ordinal());
+	}
+	public BloodGamePeriod getTime()
+	{
+		int ordinal = pdc.getOrDefault(DataKey.GAME_PERIOD.key, PersistentDataType.INTEGER, BloodGameState.NOTHING.ordinal());
+		return BloodGamePeriod.values()[ordinal];
+	}
+
 	// if
 	public boolean isPlaying()
 	{
@@ -49,6 +59,11 @@ public class BloodGame {
 	public void doAction(BloodGameAction action)
 	{
 		gameAction.get(action).accept(this);
+	}
+	public void switchTime(BloodGamePeriod period)
+	{
+		gamePeriodEnter.get(period).accept(this);
+		setTime(period);
 	}
 
 	public void broadcast(Component text)
@@ -87,4 +102,44 @@ public class BloodGame {
 		game.doAction(BloodGameAction.SETOUT);
 		game.setState(BloodGameState.NOTHING);
 	}));
+
+	// code/period
+	static Map<BloodGamePeriod, Consumer<BloodGame>> gamePeriodEnter = Map.ofEntries(
+	Map.entry(BloodGamePeriod.MORNING, (game) -> {
+		Bukkit.getServer().broadcast(
+		Component.text("it's the morning!").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
+		);
+		Bukkit.getServer().broadcast(
+		Component.text("everyone to the townhall").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
+		);
+		game.world.setTime(0);
+	}),
+	Map.entry(BloodGamePeriod.FREE, (game) -> {
+		Bukkit.getServer().broadcast(
+		Component.text("wonder time").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
+		);
+		Bukkit.getServer().broadcast(
+		Component.text("you are free to go").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
+		);
+		game.world.setTime(6000);
+	}),
+	Map.entry(BloodGamePeriod.MEET, (game) -> {
+		Bukkit.getServer().broadcast(
+		Component.text("debate time").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
+		);
+		Bukkit.getServer().broadcast(
+		Component.text("everyone to the townhall").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
+		);
+		game.world.setTime(12000);
+	}),
+	Map.entry(BloodGamePeriod.NIGHT, (game) -> {
+		Bukkit.getServer().broadcast(
+		Component.text("the moon is rising...").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
+		);
+		Bukkit.getServer().broadcast(
+		Component.text("go to your house and sleep well").color(NamedTextColor.GRAY).decorate(TextDecoration.ITALIC)
+		);
+		game.world.setTime(18000);
+	})
+	);
 }

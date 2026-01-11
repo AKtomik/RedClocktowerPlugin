@@ -6,8 +6,8 @@ import org.bukkit.plugin.java.JavaPlugin;
 public enum DataKey {
 
 	// define
-	GAME_PERIOD("game_period"),
 	GAME_STATE("game_state"),
+	GAME_PERIOD("game_period"),
 	PLAYER_LIFE("player_life");
 
 	// system
