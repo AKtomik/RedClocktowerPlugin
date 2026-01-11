@@ -5,6 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.AKtomik.redclocktower.brigadier.EnumArgument;
 import io.github.AKtomik.redclocktower.brigadier.SubBrigadierBase;
 import io.github.AKtomik.redclocktower.game.BloodGame;
+import io.github.AKtomik.redclocktower.game.BloodGamePeriod;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
@@ -28,12 +29,12 @@ public class StorytellerSubTime extends SubBrigadierBase {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.argument("period", EnumArgument.simple(BloodDayPeriod.class, "Invalid game period"))
+		.then(Commands.argument("period", EnumArgument.simple(BloodGamePeriod.class, "Invalid game period"))
 		.executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
 			BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
-			final BloodDayPeriod dayPeriod = ctx.getArgument("period", BloodDayPeriod.class);
+			final BloodGamePeriod dayPeriod = ctx.getArgument("period", BloodGamePeriod.class);
 
 			//	checks
 			if (!game.isPlaying())
@@ -51,8 +52,8 @@ public class StorytellerSubTime extends SubBrigadierBase {
 		}));
 	}
 
-	static Map<BloodDayPeriod, Consumer<World>> dayPeriodsStartAction = Map.ofEntries(
-	Map.entry(BloodDayPeriod.MORNING, (world) -> {
+	static Map<BloodGamePeriod, Consumer<World>> dayPeriodsStartAction = Map.ofEntries(
+	Map.entry(BloodGamePeriod.MORNING, (world) -> {
 		Bukkit.getServer().broadcast(
 		Component.text("it's the morning!").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
 		);
@@ -61,7 +62,7 @@ public class StorytellerSubTime extends SubBrigadierBase {
 		);
 		world.setTime(0);
 	}),
-	Map.entry(BloodDayPeriod.FREE, (world) -> {
+	Map.entry(BloodGamePeriod.FREE, (world) -> {
 		Bukkit.getServer().broadcast(
 		Component.text("wonder time").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
 		);
@@ -70,7 +71,7 @@ public class StorytellerSubTime extends SubBrigadierBase {
 		);
 		world.setTime(6000);
 	}),
-	Map.entry(BloodDayPeriod.MEET, (world) -> {
+	Map.entry(BloodGamePeriod.MEET, (world) -> {
 		Bukkit.getServer().broadcast(
 		Component.text("debate time").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
 		);
@@ -79,7 +80,7 @@ public class StorytellerSubTime extends SubBrigadierBase {
 		);
 		world.setTime(12000);
 	}),
-	Map.entry(BloodDayPeriod.NIGHT, (world) -> {
+	Map.entry(BloodGamePeriod.NIGHT, (world) -> {
 		Bukkit.getServer().broadcast(
 		Component.text("the moon is rising...").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)
 		);
@@ -89,18 +90,4 @@ public class StorytellerSubTime extends SubBrigadierBase {
 		world.setTime(18000);
 	})
 	);
-}
-
-
-@NullMarked
-enum BloodDayPeriod {
-	MORNING,
-	FREE,
-	MEET,
-	NIGHT;
-
-	@Override
-	public String toString() {
-		return name().toLowerCase();
-	}
 }
