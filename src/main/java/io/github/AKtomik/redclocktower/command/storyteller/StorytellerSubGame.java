@@ -10,10 +10,7 @@ import io.github.AKtomik.redclocktower.game.BloodGameState;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.format.TextDecoration;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 
 public class StorytellerSubGame extends SubBrigadierBase {
@@ -43,7 +40,7 @@ public class StorytellerSubGame extends SubBrigadierBase {
 			CommandSender sender = ctx.getSource().getSender();
 			BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
 
-			BloodGameState gameState = game.getGameState();
+			BloodGameState gameState = game.getState();
 			sender.sendRichMessage("game is in state <b><state></b>",
 			Placeholder.component("state", Component.text(gameState.toString()))
 			);

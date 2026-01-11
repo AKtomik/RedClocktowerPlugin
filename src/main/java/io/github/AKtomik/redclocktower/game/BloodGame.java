@@ -1,17 +1,14 @@
 package io.github.AKtomik.redclocktower.game;
 
 import io.github.AKtomik.redclocktower.DataKey;
-import io.github.AKtomik.redclocktower.command.storyteller.StorytellerSubGame;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRules;
-import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.plugin.PluginBase;
 
 import java.util.Map;
 import java.util.function.Consumer;
@@ -32,12 +29,11 @@ public class BloodGame {
 	}
 
 	// get & set
-	public void setGameState(BloodGameState gameState)
+	public void setState(BloodGameState gameState)
 	{
 		pdc.set(DataKey.GAME_STATE.key, PersistentDataType.INTEGER, gameState.ordinal());
 	}
-
-	public BloodGameState getGameState()
+	public BloodGameState getState()
 	{
 		int ordinal = pdc.getOrDefault(DataKey.GAME_STATE.key, PersistentDataType.INTEGER, BloodGameState.NOTHING.ordinal());
 		return BloodGameState.values()[ordinal];
@@ -46,7 +42,7 @@ public class BloodGame {
 	// if
 	public boolean isPlaying()
 	{
-		return getGameState() == BloodGameState.INGAME;
+		return getState() == BloodGameState.INGAME;
 	}
 
 	// runs
@@ -74,14 +70,14 @@ public class BloodGame {
 	Map.entry(BloodGameAction.START, (game) -> {
 		game.doAction(BloodGameAction.RESET);
 		game.doAction(BloodGameAction.SETUP);
-		game.setGameState(BloodGameState.INGAME);
+		game.setState(BloodGameState.INGAME);
 		game.broadcast(
 		Component.text("are you ready to bleed?").color(NamedTextColor.RED).decorate(TextDecoration.BOLD)
 		);
 	}),
 	Map.entry(BloodGameAction.FINISH, (game) -> {
 		game.doAction(BloodGameAction.RESET);
-		game.setGameState(BloodGameState.ENDED);
+		game.setState(BloodGameState.ENDED);
 		game.broadcast(
 		Component.text("the game is over!").color(NamedTextColor.RED).decorate(TextDecoration.BOLD)
 		);
@@ -89,6 +85,6 @@ public class BloodGame {
 	Map.entry(BloodGameAction.CLEAN, (game) -> {
 		game.doAction(BloodGameAction.RESET);
 		game.doAction(BloodGameAction.SETOUT);
-		game.setGameState(BloodGameState.NOTHING);
+		game.setState(BloodGameState.NOTHING);
 	}));
 }
