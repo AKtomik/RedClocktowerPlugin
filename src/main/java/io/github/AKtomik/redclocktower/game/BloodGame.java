@@ -45,7 +45,7 @@ public class BloodGame {
 	}
 	public BloodGamePeriod getTime()
 	{
-		int ordinal = pdc.getOrDefault(DataKey.GAME_PERIOD.key, PersistentDataType.INTEGER, BloodGameState.NOTHING.ordinal());
+		int ordinal = pdc.getOrDefault(DataKey.GAME_PERIOD.key, PersistentDataType.INTEGER, BloodGamePeriod.FREE.ordinal());
 		return BloodGamePeriod.values()[ordinal];
 	}
 
