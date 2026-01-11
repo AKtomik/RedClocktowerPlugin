@@ -32,19 +32,17 @@ public class StorytellerSubGame extends SubBrigadierBase {
 			Placeholder.parsed("action", gameAction.toString())
 			);
 			game.doAction(gameAction);
-
-			// return
 			return Command.SINGLE_SUCCESS;
 		})).executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
 			BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
 
+			// execute
 			BloodGameState gameState = game.getState();
 			sender.sendRichMessage("game is in state <b><state></b>",
 			Placeholder.component("state", Component.text(gameState.toString()))
 			);
-
 			return Command.SINGLE_SUCCESS;
 		});
 	}

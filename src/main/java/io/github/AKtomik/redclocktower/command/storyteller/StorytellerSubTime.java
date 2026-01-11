@@ -6,8 +6,10 @@ import io.github.AKtomik.redclocktower.brigadier.EnumArgument;
 import io.github.AKtomik.redclocktower.brigadier.SubBrigadierBase;
 import io.github.AKtomik.redclocktower.game.BloodGame;
 import io.github.AKtomik.redclocktower.game.BloodGamePeriod;
+import io.github.AKtomik.redclocktower.game.BloodGameState;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 
@@ -39,6 +41,17 @@ public class StorytellerSubTime extends SubBrigadierBase {
 			);
 			game.switchTime(period);
 			return Command.SINGLE_SUCCESS;
-		}));
+		})).executes(ctx -> {
+			// arguments
+			CommandSender sender = ctx.getSource().getSender();
+			BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
+
+			// execute
+			BloodGamePeriod gamePeriod = game.getTime();
+			sender.sendRichMessage("game is in <b><period></b> time",
+			Placeholder.component("period", Component.text(gamePeriod.toString()))
+			);
+			return Command.SINGLE_SUCCESS;
+		});
 	}
 }
