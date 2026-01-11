@@ -35,12 +35,11 @@ public class StorytellerSubTime extends SubBrigadierBase {
 	}
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
-		return Commands.literal("time")
+		return base()
 		.then(Commands.argument("period", EnumArgument.simple(BloodDayPeriod.class, "Invalid blood period"))
 		.executes(ctx -> {
 			World world;
 			CommandSender sender = ctx.getSource().getSender();
-			Entity executor = ctx.getSource().getExecutor();
 
 			Location location = ctx.getSource().getLocation();
 			world = location.getWorld();
@@ -56,7 +55,7 @@ public class StorytellerSubTime extends SubBrigadierBase {
 		}));
 	}
 
-	Map<BloodDayPeriod, Consumer<World>> dayPeriodsStartAction = Map.ofEntries(
+	static Map<BloodDayPeriod, Consumer<World>> dayPeriodsStartAction = Map.ofEntries(
 	Map.entry(BloodDayPeriod.MORNING, (world) -> {
 		Bukkit.getServer().broadcast(
 		Component.text("it's the morning!").color(NamedTextColor.WHITE).decorate(TextDecoration.BOLD)

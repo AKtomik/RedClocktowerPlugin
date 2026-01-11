@@ -24,6 +24,7 @@ public class StorytellerCommand extends CommandBrigadierBase {
     // root
     public LiteralArgumentBuilder<CommandSourceStack> root() {
         return base()
-        .then(new StorytellerSubTime().root());
+        .then(new StorytellerSubTime().root())
+        .then(new StorytellerSubGame().root());
     }
 }
