@@ -18,6 +18,9 @@ public final class RedClocktower extends JavaPlugin {
         // Plugin startup logic
         getLogger().info("Enabled!");
 
+        // setup data keys
+        DataKey.init(this);
+
         // list bridge commands
         List<CommandBrigadierBase> bridgeCommandsSource = List
         .of(new TagmeCommand(), new WhosendCommand(), new StorytellerCommand());
