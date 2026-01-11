@@ -31,23 +31,23 @@ public class WhosendCommand extends CommandBrigadierBase {
     // root
     public LiteralArgumentBuilder<CommandSourceStack> root() {
         return base()
-            .executes(
-                ctx -> {
-                    Entity executor = ctx.getSource().getExecutor();
-                    CommandSender sender = ctx.getSource().getSender();
-                    sender.sendMessage(
-                        Component.text("you are the command ")
-                        .append(Component.text("sender").decorate(TextDecoration.BOLD))
-                    );
-                    if (executor != null)
-                    {
-                        executor.sendMessage(
-                            Component.text("you are the command ")
-                            .append(Component.text("executor").decorate(TextDecoration.BOLD))
-                        );
-                    }
-                    return Command.SINGLE_SUCCESS;
-                }
+        .executes(
+        ctx -> {
+            Entity executor = ctx.getSource().getExecutor();
+            CommandSender sender = ctx.getSource().getSender();
+            sender.sendMessage(
+            Component.text("you are the command ")
+            .append(Component.text("sender").decorate(TextDecoration.BOLD))
             );
+            if (executor != null)
+            {
+                executor.sendMessage(
+                Component.text("you are the command ")
+                .append(Component.text("executor").decorate(TextDecoration.BOLD))
+                );
+            }
+            return Command.SINGLE_SUCCESS;
+        }
+        );
     }
 }
