@@ -36,7 +36,7 @@ public class StorytellerSubTime extends SubBrigadierBase {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return Commands.literal("time")
-		.then(Commands.argument("period", EnumArgument.simple(BloodDayPeriod.class))
+		.then(Commands.argument("period", EnumArgument.simple(BloodDayPeriod.class, "Invalid blood period"))
 		.executes(ctx -> {
 			World world;
 			CommandSender sender = ctx.getSource().getSender();

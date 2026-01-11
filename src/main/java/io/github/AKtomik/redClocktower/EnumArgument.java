@@ -1,20 +1,22 @@
 package io.github.AKtomik.redClocktower;
 
+import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import com.mojang.brigadier.exceptions.DynamicCommandExceptionType;
+import com.mojang.brigadier.exceptions.SimpleCommandExceptionType;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.papermc.paper.command.brigadier.MessageComponentSerializer;
 import io.papermc.paper.command.brigadier.argument.CustomArgumentType;
-import net.kyori.adventure.text.Component;
 import org.jspecify.annotations.NullMarked;
 
 import java.util.Locale;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Function;
+
+import static net.kyori.adventure.text.Component.text;
 
 @NullMarked
 public final class EnumArgument<E extends Enum<E>>
@@ -22,20 +24,23 @@ implements CustomArgumentType.Converted<E, String> {
 
 	private final Class<E> enumClass;
 	private final Function<E, String> nameMapper;
-	private final DynamicCommandExceptionType invalidValue;
+	private final SimpleCommandExceptionType invalidValueError;
 
 	public EnumArgument(
 	Class<E> enumClass,
 	Function<E, String> nameMapper,
-	String errorFormat
+	String errorMessage
 	) {
 		this.enumClass = enumClass;
 		this.nameMapper = nameMapper;
-		this.invalidValue = new DynamicCommandExceptionType(value ->
-		MessageComponentSerializer.message().serialize(
-		Component.text(errorFormat.formatted(value))
-		)
-		);
+		this.invalidValueError = new SimpleCommandExceptionType(MessageComponentSerializer.message().serialize(text(errorMessage)));
+	}
+
+	public EnumArgument(
+	Class<E> enumClass,
+	Function<E, String> nameMapper
+	) {
+		this(enumClass, nameMapper, "Invalid value");
 	}
 
 	@Override
@@ -46,7 +51,7 @@ implements CustomArgumentType.Converted<E, String> {
 			nativeType.toUpperCase(Locale.ROOT)
 			);
 		} catch (IllegalArgumentException ex) {
-			throw invalidValue.create(nativeType);
+			throw invalidValueError.createWithContext(new StringReader(nativeType));
 		}
 	}
 
@@ -78,8 +83,18 @@ implements CustomArgumentType.Converted<E, String> {
 	) {
 		return new EnumArgument<>(
 		enumClass,
+		e -> e.name().toLowerCase(Locale.ROOT)
+		);
+	}
+
+	public static <E extends Enum<E>> EnumArgument<E> simple(
+	Class<E> enumClass,
+	String errorMessage
+	) {
+		return new EnumArgument<>(
+		enumClass,
 		e -> e.name().toLowerCase(Locale.ROOT),
-		"%s is not a valid value"
+		errorMessage
 		);
 	}
 }
