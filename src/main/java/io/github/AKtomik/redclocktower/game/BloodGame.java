@@ -9,15 +9,27 @@ import org.bukkit.plugin.PluginBase;
 
 public class BloodGame {
 
-	public static void SetGameState(World world, BloodGameState gameState)
+	// class
+	public World world;
+	public PersistentDataContainer pdc;
+	private BloodGame(World world)
 	{
-		PersistentDataContainer pdc = world.getPersistentDataContainer();
+		this.world = world;
+		this.pdc = world.getPersistentDataContainer();
+	}
+	public static BloodGame WorldGame(World world)
+	{
+		return new BloodGame(world);
+	}
+
+	// get/set
+	public void setGameState(BloodGameState gameState)
+	{
 		pdc.set(DataKey.GAME_STATE.key, PersistentDataType.INTEGER, gameState.ordinal());
 	}
 
-	public static BloodGameState GetGameState(World world)
+	public BloodGameState getGameState(World world)
 	{
-		PersistentDataContainer pdc = world.getPersistentDataContainer();
 		int ordinal = pdc.getOrDefault(DataKey.GAME_STATE.key, PersistentDataType.INTEGER, BloodGameState.NOTHING.ordinal());
 		return BloodGameState.values()[ordinal];
 	}
