@@ -9,6 +9,7 @@ import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Entity;
 
 import java.util.List;
@@ -39,10 +40,7 @@ public class TagmeCommand extends CommandBrigadierBase {
             Entity executor = ctx.getSource().getExecutor();
             assert (executor != null);
             String displayName = StringArgumentType.getString(ctx, "myname");
-            executor.sendMessage(
-            Component.text("changing your display name to ").color(NamedTextColor.GREEN)
-            .append(Component.text(displayName).decorate(TextDecoration.BOLD))
-            );
+            executor.sendRichMessage("<green>changing your display name to <b><name></b>", Placeholder.parsed("name", displayName));
             return Command.SINGLE_SUCCESS;
         })
         );

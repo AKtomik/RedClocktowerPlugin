@@ -10,6 +10,7 @@ import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextDecoration;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.World;
@@ -37,15 +38,13 @@ public class StorytellerSubTime extends SubBrigadierBase {
 			//	checks
 			if (!game.isPlaying())
 			{
-				sender.sendRichMessage("<r>the game is not started!</r>");
+				sender.sendRichMessage("<red>the game is not started!");
 				return Command.SINGLE_SUCCESS;
 			}
 
 			// execute
-			sender.sendMessage(
-			Component.text("switching to time ").color(NamedTextColor.LIGHT_PURPLE)
-			.append(Component.text(dayPeriod.toString()).color(NamedTextColor.LIGHT_PURPLE).decorate(TextDecoration.BOLD))
-			.append(Component.text("").color(NamedTextColor.LIGHT_PURPLE))
+			sender.sendRichMessage("<light_purple>switching to time <b><period></b>",
+			Placeholder.parsed("period",dayPeriod.toString())
 			);
 			dayPeriodsStartAction.get(dayPeriod).accept(game.world);
 			return Command.SINGLE_SUCCESS;

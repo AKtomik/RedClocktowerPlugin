@@ -31,10 +31,8 @@ public class StorytellerSubGame extends SubBrigadierBase {
 			final BloodGameAction gameAction = ctx.getArgument("action", BloodGameAction.class);
 
 			// execution
-			sender.sendMessage(
-			Component.text("doing action ").color(NamedTextColor.LIGHT_PURPLE)
-			.append(Component.text(gameAction.toString()).color(NamedTextColor.LIGHT_PURPLE).decorate(TextDecoration.BOLD))
-			.append(Component.text("").color(NamedTextColor.LIGHT_PURPLE))
+			sender.sendRichMessage("<light_purple>running action <b><action></b>",
+			Placeholder.parsed("action", gameAction.toString())
 			);
 			game.doAction(gameAction);
 

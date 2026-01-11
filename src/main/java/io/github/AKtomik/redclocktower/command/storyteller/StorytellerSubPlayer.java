@@ -31,7 +31,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 				if (targets.isEmpty())
 				{
-					sender.sendMessage(Component.text("no player found").color(NamedTextColor.RED));
+					sender.sendRichMessage("<red>no player found");
 					return Command.SINGLE_SUCCESS;
 				}
 
@@ -59,7 +59,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 				if (targets.isEmpty())
 				{
-					sender.sendMessage(Component.text("no player found").color(NamedTextColor.RED));
+					sender.sendRichMessage("<red>no player found");
 					return Command.SINGLE_SUCCESS;
 				}
 

@@ -34,16 +34,10 @@ public class WhosendCommand extends CommandBrigadierBase {
         ctx -> {
             Entity executor = ctx.getSource().getExecutor();
             CommandSender sender = ctx.getSource().getSender();
-            sender.sendMessage(
-            Component.text("you are the command ")
-            .append(Component.text("sender").decorate(TextDecoration.BOLD))
-            );
+            sender.sendRichMessage("you are the command <b>sender</b>");
             if (executor != null)
             {
-                executor.sendMessage(
-                Component.text("you are the command ")
-                .append(Component.text("executor").decorate(TextDecoration.BOLD))
-                );
+                sender.sendRichMessage("you are the command <b>executor</b>");
             }
             return Command.SINGLE_SUCCESS;
         }
