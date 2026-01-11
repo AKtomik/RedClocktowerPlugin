@@ -27,7 +27,7 @@ public class StorytellerSubTime extends SubBrigadierBase {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.argument("period", EnumArgument.simple(BloodDayPeriod.class, "Invalid blood period"))
+		.then(Commands.argument("period", EnumArgument.simple(BloodDayPeriod.class, "Invalid game period"))
 		.executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
@@ -37,7 +37,7 @@ public class StorytellerSubTime extends SubBrigadierBase {
 			//	checks
 			if (!game.isPlaying())
 			{
-				sender.sendRichMessage("<r>the game is not started!");
+				sender.sendRichMessage("<r>the game is not started!</r>");
 				return Command.SINGLE_SUCCESS;
 			}
 

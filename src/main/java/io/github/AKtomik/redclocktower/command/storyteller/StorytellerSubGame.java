@@ -23,7 +23,7 @@ public class StorytellerSubGame extends SubBrigadierBase {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.argument("action", EnumArgument.simple(BloodGameAction.class, "Invalid blood period"))
+		.then(Commands.argument("action", EnumArgument.simple(BloodGameAction.class, "Invalid game action"))
 		.executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
