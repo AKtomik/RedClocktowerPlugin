@@ -2,6 +2,7 @@ package io.github.AKtomik.redclocktower;
 
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.github.AKtomik.redclocktower.brigadier.CommandBrigadierBase;
+import io.github.AKtomik.redclocktower.command.RichmessageCommand;
 import io.github.AKtomik.redclocktower.command.storyteller.StorytellerCommand;
 import io.github.AKtomik.redclocktower.command.TagmeCommand;
 import io.github.AKtomik.redclocktower.command.WhosendCommand;
@@ -23,7 +24,7 @@ public final class RedClocktower extends JavaPlugin {
 
         // list bridge commands
         List<CommandBrigadierBase> bridgeCommandsSource = List
-        .of(new TagmeCommand(), new WhosendCommand(), new StorytellerCommand());
+        .of(new TagmeCommand(), new WhosendCommand(), new StorytellerCommand(), new RichmessageCommand());
 
         // load bridge commands
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
