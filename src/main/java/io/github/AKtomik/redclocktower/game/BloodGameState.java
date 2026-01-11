@@ -2,8 +2,8 @@ package io.github.AKtomik.redclocktower.game;
 
 public enum BloodGameState {
 	NOTHING,
-	SETUP,//()
-	WAITING,//()
+	SETUP,//not used
+	WAITING,//not used
 	INGAME,
 	ENDED;
 

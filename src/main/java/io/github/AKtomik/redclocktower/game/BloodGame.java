@@ -68,6 +68,9 @@ public class BloodGame {
 	Map.entry(BloodGameAction.SETUP, (game) -> {
 		game.world.setGameRule(GameRules.ADVANCE_TIME, false);
 	}),
+	Map.entry(BloodGameAction.SETOUT, (game) -> {
+		game.world.setGameRule(GameRules.ADVANCE_TIME, true);
+	}),
 	Map.entry(BloodGameAction.START, (game) -> {
 		game.doAction(BloodGameAction.RESET);
 		game.doAction(BloodGameAction.SETUP);
@@ -78,10 +81,14 @@ public class BloodGame {
 	}),
 	Map.entry(BloodGameAction.FINISH, (game) -> {
 		game.doAction(BloodGameAction.RESET);
-		game.doAction(BloodGameAction.SETUP);
 		game.setGameState(BloodGameState.ENDED);
 		game.broadcast(
 		Component.text("the game is over!").color(NamedTextColor.RED).decorate(TextDecoration.BOLD)
 		);
+	}),
+	Map.entry(BloodGameAction.CLEAN, (game) -> {
+		game.doAction(BloodGameAction.RESET);
+		game.doAction(BloodGameAction.SETOUT);
+		game.setGameState(BloodGameState.NOTHING);
 	}));
 }
