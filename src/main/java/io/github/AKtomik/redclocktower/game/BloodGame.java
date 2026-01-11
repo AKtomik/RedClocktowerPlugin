@@ -16,6 +16,7 @@ public class BloodGame {
 	// class
 	final public World world;
 	private final PersistentDataContainer pdc;
+	private String roundId;
 	private BloodGame(World world)
 	{
 		this.world = world;
@@ -48,10 +49,36 @@ public class BloodGame {
 		return BloodGamePeriod.values()[ordinal];
 	}
 
+	private void setRoundCount(int count)
+	{
+		pdc.set(DataKey.GAME_ROUND_COUNT.key, PersistentDataType.INTEGER, count);
+	}
+	public int getRoundCount()
+	{
+		return pdc.getOrDefault(DataKey.GAME_ROUND_COUNT.key, PersistentDataType.INTEGER, 0);
+	}
+
+	private void setRoundId(String newRondId)
+	{
+		roundId = newRondId;
+	}
+	private String getRoundId()
+	{
+		return roundId;
+	}
+
 	// if
 	public boolean isPlaying()
 	{
 		return getState() == BloodGameState.INGAME;
+	}
+
+	// actions
+	private void generateNewId()
+	{
+		int incrementedRoundCount = getRoundCount() + 1;
+		setRoundCount(incrementedRoundCount);
+		roundId =  "%s:%s".formatted(world.getName(), Integer.toString(incrementedRoundCount));
 	}
 
 	// runs
@@ -85,6 +112,7 @@ public class BloodGame {
 		game.doAction(BloodGameAction.RESET);
 		game.doAction(BloodGameAction.SETUP);
 		game.setState(BloodGameState.INGAME);
+		game.generateNewId();
 		game.broadcast("<red><b>are you ready to bleed?");
 	}),
 	Map.entry(BloodGameAction.FINISH, (game) -> {
