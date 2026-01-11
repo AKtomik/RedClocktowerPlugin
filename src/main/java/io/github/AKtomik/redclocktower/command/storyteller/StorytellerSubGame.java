@@ -1,7 +1,9 @@
-package io.github.AKtomik.redClocktower;
+package io.github.AKtomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.github.AKtomik.redclocktower.brigadier.EnumArgument;
+import io.github.AKtomik.redclocktower.brigadier.SubBrigadierBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.Component;
@@ -15,11 +17,11 @@ import java.util.Map;
 import java.util.function.Consumer;
 
 public class StorytellerSubGame extends SubBrigadierBase {
-	String name() {
+	public String name() {
 		return "game";
 	}
 
-	LiteralArgumentBuilder<CommandSourceStack> root() {
+	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
 		.then(Commands.argument("state", EnumArgument.simple(BloodGameState.class, "Invalid blood period"))
 		.executes(ctx -> {

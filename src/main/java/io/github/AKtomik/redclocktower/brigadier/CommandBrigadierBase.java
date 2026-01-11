@@ -1,4 +1,4 @@
-package io.github.AKtomik.redClocktower;
+package io.github.AKtomik.redclocktower.brigadier;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -8,11 +8,11 @@ import net.kyori.adventure.text.Component;
 import java.util.List;
 
 public abstract class CommandBrigadierBase extends SubBrigadierBase {
-    abstract List<String> aliases();
-    abstract String permission();
-    abstract Component description();
+    public abstract List<String> aliases();
+    public abstract String permission();
+    public abstract Component description();
 
-    LiteralArgumentBuilder<CommandSourceStack> base()
+    public LiteralArgumentBuilder<CommandSourceStack> base()
     {
         return Commands.literal(name()).requires(
             sender -> {

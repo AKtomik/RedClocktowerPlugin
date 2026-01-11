@@ -1,6 +1,6 @@
 name: RedClocktower
 version: '0.1.0'
-main: io.github.AKtomik.redClocktower.RedClocktower
+main: io.github.AKtomik.redclocktower.RedClocktower
 api-version: '1.21'
 #commands:
 # brigader commands are not handled here

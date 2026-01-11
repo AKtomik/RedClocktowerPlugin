@@ -1,8 +1,8 @@
-package io.github.AKtomik.redClocktower;
+package io.github.AKtomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.github.AKtomik.redclocktower.brigadier.SubBrigadierBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
@@ -17,7 +17,7 @@ import java.util.List;
 
 public class StorytellerSubPlayer extends SubBrigadierBase {
 
-	String name() { return "player"; }
+	public String name() { return "player"; }
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()

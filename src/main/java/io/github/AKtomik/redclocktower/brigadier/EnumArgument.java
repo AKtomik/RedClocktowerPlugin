@@ -1,4 +1,4 @@
-package io.github.AKtomik.redClocktower;
+package io.github.AKtomik.redclocktower.brigadier;
 
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.ArgumentType;
