@@ -62,21 +62,24 @@ public class BloodGame {
 
 	// code/action
 	static Map<BloodGameAction, Consumer<BloodGame>> gameAction = Map.ofEntries(
+	Map.entry(BloodGameAction.RESET, (game) -> {
+		game.world.setTime(12000);
+	}),
 	Map.entry(BloodGameAction.SETUP, (game) -> {
 		game.world.setGameRule(GameRules.ADVANCE_TIME, false);
 	}),
-	Map.entry(BloodGameAction.RESET, (game) -> {
-		game.doAction(BloodGameAction.SETUP);
-		game.world.setTime(12000);
-	}),
 	Map.entry(BloodGameAction.START, (game) -> {
 		game.doAction(BloodGameAction.RESET);
+		game.doAction(BloodGameAction.SETUP);
+		game.setGameState(BloodGameState.INGAME);
 		game.broadcast(
 		Component.text("are you ready to bleed?").color(NamedTextColor.RED).decorate(TextDecoration.BOLD)
 		);
 	}),
 	Map.entry(BloodGameAction.FINISH, (game) -> {
 		game.doAction(BloodGameAction.RESET);
+		game.doAction(BloodGameAction.SETUP);
+		game.setGameState(BloodGameState.ENDED);
 		game.broadcast(
 		Component.text("the game is over!").color(NamedTextColor.RED).decorate(TextDecoration.BOLD)
 		);
