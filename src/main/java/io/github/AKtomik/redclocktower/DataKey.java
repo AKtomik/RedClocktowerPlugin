@@ -8,7 +8,7 @@ public enum DataKey {
 	// define
 	GAME_STATE("game_state"),
 	GAME_PERIOD("game_period"),
-	PLAYER_LIFE("player_life");
+	PLAYER_ALIVE("player_alive");
 
 	// system
 	public final String path;
