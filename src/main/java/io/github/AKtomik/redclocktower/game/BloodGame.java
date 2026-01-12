@@ -5,13 +5,13 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRules;
 import org.bukkit.World;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.function.Consumer;
 
 public class BloodGame {
@@ -64,13 +64,13 @@ public class BloodGame {
 		return pdc.getOrDefault(DataKey.GAME_ROUND_COUNT.key, PersistentDataType.INTEGER, 0);
 	}
 
-	private void setPlayersUuid(List<String> uuids)
+	private void setPlayersPdc(List<PersistentDataContainer> pdcs)
 	{
-		pdc.set(DataKey.GAME_PLAYERS_UUID.key, PersistentDataType.LIST.strings(), uuids);
+		pdc.set(DataKey.GAME_PLAYERS_PDC.key, PersistentDataType.LIST.dataContainers(), pdcs);
 	}
-	public List<String> getPlayersUuid()
+	public List<PersistentDataContainer> getPlayersPdc()
 	{
-		return pdc.getOrDefault(DataKey.GAME_PLAYERS_UUID.key, PersistentDataType.LIST.strings(), List.of());
+		return pdc.getOrDefault(DataKey.GAME_PLAYERS_PDC.key, PersistentDataType.LIST.dataContainers(), List.of());
 	}
 
 	// if
@@ -88,18 +88,52 @@ public class BloodGame {
 	}
 
 	// players
-	private void addPlayer(String uuid)
+	private PersistentDataContainer findPlayerPdc(String playerUuid)
 	{
-		List<String> uuids = getPlayersUuid();
-		uuids.add(uuid);
-		setPlayersUuid(uuids);
+		for (PersistentDataContainer pdc : getPlayersPdc())
+		{
+			String loopUuid = pdc.get(DataKey.PLAYER_UUID.key, PersistentDataType.STRING);
+			if (loopUuid != null && Objects.equals(loopUuid, playerUuid))
+			{
+				return pdc;
+			}
+		}
+		return null;
 	}
 
-	private void removePlayer(String uuid)
+	private boolean isPlayerInGame(String playerUuid)
 	{
-		List<String> uuids = getPlayersUuid();
-		uuids.remove(uuid);
-		setPlayersUuid(uuids);
+		return  (findPlayerPdc(playerUuid) != null);
+	}
+
+	public boolean addPlayer(Player player)
+	{
+		String uuid = player.getUniqueId().toString();
+		// check if player already exist
+		if (!isPlayerInGame(uuid)) return false;
+		// create a pdc for the player inside the game pdc
+		PersistentDataContainer playerPdc = pdc.getAdapterContext().newPersistentDataContainer();
+		// implement basic keys
+		playerPdc.set(DataKey.PLAYER_UUID.key, PersistentDataType.STRING, player.getUniqueId().toString());
+		playerPdc.set(DataKey.PLAYER_NAME.key, PersistentDataType.STRING, player.getName());
+		playerPdc.set(DataKey.PLAYER_SLOT.key, PersistentDataType.INTEGER, playerPdc.getSize());//the slot is the index
+		// add it to the list
+		List<PersistentDataContainer> playersPdc = getPlayersPdc();
+		playersPdc.add(playerPdc);
+		setPlayersPdc(playersPdc);
+		return true;
+	}
+
+	public boolean removePlayer(String playerUUid) {
+		List<PersistentDataContainer> playersPdc = getPlayersPdc();
+		boolean removed = playersPdc.removeIf(playerPdc -> {
+			String storedUuid = playerPdc.get(DataKey.PLAYER_UUID.key, PersistentDataType.STRING);
+			return storedUuid != null && Objects.equals(storedUuid, playerUUid);
+		});
+		if (removed) {
+			setPlayersPdc(playersPdc);
+		}
+		return removed;
 	}
 
 	// runs
@@ -121,23 +155,23 @@ public class BloodGame {
 	// code/action
 	static Map<BloodGameAction, Consumer<BloodGame>> gameAction = Map.ofEntries(
 	Map.entry(BloodGameAction.RESET, (game) -> {
-		game.world.setTime(12000);
+//		for (PersistentDataContainer pdc : game.getPlayersPdc())
+//			game.removePlayer(pdc);
 	}),
 	Map.entry(BloodGameAction.SETUP, (game) -> {
+		game.world.setTime(12000);
 		game.world.setGameRule(GameRules.ADVANCE_TIME, false);
 	}),
 	Map.entry(BloodGameAction.SETOUT, (game) -> {
 		game.world.setGameRule(GameRules.ADVANCE_TIME, true);
 	}),
 	Map.entry(BloodGameAction.START, (game) -> {
-		game.doAction(BloodGameAction.RESET);
 		game.doAction(BloodGameAction.SETUP);
 		game.setState(BloodGameState.INGAME);
 		game.generateNewId();
 		game.broadcast("<red><b>are you ready to bleed?");
 	}),
 	Map.entry(BloodGameAction.FINISH, (game) -> {
-		game.doAction(BloodGameAction.RESET);
 		game.setState(BloodGameState.ENDED);
 		game.broadcast("<red><b>the game is over!");
 	}),

@@ -15,9 +15,9 @@ public class BloodPlayer {
 		this.player = player;
 		this.pdc = player.getPersistentDataContainer();
 	}
-	public static BloodPlayer Player(Player world)
+	public static BloodPlayer Interface(Player player)
 	{
-		return new BloodPlayer(world);
+		return new BloodPlayer(player);
 	}
 
 	// set & get
