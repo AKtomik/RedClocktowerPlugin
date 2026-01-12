@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -68,9 +69,9 @@ public class BloodGame {
 	{
 		pdc.set(DataKey.GAME_PLAYERS_PDC.key, PersistentDataType.LIST.dataContainers(), pdcs);
 	}
-	public List<PersistentDataContainer> getPlayersPdc()
+	public ArrayList<PersistentDataContainer> getPlayersPdc()
 	{
-		return pdc.getOrDefault(DataKey.GAME_PLAYERS_PDC.key, PersistentDataType.LIST.dataContainers(), List.of());
+		return new ArrayList<>(pdc.getOrDefault(DataKey.GAME_PLAYERS_PDC.key, PersistentDataType.LIST.dataContainers(), List.of()));
 	}
 
 	// if
@@ -101,7 +102,7 @@ public class BloodGame {
 		return null;
 	}
 
-	private boolean isPlayerInGame(String playerUuid)
+	public boolean isPlayerIn(String playerUuid)
 	{
 		return  (findPlayerPdc(playerUuid) != null);
 	}
@@ -110,7 +111,7 @@ public class BloodGame {
 	{
 		String uuid = player.getUniqueId().toString();
 		// check if player already exist
-		if (!isPlayerInGame(uuid)) return false;
+		if (isPlayerIn(uuid)) throw new RuntimeException("trying to add a player in a game where he already is");
 		// create a pdc for the player inside the game pdc
 		PersistentDataContainer playerPdc = pdc.getAdapterContext().newPersistentDataContainer();
 		// implement basic keys
@@ -118,14 +119,14 @@ public class BloodGame {
 		playerPdc.set(DataKey.PLAYER_NAME.key, PersistentDataType.STRING, player.getName());
 		playerPdc.set(DataKey.PLAYER_SLOT.key, PersistentDataType.INTEGER, playerPdc.getSize());//the slot is the index
 		// add it to the list
-		List<PersistentDataContainer> playersPdc = getPlayersPdc();
+		ArrayList<PersistentDataContainer> playersPdc = getPlayersPdc();
 		playersPdc.add(playerPdc);
 		setPlayersPdc(playersPdc);
 		return true;
 	}
 
 	public boolean removePlayer(String playerUUid) {
-		List<PersistentDataContainer> playersPdc = getPlayersPdc();
+		ArrayList<PersistentDataContainer> playersPdc = getPlayersPdc();
 		boolean removed = playersPdc.removeIf(playerPdc -> {
 			String storedUuid = playerPdc.get(DataKey.PLAYER_UUID.key, PersistentDataType.STRING);
 			return storedUuid != null && Objects.equals(storedUuid, playerUUid);
