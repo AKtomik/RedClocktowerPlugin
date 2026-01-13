@@ -143,12 +143,12 @@ public class BloodGame {
 
 	public List<Player> getAllPlayers()
 	{
-		return getPlayersUuid().stream().map(Bukkit::getPlayer).toList();
+		return getPlayersUuid().stream().map(UUID::fromString).map(Bukkit::getPlayer).toList();
 	}
 
 	public List<OfflinePlayer> getAllPlayersAsOffline()
 	{
-		return getPlayersUuid().stream().map(Bukkit::getOfflinePlayer).toList();
+		return getPlayersUuid().stream().map(UUID::fromString).map(Bukkit::getOfflinePlayer).toList();
 	}
 
 	public List<BloodPlayer> getAllBloodPlayers()
