@@ -29,6 +29,12 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 				final CommandSender sender = ctx.getSource().getSender();
 				final BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
 
+				// checks
+				if (!game.isReady())
+				{
+					sender.sendRichMessage("<red>the game is not ready!");
+					return Command.SINGLE_SUCCESS;
+				}
 				if (targets.isEmpty())
 				{
 					sender.sendRichMessage("<red>no player found");
@@ -72,6 +78,12 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 				final CommandSender sender = ctx.getSource().getSender();
 				final BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
 
+				// checks
+				if (!game.isReady())
+				{
+					sender.sendRichMessage("<red>the game is not ready!");
+					return Command.SINGLE_SUCCESS;
+				}
 				if (targets.isEmpty())
 				{
 					sender.sendRichMessage("<red>no player found");

@@ -27,7 +27,7 @@ public class StorytellerSubTime extends SubBrigadierBase {
 			final BloodGamePeriod period = ctx.getArgument("period", BloodGamePeriod.class);
 
 			//	checks
-			if (!game.isPlaying())
+			if (!game.isStarted())
 			{
 				sender.sendRichMessage("<red>the game is not started!");
 				return Command.SINGLE_SUCCESS;

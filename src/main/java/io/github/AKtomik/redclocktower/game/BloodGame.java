@@ -79,9 +79,15 @@ public class BloodGame {
 	}
 
 	// if
-	public boolean isPlaying()
+	public boolean isStarted()
 	{
 		return getState() == BloodGameState.INGAME;
+	}
+	public boolean isReady()
+	{
+		BloodGameState state = getState();
+		return (state == BloodGameState.WAITING || state == BloodGameState.INGAME);
+
 	}
 
 	public boolean isUuidIn(String uuid)
@@ -172,10 +178,12 @@ public class BloodGame {
 	Map.entry(BloodGameAction.SETUP, (game) -> {
 		game.world.setTime(12000);
 		game.world.setGameRule(GameRules.ADVANCE_TIME, false);
+		game.setState(BloodGameState.WAITING);
 	}),
 	Map.entry(BloodGameAction.SETOUT, (game) -> {
 		game.world.setGameRule(GameRules.ADVANCE_TIME, true);
 		game.clearPlayersUuid();
+		game.setState(BloodGameState.NOTHING);
 	}),
 	Map.entry(BloodGameAction.START, (game) -> {
 		game.doAction(BloodGameAction.SETUP);

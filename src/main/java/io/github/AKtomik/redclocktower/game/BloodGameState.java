@@ -2,10 +2,10 @@ package io.github.AKtomik.redclocktower.game;
 
 public enum BloodGameState {
 	NOTHING,
-	SETUP,//not used
-	WAITING,//not used
+	WAITING,
 	INGAME,
-	ENDED;
+	ENDED,
+	OUT;//not used
 
 	@Override
 	public String toString() {
