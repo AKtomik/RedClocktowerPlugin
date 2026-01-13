@@ -5,6 +5,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRules;
 import org.bukkit.World;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -15,7 +16,9 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.DoubleConsumer;
 
 public class BloodGame {
 
@@ -194,13 +197,13 @@ public class BloodGame {
 	}
 
 	// runs
-	public void doAction(BloodGameAction action)
+	public void doAction(BloodGameAction action, CommandSender sender)
 	{
-		gameAction.get(action).accept(this);
+		gameAction.get(action).accept(this, sender);
 	}
-	public void switchTime(BloodGamePeriod period)
+	public void switchTime(BloodGamePeriod period, CommandSender sender)
 	{
-		gamePeriodEnter.get(period).accept(this);
+		gamePeriodEnter.get(period).accept(this, sender);
 		setTime(period);
 	}
 
@@ -210,12 +213,12 @@ public class BloodGame {
 	}
 
 	// code/action
-	static Map<BloodGameAction, Consumer<BloodGame>> gameAction = Map.ofEntries(
-	Map.entry(BloodGameAction.RESET, (game) -> {
+	static Map<BloodGameAction, BiConsumer<BloodGame, CommandSender>> gameAction = Map.ofEntries(
+	Map.entry(BloodGameAction.RESET, (game, sender) -> {
 //		for (PersistentDataContainer pdc : game.getPlayersPdc())
 //			game.removePlayer(pdc);
 	}),
-	Map.entry(BloodGameAction.SETUP, (game) -> {
+	Map.entry(BloodGameAction.SETUP, (game, sender) -> {
 //		if (game.isReady()) return;
 		game.world.setTime(12000);
 		game.world.setGameRule(GameRules.ADVANCE_TIME, false);
@@ -223,45 +226,45 @@ public class BloodGame {
 		game.createTeam();
 		game.setState(BloodGameState.WAITING);
 	}),
-	Map.entry(BloodGameAction.SETOUT, (game) -> {
+	Map.entry(BloodGameAction.SETOUT, (game, sender) -> {
 		game.world.setGameRule(GameRules.ADVANCE_TIME, true);
 		game.clearPlayersUuid();
 		game.deleteTeam();
 		game.setState(BloodGameState.NOTHING);
 	}),
-	Map.entry(BloodGameAction.START, (game) -> {
+	Map.entry(BloodGameAction.START, (game, sender) -> {
 //		if (!game.isReady()) return;
 		game.setState(BloodGameState.INGAME);
 		game.broadcast("<red><b>are you ready to bleed?");
 	}),
-	Map.entry(BloodGameAction.FINISH, (game) -> {
+	Map.entry(BloodGameAction.FINISH, (game, sender) -> {
 		game.setState(BloodGameState.ENDED);
 		game.broadcast("<red><b>the game is over!");
 	}),
-	Map.entry(BloodGameAction.CLEAN, (game) -> {
-		game.doAction(BloodGameAction.RESET);
-		game.doAction(BloodGameAction.SETOUT);
+	Map.entry(BloodGameAction.CLEAN, (game, sender) -> {
+		game.doAction(BloodGameAction.RESET, sender);
+		game.doAction(BloodGameAction.SETOUT, sender);
 		game.setState(BloodGameState.NOTHING);
 	}));
 
 	// code/period
-	static Map<BloodGamePeriod, Consumer<BloodGame>> gamePeriodEnter = Map.ofEntries(
-	Map.entry(BloodGamePeriod.MORNING, (game) -> {
+	static Map<BloodGamePeriod, BiConsumer<BloodGame, CommandSender>> gamePeriodEnter = Map.ofEntries(
+	Map.entry(BloodGamePeriod.MORNING, (game, sender) -> {
 		game.broadcast("<white><b>it's the morning!");
 		game.broadcast("<gray><i>it's the morning!");
 		game.world.setTime(0);
 	}),
-	Map.entry(BloodGamePeriod.FREE, (game) -> {
+	Map.entry(BloodGamePeriod.FREE, (game, sender) -> {
 		game.broadcast("<white><b>wonder time");
 		game.broadcast("<gray><i>you are free to go and talk");
 		game.world.setTime(6000);
 	}),
-	Map.entry(BloodGamePeriod.MEET, (game) -> {
+	Map.entry(BloodGamePeriod.MEET, (game, sender) -> {
 		game.broadcast("<white><b>debate time");
 		game.broadcast("<gray><i>everyone is attended to the townhall");
 		game.world.setTime(12000);
 	}),
-	Map.entry(BloodGamePeriod.NIGHT, (game) -> {
+	Map.entry(BloodGamePeriod.NIGHT, (game, sender) -> {
 		game.broadcast("<white><b>the moon is rising...");
 		game.broadcast("<gray><i>go to your house and sleep well");
 		game.world.setTime(18000);

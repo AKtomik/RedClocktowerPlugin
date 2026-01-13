@@ -37,7 +37,7 @@ public class StorytellerSubTime extends SubBrigadierBase {
 			sender.sendRichMessage("<light_purple>switching to <b><period></b> time",
 			Placeholder.parsed("period", period.toString())
 			);
-			game.switchTime(period);
+			game.switchTime(period, sender);
 			return Command.SINGLE_SUCCESS;
 		})).executes(ctx -> {
 			// arguments
