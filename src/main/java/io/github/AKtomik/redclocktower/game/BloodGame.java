@@ -182,6 +182,7 @@ public class BloodGame {
 		if (offlinePlayer.isOnline())
 		{
 			removePlayer(Objects.requireNonNull(offlinePlayer.getPlayer()));
+			return;
 		}
 		// values
 		String uuid = offlinePlayer.getUniqueId().toString();
