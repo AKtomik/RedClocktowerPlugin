@@ -8,6 +8,8 @@ import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -22,8 +24,6 @@ public class BloodGame {
 
 	final public World world;
 	private final PersistentDataContainer pdc;
-
-	private String roundId;
 
 	private BloodGame(World world)
 	{
@@ -65,6 +65,15 @@ public class BloodGame {
 		return pdc.getOrDefault(DataKey.GAME_ROUND_COUNT.key, PersistentDataType.INTEGER, 0);
 	}
 
+	private void setRoundId(String strid)
+	{
+		pdc.set(DataKey.GAME_ROUND_ID.key, PersistentDataType.STRING, strid);
+	}
+	public String getRoundId()
+	{
+		return pdc.get(DataKey.GAME_ROUND_ID.key, PersistentDataType.STRING);
+	}
+
 	private void setPlayersUuid(List<String> uuids)
 	{
 		pdc.set(DataKey.GAME_PLAYERS_UUID.key, PersistentDataType.LIST.strings(), uuids);
@@ -100,14 +109,6 @@ public class BloodGame {
 		return isUuidIn(player.getUniqueId().toString());
 	}
 
-	// actions
-	private void generateNewId()
-	{
-		int incrementedRoundCount = getRoundCount() + 1;
-		setRoundCount(incrementedRoundCount);
-		roundId =  "%s:%s".formatted(world.getName(), Integer.toString(incrementedRoundCount));
-	}
-
 	// players
 	private int findPlayerIndex(String playerUuid)
 	{
@@ -121,6 +122,11 @@ public class BloodGame {
 			}
 		}
 		return -1;
+	}
+
+	public List<BloodPlayer> allBloodPlayers()
+	{
+		return getPlayersUuids().stream().map(uuid -> BloodPlayer.get(Bukkit.getPlayer(uuid))).toList();
 	}
 
 	public BloodPlayer addPlayer(Player player)
@@ -153,6 +159,40 @@ public class BloodGame {
 		bloodPlayer.quitGame(this);
 	}
 
+	// teams
+	private void generateNewId()
+	{
+		int incrementedRoundCount = getRoundCount() + 1;
+		setRoundCount(incrementedRoundCount);
+		setRoundId("blood-%s-%s".formatted(world.getName(), Integer.toString(incrementedRoundCount)));
+	}
+
+	private void createTeam()
+	{
+		Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
+		String teamId = getRoundId();
+		if (teamId == null) throw new RuntimeException("trying to create team but there is no round id");
+		Team team = board.registerNewTeam(teamId);
+		team.setAllowFriendlyFire(false);
+		team.setCanSeeFriendlyInvisibles(true);
+		team.prefix(mini.deserialize("<red>✴ "));
+	}
+
+	Team getTeam()
+	{
+		String teamId = getRoundId();
+		if (teamId == null) throw new RuntimeException("trying to get team but there is no round id");
+		return Bukkit.getScoreboardManager().getMainScoreboard().getTeam(teamId);
+	}
+
+	private void deleteTeam()
+	{
+		if (getRoundId() == null) return;
+		Team team = getTeam();
+		if (team == null) return;
+		team.unregister();
+	}
+
 	// runs
 	public void doAction(BloodGameAction action)
 	{
@@ -176,19 +216,22 @@ public class BloodGame {
 //			game.removePlayer(pdc);
 	}),
 	Map.entry(BloodGameAction.SETUP, (game) -> {
+//		if (game.isReady()) return;
 		game.world.setTime(12000);
 		game.world.setGameRule(GameRules.ADVANCE_TIME, false);
+		game.generateNewId();
+		game.createTeam();
 		game.setState(BloodGameState.WAITING);
 	}),
 	Map.entry(BloodGameAction.SETOUT, (game) -> {
 		game.world.setGameRule(GameRules.ADVANCE_TIME, true);
 		game.clearPlayersUuid();
+		game.deleteTeam();
 		game.setState(BloodGameState.NOTHING);
 	}),
 	Map.entry(BloodGameAction.START, (game) -> {
-		game.doAction(BloodGameAction.SETUP);
+//		if (!game.isReady()) return;
 		game.setState(BloodGameState.INGAME);
-		game.generateNewId();
 		game.broadcast("<red><b>are you ready to bleed?");
 	}),
 	Map.entry(BloodGameAction.FINISH, (game) -> {

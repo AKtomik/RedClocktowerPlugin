@@ -46,7 +46,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 				{
 					if (game.isPlayerIn(player))
 					{
-						sender.sendRichMessage("<red>><b><target></b> is already in game.",
+						sender.sendRichMessage("<red><b><target></b> is already in game.",
 						Placeholder.parsed("target", player.getName())
 						);
 					} else {
@@ -95,7 +95,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 				{
 					if (!game.isPlayerIn(player))
 					{
-						sender.sendRichMessage("<red>><b><target></b> is not in game.",
+						sender.sendRichMessage("<red><b><target></b> is not in game.",
 						Placeholder.parsed("target", player.getName())
 						);
 					} else {

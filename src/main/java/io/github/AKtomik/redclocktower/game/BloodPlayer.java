@@ -45,10 +45,12 @@ public class BloodPlayer {
 	// game link
 	void joinGame(BloodGame game)
 	{
+		game.getTeam().addPlayer(player);
 	}
 
 	void quitGame(BloodGame game)
 	{
+		game.getTeam().removePlayer(player);
 	}
 
 	// if
