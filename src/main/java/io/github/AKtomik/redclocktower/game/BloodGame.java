@@ -237,7 +237,7 @@ public class BloodGame {
 	}),
 
 	Map.entry(BloodGameAction.START, (game, sender) -> {
-		if (game.isReady()) {
+		if (!game.isReady()) {
 			sender.sendRichMessage("<red>game is not setup!");
 			return;
 		}
