@@ -64,7 +64,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 				String playerName = offlinePlayer.getName();
 				if (playerName == null) playerName = "<unknow>";
 				sender.sendRichMessage("<hover:show_text:\"<red>this player is offline\"><#ff6600>⚠ <target>",
-					Placeholder.parsed("target", playerName+"uuid:"+offlinePlayer.getUniqueId()+"at:"+offlinePlayer.getLastLogin())
+					Placeholder.parsed("target", playerName)
 				);
 			}
 		}
