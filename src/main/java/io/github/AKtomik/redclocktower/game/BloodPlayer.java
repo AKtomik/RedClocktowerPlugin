@@ -54,17 +54,17 @@ public class BloodPlayer {
 	}
 
 	// if
-	public boolean IsAlive()
+	public boolean isAlive()
 	{
 		return getAlive();
 	}
 
 	// code
-	private void Kill()
+	private void kill()
 	{
 		setAlive(false);
 	}
-	private void Revive()
+	private void revive()
 	{
 		setAlive(true);
 	}

@@ -27,7 +27,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 				final PlayerSelectorArgumentResolver targetResolver = ctx.getArgument("players", PlayerSelectorArgumentResolver.class);
 				final List<Player> targets = targetResolver.resolve(ctx.getSource());
 				final CommandSender sender = ctx.getSource().getSender();
-				final BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
+				final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
 				// checks
 				if (!game.isReady())
@@ -76,7 +76,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 				final PlayerSelectorArgumentResolver targetResolver = ctx.getArgument("players", PlayerSelectorArgumentResolver.class);
 				final List<Player> targets = targetResolver.resolve(ctx.getSource());
 				final CommandSender sender = ctx.getSource().getSender();
-				final BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
+				final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
 				// checks
 				if (!game.isReady())

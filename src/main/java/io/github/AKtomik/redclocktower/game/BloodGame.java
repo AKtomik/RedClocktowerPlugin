@@ -32,7 +32,7 @@ public class BloodGame {
 		this.world = world;
 		this.pdc = world.getPersistentDataContainer();
 	}
-	public static BloodGame WorldGame(World world)
+	public static BloodGame get(World world)
 	{
 		return new BloodGame(world);
 	}

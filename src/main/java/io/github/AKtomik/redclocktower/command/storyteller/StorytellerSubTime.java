@@ -23,7 +23,7 @@ public class StorytellerSubTime extends SubBrigadierBase {
 		.executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
-			BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
+			BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 			final BloodGamePeriod period = ctx.getArgument("period", BloodGamePeriod.class);
 
 			//	checks
@@ -42,7 +42,7 @@ public class StorytellerSubTime extends SubBrigadierBase {
 		})).executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
-			BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
+			BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
 			// execute
 			BloodGamePeriod gamePeriod = game.getTime();

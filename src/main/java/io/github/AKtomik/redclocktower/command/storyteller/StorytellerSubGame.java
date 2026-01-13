@@ -23,7 +23,7 @@ public class StorytellerSubGame extends SubBrigadierBase {
 		.executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
-			BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
+			BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 			final BloodGameAction gameAction = ctx.getArgument("action", BloodGameAction.class);
 
 			// execution
@@ -35,7 +35,7 @@ public class StorytellerSubGame extends SubBrigadierBase {
 		})).executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
-			BloodGame game = BloodGame.WorldGame(ctx.getSource().getLocation().getWorld());
+			BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
 			// execute
 			BloodGameState gameState = game.getState();
