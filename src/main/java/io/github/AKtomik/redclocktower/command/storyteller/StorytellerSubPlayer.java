@@ -22,21 +22,22 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 	public String name() { return "player"; }
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
-		return base().executes(subCommandExeList)
+		return base().executes(subExeList)
 
 		.then(Commands.literal("list")
-			.executes(subCommandExeList))
+			.executes(subExeList))
 
 		.then(Commands.literal("add")
 			.then(Commands.argument("players", ArgumentTypes.players())
-			.executes(subCommandExeAdd)))
+			.executes(subExeAdd)))
 
 		.then(Commands.literal("remove")
 			.then(Commands.argument("players", ArgumentTypes.players())
-			.executes(subCommandExeRemove))
+			.executes(subExeRemove))
 		);
 	}
-	Command<CommandSourceStack> subCommandExeList = ctx -> {
+
+	Command<CommandSourceStack> subExeList = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
@@ -72,7 +73,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 	};
 
 
-	Command<CommandSourceStack> subCommandExeAdd = ctx -> {
+	Command<CommandSourceStack> subExeAdd = ctx -> {
 		final List<Player> players = ctx.getArgument("players", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource());
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
@@ -107,7 +108,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		return Command.SINGLE_SUCCESS;
 	};
 
-	public Command<CommandSourceStack> subCommandExeRemove = ctx -> {
+	public Command<CommandSourceStack> subExeRemove = ctx -> {
 		final PlayerSelectorArgumentResolver targetResolver = ctx.getArgument("players", PlayerSelectorArgumentResolver.class);
 		final List<Player> players = targetResolver.resolve(ctx.getSource());
 		final CommandSender sender = ctx.getSource().getSender();
