@@ -4,6 +4,8 @@ import io.github.AKtomik.redclocktower.DataKey;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 
 public class BloodPlayer {
 
@@ -60,12 +62,14 @@ public class BloodPlayer {
 	}
 
 	// code
-	private void kill()
+	public void kill()
 	{
 		setAlive(false);
+		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 9, true));
 	}
-	private void revive()
+	public void revive()
 	{
 		setAlive(true);
+		player.removePotionEffect(PotionEffectType.INVISIBILITY);
 	}
 }

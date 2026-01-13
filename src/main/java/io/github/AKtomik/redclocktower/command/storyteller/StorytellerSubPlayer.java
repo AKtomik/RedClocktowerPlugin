@@ -33,8 +33,15 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 		.then(Commands.literal("remove")
 			.then(Commands.argument("players", ArgumentTypes.players())
-			.executes(subExeRemove))
-		);
+			.executes(subExeRemove)))
+
+		.then(Commands.literal("kill")
+			.then(Commands.argument("players", ArgumentTypes.players())
+			.executes(subExeKill)))
+
+		.then(Commands.literal("revive")
+			.then(Commands.argument("players", ArgumentTypes.players())
+			.executes(subExeRevive)));
 	}
 
 	Command<CommandSourceStack> subExeList = ctx -> {
@@ -137,6 +144,80 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 			} else {
 				game.removePlayer(player);
 				sender.sendRichMessage("you removed <b><target></b>.",
+				Placeholder.parsed("target", player.getName())
+				);
+			}
+		}
+		return Command.SINGLE_SUCCESS;
+	};
+
+	public Command<CommandSourceStack> subExeKill = ctx -> {
+		final PlayerSelectorArgumentResolver targetResolver = ctx.getArgument("players", PlayerSelectorArgumentResolver.class);
+		final List<Player> players = targetResolver.resolve(ctx.getSource());
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		// checks
+		if (!game.isReady())
+		{
+			sender.sendRichMessage("<red>the game is not ready!");
+			return Command.SINGLE_SUCCESS;
+		}
+		if (players.isEmpty())
+		{
+			sender.sendRichMessage("<red>no player found");
+			return Command.SINGLE_SUCCESS;
+		}
+
+		// the action
+		for (Player player : players)
+		{
+			if (!game.isPlayerIn(player))
+			{
+				sender.sendRichMessage("<red><b><target></b> is not in game.",
+				Placeholder.parsed("target", player.getName())
+				);
+			} else {
+				BloodPlayer bloodPlayer = BloodPlayer.get(player);
+				bloodPlayer.kill();
+				sender.sendRichMessage("<red>killed <white><b><target></b>.",
+				Placeholder.parsed("target", player.getName())
+				);
+			}
+		}
+		return Command.SINGLE_SUCCESS;
+	};
+
+	public Command<CommandSourceStack> subExeRevive = ctx -> {
+		final PlayerSelectorArgumentResolver targetResolver = ctx.getArgument("players", PlayerSelectorArgumentResolver.class);
+		final List<Player> players = targetResolver.resolve(ctx.getSource());
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		// checks
+		if (!game.isReady())
+		{
+			sender.sendRichMessage("<red>the game is not ready!");
+			return Command.SINGLE_SUCCESS;
+		}
+		if (players.isEmpty())
+		{
+			sender.sendRichMessage("<red>no player found");
+			return Command.SINGLE_SUCCESS;
+		}
+
+		// the action
+		for (Player player : players)
+		{
+			if (!game.isPlayerIn(player))
+			{
+				sender.sendRichMessage("<red><b><target></b> is not in game.",
+				Placeholder.parsed("target", player.getName())
+				);
+			} else {
+				BloodPlayer bloodPlayer = BloodPlayer.get(player);
+				bloodPlayer.revive();
+				sender.sendRichMessage("<yellow>revived <white><b><target></b>.",
 				Placeholder.parsed("target", player.getName())
 				);
 			}
