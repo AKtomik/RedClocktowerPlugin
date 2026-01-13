@@ -1,7 +1,7 @@
 package io.github.AKtomik.redclocktower;
 
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import io.github.AKtomik.redclocktower.brigadier.CommandBrigadierBase;
+import io.github.AKtomik.redclocktower.utils.CommandBrigadierBase;
 import io.github.AKtomik.redclocktower.command.RichmessageCommand;
 import io.github.AKtomik.redclocktower.command.storyteller.StorytellerCommand;
 import io.github.AKtomik.redclocktower.command.TagmeCommand;

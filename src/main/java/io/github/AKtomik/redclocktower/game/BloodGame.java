@@ -81,7 +81,7 @@ public class BloodGame {
 	{
 		pdc.set(DataKey.GAME_PLAYERS_UUID.key, PersistentDataType.LIST.strings(), uuids);
 	}
-	public List<String> getPlayersUuids()
+	public List<String> getPlayersUuid()
 	{
 		return pdc.getOrDefault(DataKey.GAME_PLAYERS_UUID.key, PersistentDataType.LIST.strings(), List.of());
 	}
@@ -119,7 +119,7 @@ public class BloodGame {
 	// players
 	private int findPlayerIndex(String playerUuid)
 	{
-		List<String> uuids = getPlayersUuids();
+		List<String> uuids = getPlayersUuid();
 		for (int i = 0; i < uuids.size(); i++)
 		{
 			String loopUuid = uuids.get(i);
@@ -133,12 +133,12 @@ public class BloodGame {
 
 	public List<Player> getAllPlayers()
 	{
-		return getPlayersUuids().stream().map(Bukkit::getPlayer).toList();
+		return getPlayersUuid().stream().map(Bukkit::getPlayer).toList();
 	}
 
 	public List<OfflinePlayer> getAllPlayersAsOffline()
 	{
-		return getPlayersUuids().stream().map(Bukkit::getOfflinePlayer).toList();
+		return getPlayersUuid().stream().map(Bukkit::getOfflinePlayer).toList();
 	}
 
 	public List<BloodPlayer> getAllBloodPlayers()
@@ -152,7 +152,7 @@ public class BloodGame {
 		// check if player already exist
 		if (isUuidIn(uuid)) throw new RuntimeException("trying to add a player in a game where he already is");
 		// adding to the uuid list
-		ArrayList<String> playersUuid = new ArrayList<>(getPlayersUuids());
+		ArrayList<String> playersUuid = new ArrayList<>(getPlayersUuid());
 		playersUuid.add(uuid);
 		setPlayersUuid(playersUuid);
 		// blood player object join
@@ -165,7 +165,7 @@ public class BloodGame {
 	{
 		String uuid = player.getUniqueId().toString();
 		// removing from the uuid list
-		ArrayList<String> playersUuid = new ArrayList<>(getPlayersUuids());
+		ArrayList<String> playersUuid = new ArrayList<>(getPlayersUuid());
 		boolean removed = playersUuid.removeIf(loopUuid -> loopUuid != null && Objects.equals(loopUuid, uuid));
 		// check
 		if (!removed) throw new RuntimeException("trying to remove a player in a game where he is not");
@@ -187,7 +187,7 @@ public class BloodGame {
 		// values
 		String uuid = offlinePlayer.getUniqueId().toString();
 		// removing from the uuid list
-		ArrayList<String> playersUuid = new ArrayList<>(getPlayersUuids());
+		ArrayList<String> playersUuid = new ArrayList<>(getPlayersUuid());
 		boolean removed = playersUuid.removeIf(loopUuid -> loopUuid != null && Objects.equals(loopUuid, uuid));
 		// check
 		if (!removed) throw new RuntimeException("trying to remove an offline player in a game where he is not");
