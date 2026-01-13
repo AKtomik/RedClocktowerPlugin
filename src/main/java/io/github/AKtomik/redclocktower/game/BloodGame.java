@@ -2,6 +2,7 @@ package io.github.AKtomik.redclocktower.game;
 
 import io.github.AKtomik.redclocktower.DataKey;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRules;
 import org.bukkit.World;
@@ -17,8 +18,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.function.BiConsumer;
-import java.util.function.Consumer;
-import java.util.function.DoubleConsumer;
 
 public class BloodGame {
 
@@ -95,6 +94,10 @@ public class BloodGame {
 	{
 		return getState() == BloodGameState.INGAME;
 	}
+	public boolean isEnded()
+	{
+		return getState() == BloodGameState.ENDED;
+	}
 	public boolean isReady()
 	{
 		BloodGameState state = getState();
@@ -127,9 +130,14 @@ public class BloodGame {
 		return -1;
 	}
 
-	public List<BloodPlayer> allBloodPlayers()
+	public List<Player> getAllPlayers()
 	{
-		return getPlayersUuids().stream().map(uuid -> BloodPlayer.get(Bukkit.getPlayer(uuid))).toList();
+		return getPlayersUuids().stream().map(Bukkit::getPlayer).toList();
+	}
+
+	public List<BloodPlayer> getAllBloodPlayers()
+	{
+		return getAllPlayers().stream().map(BloodPlayer::get).toList();
 	}
 
 	public BloodPlayer addPlayer(Player player)
@@ -214,38 +222,68 @@ public class BloodGame {
 
 	// code/action
 	static Map<BloodGameAction, BiConsumer<BloodGame, CommandSender>> gameAction = Map.ofEntries(
-	Map.entry(BloodGameAction.RESET, (game, sender) -> {
-//		for (PersistentDataContainer pdc : game.getPlayersPdc())
-//			game.removePlayer(pdc);
-	}),
+
 	Map.entry(BloodGameAction.SETUP, (game, sender) -> {
-//		if (game.isReady()) return;
+		if (game.isReady()) {
+			sender.sendRichMessage("<red>game is already setup!");
+			return;
+		}
 		game.world.setTime(12000);
 		game.world.setGameRule(GameRules.ADVANCE_TIME, false);
 		game.generateNewId();
 		game.createTeam();
+		sender.sendRichMessage("<light_purple>setup game <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
 		game.setState(BloodGameState.WAITING);
 	}),
-	Map.entry(BloodGameAction.SETOUT, (game, sender) -> {
-		game.world.setGameRule(GameRules.ADVANCE_TIME, true);
+
+	Map.entry(BloodGameAction.START, (game, sender) -> {
+		if (game.isReady()) {
+			sender.sendRichMessage("<red>game is not setup!");
+			return;
+		}
+		game.setState(BloodGameState.INGAME);
+		sender.sendRichMessage("<light_purple>starting game <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
+		game.broadcast("<red><b>are you ready to bleed?");
+	}),
+
+	Map.entry(BloodGameAction.FINISH, (game, sender) -> {
+		if (!game.isStarted()) {
+			sender.sendRichMessage("<red>game is not started!");
+			return;
+		}
+		game.setState(BloodGameState.ENDED);
+		sender.sendRichMessage("<light_purple>ending game <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
+		game.broadcast("<red><b>the game is over!");
+	}),
+
+	Map.entry(BloodGameAction.RESET, (game, sender) -> {
+		for (Player player : game.getAllPlayers())
+			game.removePlayer(player);
 		game.clearPlayersUuid();
 		game.deleteTeam();
 		game.setState(BloodGameState.NOTHING);
+		sender.sendRichMessage("<light_purple>reseting game");
 	}),
-	Map.entry(BloodGameAction.START, (game, sender) -> {
-//		if (!game.isReady()) return;
-		game.setState(BloodGameState.INGAME);
-		game.broadcast("<red><b>are you ready to bleed?");
+
+	Map.entry(BloodGameAction.REPLAY, (game, sender) -> {
+		if (!game.isStarted() && !game.isEnded()) {
+			sender.sendRichMessage("<red>game is not started nor ended!");
+			return;
+		}
+		game.setState(BloodGameState.WAITING);
+		sender.sendRichMessage("<light_purple>waiting for a new game with same players and settings <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
 	}),
-	Map.entry(BloodGameAction.FINISH, (game, sender) -> {
-		game.setState(BloodGameState.ENDED);
-		game.broadcast("<red><b>the game is over!");
-	}),
-	Map.entry(BloodGameAction.CLEAN, (game, sender) -> {
-		game.doAction(BloodGameAction.RESET, sender);
-		game.doAction(BloodGameAction.SETOUT, sender);
+
+	Map.entry(BloodGameAction.CLEAR, (game, sender) -> {
+		if (game.isReady()) {
+			sender.sendRichMessage("<red>game is running!");
+			return;
+		}
+		game.world.setGameRule(GameRules.ADVANCE_TIME, true);
 		game.setState(BloodGameState.NOTHING);
-	}));
+		sender.sendRichMessage("<light_purple>clearing game");
+	})
+	);
 
 	// code/period
 	static Map<BloodGamePeriod, BiConsumer<BloodGame, CommandSender>> gamePeriodEnter = Map.ofEntries(

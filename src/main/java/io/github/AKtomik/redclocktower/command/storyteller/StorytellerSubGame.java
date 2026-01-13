@@ -27,7 +27,7 @@ public class StorytellerSubGame extends SubBrigadierBase {
 			final BloodGameAction gameAction = ctx.getArgument("action", BloodGameAction.class);
 
 			// execution
-			sender.sendRichMessage("<light_purple>running action <b><action></b>...",
+			sender.sendRichMessage("<dark_gray>running action <b><action></b>...",
 			Placeholder.parsed("action", gameAction.toString())
 			);
 			game.doAction(gameAction, sender);

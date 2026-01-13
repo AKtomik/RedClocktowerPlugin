@@ -5,11 +5,11 @@ import org.jspecify.annotations.NullMarked;
 @NullMarked
 public enum BloodGameAction {
 	SETUP,
-	SETOUT,
-	RESET,
 	START,
 	FINISH,
-	CLEAN;
+	REPLAY,
+	RESET,
+	CLEAR;
 
 	@Override
 	public String toString() {
