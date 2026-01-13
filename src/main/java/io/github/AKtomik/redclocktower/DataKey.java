@@ -11,6 +11,7 @@ public enum DataKey {
 	GAME_ROUND_COUNT("game_round_count"),
 	GAME_ROUND_ID("game_round_id"),
 	GAME_PLAYERS_UUID("game_players_uuid"),
+	GAME_STORYTELLER_UUID("game_storyteller_uuid"),
 	PLAYER_UUID("player_uuid"),
 	PLAYER_NAME("player_name"),
 	PLAYER_SLOT("player_slot"),

@@ -14,10 +14,7 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.BiConsumer;
 
 public class BloodGame {
@@ -75,6 +72,19 @@ public class BloodGame {
 	public String getRoundId()
 	{
 		return pdc.get(DataKey.GAME_ROUND_ID.key, PersistentDataType.STRING);
+	}
+
+	private void setStorytellerUuid(String uuid)
+	{
+		pdc.set(DataKey.GAME_PLAYERS_UUID.key, PersistentDataType.STRING, uuid);
+	}
+	public String getStorytellerUuid()
+	{
+		return pdc.get(DataKey.GAME_STORYTELLER_UUID.key, PersistentDataType.STRING);
+	}
+	private void clearStorytellerUuid()
+	{
+		pdc.remove(DataKey.GAME_STORYTELLER_UUID.key);
 	}
 
 	private void setPlayersUuid(List<String> uuids)
@@ -194,6 +204,16 @@ public class BloodGame {
 		// really removing from the uuid list
 		setPlayersUuid(playersUuid);
 		// ! no blood player object quit
+	}
+
+	public void setStoryteller(Player player)
+	{
+		setStorytellerUuid(player.getUniqueId().toString());
+	}
+
+	public Player getStoryteller()
+	{
+		return Bukkit.getPlayer(UUID.fromString(getStorytellerUuid()));
 	}
 
 	// teams
