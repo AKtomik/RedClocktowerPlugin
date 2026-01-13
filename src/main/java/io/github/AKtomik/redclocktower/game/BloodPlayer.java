@@ -15,7 +15,7 @@ public class BloodPlayer {
 		this.player = player;
 		this.pdc = player.getPersistentDataContainer();
 	}
-	public static BloodPlayer Interface(Player player)
+	public static BloodPlayer get(Player player)
 	{
 		return new BloodPlayer(player);
 	}
@@ -24,18 +24,45 @@ public class BloodPlayer {
 	private void setAlive(boolean isAlive)
 	{
 		pdc.set(DataKey.PLAYER_ALIVE.key, PersistentDataType.BOOLEAN, isAlive);
+		refreshAlive();
 	}
 	public boolean getAlive()
 	{
 		return pdc.getOrDefault(DataKey.PLAYER_ALIVE.key, PersistentDataType.BOOLEAN, true);
 	}
 
+	// refresh
+	private void refreshAlive()
+	{
+		if (getAlive())
+		{
+
+		} else {
+
+		}
+	}
+
+	// game link
+	void joinGame(BloodGame game)
+	{
+	}
+
+	void quitGame(BloodGame game)
+	{
+	}
+
+	// if
+	public boolean IsAlive()
+	{
+		return getAlive();
+	}
+
 	// code
-	private void kill()
+	private void Kill()
 	{
 		setAlive(false);
 	}
-	private void revive()
+	private void Revive()
 	{
 		setAlive(true);
 	}

@@ -65,19 +65,33 @@ public class BloodGame {
 		return pdc.getOrDefault(DataKey.GAME_ROUND_COUNT.key, PersistentDataType.INTEGER, 0);
 	}
 
-	private void setPlayersPdc(List<PersistentDataContainer> pdcs)
+	private void setPlayersUuid(List<String> uuids)
 	{
-		pdc.set(DataKey.GAME_PLAYERS_PDC.key, PersistentDataType.LIST.dataContainers(), pdcs);
+		pdc.set(DataKey.GAME_PLAYERS_UUID.key, PersistentDataType.LIST.strings(), uuids);
 	}
-	public ArrayList<PersistentDataContainer> getPlayersPdc()
+	public List<String> getPlayersUuids()
 	{
-		return new ArrayList<>(pdc.getOrDefault(DataKey.GAME_PLAYERS_PDC.key, PersistentDataType.LIST.dataContainers(), List.of()));
+		return pdc.getOrDefault(DataKey.GAME_PLAYERS_UUID.key, PersistentDataType.LIST.strings(), List.of());
+	}
+	private void clearPlayersUuid()
+	{
+		pdc.remove(DataKey.GAME_PLAYERS_UUID.key);
 	}
 
 	// if
 	public boolean isPlaying()
 	{
 		return getState() == BloodGameState.INGAME;
+	}
+
+	public boolean isUuidIn(String uuid)
+	{
+		return (findPlayerIndex(uuid) != -1);
+	}
+
+	public boolean isPlayerIn(Player player)
+	{
+		return isUuidIn(player.getUniqueId().toString());
 	}
 
 	// actions
@@ -89,52 +103,48 @@ public class BloodGame {
 	}
 
 	// players
-	private PersistentDataContainer findPlayerPdc(String playerUuid)
+	private int findPlayerIndex(String playerUuid)
 	{
-		for (PersistentDataContainer pdc : getPlayersPdc())
+		List<String> uuids = getPlayersUuids();
+		for (int i = 0; i < uuids.size(); i++)
 		{
-			String loopUuid = pdc.get(DataKey.PLAYER_UUID.key, PersistentDataType.STRING);
+			String loopUuid = uuids.get(i);
 			if (loopUuid != null && Objects.equals(loopUuid, playerUuid))
 			{
-				return pdc;
+				return i;
 			}
 		}
-		return null;
+		return -1;
 	}
 
-	public boolean isPlayerIn(String playerUuid)
-	{
-		return  (findPlayerPdc(playerUuid) != null);
-	}
-
-	public boolean addPlayer(Player player)
+	public BloodPlayer addPlayer(Player player)
 	{
 		String uuid = player.getUniqueId().toString();
 		// check if player already exist
-		if (isPlayerIn(uuid)) throw new RuntimeException("trying to add a player in a game where he already is");
-		// create a pdc for the player inside the game pdc
-		PersistentDataContainer playerPdc = pdc.getAdapterContext().newPersistentDataContainer();
-		// implement basic keys
-		playerPdc.set(DataKey.PLAYER_UUID.key, PersistentDataType.STRING, player.getUniqueId().toString());
-		playerPdc.set(DataKey.PLAYER_NAME.key, PersistentDataType.STRING, player.getName());
-		playerPdc.set(DataKey.PLAYER_SLOT.key, PersistentDataType.INTEGER, playerPdc.getSize());//the slot is the index
-		// add it to the list
-		ArrayList<PersistentDataContainer> playersPdc = getPlayersPdc();
-		playersPdc.add(playerPdc);
-		setPlayersPdc(playersPdc);
-		return true;
+		if (isUuidIn(uuid)) throw new RuntimeException("trying to add a player in a game where he already is");
+		// adding to the uuid list
+		ArrayList<String> playersUuid = new ArrayList<>(getPlayersUuids());
+		playersUuid.add(uuid);
+		setPlayersUuid(playersUuid);
+		// blood player object join
+		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		bloodPlayer.joinGame(this);
+		return bloodPlayer;
 	}
 
-	public boolean removePlayer(String playerUUid) {
-		ArrayList<PersistentDataContainer> playersPdc = getPlayersPdc();
-		boolean removed = playersPdc.removeIf(playerPdc -> {
-			String storedUuid = playerPdc.get(DataKey.PLAYER_UUID.key, PersistentDataType.STRING);
-			return storedUuid != null && Objects.equals(storedUuid, playerUUid);
-		});
-		if (removed) {
-			setPlayersPdc(playersPdc);
-		}
-		return removed;
+	public void removePlayer(Player player)
+	{
+		String uuid = player.getUniqueId().toString();
+		// removing from the uuid list
+		ArrayList<String> playersUuid = new ArrayList<>(getPlayersUuids());
+		boolean removed = playersUuid.removeIf(loopUuid -> loopUuid != null && Objects.equals(loopUuid, uuid));
+		// check
+		if (!removed) throw new RuntimeException("trying to remove a player in a game where he is not");
+		// really removing from the uuid list
+		setPlayersUuid(playersUuid);
+		// blood player object quit
+		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		bloodPlayer.quitGame(this);
 	}
 
 	// runs
@@ -165,6 +175,7 @@ public class BloodGame {
 	}),
 	Map.entry(BloodGameAction.SETOUT, (game) -> {
 		game.world.setGameRule(GameRules.ADVANCE_TIME, true);
+		game.clearPlayersUuid();
 	}),
 	Map.entry(BloodGameAction.START, (game) -> {
 		game.doAction(BloodGameAction.SETUP);

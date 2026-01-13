@@ -38,7 +38,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 				// the action
 				for (Player player : targets)
 				{
-					if (game.isPlayerIn(player.getUniqueId().toString()))
+					if (game.isPlayerIn(player))
 					{
 						sender.sendRichMessage("<red>><b><target></b> is already in game.",
 						Placeholder.parsed("target", player.getName())
@@ -81,13 +81,13 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 				// the action
 				for (Player player : targets)
 				{
-					if (!game.isPlayerIn(player.getUniqueId().toString()))
+					if (!game.isPlayerIn(player))
 					{
 						sender.sendRichMessage("<red>><b><target></b> is not in game.",
 						Placeholder.parsed("target", player.getName())
 						);
 					} else {
-						game.removePlayer(player.getUniqueId().toString());
+						game.removePlayer(player);
 						sender.sendRichMessage("you removed <b><target></b>.",
 						Placeholder.parsed("target", player.getName())
 						);
