@@ -5,6 +5,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Bukkit;
 import org.bukkit.GameRules;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -135,6 +136,11 @@ public class BloodGame {
 		return getPlayersUuids().stream().map(Bukkit::getPlayer).toList();
 	}
 
+	public List<OfflinePlayer> getAllPlayersAsOffline()
+	{
+		return getPlayersUuids().stream().map(Bukkit::getOfflinePlayer).toList();
+	}
+
 	public List<BloodPlayer> getAllBloodPlayers()
 	{
 		return getAllPlayers().stream().map(BloodPlayer::get).toList();
@@ -168,6 +174,25 @@ public class BloodGame {
 		// blood player object quit
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		bloodPlayer.quitGame(this);
+	}
+
+	public void removeOfflinePlayer(OfflinePlayer offlinePlayer)
+	{
+		// only if really offline
+		if (offlinePlayer.isOnline())
+		{
+			removePlayer(Objects.requireNonNull(offlinePlayer.getPlayer()));
+		}
+		// values
+		String uuid = offlinePlayer.getUniqueId().toString();
+		// removing from the uuid list
+		ArrayList<String> playersUuid = new ArrayList<>(getPlayersUuids());
+		boolean removed = playersUuid.removeIf(loopUuid -> loopUuid != null && Objects.equals(loopUuid, uuid));
+		// check
+		if (!removed) throw new RuntimeException("trying to remove an offline player in a game where he is not");
+		// really removing from the uuid list
+		setPlayersUuid(playersUuid);
+		// ! no blood player object quit
 	}
 
 	// teams
@@ -257,8 +282,8 @@ public class BloodGame {
 	}),
 
 	Map.entry(BloodGameAction.RESET, (game, sender) -> {
-		for (Player player : game.getAllPlayers())
-			game.removePlayer(player);
+		for (OfflinePlayer offlinePlayer : game.getAllPlayersAsOffline())
+			game.removeOfflinePlayer(offlinePlayer);
 		game.clearPlayersUuid();
 		game.deleteTeam();
 		game.setState(BloodGameState.NOTHING);
