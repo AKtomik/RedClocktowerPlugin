@@ -63,7 +63,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 			{
 				Player player = Objects.requireNonNull(offlinePlayer.getPlayer());
 				BloodPlayer bloodPlayer = BloodPlayer.get(player);
-				String lifeStringColor = (bloodPlayer.isAlive()) ? "<white>- " : "<gray>☠ ";
+				String lifeStringColor = (bloodPlayer.isAlive()) ? "<white>♟ " : "<gray>☠ ";
 				sender.sendRichMessage("<life_color><target>",
 					Placeholder.parsed("life_color", lifeStringColor),
 					Placeholder.parsed("target", player.getName())
