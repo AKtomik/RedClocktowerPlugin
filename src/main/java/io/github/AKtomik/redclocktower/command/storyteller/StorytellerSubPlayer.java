@@ -348,7 +348,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 			bp.changeVotePull(changeValue);
 			sender.sendRichMessage(
 			changeValue
-			? "<b><target></b> is now <red>voting</red>."
+			? "<b><target></b> is now <gold>voting</gold>."
 			: "<b><target></b> is now <yellow>not voting</yellow>.",
 			Placeholder.parsed("target", player.getName())
 			);

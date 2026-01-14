@@ -150,7 +150,11 @@ public class BloodPlayer {
 	}
 	public boolean hasToken()
 	{
-		return true;
+		return getVoteToken();
+	}
+	public boolean isVoting()
+	{
+		return getVotePull();
 	}
 
 	// action
@@ -177,11 +181,13 @@ public class BloodPlayer {
 	public void changeVoteToken(boolean value)
 	{
 		setVoteToken(value);
+		refreshNameTag();
 	}
 
 	public void changeVotePull(boolean value)
 	{
 		setVotePull(value);
+		refreshNameTag();
 	}
 
 	public void clearNameTag()
@@ -203,8 +209,17 @@ public class BloodPlayer {
 			prefixString = "<light_purple>❇</light_purple> ";
 		} else {
 			String lifeString = (isAlive()) ? "<white>" : "<gray>☠";
-			String tokenString = (hasToken()) ? isAlive() ? "<red>✴</red>" : "<blue>✴</blue>" : isAlive() ? "<gray>✳</gray>" : "<black>✳</black>";
-			//String voteString = (isVoting()) ? "<gray>✴</gray>" : "<black>✳<black>";
+			String tokenString = hasToken()
+				? isAlive()
+					? isVoting()
+						? "<yellow>✴</yellow>"
+						: "<red>✴</red>"
+					: isVoting()
+						? "<cyan>✴</cyan>"
+						: "<blue>✴</blue>"
+				: isAlive()
+					? "<gray>✳</gray>"
+					: "<black>✳</black>";
 			prefixString = tokenString+lifeString+" ";
 		}
 		String nameString = player.getName();
