@@ -123,6 +123,11 @@ public class BloodPlayer {
 
 	public void refreshNameTag()
 	{
+		if (!isInGame())
+		{
+			clearNameTag();
+			return;
+		}
 		MiniMessage mini = MiniMessage.miniMessage();
 		String prefixString;
 		if (isStoryteller())
