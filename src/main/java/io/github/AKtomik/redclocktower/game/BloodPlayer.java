@@ -161,7 +161,7 @@ public class BloodPlayer {
 		{
 			player.removePotionEffect(PotionEffectType.INVISIBILITY);
 		} else {
-			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 9, true));
+			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 9, true, false));
 		}
 		refreshNameTag();
 	}
