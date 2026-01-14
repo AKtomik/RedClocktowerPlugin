@@ -191,6 +191,11 @@ public class BloodPlayer {
 			prefixString = tokenString+lifeString+" ";
 		}
 		String nameString = player.getName();
+		String displayName = getDisplayName();
+		if (displayName != null && !displayName.isEmpty())
+		{
+			nameString = displayName+" <dark_gray>("+nameString+")";
+		}
 		player.playerListName(mini.deserialize(prefixString+nameString));
 	}
 }

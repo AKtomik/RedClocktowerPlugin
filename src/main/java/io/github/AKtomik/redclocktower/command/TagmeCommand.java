@@ -3,11 +3,13 @@ package io.github.AKtomik.redclocktower.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.github.AKtomik.redclocktower.game.BloodPlayer;
 import io.github.AKtomik.redclocktower.utils.CommandBrigadierBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.Player;
 
 import java.util.List;
 
@@ -30,12 +32,18 @@ public class TagmeCommand extends CommandBrigadierBase {
         return base()
         .then(
         Commands.argument("myname", StringArgumentType.word())
+        .requires(ctx -> ctx.getExecutor() instanceof Player)
         .executes(
         ctx -> {
-            Entity executor = ctx.getSource().getExecutor();
-            assert (executor != null);
+            Player player = (Player)ctx.getSource().getExecutor();
+			assert player != null;
+            BloodPlayer bloodPlayer = BloodPlayer.get(player);
             String displayName = StringArgumentType.getString(ctx, "myname");
-            executor.sendRichMessage("<green>changing your display name to <b><name></b>", Placeholder.parsed("name", displayName));
+
+            bloodPlayer.setDisplayName(displayName);
+            bloodPlayer.refreshNameTag();
+
+			player.sendRichMessage("<green>changing your display name to <b><name></b>", Placeholder.parsed("name", displayName));
             return Command.SINGLE_SUCCESS;
         })
         );
