@@ -77,23 +77,23 @@ public class BloodPlayer {
 
 	public void clearNameTag()
 	{
-		player.playerListName();
+		player.playerListName(Component.text(player.getName()));
 	}
 
 	public void refreshNameTag()
 	{
-//		MiniMessage mini = MiniMessage.miniMessage();
+		MiniMessage mini = MiniMessage.miniMessage();
 		String prefixString;
 		if (isStoryteller())
 		{
 			prefixString = "<light_purple>❇</light_purple> ";
 		} else {
 			String lifeString = (isAlive()) ? "<white>" : "<gray>☠";
-			String tokenString = (hasToken()) ? "<red>✴</red>" : "<black>✳<black>";
+			String tokenString = (hasToken()) ? isAlive() ? "<red>✴</red>" : "<blue>✴</blue>" : isAlive() ? "<gray>✳</gray>" : "<black>✳</black>";
 			//String voteString = (isVoting()) ? "<gray>✴</gray>" : "<black>✳<black>";
 			prefixString = lifeString+tokenString+" ";
 		}
 		String nameString = player.getName();
-		player.playerListName(Component.text(prefixString+nameString));
+		player.playerListName(mini.deserialize(prefixString+nameString));
 	}
 }
