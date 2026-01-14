@@ -65,6 +65,7 @@ public class BloodPlayer {
 	void joinGame(BloodGame game)
 	{
 		game.getTeam().addPlayer(player);
+		revive();
 		refreshNameTag();
 	}
 
@@ -72,6 +73,7 @@ public class BloodPlayer {
 	void quitGame(BloodGame game)
 	{
 		game.getTeam().removePlayer(player);
+		revive();
 		clearNameTag();
 	}
 
