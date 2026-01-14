@@ -29,8 +29,6 @@ public class TagmedefaultCommand extends CommandBrigadierBase {
     // root
     public LiteralArgumentBuilder<CommandSourceStack> root() {
         return base()
-        .then(
-        Commands.argument("myname", StringArgumentType.word())
         .requires(ctx -> ctx.getExecutor() instanceof Player)
         .executes(
         ctx -> {
@@ -42,7 +40,6 @@ public class TagmedefaultCommand extends CommandBrigadierBase {
             bloodPlayer.refreshNameTag();
             player.sendRichMessage("<white>changing your display name back to default.");
             return Command.SINGLE_SUCCESS;
-        })
-        );
+        });
     }
 }
