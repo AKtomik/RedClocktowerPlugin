@@ -8,7 +8,6 @@ import io.github.AKtomik.redclocktower.utils.CommandBrigadierBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.entity.Entity;
 import org.bukkit.entity.Player;
 
 import java.util.List;
@@ -51,7 +50,7 @@ public class TagmeCommand extends CommandBrigadierBase {
             bloodPlayer.setDisplayName(displayName);
             bloodPlayer.refreshNameTag();
 
-			player.sendRichMessage("<white>changing your display name to <b><white></b>.", Placeholder.parsed("name", displayName));
+			player.sendRichMessage("<white>changing your display name to <b><name></b>.", Placeholder.parsed("name", displayName));
             return Command.SINGLE_SUCCESS;
         })
         );
