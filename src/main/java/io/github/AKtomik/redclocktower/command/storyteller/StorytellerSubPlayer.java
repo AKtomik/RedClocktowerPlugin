@@ -1,6 +1,7 @@
 package io.github.AKtomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.AKtomik.redclocktower.utils.SubBrigadierBase;
 import io.github.AKtomik.redclocktower.game.BloodGame;
@@ -22,29 +23,27 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 	public String name() { return "player"; }
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
-		return base().executes(subExeList)
+		return base().executes(subList)
 
 		.then(Commands.literal("list")
-			.executes(subExeList))
+			.executes(subList))
 
 		.then(Commands.literal("add")
 			.then(Commands.argument("players", ArgumentTypes.players())
-			.executes(subExeAdd)))
+			.executes(subAdd)))
 
 		.then(Commands.literal("remove")
 			.then(Commands.argument("players", ArgumentTypes.players())
-			.executes(subExeRemove)))
+			.executes(subRemove)))
 
-		.then(Commands.literal("kill")
+		.then(Commands.literal("alive")
 			.then(Commands.argument("players", ArgumentTypes.players())
-			.executes(subExeKill)))
-
-		.then(Commands.literal("revive")
-			.then(Commands.argument("players", ArgumentTypes.players())
-			.executes(subExeRevive)));
+			.executes(subAliveCheck)
+			.then(Commands.argument("change", BoolArgumentType.bool())
+			.executes(subAliveChange))));
 	}
 
-	Command<CommandSourceStack> subExeList = ctx -> {
+	Command<CommandSourceStack> subList = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
@@ -80,7 +79,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 	};
 
 
-	Command<CommandSourceStack> subExeAdd = ctx -> {
+	Command<CommandSourceStack> subAdd = ctx -> {
 		final List<Player> players = ctx.getArgument("players", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource());
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
@@ -102,7 +101,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		{
 			if (game.isPlayerIn(player))
 			{
-				sender.sendRichMessage("<red><b><target></b> is already in game.",
+				sender.sendRichMessage("<gray><b><target></b> is already in game.",
 				Placeholder.parsed("target", player.getName())
 				);
 			} else {
@@ -115,9 +114,8 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		return Command.SINGLE_SUCCESS;
 	};
 
-	public Command<CommandSourceStack> subExeRemove = ctx -> {
-		final PlayerSelectorArgumentResolver targetResolver = ctx.getArgument("players", PlayerSelectorArgumentResolver.class);
-		final List<Player> players = targetResolver.resolve(ctx.getSource());
+	public Command<CommandSourceStack> subRemove = ctx -> {
+		final List<Player> players = ctx.getArgument("players", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource());
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
@@ -138,7 +136,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		{
 			if (!game.isPlayerIn(player))
 			{
-				sender.sendRichMessage("<red><b><target></b> is not in game.",
+				sender.sendRichMessage("<gray><b><target></b> is not in game.",
 				Placeholder.parsed("target", player.getName())
 				);
 			} else {
@@ -151,9 +149,8 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		return Command.SINGLE_SUCCESS;
 	};
 
-	public Command<CommandSourceStack> subExeKill = ctx -> {
-		final PlayerSelectorArgumentResolver targetResolver = ctx.getArgument("players", PlayerSelectorArgumentResolver.class);
-		final List<Player> players = targetResolver.resolve(ctx.getSource());
+	public Command<CommandSourceStack> subAliveCheck = ctx -> {
+		final List<Player> players = ctx.getArgument("players", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource());
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
@@ -177,20 +174,21 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 				sender.sendRichMessage("<red><b><target></b> is not in game.",
 				Placeholder.parsed("target", player.getName())
 				);
-			} else {
-				BloodPlayer bloodPlayer = BloodPlayer.get(player);
-				bloodPlayer.kill();
-				sender.sendRichMessage("<red>killed <white><b><target></b>.",
-				Placeholder.parsed("target", player.getName())
-				);
+				continue;
 			}
+
+			BloodPlayer bloodPlayer = BloodPlayer.get(player);
+			String returnMessage = (bloodPlayer.getAlive())
+				? "<b><target></b> is alive."
+				: "<b><target></b> is dead.";
+			sender.sendRichMessage(returnMessage, Placeholder.parsed("target", player.getName()));
 		}
 		return Command.SINGLE_SUCCESS;
 	};
 
-	public Command<CommandSourceStack> subExeRevive = ctx -> {
-		final PlayerSelectorArgumentResolver targetResolver = ctx.getArgument("players", PlayerSelectorArgumentResolver.class);
-		final List<Player> players = targetResolver.resolve(ctx.getSource());
+	public Command<CommandSourceStack> subAliveChange = ctx -> {
+		final List<Player> players = ctx.getArgument("players", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource());
+		final boolean changeValue = ctx.getArgument("change", boolean.class);
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
@@ -214,13 +212,24 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 				sender.sendRichMessage("<red><b><target></b> is not in game.",
 				Placeholder.parsed("target", player.getName())
 				);
-			} else {
-				BloodPlayer bloodPlayer = BloodPlayer.get(player);
-				bloodPlayer.revive();
-				sender.sendRichMessage("<yellow>revived <white><b><target></b>.",
-				Placeholder.parsed("target", player.getName())
-				);
+				continue;
 			}
+
+			BloodPlayer bloodPlayer = BloodPlayer.get(player);
+			if (changeValue == bloodPlayer.getAlive())
+			{
+				String returnMessage = (changeValue)
+					? "<gray><b><target></b> is already alive."
+					: "<gray><b><target></b> is already dead.";
+				sender.sendRichMessage(returnMessage, Placeholder.parsed("target", player.getName()));
+				continue;
+			}
+
+			String returnMessage = (changeValue)
+				? "<b><target></b> is now <yellow>alive</yellow>."
+				: "<b><target></b> is now <red>dead</red>.";
+			bloodPlayer.changeAlive(changeValue);
+			sender.sendRichMessage(returnMessage, Placeholder.parsed("target", player.getName()));
 		}
 		return Command.SINGLE_SUCCESS;
 	};

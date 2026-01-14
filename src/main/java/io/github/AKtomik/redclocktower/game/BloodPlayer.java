@@ -154,17 +154,24 @@ public class BloodPlayer {
 	}
 
 	// action
+	public void changeAlive(boolean value)
+	{
+		setAlive(value);
+		if (value)
+		{
+			player.removePotionEffect(PotionEffectType.INVISIBILITY);
+		} else {
+			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 9, true));
+		}
+		refreshNameTag();
+	}
 	public void kill()
 	{
-		setAlive(false);
-		player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 9, true));
-		refreshNameTag();
+		changeAlive(false);
 	}
 	public void revive()
 	{
-		setAlive(true);
-		player.removePotionEffect(PotionEffectType.INVISIBILITY);
-		refreshNameTag();
+		changeAlive(true);
 	}
 
 	public void clearNameTag()
