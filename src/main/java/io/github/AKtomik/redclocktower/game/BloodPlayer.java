@@ -27,13 +27,56 @@ public class BloodPlayer {
 	}
 
 	// set & get
+	public void setDisplayName(String displayName)
+	{
+		pdc.set(DataKey.PLAYER_DISPLAY_NAME.key, PersistentDataType.STRING, displayName);
+	}
+	public void clearDisplayName()
+	{
+		pdc.remove(DataKey.PLAYER_DISPLAY_NAME.key);
+	}
+	public String getDisplayName()
+	{
+		return pdc.get(DataKey.PLAYER_DISPLAY_NAME.key, PersistentDataType.STRING);
+	}
+
 	private void setAlive(boolean isAlive)
 	{
 		pdc.set(DataKey.PLAYER_ALIVE.key, PersistentDataType.BOOLEAN, isAlive);
 	}
+	public void clearAlive()
+	{
+		pdc.remove(DataKey.PLAYER_ALIVE.key);
+	}
 	public boolean getAlive()
 	{
 		return pdc.getOrDefault(DataKey.PLAYER_ALIVE.key, PersistentDataType.BOOLEAN, true);
+	}
+
+	private void setVoteToken(boolean isVoteToken)
+	{
+		pdc.set(DataKey.PLAYER_VOTE_TOKEN.key, PersistentDataType.BOOLEAN, isVoteToken);
+	}
+	public void clearVoteToken()
+	{
+		pdc.remove(DataKey.PLAYER_VOTE_TOKEN.key);
+	}
+	public boolean getVoteToken()
+	{
+		return pdc.getOrDefault(DataKey.PLAYER_VOTE_TOKEN.key, PersistentDataType.BOOLEAN, true);
+	}
+
+	private void setVotePull(boolean isVotePull)
+	{
+		pdc.set(DataKey.PLAYER_VOTE_PULL.key, PersistentDataType.BOOLEAN, isVotePull);
+	}
+	public void clearVotePull()
+	{
+		pdc.remove(DataKey.PLAYER_VOTE_PULL.key);
+	}
+	public boolean getVotePull()
+	{
+		return pdc.getOrDefault(DataKey.PLAYER_VOTE_PULL.key, PersistentDataType.BOOLEAN, false);
 	}
 
 	private void setGame(BloodGame game)

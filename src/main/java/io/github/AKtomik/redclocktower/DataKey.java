@@ -15,9 +15,10 @@ public enum DataKey {
 	PLAYER_GAME_WORLD_NAME("player_game_world_name"),
 	PLAYER_GAME_ROUND_ID("player_game_round_id"),
 	PLAYER_GAME_SLOT("player_game_slot"),//UNUSED
+	PLAYER_DISPLAY_NAME("player_display_name"),
 	PLAYER_ALIVE("player_alive"),
-	PLAYER_TOKEN("player_token"),//UNUSED
-	PLAYER_VOTING("player_voting");//UNUSED
+	PLAYER_VOTE_TOKEN("player_vote_token"),
+	PLAYER_VOTE_PULL("player_vote_pull");
 
 	// system
 	public final String path;
