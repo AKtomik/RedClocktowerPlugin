@@ -68,10 +68,19 @@ public class BloodPlayer {
 		refreshNameTag();
 	}
 
+	// is call by BloodGame to apply the game join player side (step 2/2)
 	void quitGame(BloodGame game)
 	{
 		game.getTeam().removePlayer(player);
 		clearNameTag();
+	}
+
+	// is publicly call and will call removePlayer on player game (step 1/2)
+	public void leaveGame()
+	{
+		BloodGame game = getGame();
+		if (game == null) return;
+		game.removePlayer(this.player);
 	}
 
 	// if
