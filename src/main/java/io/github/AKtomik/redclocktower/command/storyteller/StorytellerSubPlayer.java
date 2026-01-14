@@ -349,7 +349,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 			sender.sendRichMessage(
 			changeValue
 			? "<b><target></b> is now <gold>voting</gold>."
-			: "<b><target></b> is now <yellow>not voting</yellow>.",
+			: "<b><target></b> is <yellow>not voting</yellow> anymore.",
 			Placeholder.parsed("target", player.getName())
 			);
 		});

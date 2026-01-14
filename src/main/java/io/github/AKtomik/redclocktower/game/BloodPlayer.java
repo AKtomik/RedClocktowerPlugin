@@ -218,7 +218,9 @@ public class BloodPlayer {
 						? "<aqua>✴</aqua>"
 						: "<blue>✴</blue>"
 				: isAlive()
-					? "<gray>✳</gray>"
+					? isVoting()
+						? "<yellow>✳</yellow>"
+						: "<gray>✳</gray>"
 					: "<black>✳</black>";
 			prefixString = tokenString+lifeString+" ";
 		}
