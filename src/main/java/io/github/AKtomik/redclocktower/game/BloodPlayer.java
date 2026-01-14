@@ -64,6 +64,10 @@ public class BloodPlayer {
 	// game link
 	void joinGame(BloodGame game)
 	{
+		BloodGame lastGame = getGame();
+		if (lastGame != null) leaveGame();
+		setGame(game);
+
 		game.getTeam().addPlayer(player);
 		revive();
 		refreshNameTag();
@@ -72,12 +76,14 @@ public class BloodPlayer {
 	// is call by BloodGame to apply the game join player side (step 2/2)
 	void quitGame(BloodGame game)
 	{
+		clearGame();
+
 		game.getTeam().removePlayer(player);
 		revive();
 		clearNameTag();
 	}
 
-	// is publicly call and will call removePlayer on player game (step 1/2)
+	// is publicly call and will call removePlayer on player game (step 1/3)
 	public void leaveGame()
 	{
 		BloodGame game = getGame();
@@ -139,7 +145,7 @@ public class BloodPlayer {
 			String lifeString = (isAlive()) ? "<white>" : "<gray>☠";
 			String tokenString = (hasToken()) ? isAlive() ? "<red>✴</red>" : "<blue>✴</blue>" : isAlive() ? "<gray>✳</gray>" : "<black>✳</black>";
 			//String voteString = (isVoting()) ? "<gray>✴</gray>" : "<black>✳<black>";
-			prefixString = lifeString+tokenString+" ";
+			prefixString = tokenString+lifeString+" ";
 		}
 		String nameString = player.getName();
 		player.playerListName(mini.deserialize(prefixString+nameString));
