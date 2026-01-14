@@ -29,15 +29,24 @@ public class TagmeCommand extends CommandBrigadierBase {
     // root
     public LiteralArgumentBuilder<CommandSourceStack> root() {
         return base()
-        .then(
-        Commands.argument("myname", StringArgumentType.word())
         .requires(ctx -> ctx.getExecutor() instanceof Player)
+        .then(
+        Commands.argument("display name", StringArgumentType.word())
+        .suggests((ctx, builder) -> {
+            Player player = (Player)ctx.getSource().getExecutor();
+            assert player != null;
+            builder.suggest(player.getName());
+            BloodPlayer bloodPlayer = BloodPlayer.get(player);
+            String displayName = bloodPlayer.getDisplayName();
+            if (displayName != null && !displayName.isEmpty()) builder.suggest(bloodPlayer.getDisplayName());
+            return builder.buildFuture();
+        })
         .executes(
         ctx -> {
             Player player = (Player)ctx.getSource().getExecutor();
 			assert player != null;
             BloodPlayer bloodPlayer = BloodPlayer.get(player);
-            String displayName = StringArgumentType.getString(ctx, "myname");
+            String displayName = StringArgumentType.getString(ctx, "display name");
 
             if (displayName.equalsIgnoreCase(player.getName()))
             {
