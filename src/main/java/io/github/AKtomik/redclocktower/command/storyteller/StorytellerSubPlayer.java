@@ -29,7 +29,6 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.requires(ctx -> getGame(ctx).isReady())
 		.executes(subList)
 
 		.then(Commands.literal("list")
