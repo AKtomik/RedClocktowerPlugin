@@ -52,8 +52,12 @@ public class BloodPlayer {
 		String worldName = pdc.get(DataKey.PLAYER_GAME_WORLD_NAME.key, PersistentDataType.STRING);
 		if (worldName == null) return null;
 		World world = Bukkit.getWorld(worldName);
+		if (world == null) return null;
 		BloodGame bloodGame = BloodGame.get(world);
-		if (!bloodGame.isPlayerIn(player)) return null;
+		if (!bloodGame.isPlayerIn(player)) {
+			clearGame();
+			return null;
+		}
 		return bloodGame;
 	}
 
@@ -71,6 +75,11 @@ public class BloodPlayer {
 	}
 
 	// if
+	boolean isInGame()
+	{
+		return getGame() != null;
+	}
+
 	public boolean isAlive()
 	{
 		return getAlive();
