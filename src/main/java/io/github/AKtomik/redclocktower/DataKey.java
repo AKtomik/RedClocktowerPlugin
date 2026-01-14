@@ -12,10 +12,12 @@ public enum DataKey {
 	GAME_ROUND_ID("game_round_id"),
 	GAME_PLAYERS_UUID("game_players_uuid"),
 	GAME_STORYTELLER_UUID("game_storyteller_uuid"),
-	PLAYER_UUID("player_uuid"),
-	PLAYER_NAME("player_name"),
-	PLAYER_SLOT("player_slot"),
-	PLAYER_ALIVE("player_alive");
+	PLAYER_GAME_WORLD_NAME("player_game_world_name"),
+	PLAYER_GAME_ROUND_ID("player_game_round_id"),
+	PLAYER_GAME_SLOT("player_game_slot"),//UNUSED
+	PLAYER_ALIVE("player_alive"),
+	PLAYER_TOKEN("player_token"),//UNUSED
+	PLAYER_VOTING("player_voting");//UNUSED
 
 	// system
 	public final String path;

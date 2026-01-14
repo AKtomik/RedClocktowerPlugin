@@ -3,6 +3,8 @@ package io.github.AKtomik.redclocktower.game;
 import io.github.AKtomik.redclocktower.DataKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
+import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -32,6 +34,27 @@ public class BloodPlayer {
 	public boolean getAlive()
 	{
 		return pdc.getOrDefault(DataKey.PLAYER_ALIVE.key, PersistentDataType.BOOLEAN, true);
+	}
+
+	private void setGame(BloodGame game)
+	{
+		pdc.set(DataKey.PLAYER_GAME_WORLD_NAME.key, PersistentDataType.STRING, game.world.getName());
+		pdc.set(DataKey.PLAYER_GAME_ROUND_ID.key, PersistentDataType.STRING, game.getRoundId());
+	}
+	private void clearGame()
+	{
+		pdc.remove(DataKey.PLAYER_GAME_WORLD_NAME.key);
+		pdc.remove(DataKey.PLAYER_GAME_ROUND_ID.key);
+	}
+	public BloodGame getGame()
+	{
+		if (!pdc.has(DataKey.PLAYER_GAME_WORLD_NAME.key)) return null;
+		String worldName = pdc.get(DataKey.PLAYER_GAME_WORLD_NAME.key, PersistentDataType.STRING);
+		if (worldName == null) return null;
+		World world = Bukkit.getWorld(worldName);
+		BloodGame bloodGame = BloodGame.get(world);
+		if (!bloodGame.isPlayerIn(player)) return null;
+		return bloodGame;
 	}
 
 	// game link
