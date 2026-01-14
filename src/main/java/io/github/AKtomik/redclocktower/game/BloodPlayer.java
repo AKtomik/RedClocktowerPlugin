@@ -215,7 +215,7 @@ public class BloodPlayer {
 						? "<yellow>✴</yellow>"
 						: "<red>✴</red>"
 					: isVoting()
-						? "<cyan>✴</cyan>"
+						? "<aqua>✴</aqua>"
 						: "<blue>✴</blue>"
 				: isAlive()
 					? "<gray>✳</gray>"
