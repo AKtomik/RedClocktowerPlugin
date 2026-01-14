@@ -40,10 +40,18 @@ public class TagmeCommand extends CommandBrigadierBase {
             BloodPlayer bloodPlayer = BloodPlayer.get(player);
             String displayName = StringArgumentType.getString(ctx, "myname");
 
+            if (displayName.equalsIgnoreCase(player.getName()))
+            {
+                bloodPlayer.clearDisplayName();
+                bloodPlayer.refreshNameTag();
+                player.sendRichMessage("<white>changing your display name back to default.");
+                return Command.SINGLE_SUCCESS;
+            }
+
             bloodPlayer.setDisplayName(displayName);
             bloodPlayer.refreshNameTag();
 
-			player.sendRichMessage("<green>changing your display name to <b><name></b>", Placeholder.parsed("name", displayName));
+			player.sendRichMessage("<white>changing your display name to <b><white></b>.", Placeholder.parsed("name", displayName));
             return Command.SINGLE_SUCCESS;
         })
         );
