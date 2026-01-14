@@ -232,7 +232,6 @@ public class BloodGame {
 		Team team = board.registerNewTeam(teamId);
 		team.setAllowFriendlyFire(false);
 		team.setCanSeeFriendlyInvisibles(true);
-		team.prefix(mini.deserialize("<red>✴ "));
 	}
 
 	Team getTeam()
