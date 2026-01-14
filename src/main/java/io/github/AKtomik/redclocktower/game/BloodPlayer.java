@@ -174,6 +174,16 @@ public class BloodPlayer {
 		changeAlive(true);
 	}
 
+	public void changeVoteToken(boolean value)
+	{
+		setVoteToken(value);
+	}
+
+	public void changeVotePull(boolean value)
+	{
+		setVotePull(value);
+	}
+
 	public void clearNameTag()
 	{
 		player.playerListName(Component.text(player.getName()));

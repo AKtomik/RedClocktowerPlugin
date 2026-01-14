@@ -50,15 +50,15 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 		.then(Commands.literal("token")
 			.then(Commands.argument("players", ArgumentTypes.players())
-			.executes(subAliveCheck)
+			.executes(subTokenCheck)
 			.then(Commands.argument("change", BoolArgumentType.bool())
-			.executes(subAliveChange))))
+			.executes(subTokenChange))))
 
 		.then(Commands.literal("voting")
 			.then(Commands.argument("players", ArgumentTypes.players())
-			.executes(subAliveCheck)
+			.executes(subVotingCheck)
 			.then(Commands.argument("change", BoolArgumentType.bool())
-			.executes(subAliveChange))));
+			.executes(subVotingChange))));
 	}
 
 	// utils
@@ -242,6 +242,114 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 			changeValue
 			? "<b><target></b> is now <yellow>alive</yellow>."
 			: "<b><target></b> is now <red>dead</red>.",
+			Placeholder.parsed("target", player.getName())
+			);
+		});
+		return Command.SINGLE_SUCCESS;
+	};
+
+	public Command<CommandSourceStack> subTokenCheck = ctx -> {
+		final CommandSender sender = ctx.getSource().getSender();
+		final List<Player> players = resolvePlayers(ctx);
+		final BloodGame game = getGame(ctx.getSource());
+
+		// checks
+		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (failIfEmpty(sender, players)) return Command.SINGLE_SUCCESS;
+
+		// the action
+		forEachValidPlayer(sender, game, players, (player, bp) -> {
+			sender.sendRichMessage(
+			bp.getVoteToken()
+			? "<b><target></b> still have a vote token."
+			: "<b><target></b> don't have a vote token.",
+			Placeholder.parsed("target", player.getName())
+			);
+		});
+		return Command.SINGLE_SUCCESS;
+	};
+
+	public Command<CommandSourceStack> subTokenChange = ctx -> {
+		final CommandSender sender = ctx.getSource().getSender();
+		final List<Player> players = resolvePlayers(ctx);
+		final boolean changeValue = resolveChange(ctx);
+		final BloodGame game = getGame(ctx.getSource());
+
+		// checks
+		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (failIfEmpty(sender, players)) return Command.SINGLE_SUCCESS;
+
+		// the action
+		forEachValidPlayer(sender, game, players, (player, bp) -> {
+			if (bp.getVoteToken() == changeValue) {
+				sender.sendRichMessage(
+				changeValue
+				? "<gray><b><target></b> already have a vote token."
+				: "<gray><b><target></b> already don't have a vote token.",
+				Placeholder.parsed("target", player.getName())
+				);
+				return;
+			}
+
+			bp.changeVoteToken(changeValue);
+			sender.sendRichMessage(
+			changeValue
+			? "<green>giving back</green> the vote token of <b><target></b>."
+			: "<red>taking back</red> the vote token of <b><target></b>.",
+			Placeholder.parsed("target", player.getName())
+			);
+		});
+		return Command.SINGLE_SUCCESS;
+	};
+
+	public Command<CommandSourceStack> subVotingCheck = ctx -> {
+		final CommandSender sender = ctx.getSource().getSender();
+		final List<Player> players = resolvePlayers(ctx);
+		final BloodGame game = getGame(ctx.getSource());
+
+		// checks
+		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (failIfEmpty(sender, players)) return Command.SINGLE_SUCCESS;
+
+		// the action
+		forEachValidPlayer(sender, game, players, (player, bp) -> {
+			sender.sendRichMessage(
+			bp.getVotePull()
+			? "<b><target></b> is voting."
+			: "<b><target></b> is not voting.",
+			Placeholder.parsed("target", player.getName())
+			);
+		});
+		return Command.SINGLE_SUCCESS;
+	};
+
+	public Command<CommandSourceStack> subVotingChange = ctx -> {
+		final CommandSender sender = ctx.getSource().getSender();
+		final List<Player> players = resolvePlayers(ctx);
+		final boolean changeValue = resolveChange(ctx);
+		final BloodGame game = getGame(ctx.getSource());
+
+		// checks
+		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (failIfEmpty(sender, players)) return Command.SINGLE_SUCCESS;
+
+		// the action
+		forEachValidPlayer(sender, game, players, (player, bp) -> {
+			if (bp.getVotePull() == changeValue) {
+				sender.sendRichMessage(
+				changeValue
+				? "<gray><b><target></b> is already voting."
+				: "<gray><b><target></b> is already not voting.",
+				Placeholder.parsed("target", player.getName())
+				);
+				return;
+			}
+
+			bp.changeVotePull(changeValue);
+			sender.sendRichMessage(
+			changeValue
+			? "<b><target></b> is now <red>voting</red>."
+			: "<b><target></b> is now <yellow>not voting</yellow>.",
 			Placeholder.parsed("target", player.getName())
 			);
 		});
