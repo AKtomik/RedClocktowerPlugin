@@ -17,9 +17,9 @@ import java.util.function.BiConsumer;
 public class BloodGame {
 
 	// class
-	public static MiniMessage mini = MiniMessage.miniMessage();
+	static MiniMessage mini = MiniMessage.miniMessage();
 
-	final public World world;
+	public final World world;
 	private final PersistentDataContainer pdc;
 
 	private BloodGame(World world)

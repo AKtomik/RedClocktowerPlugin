@@ -3,7 +3,7 @@ package io.github.aktomik.redclocktower.command.setup;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.game.BloodGame;
-import io.github.aktomik.redclocktower.utils.SubBrigadierBase;
+import io.github.aktomik.redclocktower.utils.brigadier.SubBrigadierBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
@@ -22,14 +22,14 @@ public class SetupSubPlace extends SubBrigadierBase {
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
 		.then(Commands.literal("center")
-		.executes(PlaceCenterCheck)
+		.executes(placeCenterCheck)
 		.then(Commands.argument("location", ArgumentTypes.blockPosition())
-		.executes(PlaceCenterChange)
+		.executes(placeCenterChange)
 		));
 	}
 
 
-	Command<CommandSourceStack> PlaceCenterCheck = ctx -> {
+	Command<CommandSourceStack> placeCenterCheck = ctx -> {
 		// arguments
 		final CommandSender sender = ctx.getSource().getSender();
 		final World world = ctx.getSource().getLocation().getWorld();
@@ -46,7 +46,7 @@ public class SetupSubPlace extends SubBrigadierBase {
 		return Command.SINGLE_SUCCESS;
 	};
 
-	Command<CommandSourceStack> PlaceCenterChange = ctx -> {
+	Command<CommandSourceStack> placeCenterChange = ctx -> {
 		// arguments
 		final CommandSender sender = ctx.getSource().getSender();
 		final World world = ctx.getSource().getLocation().getWorld();

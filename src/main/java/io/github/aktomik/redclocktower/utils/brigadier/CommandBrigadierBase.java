@@ -1,4 +1,4 @@
-package io.github.aktomik.redclocktower.utils;
+package io.github.aktomik.redclocktower.utils.brigadier;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;

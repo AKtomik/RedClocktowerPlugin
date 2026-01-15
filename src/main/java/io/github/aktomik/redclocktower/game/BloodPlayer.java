@@ -14,7 +14,7 @@ import org.bukkit.potion.PotionEffectType;
 public class BloodPlayer {
 
 	// class
-	final public Player player;
+	public final Player player;
 	private final PersistentDataContainer pdc;
 	private BloodPlayer(Player player)
 	{
@@ -209,19 +209,7 @@ public class BloodPlayer {
 			prefixString = "<light_purple>❇</light_purple> ";
 		} else {
 			String lifeString = (isAlive()) ? "<white>" : "<gray>☠";
-			String tokenString = hasToken()
-				? isAlive()
-					? isVoting()
-						? "<yellow>✴</yellow>"
-						: "<red>✴</red>"
-					: isVoting()
-						? "<aqua>✴</aqua>"
-						: "<blue>✴</blue>"
-				: isAlive()
-					? isVoting()
-						? "<yellow>✳</yellow>"
-						: "<gray>✳</gray>"
-					: "<black>✳</black>";
+			String tokenString = getStringToken();
 			prefixString = tokenString+lifeString+" ";
 		}
 		String nameString = player.getName();
@@ -231,5 +219,22 @@ public class BloodPlayer {
 			nameString = displayName+" <dark_gray>("+nameString+")";
 		}
 		player.playerListName(mini.deserialize(prefixString+nameString));
+	}
+
+	String getStringToken()
+	{
+		return hasToken()
+		? isAlive()
+			? isVoting()
+				? "<yellow>✴</yellow>"
+				: "<red>✴</red>"
+			: isVoting()
+				? "<aqua>✴</aqua>"
+				: "<blue>✴</blue>"
+		: isAlive()
+			? isVoting()
+				? "<yellow>✳</yellow>"
+				: "<gray>✳</gray>"
+			: "<black>✳</black>";
 	}
 }

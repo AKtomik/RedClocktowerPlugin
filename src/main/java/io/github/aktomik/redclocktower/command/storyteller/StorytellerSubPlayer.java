@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.aktomik.redclocktower.utils.SubBrigadierBase;
+import io.github.aktomik.redclocktower.utils.brigadier.SubBrigadierBase;
 import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.BloodPlayer;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -167,7 +167,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		return Command.SINGLE_SUCCESS;
 	};
 
-	public Command<CommandSourceStack> subRemove = ctx -> {
+	public final Command<CommandSourceStack> subRemove = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
 		final BloodGame game = getGame(ctx.getSource());
@@ -194,7 +194,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		return Command.SINGLE_SUCCESS;
 	};
 
-	public Command<CommandSourceStack> subAliveCheck = ctx -> {
+	public final Command<CommandSourceStack> subAliveCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
 		final BloodGame game = getGame(ctx.getSource());
@@ -215,7 +215,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		return Command.SINGLE_SUCCESS;
 	};
 
-	public Command<CommandSourceStack> subAliveChange = ctx -> {
+	public final Command<CommandSourceStack> subAliveChange = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
 		final boolean changeValue = resolveChange(ctx);
@@ -248,7 +248,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		return Command.SINGLE_SUCCESS;
 	};
 
-	public Command<CommandSourceStack> subTokenCheck = ctx -> {
+	public final Command<CommandSourceStack> subTokenCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
 		final BloodGame game = getGame(ctx.getSource());
@@ -269,7 +269,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		return Command.SINGLE_SUCCESS;
 	};
 
-	public Command<CommandSourceStack> subTokenChange = ctx -> {
+	public final Command<CommandSourceStack> subTokenChange = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
 		final boolean changeValue = resolveChange(ctx);
@@ -302,7 +302,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		return Command.SINGLE_SUCCESS;
 	};
 
-	public Command<CommandSourceStack> subVotingCheck = ctx -> {
+	public final Command<CommandSourceStack> subVotingCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
 		final BloodGame game = getGame(ctx.getSource());
@@ -323,7 +323,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		return Command.SINGLE_SUCCESS;
 	};
 
-	public Command<CommandSourceStack> subVotingChange = ctx -> {
+	public final Command<CommandSourceStack> subVotingChange = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
 		final boolean changeValue = resolveChange(ctx);

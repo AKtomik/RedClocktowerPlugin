@@ -1,4 +1,4 @@
-package io.github.aktomik.redclocktower.utils;
+package io.github.aktomik.redclocktower.utils.brigadier;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -12,9 +12,9 @@ public abstract class SubBrigadierBase {
     public LiteralCommandNode<CommandSourceStack> build()
     {
         return root().build();
-    };
+    }
     public LiteralArgumentBuilder<CommandSourceStack> base()
     {
         return Commands.literal(name());
-    };
+    }
 }

@@ -2,8 +2,8 @@ package io.github.aktomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.utils.EnumArgument;
-import io.github.aktomik.redclocktower.utils.SubBrigadierBase;
+import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
+import io.github.aktomik.redclocktower.utils.brigadier.SubBrigadierBase;
 import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.BloodGamePeriod;
 import io.papermc.paper.command.brigadier.CommandSourceStack;

@@ -4,7 +4,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.game.BloodPlayer;
-import io.github.aktomik.redclocktower.utils.CommandBrigadierBase;
+import io.github.aktomik.redclocktower.utils.brigadier.CommandBrigadierBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
