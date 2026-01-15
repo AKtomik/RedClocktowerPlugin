@@ -223,6 +223,7 @@ public class BloodPlayer {
 		}
 		MiniMessage mini = MiniMessage.miniMessage();
 		String prefixString;
+		String slotString = "";
 		if (isStoryteller())
 		{
 			prefixString = "<light_purple>❇</light_purple> ";
@@ -230,6 +231,7 @@ public class BloodPlayer {
 			String lifeString = (isAlive()) ? "<white>" : "<gray>☠";
 			String tokenString = getStringToken();
 			prefixString = tokenString+lifeString+" ";
+			slotString = "<gray>"+Integer.toString(getSlotIndex()+1)+"</gray> ";
 		}
 		String longeNameString = player.getName();
 		String simpleNameString = player.getName();
@@ -239,7 +241,7 @@ public class BloodPlayer {
 			longeNameString = displayName+" <dark_gray>("+ longeNameString +")";
 			simpleNameString = displayName;
 		}
-		player.playerListName(mini.deserialize(prefixString+longeNameString));
+		player.playerListName(mini.deserialize(slotString+prefixString+longeNameString));
 		PlayerDisplayTagManager.changeDisplay(player, mini.deserialize(prefixString+simpleNameString));
 	}
 
