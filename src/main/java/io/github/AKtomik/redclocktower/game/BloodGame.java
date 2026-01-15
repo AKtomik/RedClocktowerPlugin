@@ -1,12 +1,10 @@
 package io.github.AKtomik.redclocktower.game;
 
 import io.github.AKtomik.redclocktower.DataKey;
+import io.papermc.paper.math.BlockPosition;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Bukkit;
-import org.bukkit.GameRules;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.World;
+import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -98,6 +96,17 @@ public class BloodGame {
 	private void clearPlayersUuid()
 	{
 		pdc.remove(DataKey.GAME_PLAYERS_UUID.key);
+	}
+
+	public void setLocationCenter(Location loc)
+	{
+		pdc.set(DataKey.GAME_LOC_CENTER.key, PersistentDataType.INTEGER_ARRAY, new int[] {loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()});
+	}
+	public Location getLocationCenter()
+	{
+		int[] posArray = pdc.get(DataKey.GAME_LOC_CENTER.key, PersistentDataType.INTEGER_ARRAY);
+		if (posArray == null || posArray.length != 3) return  null;
+		return new Location(world, posArray[0], posArray[1], posArray[2]);
 	}
 
 	// if
