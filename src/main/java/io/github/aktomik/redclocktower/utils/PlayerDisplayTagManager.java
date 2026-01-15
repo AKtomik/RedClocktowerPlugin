@@ -19,7 +19,7 @@ public class PlayerDisplayTagManager implements Listener {
 
 	private static final Map<UUID, TextDisplay> displays = new HashMap<>();
 
-	public static final float aboveHeight = 1.5f;
+	public static final float aboveHeight = 2f;
 
 	static void createDisplay(Player player, Component displayName) {
 		// remove old one if exists
