@@ -1,4 +1,4 @@
-package io.github.AKtomik.redclocktower.game;
+package io.github.aktomik.redclocktower.game;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;

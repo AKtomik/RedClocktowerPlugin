@@ -1,6 +1,6 @@
-package io.github.AKtomik.redclocktower.game;
+package io.github.aktomik.redclocktower.game;
 
-import io.github.AKtomik.redclocktower.DataKey;
+import io.github.aktomik.redclocktower.DataKey;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;

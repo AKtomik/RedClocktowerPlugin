@@ -1,13 +1,13 @@
-package io.github.AKtomik.redclocktower;
+package io.github.aktomik.redclocktower;
 
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import io.github.AKtomik.redclocktower.command.setup.SetupCommand;
-import io.github.AKtomik.redclocktower.game.PlayerListener;
-import io.github.AKtomik.redclocktower.utils.CommandBrigadierBase;
-import io.github.AKtomik.redclocktower.command.RichmessageCommand;
-import io.github.AKtomik.redclocktower.command.storyteller.StorytellerCommand;
-import io.github.AKtomik.redclocktower.command.TagmeCommand;
-import io.github.AKtomik.redclocktower.command.WhosendCommand;
+import io.github.aktomik.redclocktower.command.setup.SetupCommand;
+import io.github.aktomik.redclocktower.game.PlayerListener;
+import io.github.aktomik.redclocktower.utils.CommandBrigadierBase;
+import io.github.aktomik.redclocktower.command.RichmessageCommand;
+import io.github.aktomik.redclocktower.command.storyteller.StorytellerCommand;
+import io.github.aktomik.redclocktower.command.TagmeCommand;
+import io.github.aktomik.redclocktower.command.WhosendCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.plugin.java.JavaPlugin;

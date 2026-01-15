@@ -1,7 +1,6 @@
-package io.github.AKtomik.redclocktower.game;
+package io.github.aktomik.redclocktower.game;
 
-import io.github.AKtomik.redclocktower.DataKey;
-import io.papermc.paper.math.BlockPosition;
+import io.github.aktomik.redclocktower.DataKey;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;

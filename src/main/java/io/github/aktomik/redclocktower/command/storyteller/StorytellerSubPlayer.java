@@ -1,13 +1,13 @@
-package io.github.AKtomik.redclocktower.command.storyteller;
+package io.github.aktomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
-import io.github.AKtomik.redclocktower.utils.SubBrigadierBase;
-import io.github.AKtomik.redclocktower.game.BloodGame;
-import io.github.AKtomik.redclocktower.game.BloodPlayer;
+import io.github.aktomik.redclocktower.utils.SubBrigadierBase;
+import io.github.aktomik.redclocktower.game.BloodGame;
+import io.github.aktomik.redclocktower.game.BloodPlayer;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;

@@ -1,9 +1,6 @@
-package io.github.AKtomik.redclocktower.command.setup;
+package io.github.aktomik.redclocktower.command.setup;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.AKtomik.redclocktower.command.storyteller.StorytellerSubGame;
-import io.github.AKtomik.redclocktower.command.storyteller.StorytellerSubPlayer;
-import io.github.AKtomik.redclocktower.command.storyteller.StorytellerSubTime;
-import io.github.AKtomik.redclocktower.utils.CommandBrigadierBase;
+import io.github.aktomik.redclocktower.utils.CommandBrigadierBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 
 import java.util.List;

@@ -1,4 +1,4 @@
-package io.github.AKtomik.redclocktower.utils;
+package io.github.aktomik.redclocktower.utils;
 
 import org.bukkit.persistence.PersistentDataAdapterContext;
 import org.bukkit.persistence.PersistentDataType;

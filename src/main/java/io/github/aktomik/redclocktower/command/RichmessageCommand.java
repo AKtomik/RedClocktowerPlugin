@@ -1,9 +1,9 @@
-package io.github.AKtomik.redclocktower.command;
+package io.github.aktomik.redclocktower.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.AKtomik.redclocktower.utils.CommandBrigadierBase;
+import io.github.aktomik.redclocktower.utils.CommandBrigadierBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import org.bukkit.entity.Entity;

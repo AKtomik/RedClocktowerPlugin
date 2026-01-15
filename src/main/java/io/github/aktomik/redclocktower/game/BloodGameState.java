@@ -1,4 +1,4 @@
-package io.github.AKtomik.redclocktower.game;
+package io.github.aktomik.redclocktower.game;
 
 public enum BloodGameState {
 	NOTHING,

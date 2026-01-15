@@ -1,4 +1,4 @@
-package io.github.AKtomik.redclocktower;
+package io.github.aktomik.redclocktower;
 
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
