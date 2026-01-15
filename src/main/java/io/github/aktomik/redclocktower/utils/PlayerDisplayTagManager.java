@@ -10,6 +10,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.util.Transformation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -19,17 +20,26 @@ public class PlayerDisplayTagManager implements Listener {
 
 	private static final Map<UUID, TextDisplay> displays = new HashMap<>();
 
+	public static final float aboveHeight = 1.5f;
+
 	static void createDisplay(Player player, Component displayName) {
 		// remove old one if exists
 		clearDisplay(player);
 
-		Location loc = player.getLocation().add(0, 2.3, 0);
+		Location loc = player.getLocation().add(0, aboveHeight, 0);
 		TextDisplay textDisplay = player.getWorld().spawn(loc, TextDisplay.class,  text -> {
 			text.text(displayName);
 			text.setBillboard(Display.Billboard.CENTER);
 			text.setAlignment(TextDisplay.TextAlignment.CENTER);
 			text.setSeeThrough(false);
 			text.setDefaultBackground(false);
+
+			Transformation transformation = text.getTransformation();
+			transformation.getTranslation().set(0, aboveHeight, 0);
+			text.setTransformation(transformation);
+
+			text.setInterpolationDuration(2);
+			text.setInterpolationDelay(0);
 		});
 
 		displays.put(player.getUniqueId(), textDisplay);
@@ -54,7 +64,7 @@ public class PlayerDisplayTagManager implements Listener {
 	static void updatePosition(Player player) {
 		TextDisplay display = displays.get(player.getUniqueId());
 		if (display != null && display.isValid()) {
-			Location newLoc = player.getLocation().add(0, 2.3, 0);
+			Location newLoc = player.getLocation().add(0, aboveHeight, 0);
 			display.teleport(newLoc);
 		}
 	}
