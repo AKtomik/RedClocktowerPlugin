@@ -53,9 +53,10 @@ public class SetupSubPlace extends SubBrigadierBase {
 		final World world = ctx.getSource().getLocation().getWorld();
 		final BloodGame game = BloodGame.get(world);
 		final BlockPosition pos = ctx.getArgument("location", BlockPositionResolver.class).resolve(ctx.getSource());
-		final Location loc = pos.toLocation(world);
 
 		// execution
+		pos.offset(0, 1, 0);
+		final Location loc = pos.toLocation(world);
 		game.setLocationCenter(loc);
 		sender.sendRichMessage("set <b><locname></b> location at <x> <y> <z>",
 		Placeholder.parsed("x", Double.toString(pos.x())),
