@@ -244,7 +244,7 @@ public class BloodGame {
 		boolean removed = false;
 		for (int i = 0; i < slotsUuid.size(); i++)
 		{
-			if (slotsUuid.get(i) == null)
+			if (Objects.equals(slotsUuid.get(i), uuid))
 			{
 				if (i == slotsUuid.size() - 1)
 					slotsUuid.remove(i);
