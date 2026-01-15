@@ -10,16 +10,20 @@ import io.github.aktomik.redclocktower.command.TagmeCommand;
 import io.github.aktomik.redclocktower.command.WhosendCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.List;
 
 public final class RedClocktower extends JavaPlugin {
 
+    public static Plugin plugin;
+
     @Override
     public void onEnable() {
         // Plugin startup logic
         getLogger().info("Enabled!");
+        plugin = this;
 
         // setup data keys
         DataKey.init(this);

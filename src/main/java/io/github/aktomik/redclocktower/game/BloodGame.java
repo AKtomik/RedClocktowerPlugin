@@ -1,6 +1,7 @@
 package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.DataKey;
+import io.github.aktomik.redclocktower.RedClocktower;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
@@ -341,24 +342,31 @@ public class BloodGame {
 	// code/period
 	static Map<BloodGamePeriod, BiConsumer<BloodGame, CommandSender>> gamePeriodEnter = Map.ofEntries(
 	Map.entry(BloodGamePeriod.MORNING, (game, sender) -> {
-		game.broadcast("<white><b>it's the morning!");
-		game.broadcast("<gray><i>it's the morning!");
 		game.world.setTime(0);
+		game.world.playSound(game.getLocationCenter(), Sound.BLOCK_BELL_USE, 123456789f, 0.1f);
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
+			game.world.playSound(game.getLocationCenter(), Sound.BLOCK_BELL_USE, 123456789f, 0.15f);
+			game.broadcast("<white><b>it's the morning!");
+		}, 20L);
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
+			game.world.playSound(game.getLocationCenter(), Sound.BLOCK_BELL_USE, 123456789f, 0.20f);
+			game.broadcast("<gray><i>everyone is attended to the townhall");
+		}, 40L);
 	}),
 	Map.entry(BloodGamePeriod.FREE, (game, sender) -> {
+		game.world.setTime(6000);
 		game.broadcast("<white><b>wonder time");
 		game.broadcast("<gray><i>you are free to go and talk");
-		game.world.setTime(6000);
 	}),
 	Map.entry(BloodGamePeriod.MEET, (game, sender) -> {
+		game.world.setTime(12000);
 		game.broadcast("<white><b>debate time");
 		game.broadcast("<gray><i>everyone is attended to the townhall");
-		game.world.setTime(12000);
 	}),
 	Map.entry(BloodGamePeriod.NIGHT, (game, sender) -> {
+		game.world.setTime(18000);
 		game.broadcast("<white><b>the moon is rising...");
 		game.broadcast("<gray><i>go to your house and sleep well");
-		game.world.setTime(18000);
 	})
 	);
 }
