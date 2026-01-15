@@ -121,6 +121,9 @@ public class BloodPlayer {
 	void quitGame(BloodGame game)
 	{
 		clearGame();
+		clearAlive();
+		clearVotePull();
+		clearVoteToken();
 
 		game.getTeam().removePlayer(player);
 		revive();
