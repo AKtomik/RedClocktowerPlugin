@@ -12,12 +12,14 @@ public enum DataKey {
 	GAME_ROUND_COUNT("game_round_count"),
 	GAME_ROUND_ID("game_round_id"),
 
-	GAME_SLOTS_PDC("game_slots_pdc"),
+	GAME_SLOTS_PDC("game_slots_pdc"),//UNUSED
 	GAME_SLOTS_UUID("game_slots_uuid"),
 	GAME_STORYTELLER_UUID("game_storyteller_uuid"),
 
 	GAME_LOC_CENTER("game_loc_center"),
-	GAME_LOC_SPAWN("game_loc_spawn"),
+	GAME_LOC_SPAWN("game_loc_spawn"),//UNUSED
+
+	GAME_SETTINGS_SLOT_LIMIT("game_settings_slot_limit"),
 
 
 	PLAYER_GAME_WORLD_NAME("player_game_world_name"),

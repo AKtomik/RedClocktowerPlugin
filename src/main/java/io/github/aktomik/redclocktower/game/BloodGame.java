@@ -77,26 +77,26 @@ public class BloodGame {
 	{
 		pdc.set(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.STRING, uuid);
 	}
-	public String getStorytellerUuid()
-	{
-		return pdc.get(DataKey.GAME_STORYTELLER_UUID.key, PersistentDataType.STRING);
-	}
 	private void clearStorytellerUuid()
 	{
 		pdc.remove(DataKey.GAME_STORYTELLER_UUID.key);
+	}
+	public String getStorytellerUuid()
+	{
+		return pdc.get(DataKey.GAME_STORYTELLER_UUID.key, PersistentDataType.STRING);
 	}
 
 	private void setSlotsUuid(List<String> uuids)
 	{
 		pdc.set(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.LIST.strings(), uuids);
 	}
-	public List<String> getSlotsUuid()
-	{
-		return pdc.getOrDefault(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.LIST.strings(), List.of());
-	}
 	private void clearSlotsUuid()
 	{
 		pdc.remove(DataKey.GAME_SLOTS_UUID.key);
+	}
+	public List<String> getSlotsUuid()
+	{
+		return pdc.getOrDefault(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.LIST.strings(), List.of());
 	}
 
 	public void setLocationCenter(Location loc)
@@ -108,6 +108,15 @@ public class BloodGame {
 		int[] posArray = pdc.get(DataKey.GAME_LOC_CENTER.key, PersistentDataType.INTEGER_ARRAY);
 		if (posArray == null || posArray.length != 3) return  null;
 		return new Location(world, posArray[0], posArray[1], posArray[2]);
+	}
+
+	private void setSettingsSlotLimit(int count)
+	{
+		pdc.set(DataKey.GAME_SETTINGS_SLOT_LIMIT.key, PersistentDataType.INTEGER, count);
+	}
+	public int getSettingsSlotLimit()
+	{
+		return pdc.getOrDefault(DataKey.GAME_SETTINGS_SLOT_LIMIT.key, PersistentDataType.INTEGER, 15);
 	}
 
 	// if
