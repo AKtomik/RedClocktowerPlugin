@@ -355,12 +355,13 @@ public class BloodGame {
 	}),
 	Map.entry(BloodGamePeriod.FREE, (game, sender) -> {
 		game.world.setTime(6000);
+		game.world.playSound(game.getLocationCenter(), Sound.BLOCK_ANVIL_LAND, 123456789f, 1.7f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-//			game.world.playSound(game.getLocationCenter(), Sound.BLOCK_BELL_USE, 123456789f, 0.4f);
+			game.world.playSound(game.getLocationCenter(), Sound.BLOCK_ANVIL_LAND, 123456789f, 1.7f);
 			game.broadcast("<white><b>wonder time");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-//			game.world.playSound(game.getLocationCenter(), Sound.BLOCK_BELL_USE, 123456789f, 0.4f);
+			game.world.playSound(game.getLocationCenter(), Sound.BLOCK_ANVIL_LAND, 123456789f, 1.7f);
 			game.broadcast("<gray><i>you are free to go and talk");
 		}, 40L);
 	}),
