@@ -19,13 +19,13 @@ public class PlayerDisplayTagManager implements Listener {
 
 	private static final Map<UUID, TextDisplay> displays = new HashMap<>();
 
-	public static final float aboveHeight = 2f;
+	public static final float ABOVE_HEIGHT = 2f;
 
 	static void createDisplay(Player player, Component displayName) {
 		// remove old one if exists
 		clearDisplay(player);
 
-		Location loc = player.getLocation().add(0, aboveHeight, 0);
+		Location loc = player.getLocation().add(0, ABOVE_HEIGHT, 0);
 		TextDisplay textDisplay = player.getWorld().spawn(loc, TextDisplay.class,  text -> {
 			text.text(displayName);
 			text.setBillboard(Display.Billboard.CENTER);
@@ -56,7 +56,7 @@ public class PlayerDisplayTagManager implements Listener {
 	static void updatePosition(Player player) {
 		TextDisplay display = displays.get(player.getUniqueId());
 		if (display != null && display.isValid()) {
-			Location newLoc = player.getLocation().add(0, aboveHeight, 0);
+			Location newLoc = player.getLocation().add(0, ABOVE_HEIGHT, 0);
 			display.teleport(newLoc);
 		}
 	}
