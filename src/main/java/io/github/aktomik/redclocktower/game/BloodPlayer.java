@@ -228,7 +228,8 @@ public class BloodPlayer {
 		}
 		MiniMessage mini = MiniMessage.miniMessage();
 
-		String deathString = (isAlive()) ? "" : "<gray>☠ ";
+		String deathString = (isAlive()) ? "" : "<gray>☠";
+		String spaceOfDeath = (isAlive()) ? "" : " ";
 		String tokenColor = getTokenColor();
 		String tokenCharacter = getTokenCharacter();
 		String slotString =Integer.toString(getSlotIndex()+1);
@@ -245,12 +246,13 @@ public class BloodPlayer {
 		List<TagResolver> resolvers = List.of(
 			Placeholder.parsed("prefix_death", deathString),
 			Placeholder.parsed("prefix_slot", slotString),
+			Placeholder.parsed("death_space", spaceOfDeath),
 			Placeholder.parsed("token_color", tokenColor),
 			Placeholder.parsed("token_char", tokenCharacter),
 			Placeholder.parsed("main_name", nameString),
 			Placeholder.parsed("old_name", oldNameString)
 		);
-		player.playerListName(mini.deserialize("<<token_color>><token_char></<token_color>><gray><prefix_slot></gray> <prefix_death><main_name> <dark_gray><old_name></dark_gray>",
+		player.playerListName(mini.deserialize("<<token_color>><token_char></<token_color>><gray><prefix_slot></gray> <prefix_death><death_space><main_name> <dark_gray><old_name></dark_gray>",
 			TagResolver.resolver(resolvers)
 		));
 		PlayerDisplayTagManager.changeDisplay(player, mini.deserialize("<<token_color>><token_char></<token_color>><prefix_death> <main_name>",
