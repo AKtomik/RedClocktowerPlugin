@@ -214,30 +214,8 @@ public class BloodGame {
 		return bloodPlayer;
 	}
 
-	public void removePlayer(Player player)
+	public void removePlayer(OfflinePlayer offlinePlayer)
 	{
-		String uuid = player.getUniqueId().toString();
-		// removing from the uuid list
-		ArrayList<String> playersUuid = new ArrayList<>(getSlotsUuid());
-		boolean removed = playersUuid.removeIf(loopUuid -> loopUuid != null && Objects.equals(loopUuid, uuid));
-		// check
-		if (!removed) throw new RuntimeException("trying to remove a player in a game where he is not");
-		// really removing from the uuid list
-		setSlotsUuid(playersUuid);
-		// blood player object quit
-		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		bloodPlayer.quitGame(this);
-	}
-
-	public void removeOfflinePlayer(OfflinePlayer offlinePlayer)
-	{
-		// only if really offline
-		if (offlinePlayer.isOnline())
-		{
-			removePlayer(Objects.requireNonNull(offlinePlayer.getPlayer()));
-			return;
-		}
-		// values
 		String uuid = offlinePlayer.getUniqueId().toString();
 		// set null from the uuid list
 		ArrayList<String> slotsUuid = new ArrayList<>(getSlotsUuid());
@@ -258,7 +236,11 @@ public class BloodGame {
 		if (!removed) throw new RuntimeException("trying to remove an offline player in a game where he is not");
 		// really removing from the uuid list
 		setSlotsUuid(slotsUuid);
-		// ! no blood player object quit
+		// blood player object quit if online
+		Player player = offlinePlayer.getPlayer();
+		if (player == null) return;
+		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		bloodPlayer.quitGame(this);
 	}
 
 	public void setStoryteller(Player player)
@@ -359,7 +341,7 @@ public class BloodGame {
 
 	Map.entry(BloodGameAction.RESET, (game, sender) -> {
 		for (OfflinePlayer offlinePlayer : game.getAllPlayersAsOffline())
-			game.removeOfflinePlayer(offlinePlayer);
+			game.removePlayer(offlinePlayer);
 		game.clearSlotsUuid();
 		game.deleteTeam();
 		game.setState(BloodGameState.NOTHING);
