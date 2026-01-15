@@ -12,7 +12,8 @@ public enum DataKey {
 	GAME_ROUND_COUNT("game_round_count"),
 	GAME_ROUND_ID("game_round_id"),
 
-	GAME_PLAYERS_UUID("game_players_uuid"),
+	GAME_SLOTS_PDC("game_slots_pdc"),
+	GAME_SLOTS_UUID("game_slots_uuid"),
 	GAME_STORYTELLER_UUID("game_storyteller_uuid"),
 
 	GAME_LOC_CENTER("game_loc_center"),
@@ -21,7 +22,7 @@ public enum DataKey {
 
 	PLAYER_GAME_WORLD_NAME("player_game_world_name"),
 	PLAYER_GAME_ROUND_ID("player_game_round_id"),
-	PLAYER_GAME_SLOT("player_game_slot"),//UNUSED
+	PLAYER_GAME_SLOT_INDEX("player_game_slot_index"),
 
 	PLAYER_ALIVE("player_alive"),
 	PLAYER_VOTE_TOKEN("player_vote_token"),

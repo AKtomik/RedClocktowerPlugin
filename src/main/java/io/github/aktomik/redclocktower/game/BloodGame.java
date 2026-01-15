@@ -75,7 +75,7 @@ public class BloodGame {
 
 	private void setStorytellerUuid(String uuid)
 	{
-		pdc.set(DataKey.GAME_PLAYERS_UUID.key, PersistentDataType.STRING, uuid);
+		pdc.set(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.STRING, uuid);
 	}
 	public String getStorytellerUuid()
 	{
@@ -86,17 +86,17 @@ public class BloodGame {
 		pdc.remove(DataKey.GAME_STORYTELLER_UUID.key);
 	}
 
-	private void setPlayersUuid(List<String> uuids)
+	private void setSlotsUuid(List<String> uuids)
 	{
-		pdc.set(DataKey.GAME_PLAYERS_UUID.key, PersistentDataType.LIST.strings(), uuids);
+		pdc.set(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.LIST.strings(), uuids);
 	}
-	public List<String> getPlayersUuid()
+	public List<String> getSlotsUuid()
 	{
-		return pdc.getOrDefault(DataKey.GAME_PLAYERS_UUID.key, PersistentDataType.LIST.strings(), List.of());
+		return pdc.getOrDefault(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.LIST.strings(), List.of());
 	}
-	private void clearPlayersUuid()
+	private void clearSlotsUuid()
 	{
-		pdc.remove(DataKey.GAME_PLAYERS_UUID.key);
+		pdc.remove(DataKey.GAME_SLOTS_UUID.key);
 	}
 
 	public void setLocationCenter(Location loc)
@@ -139,7 +139,7 @@ public class BloodGame {
 	// players
 	private int findPlayerIndex(String playerUuid)
 	{
-		List<String> uuids = getPlayersUuid();
+		List<String> uuids = getSlotsUuid();
 		for (int i = 0; i < uuids.size(); i++)
 		{
 			String loopUuid = uuids.get(i);
@@ -149,6 +149,21 @@ public class BloodGame {
 			}
 		}
 		return -1;
+	}
+
+	public List<String> getPlayersUuid()
+	{
+		return getSlotsUuid().stream().filter(uuid -> uuid != null).toList();
+	}
+
+	public List<Integer> getEmptySlotsIndex(List<String> slots)
+	{
+		List<Integer> indexes = new ArrayList<>();
+		for (int i = 0; i < slots.size(); i++)
+		{
+			if (slots.get(i) == null) indexes.add(i);
+		}
+		return indexes;
 	}
 
 	public List<Player> getAllPlayers()
@@ -171,13 +186,22 @@ public class BloodGame {
 		String uuid = player.getUniqueId().toString();
 		// check if player already exist
 		if (isUuidIn(uuid)) throw new RuntimeException("trying to add a player in a game where he already is");
-		// adding to the uuid list
-		ArrayList<String> playersUuid = new ArrayList<>(getPlayersUuid());
-		playersUuid.add(uuid);
-		setPlayersUuid(playersUuid);
+		// adding or filling to the uuid list
+		ArrayList<String> slotsUuid = new ArrayList<>(getSlotsUuid());
+		List<Integer> emptySlotsIndex = getEmptySlotsIndex(slotsUuid);
+		int slotIndex;
+		if (emptySlotsIndex.isEmpty())
+		{
+			slotIndex = slotsUuid.size();
+			slotsUuid.add(uuid);
+		} else {
+			slotIndex = emptySlotsIndex.getFirst();
+			slotsUuid.set(slotIndex, uuid);
+		}
+		setSlotsUuid(slotsUuid);
 		// blood player object join
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		bloodPlayer.joinGame(this);
+		bloodPlayer.joinGame(this, slotIndex);
 		return bloodPlayer;
 	}
 
@@ -185,12 +209,12 @@ public class BloodGame {
 	{
 		String uuid = player.getUniqueId().toString();
 		// removing from the uuid list
-		ArrayList<String> playersUuid = new ArrayList<>(getPlayersUuid());
+		ArrayList<String> playersUuid = new ArrayList<>(getSlotsUuid());
 		boolean removed = playersUuid.removeIf(loopUuid -> loopUuid != null && Objects.equals(loopUuid, uuid));
 		// check
 		if (!removed) throw new RuntimeException("trying to remove a player in a game where he is not");
 		// really removing from the uuid list
-		setPlayersUuid(playersUuid);
+		setSlotsUuid(playersUuid);
 		// blood player object quit
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		bloodPlayer.quitGame(this);
@@ -206,13 +230,25 @@ public class BloodGame {
 		}
 		// values
 		String uuid = offlinePlayer.getUniqueId().toString();
-		// removing from the uuid list
-		ArrayList<String> playersUuid = new ArrayList<>(getPlayersUuid());
-		boolean removed = playersUuid.removeIf(loopUuid -> loopUuid != null && Objects.equals(loopUuid, uuid));
+		// set null from the uuid list
+		ArrayList<String> slotsUuid = new ArrayList<>(getSlotsUuid());
+		boolean removed = false;
+		for (int i = 0; i < slotsUuid.size(); i++)
+		{
+			if (slotsUuid.get(i) == null)
+			{
+				if (i == slotsUuid.size() - 1)
+					slotsUuid.remove(i);
+				else
+					slotsUuid.set(i, null);
+				removed = true;
+				break;
+			}
+		}
 		// check
 		if (!removed) throw new RuntimeException("trying to remove an offline player in a game where he is not");
 		// really removing from the uuid list
-		setPlayersUuid(playersUuid);
+		setSlotsUuid(slotsUuid);
 		// ! no blood player object quit
 	}
 
@@ -315,7 +351,7 @@ public class BloodGame {
 	Map.entry(BloodGameAction.RESET, (game, sender) -> {
 		for (OfflinePlayer offlinePlayer : game.getAllPlayersAsOffline())
 			game.removeOfflinePlayer(offlinePlayer);
-		game.clearPlayersUuid();
+		game.clearSlotsUuid();
 		game.deleteTeam();
 		game.setState(BloodGameState.NOTHING);
 		sender.sendRichMessage("<light_purple>reseting game");

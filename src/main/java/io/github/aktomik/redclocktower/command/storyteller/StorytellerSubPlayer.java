@@ -116,8 +116,18 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
 
 		// the action
-		sender.sendRichMessage("<white>all players in game:");
-		for (OfflinePlayer offlinePlayer : game.getAllPlayersAsOffline())
+		List<OfflinePlayer> allPlayersAsOffline = game.getAllPlayersAsOffline();
+		int playerAmount = allPlayersAsOffline.size();
+		if (playerAmount == 0)
+		{
+			sender.sendRichMessage("<white>there is not player in game");
+			return Command.SINGLE_SUCCESS;
+		}
+		sender.sendRichMessage("<white>there is <player_amount> players in game:",
+			Placeholder.parsed("player_amount", Integer.toString(playerAmount))
+		);
+
+		for (OfflinePlayer offlinePlayer : allPlayersAsOffline)
 		{
 			if (offlinePlayer.isOnline())
 			{

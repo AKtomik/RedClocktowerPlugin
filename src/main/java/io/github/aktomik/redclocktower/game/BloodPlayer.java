@@ -105,12 +105,26 @@ public class BloodPlayer {
 		return bloodGame;
 	}
 
+	private void setSlotIndex(int index)
+	{
+		pdc.set(DataKey.PLAYER_GAME_SLOT_INDEX.key, PersistentDataType.INTEGER, index);
+	}
+	public void clearSlotIndex()
+	{
+		pdc.remove(DataKey.PLAYER_GAME_SLOT_INDEX.key);
+	}
+	public int getSlotIndex()
+	{
+		return pdc.get(DataKey.PLAYER_GAME_SLOT_INDEX.key, PersistentDataType.INTEGER);
+	}
+
 	// game link
-	void joinGame(BloodGame game)
+	void joinGame(BloodGame game, int slotIndex)
 	{
 		BloodGame lastGame = getGame();
 		if (lastGame != null) leaveGame();
 		setGame(game);
+		setSlotIndex(slotIndex);
 
 		game.getTeam().addPlayer(player);
 		revive();
