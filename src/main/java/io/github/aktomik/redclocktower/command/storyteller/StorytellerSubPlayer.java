@@ -36,29 +36,29 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 		.then(Commands.literal("add")
 			.then(Commands.argument("players", ArgumentTypes.players())
-			.executes(subAdd)))
+				.executes(subAdd)))
 
 		.then(Commands.literal("remove")
 			.then(Commands.argument("players", ArgumentTypes.players())
-			.executes(subRemove)))
+				.executes(subRemove)))
 
 		.then(Commands.literal("alive")
 			.then(Commands.argument("players", ArgumentTypes.players())
-			.executes(subAliveCheck)
-			.then(Commands.argument("change", BoolArgumentType.bool())
-			.executes(subAliveChange))))
+				.executes(subAliveCheck)
+				.then(Commands.argument("change", BoolArgumentType.bool())
+					.executes(subAliveChange))))
 
 		.then(Commands.literal("token")
 			.then(Commands.argument("players", ArgumentTypes.players())
-			.executes(subTokenCheck)
-			.then(Commands.argument("change", BoolArgumentType.bool())
-			.executes(subTokenChange))))
+				.executes(subTokenCheck)
+				.then(Commands.argument("change", BoolArgumentType.bool())
+					.executes(subTokenChange))))
 
 		.then(Commands.literal("voting")
 			.then(Commands.argument("players", ArgumentTypes.players())
-			.executes(subVotingCheck)
-			.then(Commands.argument("change", BoolArgumentType.bool())
-			.executes(subVotingChange))));
+				.executes(subVotingCheck)
+				.then(Commands.argument("change", BoolArgumentType.bool())
+					.executes(subVotingChange))));
 	}
 
 	// utils
