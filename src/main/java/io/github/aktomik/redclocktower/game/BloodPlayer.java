@@ -238,7 +238,7 @@ public class BloodPlayer {
 		String displayName = getDisplayName();
 		if (displayName != null && !displayName.isEmpty())
 		{
-			oldNameString = nameString;
+			oldNameString = "("+nameString+")";
 			nameString = displayName;
 		}
 
@@ -250,7 +250,7 @@ public class BloodPlayer {
 			Placeholder.parsed("main_name", nameString),
 			Placeholder.parsed("old_name", oldNameString)
 		);
-		player.playerListName(mini.deserialize("<gray><prefix_slot></gray><<token_color>><token_char></<token_color>><prefix_death> <main_name> <dark_gray><old_name></dark_gray>",
+		player.playerListName(mini.deserialize("<<token_color>><token_char></<token_color>><prefix_death> <gray><prefix_slot></gray> <main_name> <dark_gray><old_name></dark_gray>",
 			TagResolver.resolver(resolvers)
 		));
 		PlayerDisplayTagManager.changeDisplay(player, mini.deserialize("<<token_color>><token_char></<token_color>><prefix_death> <main_name>",
