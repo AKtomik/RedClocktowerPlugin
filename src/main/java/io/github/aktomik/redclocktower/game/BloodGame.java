@@ -164,7 +164,7 @@ public class BloodGame {
 
 	public List<String> getPlayersUuid()
 	{
-		return getSlotsUuid().stream().filter(uuid -> uuid.isEmpty()).toList();
+		return getSlotsUuid().stream().filter(uuid -> !uuid.isEmpty()).toList();
 	}
 
 	public List<Integer> getEmptySlotsIndex(List<String> slots)
