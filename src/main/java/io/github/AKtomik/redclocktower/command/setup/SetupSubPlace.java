@@ -31,6 +31,19 @@ public class SetupSubPlace extends SubBrigadierBase {
 
 
 	Command<CommandSourceStack> PlaceCenterCheck = ctx -> {
+		// arguments
+		final CommandSender sender = ctx.getSource().getSender();
+		final World world = ctx.getSource().getLocation().getWorld();
+		final BloodGame game = BloodGame.get(world);
+
+		// execution
+		final Location loc = game.getLocationCenter();
+		sender.sendRichMessage("location <b><locname></b> is at <x> <y> <z> <hover:show_text:\"Click to teleport\"><click:run_command:/tp @s <x> <y> <z>><green>[tp]",
+		Placeholder.parsed("x", Double.toString(loc.getBlockX())),
+		Placeholder.parsed("y", Double.toString(loc.getBlockY())),
+		Placeholder.parsed("z", Double.toString(loc.getBlockZ())),
+		Placeholder.parsed("locname", "center")
+		);
 		return Command.SINGLE_SUCCESS;
 	};
 
@@ -44,11 +57,11 @@ public class SetupSubPlace extends SubBrigadierBase {
 
 		// execution
 		game.setLocationCenter(loc);
-		sender.sendRichMessage("set <b>center<b> location at <x> <y> <z> (<pos>)",
+		sender.sendRichMessage("set <b><locname></b> location at <x> <y> <z>",
 		Placeholder.parsed("x", Double.toString(pos.x())),
 		Placeholder.parsed("y", Double.toString(pos.y())),
 		Placeholder.parsed("z", Double.toString(pos.z())),
-		Placeholder.parsed("pos", pos.toString())
+		Placeholder.parsed("locname", "center")
 		);
 		return Command.SINGLE_SUCCESS;
 	};
