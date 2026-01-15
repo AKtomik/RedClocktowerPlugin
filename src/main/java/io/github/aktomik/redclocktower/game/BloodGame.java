@@ -198,15 +198,9 @@ public class BloodGame {
 		// adding or filling to the uuid list
 		ArrayList<String> slotsUuid = new ArrayList<>(getSlotsUuid());
 		List<Integer> emptySlotsIndex = getEmptySlotsIndex(slotsUuid);
-		int slotIndex;
-		if (emptySlotsIndex.isEmpty())
-		{
-			slotIndex = slotsUuid.size();
-			slotsUuid.add(uuid);
-		} else {
-			slotIndex = emptySlotsIndex.getFirst();
-			slotsUuid.set(slotIndex, uuid);
-		}
+		if (emptySlotsIndex.isEmpty()) throw new RuntimeException("trying to add a player in a game with no available slot (check if the limit is well set and refresh)");
+		int slotIndex = emptySlotsIndex.getFirst();
+		slotsUuid.set(slotIndex, uuid);
 		setSlotsUuid(slotsUuid);
 		// blood player object join
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
@@ -224,10 +218,7 @@ public class BloodGame {
 		{
 			if (Objects.equals(slotsUuid.get(i), uuid))
 			{
-				if (i == slotsUuid.size() - 1)
-					slotsUuid.remove(i);
-				else
-					slotsUuid.set(i, null);
+				slotsUuid.set(i, null);
 				removed = true;
 				break;
 			}
@@ -284,6 +275,12 @@ public class BloodGame {
 			}
 			setSlotsUuid(slotsUuid);
 		}
+	}
+
+	public void changeSlotLimit(int newLimit)
+	{
+		setSettingsSlotLimit(newLimit);
+		applySlotLimit();
 	}
 
 	// teams
@@ -348,6 +345,7 @@ public class BloodGame {
 		game.world.setGameRule(GameRules.ADVANCE_TIME, false);
 		game.generateNewId();
 		game.createTeam();
+		game.applySlotLimit();
 		sender.sendRichMessage("<light_purple>setup game <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
 		game.setState(BloodGameState.WAITING);
 	}),
