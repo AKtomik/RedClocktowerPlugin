@@ -346,6 +346,7 @@ public class BloodGame {
 		}
 		game.world.setTime(12000);
 		game.world.setGameRule(GameRules.ADVANCE_TIME, false);
+		game.world.setDifficulty(Difficulty.PEACEFUL);
 		game.generateNewId();
 		game.createTeam();
 		game.applySlotLimit();
