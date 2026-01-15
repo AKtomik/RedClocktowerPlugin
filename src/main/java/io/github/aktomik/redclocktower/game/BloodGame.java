@@ -253,6 +253,39 @@ public class BloodGame {
 		return Bukkit.getPlayer(UUID.fromString(getStorytellerUuid()));
 	}
 
+	// slots
+	public void applySlotLimit()
+	{
+		int slotLimit = getSettingsSlotLimit();
+		int slotSize = getSlotsUuid().size();
+
+		if (slotSize < slotLimit)
+		{
+			ArrayList<String> slotsUuid = new ArrayList<>(getSlotsUuid());
+			for (int repeat = 0; repeat <= slotLimit - slotSize; repeat++)
+			{
+				slotsUuid.add(null);
+			}
+			setSlotsUuid(slotsUuid);
+		}
+		else if (slotSize > slotLimit)
+		{
+			ArrayList<String> slotsUuid = new ArrayList<>(getSlotsUuid());
+			for (int repeat = 0; repeat <= slotSize - slotLimit; repeat++)
+			{
+				String lastUuid = slotsUuid.getLast();
+				slotsUuid.removeLast();
+				if (lastUuid == null) continue;
+
+				Player player = Bukkit.getPlayer(lastUuid);
+				if (player == null || !player.isOnline()) return;
+				BloodPlayer bloodPlayer = BloodPlayer.get(player);
+				bloodPlayer.quitGame(this);
+			}
+			setSlotsUuid(slotsUuid);
+		}
+	}
+
 	// teams
 	private void generateNewId()
 	{
