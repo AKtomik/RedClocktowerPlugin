@@ -10,7 +10,6 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.plugin.Plugin;
-import org.bukkit.util.Transformation;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -33,13 +32,6 @@ public class PlayerDisplayTagManager implements Listener {
 			text.setAlignment(TextDisplay.TextAlignment.CENTER);
 			text.setSeeThrough(false);
 			text.setDefaultBackground(false);
-
-			Transformation transformation = text.getTransformation();
-			transformation.getTranslation().set(0, aboveHeight, 0);
-			text.setTransformation(transformation);
-
-			text.setInterpolationDuration(2);
-			text.setInterpolationDelay(0);
 		});
 
 		displays.put(player.getUniqueId(), textDisplay);
