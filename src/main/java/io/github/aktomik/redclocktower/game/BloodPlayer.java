@@ -4,6 +4,8 @@ import io.github.aktomik.redclocktower.DataKey;
 import io.github.aktomik.redclocktower.utils.PlayerDisplayTagManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -11,6 +13,8 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+
+import java.util.List;
 
 public class BloodPlayer {
 
@@ -166,10 +170,11 @@ public class BloodPlayer {
 	{
 		return false;
 	}
-	public boolean hasToken()
+	public boolean isTraveller()
 	{
-		return getVoteToken();
+		return false;
 	}
+	public boolean hasToken() { return getVoteToken(); }
 	public boolean isVoting()
 	{
 		return getVotePull();
@@ -222,43 +227,59 @@ public class BloodPlayer {
 			return;
 		}
 		MiniMessage mini = MiniMessage.miniMessage();
-		String prefixString;
-		String slotString = "";
-		if (isStoryteller())
-		{
-			prefixString = "<light_purple>❇</light_purple> ";
-		} else {
-			String lifeString = (isAlive()) ? "<white>" : "<gray>☠";
-			String tokenString = getStringToken();
-			prefixString = tokenString+lifeString+" ";
-			slotString = "<gray>"+Integer.toString(getSlotIndex()+1)+"</gray> ";
-		}
-		String longeNameString = player.getName();
-		String simpleNameString = player.getName();
+
+		String deathString = (isAlive()) ? "" : "<gray>☠";
+		String tokenColor = getTokenColor();
+		String tokenCharacter = getTokenCharacter();
+		String slotString =Integer.toString(getSlotIndex()+1);
+
+		String nameString = player.getName();
+		String oldNameString = "";
 		String displayName = getDisplayName();
 		if (displayName != null && !displayName.isEmpty())
 		{
-			longeNameString = displayName+" <dark_gray>("+ longeNameString +")";
-			simpleNameString = displayName;
+			oldNameString = nameString;
+			nameString = displayName;
 		}
-		player.playerListName(mini.deserialize(slotString+prefixString+longeNameString));
-		PlayerDisplayTagManager.changeDisplay(player, mini.deserialize(prefixString+simpleNameString));
+
+		List<TagResolver> resolvers = List.of(
+			Placeholder.parsed("prefix_death", deathString),
+			Placeholder.parsed("prefix_slot", slotString),
+			Placeholder.parsed("token_color", tokenColor),
+			Placeholder.parsed("token_char", tokenCharacter),
+			Placeholder.parsed("main_name", nameString),
+			Placeholder.parsed("old_name", oldNameString)
+		);
+		player.playerListName(mini.deserialize("<gray><prefix_slot></gray><<token_color>><token_char></<token_color>><prefix_death> <main_name> <dark_gray><old_name></dark_gray>",
+			TagResolver.resolver(resolvers)
+		));
+		PlayerDisplayTagManager.changeDisplay(player, mini.deserialize("<<token_color>><token_char></<token_color>><prefix_death> <main_name>",
+			TagResolver.resolver(resolvers)
+		));
 	}
 
-	String getStringToken()
+	String getTokenCharacter()
 	{
+		if (isStoryteller()) return "❇";
+		if (isTraveller()) return "✳";
+		return "✴";
+	}
+
+	String getTokenColor()
+	{
+		if (isStoryteller()) return "light_purple";
 		return hasToken()
-		? isAlive()
-			? isVoting()
-				? "<yellow>✴</yellow>"
-				: "<red>✴</red>"
-			: isVoting()
-				? "<aqua>✴</aqua>"
-				: "<blue>✴</blue>"
-		: isAlive()
-			? isVoting()
-				? "<yellow>✳</yellow>"
-				: "<gray>✳</gray>"
-			: "<black>✳</black>";
+			? isAlive()
+				? isVoting()
+					? "yellow"
+					: "red"
+				: isVoting()
+					? "aqua"
+					: "blue"
+			: isAlive()
+				? isVoting()
+					? "gold"
+					: "gray"
+				: "black";
 	}
 }
