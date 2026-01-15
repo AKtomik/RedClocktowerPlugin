@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -240,6 +241,7 @@ public class BloodGame {
 		if (teamId == null) throw new RuntimeException("trying to create team but there is no round id");
 		Team team = board.registerNewTeam(teamId);
 		team.setAllowFriendlyFire(false);
+		team.setNameTagVisibility(NameTagVisibility.NEVER);
 		team.setCanSeeFriendlyInvisibles(true);
 	}
 
