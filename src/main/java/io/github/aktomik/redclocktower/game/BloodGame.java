@@ -16,6 +16,8 @@ import org.bukkit.scoreboard.Team;
 import java.util.*;
 import java.util.function.BiConsumer;
 
+import static org.bukkit.Bukkit.getLogger;
+
 public class BloodGame {
 
 	// class
@@ -152,7 +154,7 @@ public class BloodGame {
 		for (int i = 0; i < uuids.size(); i++)
 		{
 			String loopUuid = uuids.get(i);
-			if (loopUuid != null && Objects.equals(loopUuid, playerUuid))
+			if (!loopUuid.isEmpty() && Objects.equals(loopUuid, playerUuid))
 			{
 				return i;
 			}
@@ -162,7 +164,7 @@ public class BloodGame {
 
 	public List<String> getPlayersUuid()
 	{
-		return getSlotsUuid().stream().filter(uuid -> uuid != null).toList();
+		return getSlotsUuid().stream().filter(uuid -> uuid.isEmpty()).toList();
 	}
 
 	public List<Integer> getEmptySlotsIndex(List<String> slots)
@@ -170,7 +172,7 @@ public class BloodGame {
 		List<Integer> indexes = new ArrayList<>();
 		for (int i = 0; i < slots.size(); i++)
 		{
-			if (slots.get(i) == null) indexes.add(i);
+			if (slots.get(i).isEmpty()) indexes.add(i);
 		}
 		return indexes;
 	}
@@ -218,7 +220,7 @@ public class BloodGame {
 		{
 			if (Objects.equals(slotsUuid.get(i), uuid))
 			{
-				slotsUuid.set(i, null);
+				slotsUuid.set(i, "");
 				removed = true;
 				break;
 			}
@@ -253,20 +255,21 @@ public class BloodGame {
 		if (slotSize < slotLimit)
 		{
 			ArrayList<String> slotsUuid = new ArrayList<>(getSlotsUuid());
-			for (int repeat = 0; repeat <= slotLimit - slotSize; repeat++)
+			for (int repeat = 0; repeat < slotLimit - slotSize; repeat++)
 			{
-				slotsUuid.add(null);
+				slotsUuid.add("");
 			}
-			setSlotsUuid(slotsUuid);
+			List<String> list = slotsUuid.stream().toList();
+			setSlotsUuid(list);
 		}
 		else if (slotSize > slotLimit)
 		{
 			ArrayList<String> slotsUuid = new ArrayList<>(getSlotsUuid());
-			for (int repeat = 0; repeat <= slotSize - slotLimit; repeat++)
+			for (int repeat = 0; repeat < slotSize - slotLimit; repeat++)
 			{
 				String lastUuid = slotsUuid.getLast();
 				slotsUuid.removeLast();
-				if (lastUuid == null) continue;
+				if (lastUuid.isEmpty()) continue;
 
 				Player player = Bukkit.getPlayer(lastUuid);
 				if (player == null || !player.isOnline()) return;
