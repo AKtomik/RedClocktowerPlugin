@@ -23,13 +23,13 @@ public class PlayerDisplayTagManager implements Listener {
 		// remove old one if exists
 		clearDisplay(player);
 
-		Location loc = player.getLocation().add(0, 2.3, 0); // Above head
+		Location loc = player.getLocation().add(0, 2.3, 0);
 		TextDisplay textDisplay = player.getWorld().spawn(loc, TextDisplay.class,  text -> {
 			text.text(displayName);
-			text.setBillboard(Display.Billboard.CENTER); // Always face camera
+			text.setBillboard(Display.Billboard.CENTER);
 			text.setAlignment(TextDisplay.TextAlignment.CENTER);
 			text.setSeeThrough(false);
-			text.setDefaultBackground(false); // No
+			text.setDefaultBackground(false);
 		});
 
 		displays.put(player.getUniqueId(), textDisplay);
@@ -38,7 +38,7 @@ public class PlayerDisplayTagManager implements Listener {
 	public static void changeDisplay(Player player, Component newName) {
 		TextDisplay display = displays.get(player.getUniqueId());
 		if (display != null && display.isValid()) {
-			display.customName(newName);
+			display.text(newName);
 		} else {
 			createDisplay(player, newName);
 		}
@@ -64,10 +64,9 @@ public class PlayerDisplayTagManager implements Listener {
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				updatePosition(player);
 			}
-		}, 0L, 1L); // Every tick
+		}, 0L, 1L);
 	}
 
-	// Cleanup on player quit
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
 		clearDisplay(event.getPlayer());

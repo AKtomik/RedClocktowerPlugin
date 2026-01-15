@@ -1,6 +1,7 @@
 package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.DataKey;
+import io.github.aktomik.redclocktower.utils.PlayerDisplayTagManager;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
@@ -193,6 +194,7 @@ public class BloodPlayer {
 	public void clearNameTag()
 	{
 		player.playerListName(Component.text(player.getName()));
+		PlayerDisplayTagManager.clearDisplay(player);
 	}
 
 	public void refreshNameTag()
@@ -212,13 +214,16 @@ public class BloodPlayer {
 			String tokenString = getStringToken();
 			prefixString = tokenString+lifeString+" ";
 		}
-		String nameString = player.getName();
+		String longeNameString = player.getName();
+		String simpleNameString = player.getName();
 		String displayName = getDisplayName();
 		if (displayName != null && !displayName.isEmpty())
 		{
-			nameString = displayName+" <dark_gray>("+nameString+")";
+			longeNameString = displayName+" <dark_gray>("+ longeNameString +")";
+			simpleNameString = displayName;
 		}
-		player.playerListName(mini.deserialize(prefixString+nameString));
+		player.playerListName(mini.deserialize(prefixString+longeNameString));
+		PlayerDisplayTagManager.changeDisplay(player, mini.deserialize(prefixString+simpleNameString));
 	}
 
 	String getStringToken()
