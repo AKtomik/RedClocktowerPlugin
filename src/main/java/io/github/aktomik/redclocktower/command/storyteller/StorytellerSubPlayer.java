@@ -118,6 +118,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		// the action
 		List<OfflinePlayer> allPlayersAsOffline = game.getAllPlayersAsOffline();
 		int playerAmount = allPlayersAsOffline.size();
+		int emptyAmount = game.remainingSlots();
 		if (playerAmount == 0)
 		{
 			sender.sendRichMessage("<white>there is not player in game");
@@ -146,6 +147,16 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 				);
 			}
 		}
+
+		if (emptyAmount > 0)
+		{
+			sender.sendRichMessage("<gray><i><empty_amount> slots are empty",
+				Placeholder.parsed("empty_amount", Integer.toString(emptyAmount))
+			);
+		} else {
+			sender.sendRichMessage("<gray><i><b>the game is full");
+		}
+
 		return Command.SINGLE_SUCCESS;
 	};
 
