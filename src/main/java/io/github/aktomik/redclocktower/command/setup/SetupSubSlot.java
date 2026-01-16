@@ -2,12 +2,15 @@ package io.github.aktomik.redclocktower.command.setup;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.BloodSlotPlace;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
 import io.github.aktomik.redclocktower.utils.brigadier.SubBrigadierBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.command.CommandSender;
 
 public class SetupSubSlot extends SubBrigadierBase {
 	public String name() {
@@ -32,10 +35,32 @@ public class SetupSubSlot extends SubBrigadierBase {
 
 
 	Command<CommandSourceStack> subRemove = ctx -> {
+		// arguments
+		CommandSender sender = ctx.getSource().getSender();
+		BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		// action
+		game.removeLastSlot();
+		sender.sendRichMessage("<b>removing</b> the last slot (now <count> slots)",
+			Placeholder.parsed("count", Integer.toString(game.getSlotCount()))
+		);
 		return Command.SINGLE_SUCCESS;
 	};
 
 	Command<CommandSourceStack> subAdd = ctx -> {
+		// arguments
+		CommandSender sender = ctx.getSource().getSender();
+		BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		// action
+		game.removeLastSlot();
+			sender.sendRichMessage("<b>removing</b> the last slot (now <count> slots)",
+			Placeholder.parsed("count", Integer.toString(game.getSlotCount()))
+		);
+		return Command.SINGLE_SUCCESS;
+	};
+
+	Command<CommandSourceStack> subList = ctx -> {
 		return Command.SINGLE_SUCCESS;
 	};
 
