@@ -252,8 +252,10 @@ public class BloodGame {
 		int slotLimit = getSettingsSlotLimit();
 		int slotSize = getSlotsUuid().size();
 
+		getLogger().info("SLOT LIMIT APPLY");
 		if (slotSize < slotLimit)
 		{
+			getLogger().info("SLOT LIMIT ADDER");
 			ArrayList<String> slotsUuid = new ArrayList<>(getSlotsUuid());
 			for (int repeat = 0; repeat < slotLimit - slotSize; repeat++)
 			{
@@ -271,8 +273,9 @@ public class BloodGame {
 				slotsUuid.removeLast();
 				if (lastUuid.isEmpty()) continue;
 
-				Player player = Bukkit.getPlayer(lastUuid);
-				if (player == null || !player.isOnline()) return;
+				Player player = Bukkit.getPlayer(UUID.fromString(lastUuid));
+				getLogger().info(player.toString());
+				if (player == null || !player.isOnline()) continue;
 				BloodPlayer bloodPlayer = BloodPlayer.get(player);
 				bloodPlayer.quitGame(this);
 			}
