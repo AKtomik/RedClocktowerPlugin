@@ -25,7 +25,7 @@ public class SetupSubPlace extends SubBrigadierBase {
 		return base()
 		.then(Commands.argument("place", EnumArgument.simple(BloodGamePlace.class, "invalid game place"))
 			.executes(placeCenterCheck)
-			.then(Commands.argument("location", ArgumentTypes.blockPosition())
+			.then(Commands.argument("position", ArgumentTypes.blockPosition())
 				.executes(placeCenterChange)
 		));
 	}
@@ -55,7 +55,7 @@ public class SetupSubPlace extends SubBrigadierBase {
 		final World world = ctx.getSource().getLocation().getWorld();
 		final BloodGame game = BloodGame.get(world);
 		final BloodGamePlace place = ctx.getArgument("place", BloodGamePlace.class);
-		final BlockPosition pos = ctx.getArgument("location", BlockPositionResolver.class).resolve(ctx.getSource());
+		final BlockPosition pos = ctx.getArgument("position", BlockPositionResolver.class).resolve(ctx.getSource());
 
 		// execution
 		pos.offset(0, 1, 0);
