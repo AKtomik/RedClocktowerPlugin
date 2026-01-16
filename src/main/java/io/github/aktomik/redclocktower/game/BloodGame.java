@@ -101,13 +101,13 @@ public class BloodGame {
 		return pdc.getOrDefault(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.LIST.strings(), List.of());
 	}
 
-	public void setLocationCenter(Location loc)
+	public void setPosition(BloodGamePlace posName, Location pos)
 	{
-		pdc.set(DataKey.GAME_LOC_CENTER.key, PersistentDataType.INTEGER_ARRAY, new int[] {loc.getBlockX(), loc.getBlockY(), loc.getBlockZ()});
+		pdc.set(DataKey.GAME_LOC.get(posName).key, PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
 	}
-	public Location getLocationCenter()
+	public Location getPosition(BloodGamePlace posName)
 	{
-		int[] posArray = pdc.get(DataKey.GAME_LOC_CENTER.key, PersistentDataType.INTEGER_ARRAY);
+		int[] posArray = pdc.get(DataKey.GAME_LOC.get(posName).key, PersistentDataType.INTEGER_ARRAY);
 		if (posArray == null || posArray.length != 3) return  null;
 		return new Location(world, posArray[0], posArray[1], posArray[2]);
 	}
@@ -420,49 +420,49 @@ public class BloodGame {
 	static Map<BloodGamePeriod, BiConsumer<BloodGame, CommandSender>> gamePeriodEnter = Map.ofEntries(
 	Map.entry(BloodGamePeriod.MORNING, (game, sender) -> {
 		game.world.setTime(0);
-		game.world.playSound(game.getLocationCenter(), Sound.BLOCK_BELL_USE, 123456789f, 0.3f);
+		game.world.playSound(game.getPosition(BloodGamePlace.CENTER), Sound.BLOCK_BELL_USE, 123456789f, 0.3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.world.playSound(game.getLocationCenter(), Sound.BLOCK_BELL_USE, 123456789f, 0.4f);
+			game.world.playSound(game.getPosition(BloodGamePlace.CENTER), Sound.BLOCK_BELL_USE, 123456789f, 0.4f);
 			game.broadcast("<white><b>it's the morning!");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.world.playSound(game.getLocationCenter(), Sound.BLOCK_BELL_USE, 123456789f, 0.5f);
+			game.world.playSound(game.getPosition(BloodGamePlace.CENTER), Sound.BLOCK_BELL_USE, 123456789f, 0.5f);
 			game.broadcast("<gray><i>everyone is attended to the townhall");
 		}, 40L);
 	}),
 	Map.entry(BloodGamePeriod.FREE, (game, sender) -> {
 		game.world.setTime(6000);
-		game.world.playSound(game.getLocationCenter(), Sound.BLOCK_ANVIL_LAND, 123456789f, 1.7f);
+		game.world.playSound(game.getPosition(BloodGamePlace.CENTER), Sound.BLOCK_ANVIL_LAND, 123456789f, 1.7f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.world.playSound(game.getLocationCenter(), Sound.BLOCK_ANVIL_LAND, 123456789f, 1.7f);
+			game.world.playSound(game.getPosition(BloodGamePlace.CENTER), Sound.BLOCK_ANVIL_LAND, 123456789f, 1.7f);
 			game.broadcast("<white><b>wonder time");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.world.playSound(game.getLocationCenter(), Sound.BLOCK_ANVIL_LAND, 123456789f, 1.7f);
+			game.world.playSound(game.getPosition(BloodGamePlace.CENTER), Sound.BLOCK_ANVIL_LAND, 123456789f, 1.7f);
 			game.broadcast("<gray><i>you are free to go and talk");
 		}, 40L);
 	}),
 	Map.entry(BloodGamePeriod.MEET, (game, sender) -> {
 		game.world.setTime(12000);
-		game.world.playSound(game.getLocationCenter(), Sound.BLOCK_BELL_USE, 123456789f, 0.3f);
+		game.world.playSound(game.getPosition(BloodGamePlace.CENTER), Sound.BLOCK_BELL_USE, 123456789f, 0.3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.world.playSound(game.getLocationCenter(), Sound.BLOCK_BELL_USE, 123456789f, 0.4f);
+			game.world.playSound(game.getPosition(BloodGamePlace.CENTER), Sound.BLOCK_BELL_USE, 123456789f, 0.4f);
 			game.broadcast("<white><b>debate time");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.world.playSound(game.getLocationCenter(), Sound.BLOCK_BELL_USE, 123456789f, 0.5f);
+			game.world.playSound(game.getPosition(BloodGamePlace.CENTER), Sound.BLOCK_BELL_USE, 123456789f, 0.5f);
 			game.broadcast("<gray><i>everyone is attended to the townhall");
 		}, 40L);
 	}),
 	Map.entry(BloodGamePeriod.NIGHT, (game, sender) -> {
 		game.world.setTime(18000);
-		game.world.playSound(game.getLocationCenter(), Sound.ENTITY_ALLAY_HURT, 123456789f, 0f);
+		game.world.playSound(game.getPosition(BloodGamePlace.CENTER), Sound.ENTITY_ALLAY_HURT, 123456789f, 0f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.world.playSound(game.getLocationCenter(), Sound.BLOCK_WOODEN_DOOR_OPEN, 123456789f, .5f);
+			game.world.playSound(game.getPosition(BloodGamePlace.CENTER), Sound.BLOCK_WOODEN_DOOR_OPEN, 123456789f, .5f);
 			game.broadcast("<white><b>the moon is rising...");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.world.playSound(game.getLocationCenter(), Sound.BLOCK_WOODEN_DOOR_CLOSE, 123456789f, .5f);
+			game.world.playSound(game.getPosition(BloodGamePlace.CENTER), Sound.BLOCK_WOODEN_DOOR_CLOSE, 123456789f, .5f);
 			game.broadcast("<gray><i>go to your house and sleep well");
 		}, 40L);
 	})

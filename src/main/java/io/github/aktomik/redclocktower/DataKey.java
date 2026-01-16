@@ -1,7 +1,10 @@
 package io.github.aktomik.redclocktower;
 
+import io.github.aktomik.redclocktower.game.BloodGamePlace;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Map;
 
 public enum DataKey {
 
@@ -31,6 +34,12 @@ public enum DataKey {
 	PLAYER_VOTE_PULL("player_vote_pull"),
 
 	PLAYER_DISPLAY_NAME("player_display_name");
+
+	// shortcut
+	public static Map<BloodGamePlace, DataKey> GAME_LOC = Map.ofEntries(
+		Map.entry(BloodGamePlace.CENTER, DataKey.GAME_LOC_CENTER),
+		Map.entry(BloodGamePlace.SPAWN, DataKey.GAME_LOC_SPAWN)
+	);
 
 	// system
 	public final String path;
