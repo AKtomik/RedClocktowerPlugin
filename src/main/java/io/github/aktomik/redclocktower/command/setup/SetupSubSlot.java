@@ -19,6 +19,8 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
+import java.util.stream.IntStream;
+
 public class SetupSubSlot extends SubBrigadierBase {
 	public String name() {
 		return "slot";
@@ -32,6 +34,11 @@ public class SetupSubSlot extends SubBrigadierBase {
 			.executes(subRemove))
 		.then(Commands.literal("edit")
 			.then(Commands.argument("slot number", IntegerArgumentType.integer(1, 24))
+			.suggests((ctx, builder) -> {
+				final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+				IntStream.range(1, game.getSlotCount()).forEach(builder::suggest);
+				return builder.buildFuture();
+			})
 				.then(Commands.literal("position")
 					.then(Commands.argument("place", EnumArgument.simple(BloodSlotPlace.class, "invalid slot place"))
 						.executes(subEditPositionCheck)
