@@ -12,7 +12,7 @@ public class SetupCommand extends CommandBrigadierBase {
 		return "setup";
 	}
 	public List<String> aliases() {
-		return List.of("upset", "bloodsetup", "bloodsettings");
+		return List.of("upset", "bloodsetup");
 	}
 	public String permission() {
 		return "redclocktower.storyteller";
