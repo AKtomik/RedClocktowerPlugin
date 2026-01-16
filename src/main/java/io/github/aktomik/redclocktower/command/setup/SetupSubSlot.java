@@ -49,7 +49,7 @@ public class SetupSubSlot extends SubBrigadierBase {
 
 		// action
 		game.removeLastSlot();
-		sender.sendRichMessage("<b>adding</b> a new slot (now <count> slots)",
+		sender.sendRichMessage("<b>removing</b> the last slot (now <count> slots)",
 			Placeholder.parsed("count", Integer.toString(game.getSlotCount()))
 		);
 		return Command.SINGLE_SUCCESS;
@@ -62,7 +62,7 @@ public class SetupSubSlot extends SubBrigadierBase {
 
 		// action
 		game.addLastSlot();
-		sender.sendRichMessage("<b>removing</b> the last slot (now <count> slots)",
+		sender.sendRichMessage("<b>adding</b> a new slot (now <count> slots)",
 			Placeholder.parsed("count", Integer.toString(game.getSlotCount()))
 		);
 		return Command.SINGLE_SUCCESS;
