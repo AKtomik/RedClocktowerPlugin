@@ -115,14 +115,14 @@ public class BloodGame {
 		return pdc.getOrDefault(DataKey.GAME_SLOTS_PDC.key, PersistentDataType.LIST.dataContainers(), List.of());
 	}
 
-	public void setPosition(BloodGamePlace posName, Location pos)
+	public void setPosition(BloodGamePlace place, Location pos)
 	{
-		pdc.set(DataKey.GAME_LOC.get(posName).key, PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
+		pdc.set(DataKey.GAME_LOC.get(place).key, PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
 	}
-	public Location getPosition(BloodGamePlace posName)
+	public Location getPosition(BloodGamePlace place)
 	{
-		int[] posArray = pdc.get(DataKey.GAME_LOC.get(posName).key, PersistentDataType.INTEGER_ARRAY);
-		if (posArray == null || posArray.length != 3) return  null;
+		int[] posArray = pdc.get(DataKey.GAME_LOC.get(place).key, PersistentDataType.INTEGER_ARRAY);
+		if (posArray == null || posArray.length != 3) return null;
 		return new Location(world, posArray[0], posArray[1], posArray[2]);
 	}
 
@@ -264,11 +264,11 @@ public class BloodGame {
 
 	public List<BloodSlot> getSlots()
 	{
-		return getSlotsPdc().stream().map(BloodSlot::get).toList();
+		return getSlotsPdc().stream().map(slot -> BloodSlot.get(world, slot)).toList();
 	}
 	public BloodSlot getSlot(int index)
 	{
-		return BloodSlot.get(getSlotsPdc().get(index));
+		return BloodSlot.get(world, getSlotsPdc().get(index));
 	}
 	public int getSlotCount()
 	{
@@ -276,7 +276,7 @@ public class BloodGame {
 	}
 	public void setSlot(int index, BloodSlot slot)
 	{
-		List<PersistentDataContainer> slotsPdc = getSlotsPdc();
+		List<PersistentDataContainer> slotsPdc = new ArrayList<>(getSlotsPdc());
 		slotsPdc.set(index, slot.pdc);
 		setSlotsPdc(slotsPdc);
 	}

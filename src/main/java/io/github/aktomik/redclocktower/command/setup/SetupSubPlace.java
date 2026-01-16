@@ -41,11 +41,11 @@ public class SetupSubPlace extends SubBrigadierBase {
 
 		// execution
 		final Location loc = game.getPosition(place);
-		sender.sendRichMessage("location <b><place></b> is at <x> <y> <z> <hover:show_text:\"Click to teleport\"><click:run_command:/tp @s <x> <y> <z>><green>[tp]",
-		Placeholder.parsed("x", Double.toString(loc.getBlockX())),
-		Placeholder.parsed("y", Double.toString(loc.getBlockY())),
-		Placeholder.parsed("z", Double.toString(loc.getBlockZ())),
-		Placeholder.parsed("place", place.toString())
+		sender.sendRichMessage("position <b><place></b> is at <x> <y> <z> <hover:show_text:\"Click to teleport\"><click:run_command:/tp @s <x> <y> <z>><green>[tp]",
+			Placeholder.parsed("x", Integer.toString(loc.getBlockX())),
+			Placeholder.parsed("y", Integer.toString(loc.getBlockY())),
+			Placeholder.parsed("z", Integer.toString(loc.getBlockZ())),
+			Placeholder.parsed("place", place.toString())
 		);
 		return Command.SINGLE_SUCCESS;
 	};
@@ -61,11 +61,11 @@ public class SetupSubPlace extends SubBrigadierBase {
 		// execution
 		final Location loc = pos.toLocation(world);
 		game.setPosition(place, loc);
-		sender.sendRichMessage("set <b><place></b> location at <x> <y> <z>",
-		Placeholder.parsed("x", Double.toString(pos.x())),
-		Placeholder.parsed("y", Double.toString(pos.y())),
-		Placeholder.parsed("z", Double.toString(pos.z())),
-		Placeholder.parsed("place", place.toString())
+		sender.sendRichMessage("set <b><place></b> position at <x> <y> <z>",
+			Placeholder.parsed("x", Integer.toString(loc.getBlockX())),
+			Placeholder.parsed("y", Integer.toString(loc.getBlockX())),
+			Placeholder.parsed("z", Integer.toString(loc.getBlockX())),
+			Placeholder.parsed("place", place.toString())
 		);
 		return Command.SINGLE_SUCCESS;
 	};
