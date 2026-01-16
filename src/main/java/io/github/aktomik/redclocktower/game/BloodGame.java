@@ -8,6 +8,7 @@ import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
@@ -99,6 +100,19 @@ public class BloodGame {
 	public List<String> getSlotsUuid()
 	{
 		return pdc.getOrDefault(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.LIST.strings(), List.of());
+	}
+
+	private void setSlotsPdc(List<PersistentDataContainer> uuids)
+	{
+		pdc.set(DataKey.GAME_SLOTS_PDC.key, PersistentDataType.LIST.dataContainers(), uuids);
+	}
+	private void clearSlotsPdc()
+	{
+		pdc.remove(DataKey.GAME_SLOTS_PDC.key);
+	}
+	private List<PersistentDataContainer> getSlotsPdc()
+	{
+		return pdc.getOrDefault(DataKey.GAME_SLOTS_PDC.key, PersistentDataType.LIST.dataContainers(), List.of());
 	}
 
 	public void setPosition(BloodGamePlace posName, Location pos)
@@ -247,6 +261,43 @@ public class BloodGame {
 	}
 
 	// slots
+
+	public List<BloodSlot> getSlots()
+	{
+		return getSlotsPdc().stream().map(BloodSlot::get).toList();
+	}
+	public BloodSlot getSlot(int index)
+	{
+		return BloodSlot.get(getSlotsPdc().get(index));
+	}
+	public int getSlotCount()
+	{
+		return getSlotsPdc().size();
+	}
+	public void setSlot(int index, BloodSlot slot)
+	{
+		List<PersistentDataContainer> slotsPdc = getSlotsPdc();
+		slotsPdc.set(index, slot.pdc);
+		setSlotsPdc(slotsPdc);
+	}
+	public void setSlots(int index, List<BloodSlot> slots)
+	{
+		setSlotsPdc(slots.stream().map(slot -> slot.pdc).toList());
+	}
+
+	public void addLastSlot()
+	{
+		List<PersistentDataContainer> slotsPdc = new ArrayList<>(getSlotsPdc());
+		slotsPdc.add(pdc.getAdapterContext().newPersistentDataContainer());
+		setSlotsPdc(slotsPdc);
+	}
+	public void removeLastSlot()
+	{
+		List<PersistentDataContainer> slotsPdc = new ArrayList<>(getSlotsPdc());
+		slotsPdc.remove(slotsPdc.size() - 1);
+		setSlotsPdc(slotsPdc);
+	}
+
 	public void applySlotLimit()
 	{
 		int slotLimit = getSettingsSlotLimit();
