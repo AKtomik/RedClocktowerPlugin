@@ -36,7 +36,7 @@ public class SetupSubSlot extends SubBrigadierBase {
 			.then(Commands.argument("slot number", IntegerArgumentType.integer(1, 24))
 			.suggests((ctx, builder) -> {
 				final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
-				IntStream.range(1, game.getSlotCount()).forEach(builder::suggest);
+				IntStream.range(1, game.getSlotCount() + 1).forEach(builder::suggest);
 				return builder.buildFuture();
 			})
 				.then(Commands.literal("position")
