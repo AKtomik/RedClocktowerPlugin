@@ -22,9 +22,9 @@ public class SetupSubPlace extends SubBrigadierBase {
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
 		.then(Commands.literal("center")
-		.executes(placeCenterCheck)
-		.then(Commands.argument("location", ArgumentTypes.blockPosition())
-		.executes(placeCenterChange)
+			.executes(placeCenterCheck)
+			.then(Commands.argument("location", ArgumentTypes.blockPosition())
+				.executes(placeCenterChange)
 		));
 	}
 
