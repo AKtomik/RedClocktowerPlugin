@@ -14,6 +14,7 @@ import io.papermc.paper.math.BlockPosition;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 
 public class SetupSubPlace extends SubBrigadierBase {
@@ -58,7 +59,6 @@ public class SetupSubPlace extends SubBrigadierBase {
 		final BlockPosition pos = ctx.getArgument("position", BlockPositionResolver.class).resolve(ctx.getSource());
 
 		// execution
-		pos.offset(0, 1, 0);
 		final Location loc = pos.toLocation(world);
 		game.setPosition(place, loc);
 		sender.sendRichMessage("set <b><place></b> location at <x> <y> <z>",
