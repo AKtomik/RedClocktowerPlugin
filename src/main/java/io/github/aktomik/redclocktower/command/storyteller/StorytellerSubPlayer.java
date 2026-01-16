@@ -169,6 +169,13 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 				);
 				continue;
 			}
+			if (game.isFull())
+			{
+				sender.sendRichMessage("<red><b><target></b> can't be added because the game is full.",
+				Placeholder.parsed("target", player.getName())
+				);
+				continue;
+			}
 			game.addPlayer(player);
 			sender.sendRichMessage("you added <b><target></b>.",
 			Placeholder.parsed("target", player.getName())

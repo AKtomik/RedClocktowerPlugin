@@ -286,6 +286,16 @@ public class BloodGame {
 		applySlotLimit();
 	}
 
+	public int remainingSlots()
+	{
+		return getSettingsSlotLimit() - getPlayersUuid().size();
+	}
+
+	public boolean isFull()
+	{
+		return remainingSlots() <= 0;
+	}
+
 	// teams
 	private void generateNewId()
 	{
