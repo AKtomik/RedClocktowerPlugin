@@ -1,6 +1,7 @@
 package io.github.aktomik.redclocktower;
 
 import io.github.aktomik.redclocktower.game.BloodGamePlace;
+import io.github.aktomik.redclocktower.game.BloodSlotPlace;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -15,7 +16,7 @@ public enum DataKey {
 	GAME_ROUND_COUNT("game_round_count"),
 	GAME_ROUND_ID("game_round_id"),
 
-	GAME_SLOTS_PDC("game_slots_pdc"),//UNUSED
+	GAME_SLOTS_PDC("game_slots_pdc"),
 	GAME_SLOTS_UUID("game_slots_uuid"),
 	GAME_STORYTELLER_UUID("game_storyteller_uuid"),
 
@@ -23,6 +24,13 @@ public enum DataKey {
 	GAME_LOC_SPAWN("game_loc_spawn"),//UNUSED
 
 	GAME_SETTINGS_SLOT_LIMIT("game_settings_slot_limit"),
+
+
+	SLOT_NAME("slot_name"),//UNUSED
+	SLOT_LOC_CHAIR("slot_loc_chair"),
+	SLOT_LOC_LEVER("slot_loc_lever"),
+	SLOT_LOC_LAMP("slot_loc_lamp"),
+	SLOT_LOC_HOUSE("slot_loc_house"),
 
 
 	PLAYER_GAME_WORLD_NAME("player_game_world_name"),
@@ -39,6 +47,12 @@ public enum DataKey {
 	public static Map<BloodGamePlace, DataKey> GAME_LOC = Map.ofEntries(
 		Map.entry(BloodGamePlace.CENTER, DataKey.GAME_LOC_CENTER),
 		Map.entry(BloodGamePlace.SPAWN, DataKey.GAME_LOC_SPAWN)
+	);
+	public static Map<BloodSlotPlace, DataKey> SLOT_LOC = Map.ofEntries(
+		Map.entry(BloodSlotPlace.CHAIR, DataKey.SLOT_LOC_CHAIR),
+		Map.entry(BloodSlotPlace.LEVER, DataKey.SLOT_LOC_LEVER),
+		Map.entry(BloodSlotPlace.LAMP, DataKey.SLOT_LOC_LAMP),
+		Map.entry(BloodSlotPlace.HOUSE, DataKey.SLOT_LOC_HOUSE)
 	);
 
 	// system
