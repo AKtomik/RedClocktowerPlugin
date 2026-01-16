@@ -39,9 +39,17 @@ public class SetupSubSlot extends SubBrigadierBase {
 		CommandSender sender = ctx.getSource().getSender();
 		BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
+		// check
+		int slotCount = game.getSlotCount();
+		if (slotCount == 0)
+		{
+			sender.sendRichMessage("<b>removing</b> the last slot (now <count> slots)");
+			return  Command.SINGLE_SUCCESS;
+		}
+
 		// action
 		game.removeLastSlot();
-		sender.sendRichMessage("<b>removing</b> the last slot (now <count> slots)",
+		sender.sendRichMessage("<b>adding</b> a new slot (now <count> slots)",
 			Placeholder.parsed("count", Integer.toString(game.getSlotCount()))
 		);
 		return Command.SINGLE_SUCCESS;
@@ -53,8 +61,8 @@ public class SetupSubSlot extends SubBrigadierBase {
 		BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
 		// action
-		game.removeLastSlot();
-			sender.sendRichMessage("<b>removing</b> the last slot (now <count> slots)",
+		game.addLastSlot();
+		sender.sendRichMessage("<b>removing</b> the last slot (now <count> slots)",
 			Placeholder.parsed("count", Integer.toString(game.getSlotCount()))
 		);
 		return Command.SINGLE_SUCCESS;
