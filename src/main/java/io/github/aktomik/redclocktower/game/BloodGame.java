@@ -135,7 +135,7 @@ public class BloodGame {
 		return pdc.getOrDefault(DataKey.GAME_SETTINGS_SLOT_LIMIT.key, PersistentDataType.INTEGER, 15);
 	}
 
-	// if
+	// states & time
 	public boolean isStarted()
 	{
 		return getState() == BloodGameState.INGAME;
@@ -148,18 +148,8 @@ public class BloodGame {
 	{
 		BloodGameState state = getState();
 		return (state == BloodGameState.WAITING || state == BloodGameState.INGAME);
-
 	}
-
-	public boolean isUuidIn(String uuid)
-	{
-		return (findPlayerIndex(uuid) != -1);
-	}
-
-	public boolean isPlayerIn(Player player)
-	{
-		return isUuidIn(player.getUniqueId().toString());
-	}
+	public boolean isVoteMoment() { return (getTime() == BloodGamePeriod.MEET); }
 
 	// players
 	private int findPlayerIndex(String playerUuid)
@@ -248,6 +238,16 @@ public class BloodGame {
 		if (player == null) return;
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		bloodPlayer.quitGame(this);
+	}
+
+	public boolean isUuidIn(String uuid)
+	{
+		return (findPlayerIndex(uuid) != -1);
+	}
+
+	public boolean isPlayerIn(Player player)
+	{
+		return isUuidIn(player.getUniqueId().toString());
 	}
 
 	public void setStoryteller(Player player)

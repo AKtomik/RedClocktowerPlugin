@@ -19,7 +19,7 @@ import java.util.List;
 public class BloodPlayer {
 
 	// class
-	public final Player player;
+	private final Player player;
 	private final PersistentDataContainer pdc;
 	private BloodPlayer(Player player)
 	{
@@ -49,7 +49,7 @@ public class BloodPlayer {
 	{
 		pdc.set(DataKey.PLAYER_ALIVE.key, PersistentDataType.BOOLEAN, isAlive);
 	}
-	public void clearAlive()
+	private void clearAlive()
 	{
 		pdc.remove(DataKey.PLAYER_ALIVE.key);
 	}
@@ -62,7 +62,7 @@ public class BloodPlayer {
 	{
 		pdc.set(DataKey.PLAYER_VOTE_TOKEN.key, PersistentDataType.BOOLEAN, isVoteToken);
 	}
-	public void clearVoteToken()
+	private void clearVoteToken()
 	{
 		pdc.remove(DataKey.PLAYER_VOTE_TOKEN.key);
 	}
@@ -75,7 +75,7 @@ public class BloodPlayer {
 	{
 		pdc.set(DataKey.PLAYER_VOTE_PULL.key, PersistentDataType.BOOLEAN, isVotePull);
 	}
-	public void clearVotePull()
+	private void clearVotePull()
 	{
 		pdc.remove(DataKey.PLAYER_VOTE_PULL.key);
 	}
