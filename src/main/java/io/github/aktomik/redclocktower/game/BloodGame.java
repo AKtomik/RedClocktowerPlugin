@@ -251,18 +251,17 @@ public class BloodGame {
 	public void removePlayer(OfflinePlayer offlinePlayer)
 	{
 		UUID uuid = offlinePlayer.getUniqueId();
+		// clear special uuid if in it
+		if (Objects.equals(getVoteNominatedUuid(), uuid)) clearVoteNominatedUuid();
+		if (Objects.equals(getVotePyloriUuid(), uuid)) clearVotePyloriUuid();
+		if (Objects.equals(getStorytellerUuid(), uuid)) clearStorytellerUuid();
 		// blood player object quit if online
 		Player player = offlinePlayer.getPlayer();
 		if (player != null) {// must be done before game remove player
 			BloodPlayer bloodPlayer = BloodPlayer.get(player);
 			boolean wasSpectator = bloodPlayer.isSpectator();
-			boolean wasStoryteller = bloodPlayer.isStoryteller();
 			bloodPlayer.quitGame(this);
-			// spectator & storyteller handle
-			if (wasStoryteller && Objects.equals(getStorytellerUuid(), player.getUniqueId()))
-			{
-				clearStorytellerUuid();
-			}
+			// spectators are not in game uuid
 			if (wasSpectator) return;
 		};
 		// set null from the uuid list
@@ -560,6 +559,8 @@ public class BloodGame {
 		for (OfflinePlayer offlinePlayer : game.getAllPlayersAsOffline())
 			game.removePlayer(offlinePlayer);
 		game.clearSlotsUuid();
+		game.clearVoteNominatedUuid();
+		game.clearVotePyloriUuid();
 		game.deleteTeam();
 		game.setState(BloodGameState.NOTHING);
 		sender.sendRichMessage("<light_purple>reseting game");
@@ -585,10 +586,11 @@ public class BloodGame {
 	}),
 
 	Map.entry(BloodGameAction.BRUTAL_CLEAN, (game, sender) -> {
-		// game.clearSlotsPdc();//!should
-		game.clearSlotsUuid();
+		// game.clearSlotsPdc();//!should but boring
+		game.clearSlotsUuid();// will have to refresh slot limit
 		game.clearStorytellerUuid();
-		//game.applySlotLimit();//!shouldn't
+		game.clearVoteNominatedUuid();
+		game.clearVotePyloriUuid();
 		sender.sendRichMessage("<light_purple>game was brutally cleaned");
 		sender.sendRichMessage("<#ff6600>this may result as unintended behavior and must be used in last resort.");
 		sender.sendRichMessage("<#ff6600>it is advised to restart server or at least deco/reco all players.");
@@ -635,6 +637,8 @@ public class BloodGame {
 		}, 40L);
 	}),
 	Map.entry(BloodGamePeriod.NIGHT, (game, sender) -> {
+		game.clearVoteNominatedUuid();
+		game.clearVotePyloriUuid();
 		game.world.setTime(18000);
 		game.world.playSound(game.getPosition(BloodGamePlace.CENTER), Sound.ENTITY_ALLAY_HURT, 123456789f, 0f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
