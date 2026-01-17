@@ -195,6 +195,7 @@ public class BloodPlayer {
 		} else {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 9, true, false));
 		}
+		if (!canVote()) setVotePull(false);
 		refreshNameTag();
 		refreshSlotLamp();
 	}
@@ -210,6 +211,7 @@ public class BloodPlayer {
 	public void changeVoteToken(boolean value)
 	{
 		setVoteToken(value);
+		if (!canVote()) setVotePull(false);
 		refreshNameTag();
 		refreshSlotLamp();
 	}
