@@ -7,7 +7,6 @@ import org.bukkit.block.BlockType;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.block.data.Powerable;
-import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -39,25 +38,28 @@ public class BloodSlot {
 
 	public void refreshLamp(BloodPlayer bloodPlayerAtSlot)
 	{
-		BlockData data;
+		Location lampLoc = getPosition(BloodSlotPlace.LAMP);
+		BlockData lampData;
+		Location leverLoc = getPosition(BloodSlotPlace.LEVER);
+		BlockData leverData = world.getBlockData(leverLoc);
 
 		if (bloodPlayerAtSlot == null)
 		{
-			data = BlockType.WAXED_COPPER_BLOCK.createBlockData();
+			lampData = BlockType.WAXED_COPPER_BLOCK.createBlockData();
 		} else {
 			boolean voting = bloodPlayerAtSlot.getVotePull();
 			boolean voken = bloodPlayerAtSlot.getVoteToken();
 			boolean alive = bloodPlayerAtSlot.getAlive();
 
-			data = (alive)
+			lampData = (alive)
 				? BlockType.WAXED_COPPER_BULB.createBlockData()
 				: BlockType.WAXED_OXIDIZED_COPPER_BULB.createBlockData();
 
 			if (voting)
 			{
-				if (data instanceof Lightable lightable) {
+				if (lampData instanceof Lightable lightable) {
 					lightable.setLit(true);
-					lightable.copyTo(data);
+					lightable.copyTo(lampData);
 				}
 			}
 
@@ -65,17 +67,23 @@ public class BloodSlot {
 			{
 				if (alive)
 				{
-					if (data instanceof Powerable powerable) {
+					if (lampData instanceof Powerable powerable) {
 						powerable.setPowered(true);
-						powerable.copyTo(data);
+						powerable.copyTo(lampData);
 					}
 				} else {
-					data = BlockType.NETHERITE_BLOCK.createBlockData();
+					lampData = BlockType.NETHERITE_BLOCK.createBlockData();
 				}
+			}
+
+			if (leverData instanceof Powerable powerable) {
+				powerable.setPowered(voting);
+				powerable.copyTo(leverData);
 			}
 		}
 
-		Location loc = getPosition(BloodSlotPlace.LAMP);
-		world.setBlockData(loc, data);
+
+		world.setBlockData(lampLoc, lampData);
+		world.setBlockData(leverLoc, leverData);
 	}
 }

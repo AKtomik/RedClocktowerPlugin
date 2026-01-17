@@ -1,5 +1,6 @@
 package io.github.aktomik.redclocktower.game;
 
+import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
@@ -41,16 +42,21 @@ public class PlayerListener implements Listener {
 		BloodGame game = bloodPlayer.getGame();
 		if (game == null) return;
 		BloodSlot slot = game.getSlot(bloodPlayer.getSlotIndex());
+		Location loc = block.getLocation();
+		boolean isGameLever = game.isLevelInSlots(loc);
+		boolean isOwnLever = Objects.equals(loc,slot.getPosition(BloodSlotPlace.LEVER));
 
-		if (!Objects.equals(block.getLocation(),slot.getPosition(BloodSlotPlace.LEVER))) return;
-
+		if (!isGameLever) return;
 		// stop redstone
 		event.setCancelled(true);
-		// fake pull
+		if (!isOwnLever) return;
+
+		// get state
 		BlockData data = block.getBlockData();
 		Powerable powerable = (Powerable)data;
-		powerable.setPowered(!powerable.isPowered());
-		block.setBlockData(powerable, false);
+		// fake pull
+		//powerable.setPowered(!powerable.isPowered());
+		//block.setBlockData(powerable, false);
 
 		if (!bloodPlayer.canVote()) return;
 		player.sendRichMessage(powerable.isPowered() ? "own lever ON" : "own lever OFF");

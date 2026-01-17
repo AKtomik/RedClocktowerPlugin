@@ -351,6 +351,15 @@ public class BloodGame {
 		return remainingSlots() <= 0;
 	}
 
+	public boolean isLevelInSlots(Location loc)
+	{
+		for (BloodSlot slot : getSlots())
+		{
+			if (Objects.equals(slot.getPosition(BloodSlotPlace.LEVER), loc)) return true;
+		}
+		return false;
+	}
+
 	// teams
 	private void generateNewId()
 	{
