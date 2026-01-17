@@ -1,8 +1,10 @@
 package io.github.aktomik.redclocktower.game;
 
+import com.mojang.brigadier.context.CommandContext;
 import io.github.aktomik.redclocktower.DataKey;
 import io.github.aktomik.redclocktower.RedClocktower;
 import io.github.aktomik.redclocktower.utils.UUIDDataType;
+import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
@@ -35,6 +37,12 @@ public class BloodGame {
 	public static BloodGame get(World world)
 	{
 		return new BloodGame(world);
+	}
+	public static BloodGame get(CommandSourceStack ctx) {
+		return BloodGame.get(ctx.getLocation().getWorld());
+	}
+	public static BloodGame get(CommandContext<CommandSourceStack> ctx) {
+		return BloodGame.get(ctx.getSource());
 	}
 
 	// get & set

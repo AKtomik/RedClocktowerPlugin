@@ -72,9 +72,6 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 	// utils
 
-	private BloodGame getGame(CommandSourceStack ctx) {
-		return BloodGame.get(ctx.getLocation().getWorld());
-	}
 	private Player resolvePlayer(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
 		return ctx.getArgument("player", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource()).getFirst();
 	}
@@ -122,7 +119,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 	Command<CommandSourceStack> subList = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = getGame(ctx.getSource());
+		final BloodGame game = BloodGame.get(ctx);
 
 		// checks
 		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
@@ -176,7 +173,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 	Command<CommandSourceStack> subAdd = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
-		final BloodGame game = getGame(ctx.getSource());
+		final BloodGame game = BloodGame.get(ctx);
 
 		// checks
 		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
@@ -212,7 +209,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 	Command<CommandSourceStack> subSpectate = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
-		final BloodGame game = getGame(ctx.getSource());
+		final BloodGame game = BloodGame.get(ctx);
 
 		// checks
 		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
@@ -239,7 +236,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 	Command<CommandSourceStack> subStorytellCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = getGame(ctx.getSource());
+		final BloodGame game = BloodGame.get(ctx);
 
 		// the action
 		Player player = game.getStoryteller();
@@ -256,7 +253,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 	Command<CommandSourceStack> subStorytellChange = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final Player player = resolvePlayer(ctx);
-		final BloodGame game = getGame(ctx.getSource());
+		final BloodGame game = BloodGame.get(ctx);
 
 		// checks
 		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
@@ -273,7 +270,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 	public final Command<CommandSourceStack> subRemove = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
-		final BloodGame game = getGame(ctx.getSource());
+		final BloodGame game = BloodGame.get(ctx);
 
 		// checks
 		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
@@ -300,7 +297,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 	public final Command<CommandSourceStack> subAliveCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
-		final BloodGame game = getGame(ctx.getSource());
+		final BloodGame game = BloodGame.get(ctx);
 
 		// checks
 		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
@@ -322,7 +319,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
 		final boolean changeValue = resolveChange(ctx);
-		final BloodGame game = getGame(ctx.getSource());
+		final BloodGame game = BloodGame.get(ctx);
 
 		// checks
 		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
@@ -354,7 +351,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 	public final Command<CommandSourceStack> subTokenCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
-		final BloodGame game = getGame(ctx.getSource());
+		final BloodGame game = BloodGame.get(ctx);
 
 		// checks
 		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
@@ -376,7 +373,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
 		final boolean changeValue = resolveChange(ctx);
-		final BloodGame game = getGame(ctx.getSource());
+		final BloodGame game = BloodGame.get(ctx);
 
 		// checks
 		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
@@ -408,7 +405,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 	public final Command<CommandSourceStack> subVotingCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
-		final BloodGame game = getGame(ctx.getSource());
+		final BloodGame game = BloodGame.get(ctx);
 
 		// checks
 		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
@@ -430,7 +427,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = resolvePlayers(ctx);
 		final boolean changeValue = resolveChange(ctx);
-		final BloodGame game = getGame(ctx.getSource());
+		final BloodGame game = BloodGame.get(ctx);
 
 		// checks
 		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
