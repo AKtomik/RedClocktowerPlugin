@@ -287,6 +287,18 @@ public class BloodGame {
 		return Bukkit.getPlayer(UUID.fromString(getStorytellerUuid()));
 	}
 
+	public void changePyloriPlayer(Player player)
+	{
+		String uuid = player.getUniqueId().toString();
+		if (!isUuidIn(uuid)) throw new RuntimeException("trying to put a player on pylori that is not in game");
+
+	}
+
+	public Player getPyloriPlayer()
+	{
+		return Bukkit.getPlayer(UUID.fromString(getStorytellerUuid()));
+	}
+
 	// slots
 
 	public List<BloodSlot> getSlots()
