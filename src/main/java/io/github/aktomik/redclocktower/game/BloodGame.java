@@ -7,6 +7,7 @@ import io.github.aktomik.redclocktower.utils.UUIDDataType;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -200,6 +201,13 @@ public class BloodGame {
 		return -1;
 	}
 
+	public Player getPlayerAtIndex(int index)
+	{
+		UUID uuid = getSlotsUuid().get(index);
+		if (uuid == null) return null;
+		return Bukkit.getPlayer(uuid);
+	}
+
 	public List<UUID> getPlayersUuid()
 	{
 		return getSlotsUuid().stream().filter(uuid -> uuid != null).toList();
@@ -228,6 +236,11 @@ public class BloodGame {
 	public List<BloodPlayer> getAllBloodPlayers()
 	{
 		return getAllPlayers().stream().map(BloodPlayer::get).toList();
+	}
+
+	public int getAliveCitizenCount()
+	{
+		return getAllBloodPlayers().stream().filter(bp -> bp.isAlive() && !bp.isTraveller()).toList().size();
 	}
 
 	public void addPlayer(Player player)
@@ -487,7 +500,56 @@ public class BloodGame {
 	public void startVoteProcess()
 	{
 		// for the nominated player
-		return;
+		int count = getAliveCitizenCount();
+		int majority = getAliveCitizenCount();
+		Player pyloriPlayer = getPyloriPlayer();
+		BloodPlayer pyloriBloodPlayer = BloodPlayer.get(pyloriPlayer);
+		int pyloriSlotIndex = pyloriBloodPlayer.getSlotIndex();
+
+		TagResolver[] resolvers = new TagResolver[]{
+			Placeholder.parsed("target", pyloriPlayer.getName()),
+			Placeholder.parsed("count", Integer.toString(count)),
+			Placeholder.parsed("majority", Integer.toString(majority))
+		};
+		broadcast("<gold>there is <count> players alive", resolvers);
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
+			broadcast("<gold>a majority of <majority> votes is required to place <b><player></b> on the pylori", resolvers);
+		}, 20L);
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
+			broadcast("<gold>the vote will start in 3 seconds", resolvers);
+		}, 40L);
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex), 100L);
+	}
+
+	Runnable slotVoteProcessRunnable(int lastIndex, int startIndex)
+	{
+		return () -> {
+			List<BloodSlot> slots = getSlots();
+
+			int actualIndex = lastIndex + 1;
+			if (actualIndex > slots.size()) actualIndex = 0;
+
+			BloodSlot slot = slots.get(actualIndex);
+			Player player = getPlayerAtIndex(actualIndex);
+			if (player != null)
+			{
+				BloodPlayer bloodPlayer = BloodPlayer.get(player);
+				slot.changeLock(true, bloodPlayer);
+			}
+			// slot.changeDown(true);
+
+			if (actualIndex == startIndex)
+			{
+				finishVoteProcess();
+				return;
+			}
+			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, slotVoteProcessRunnable(actualIndex, startIndex), 10L);
+		};
+	}
+
+	void finishVoteProcess()
+	{
+		broadcast("<gold>the vote ended");
 	}
 
 	public void cancelVoteProcess()
@@ -515,6 +577,11 @@ public class BloodGame {
 	public void broadcast(String richString)
 	{
 		Bukkit.getServer().broadcast(mini.deserialize(richString));
+	}
+
+	public void broadcast(String richString, final TagResolver... tagResolvers)
+	{
+		Bukkit.getServer().broadcast(mini.deserialize(richString, tagResolvers));
 	}
 
 	// code/action

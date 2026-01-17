@@ -84,19 +84,6 @@ public class BloodPlayer {
 		return pdc.getOrDefault(DataKey.PLAYER_VOTE_PULL.key, PersistentDataType.BOOLEAN, false);
 	}
 
-	private void setVoteLock(boolean isVoteLock)
-	{
-		pdc.set(DataKey.PLAYER_VOTE_LOCK.key, PersistentDataType.BOOLEAN, isVoteLock);
-	}
-	private void clearVoteLock()
-	{
-		pdc.remove(DataKey.PLAYER_VOTE_LOCK.key);
-	}
-	public boolean getVoteLock()
-	{
-		return pdc.getOrDefault(DataKey.PLAYER_VOTE_LOCK.key, PersistentDataType.BOOLEAN, false);
-	}
-
 	private void setGame(BloodGame game)
 	{
 		pdc.set(DataKey.PLAYER_GAME_WORLD_NAME.key, PersistentDataType.STRING, game.world.getName());
@@ -210,7 +197,6 @@ public class BloodPlayer {
 		clearAlive();
 		clearVotePull();
 		clearVoteToken();
-		clearVoteLock();
 		clearTraveller();
 		clearSpectator();
 		clearStoryteller();
@@ -311,13 +297,6 @@ public class BloodPlayer {
 		refreshSlotLamp();
 	}
 
-	public void changeVoteLock(boolean value)
-	{
-		setVoteLock(value);
-		refreshNameTag();
-		refreshSlotLamp();
-	}
-
 
 	public void quitSlotLamp()
 	{
@@ -374,7 +353,7 @@ public class BloodPlayer {
 			nameString = displayName;
 		}
 
-		List<TagResolver> resolvers = List.of(
+		TagResolver[] resolvers = new TagResolver[]{
 			Placeholder.parsed("prefix_death", deathString),
 			Placeholder.parsed("prefix_slot", slotString),
 			Placeholder.parsed("death_space", spaceOfDeath),
@@ -382,12 +361,14 @@ public class BloodPlayer {
 			Placeholder.parsed("token_char", tokenCharacter),
 			Placeholder.parsed("main_name", nameString),
 			Placeholder.parsed("old_name", oldNameString)
-		);
-		player.playerListName(mini.deserialize("<<token_color>><token_char></<token_color>><gray><prefix_slot></gray> <prefix_death><death_space><main_name> <dark_gray><old_name></dark_gray>",
-			TagResolver.resolver(resolvers)
+		};
+		player.playerListName(mini.deserialize(
+		"<<token_color>><token_char></<token_color>><gray><prefix_slot></gray> <prefix_death><death_space><main_name> <dark_gray><old_name></dark_gray>",
+			resolvers
 		));
-		PlayerDisplayTagManager.changeDisplay(player, mini.deserialize("<<token_color>><token_char></<token_color>><prefix_death> <main_name>",
-			TagResolver.resolver(resolvers)
+		PlayerDisplayTagManager.changeDisplay(player, mini.deserialize(
+		"<<token_color>><token_char></<token_color>><prefix_death> <main_name>",
+			resolvers
 		));
 	}
 

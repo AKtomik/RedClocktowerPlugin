@@ -31,6 +31,7 @@ public enum DataKey {
 
 
 	SLOT_NAME("slot_name"),//UNUSED
+	SLOT_LOCK("slot_lock"),
 	SLOT_LOC_CHAIR("slot_loc_chair"),
 	SLOT_LOC_LEVER("slot_loc_lever"),
 	SLOT_LOC_LAMP("slot_loc_lamp"),
@@ -46,7 +47,6 @@ public enum DataKey {
 	PLAYER_ALIVE("player_alive"),
 	PLAYER_VOTE_TOKEN("player_vote_token"),
 	PLAYER_VOTE_PULL("player_vote_pull"),
-	PLAYER_VOTE_LOCK("player_vote_lock"),
 	PLAYER_TRAVELLER("player_traveller"),
 
 	PLAYER_DISPLAY_NAME("player_display_name");

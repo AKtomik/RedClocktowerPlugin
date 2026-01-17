@@ -36,12 +36,40 @@ public class BloodSlot {
 		return new Location(world, posArray[0], posArray[1], posArray[2]);
 	}
 
+	private void setLock(boolean isLocked)
+	{
+		pdc.set(DataKey.SLOT_LOCK.key, PersistentDataType.BOOLEAN, isLocked);
+	}
+	private void clearLock()
+	{
+		pdc.remove(DataKey.SLOT_LOCK.key);
+	}
+	public boolean getLock()
+	{
+		return pdc.getOrDefault(DataKey.SLOT_LOCK.key, PersistentDataType.BOOLEAN, false);
+	}
+
+	// action
+
+	public void changeLock(boolean isLocked, BloodPlayer player)
+	{
+		setLock(isLocked);
+		refreshLamp(player);
+	}
+
+	// refresh
+
 	public void refreshLamp(BloodPlayer bloodPlayerAtSlot)
 	{
 		Location lampLoc = getPosition(BloodSlotPlace.LAMP);
 		BlockData lampData;
 		Location leverLoc = getPosition(BloodSlotPlace.LEVER);
 		BlockData leverData = world.getBlockData(leverLoc);
+
+		if (getLock())
+		{
+			lampLoc.setX(lampLoc.getX() - 1);
+		}
 
 		if (bloodPlayerAtSlot == null)
 		{
