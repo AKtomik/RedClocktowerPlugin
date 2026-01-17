@@ -77,7 +77,7 @@ public class BloodGame {
 
 	private void setStorytellerUuid(String uuid)
 	{
-		pdc.set(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.STRING, uuid);
+		pdc.set(DataKey.GAME_STORYTELLER_UUID.key, PersistentDataType.STRING, uuid);
 	}
 	private void clearStorytellerUuid()
 	{
