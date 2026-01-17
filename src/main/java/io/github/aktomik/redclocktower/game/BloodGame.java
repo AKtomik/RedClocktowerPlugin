@@ -89,43 +89,43 @@ public class BloodGame {
 		return pdc.get(DataKey.GAME_STORYTELLER_UUID.key, UUIDDataType.INSTANCE);
 	}
 
-	private void setVoteNominatedUuid(String uuid)
+	private void setVoteNominatedUuid(UUID uuid)
 	{
-		pdc.set(DataKey.GAME_VOTE_NOMINATED_UUID.key, PersistentDataType.STRING, uuid);
+		pdc.set(DataKey.GAME_VOTE_NOMINATED_UUID.key, UUIDDataType.INSTANCE, uuid);
 	}
 	private void clearVoteNominatedUuid()
 	{
 		pdc.remove(DataKey.GAME_VOTE_NOMINATED_UUID.key);
 	}
-	public String getVoteNominatedUuid()
+	public UUID getVoteNominatedUuid()
 	{
-		return pdc.get(DataKey.GAME_VOTE_NOMINATED_UUID.key, PersistentDataType.STRING);
+		return pdc.get(DataKey.GAME_VOTE_NOMINATED_UUID.key, UUIDDataType.INSTANCE);
 	}
 
-	private void setVotePyloriUuid(String uuid)
+	private void setVotePyloriUuid(UUID uuid)
 	{
-		pdc.set(DataKey.GAME_VOTE_PYLORI_UUID.key, PersistentDataType.STRING, uuid);
+		pdc.set(DataKey.GAME_VOTE_PYLORI_UUID.key, UUIDDataType.INSTANCE, uuid);
 	}
 	private void clearVotePyloriUuid()
 	{
 		pdc.remove(DataKey.GAME_VOTE_PYLORI_UUID.key);
 	}
-	public String getVotePyloriUuid()
+	public UUID getVotePyloriUuid()
 	{
-		return pdc.get(DataKey.GAME_VOTE_PYLORI_UUID.key, PersistentDataType.STRING);
+		return pdc.get(DataKey.GAME_VOTE_PYLORI_UUID.key, UUIDDataType.INSTANCE);
 	}
 
-	private void setSlotsUuid(List<String> uuids)
+	private void setSlotsUuid(List<UUID> uuids)
 	{
-		pdc.set(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.LIST.strings(), uuids);
+		pdc.set(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.LIST.listTypeFrom(UUIDDataType.INSTANCE), uuids);
 	}
 	private void clearSlotsUuid()
 	{
 		pdc.remove(DataKey.GAME_SLOTS_UUID.key);
 	}
-	public List<String> getSlotsUuid()
+	public List<UUID> getSlotsUuid()
 	{
-		return pdc.getOrDefault(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.LIST.strings(), List.of());
+		return pdc.getOrDefault(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.LIST.listTypeFrom(UUIDDataType.INSTANCE), List.of());
 	}
 
 	private void setSlotsPdc(List<PersistentDataContainer> uuids)
@@ -178,13 +178,13 @@ public class BloodGame {
 	public boolean isVoteMoment() { return (getTime() == BloodGamePeriod.MEET); }
 
 	// players
-	private int findPlayerIndex(String playerUuid)
+	private int findPlayerIndex(UUID playerUuid)
 	{
-		List<String> uuids = getSlotsUuid();
+		List<UUID> uuids = getSlotsUuid();
 		for (int i = 0; i < uuids.size(); i++)
 		{
-			String loopUuid = uuids.get(i);
-			if (!loopUuid.isEmpty() && Objects.equals(loopUuid, playerUuid))
+			UUID loopUuid = uuids.get(i);
+			if (loopUuid != null && Objects.equals(loopUuid, playerUuid))
 			{
 				return i;
 			}
@@ -192,29 +192,29 @@ public class BloodGame {
 		return -1;
 	}
 
-	public List<String> getPlayersUuid()
+	public List<UUID> getPlayersUuid()
 	{
-		return getSlotsUuid().stream().filter(uuid -> !uuid.isEmpty()).toList();
+		return getSlotsUuid().stream().filter(uuid -> uuid != null).toList();
 	}
 
-	public List<Integer> getEmptySlotsIndex(List<String> slots)
+	public List<Integer> getEmptySlotsIndex(List<UUID> slots)
 	{
 		List<Integer> indexes = new ArrayList<>();
 		for (int i = 0; i < slots.size(); i++)
 		{
-			if (slots.get(i).isEmpty()) indexes.add(i);
+			if (slots.get(i) == null) indexes.add(i);
 		}
 		return indexes;
 	}
 
 	public List<Player> getAllPlayers()
 	{
-		return getPlayersUuid().stream().map(UUID::fromString).map(Bukkit::getPlayer).toList();
+		return getPlayersUuid().stream().map(Bukkit::getPlayer).toList();
 	}
 
 	public List<OfflinePlayer> getAllPlayersAsOffline()
 	{
-		return getPlayersUuid().stream().map(UUID::fromString).map(Bukkit::getOfflinePlayer).toList();
+		return getPlayersUuid().stream().map(Bukkit::getOfflinePlayer).toList();
 	}
 
 	public List<BloodPlayer> getAllBloodPlayers()
@@ -224,11 +224,11 @@ public class BloodGame {
 
 	public void addPlayer(Player player)
 	{
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		// check if player already exist
 		if (isUuidIn(uuid)) throw new RuntimeException("trying to add a player in a game where he already is");
 		// fill it to the uuid list
-		ArrayList<String> slotsUuid = new ArrayList<>(getSlotsUuid());
+		ArrayList<UUID> slotsUuid = new ArrayList<>(getSlotsUuid());
 		List<Integer> emptySlotsIndex = getEmptySlotsIndex(slotsUuid);
 		if (emptySlotsIndex.isEmpty()) throw new RuntimeException("trying to add a player in a game with no available slot (check if the limit is well set and refresh)");
 		int slotIndex = emptySlotsIndex.getFirst();
@@ -242,7 +242,7 @@ public class BloodGame {
 
 	public void removePlayer(OfflinePlayer offlinePlayer)
 	{
-		String uuid = offlinePlayer.getUniqueId().toString();
+		UUID uuid = offlinePlayer.getUniqueId();
 		// blood player object quit if online
 		Player player = offlinePlayer.getPlayer();
 		if (player != null) {// must be done before game remove player
@@ -258,13 +258,13 @@ public class BloodGame {
 			if (wasSpectator) return;
 		};
 		// set null from the uuid list
-		ArrayList<String> slotsUuid = new ArrayList<>(getSlotsUuid());
+		ArrayList<UUID> slotsUuid = new ArrayList<>(getSlotsUuid());
 		boolean removed = false;
 		for (int i = 0; i < slotsUuid.size(); i++)
 		{
 			if (Objects.equals(slotsUuid.get(i), uuid))
 			{
-				slotsUuid.set(i, "");
+				slotsUuid.set(i, null);
 				removed = true;
 				break;
 			}
@@ -275,14 +275,14 @@ public class BloodGame {
 		setSlotsUuid(slotsUuid);
 	}
 
-	public boolean isUuidIn(String uuid)
+	public boolean isUuidIn(UUID uuid)
 	{
 		return (findPlayerIndex(uuid) != -1);
 	}
 
 	public boolean isPlayerIn(Player player)
 	{
-		return isUuidIn(player.getUniqueId().toString());
+		return isUuidIn(player.getUniqueId());
 	}
 
 	public void addSpectator(Player player)
@@ -312,7 +312,7 @@ public class BloodGame {
 
 	public void changePyloriPlayer(Player player)
 	{
-		String uuid = player.getUniqueId().toString();
+		UUID uuid = player.getUniqueId();
 		if (!isUuidIn(uuid)) throw new RuntimeException("trying to put a player on pylori that is not in game");
 		setVotePyloriUuid(uuid);
 	}
@@ -369,24 +369,24 @@ public class BloodGame {
 		if (slotSize < slotLimit)
 		{
 			getLogger().info("SLOT LIMIT ADDER");
-			ArrayList<String> slotsUuid = new ArrayList<>(getSlotsUuid());
+			ArrayList<UUID> slotsUuid = new ArrayList<>(getSlotsUuid());
 			for (int repeat = 0; repeat < slotLimit - slotSize; repeat++)
 			{
-				slotsUuid.add("");
+				slotsUuid.add(null);
 			}
-			List<String> list = slotsUuid.stream().toList();
+			List<UUID> list = slotsUuid.stream().toList();
 			setSlotsUuid(list);
 		}
 		else if (slotSize > slotLimit)
 		{
-			ArrayList<String> slotsUuid = new ArrayList<>(getSlotsUuid());
+			ArrayList<UUID> slotsUuid = new ArrayList<>(getSlotsUuid());
 			for (int repeat = 0; repeat < slotSize - slotLimit; repeat++)
 			{
-				String lastUuid = slotsUuid.getLast();
+				UUID lastUuid = slotsUuid.getLast();
 				slotsUuid.removeLast();
-				if (lastUuid.isEmpty()) continue;
+				if (lastUuid == null) continue;
 
-				Player player = Bukkit.getPlayer(UUID.fromString(lastUuid));
+				Player player = Bukkit.getPlayer(lastUuid);
 				getLogger().info(player.toString());
 				if (player == null || !player.isOnline()) continue;
 				BloodPlayer bloodPlayer = BloodPlayer.get(player);

@@ -27,6 +27,9 @@ public class UUIDDataType implements PersistentDataType<byte[], UUID> {
 
 	@Override
 	public byte[] toPrimitive(UUID complex, PersistentDataAdapterContext context) {
+		if (complex == null) {
+			return new byte[0];
+		}
 		ByteBuffer bb = ByteBuffer.allocate(Long.BYTES * 2);
 		bb.putLong(complex.getMostSignificantBits());
 		bb.putLong(complex.getLeastSignificantBits());
@@ -35,6 +38,9 @@ public class UUIDDataType implements PersistentDataType<byte[], UUID> {
 
 	@Override
 	public UUID fromPrimitive(byte[] primitive, PersistentDataAdapterContext context) {
+		if (primitive.length == 0) {
+			return null;
+		}
 		ByteBuffer bb = ByteBuffer.wrap(primitive);
 		long firstLong = bb.getLong();
 		long secondLong = bb.getLong();
