@@ -48,7 +48,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 				.then(Commands.argument("change", BoolArgumentType.bool())
 					.executes(subAliveChange))))
 
-		.then(Commands.literal("token")
+		.then(Commands.literal("voken")
 			.then(Commands.argument("players", ArgumentTypes.players())
 				.executes(subTokenCheck)
 				.then(Commands.argument("change", BoolArgumentType.bool())
