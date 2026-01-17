@@ -11,19 +11,18 @@ public class GameToolbox {
 
 	private GameToolbox() {};// is a static class
 
-	public static boolean failIfNotReady(CommandSender sender, BloodGame game) {
-		if (!game.isReady()) {
-			sender.sendRichMessage("<red>the game is not ready!");
+	public static boolean failIf(CommandSender sender, boolean condition, String errorMessage) {
+		if (condition) {
+			sender.sendRichMessage("<red>"+ errorMessage);
 			return true;
 		}
 		return false;
 	}
+	public static boolean failIfNotReady(CommandSender sender, BloodGame game) {
+		return failIf(sender, (!game.isReady()), "the game is not ready!");
+	}
 	public static boolean failIfEmpty(CommandSender sender, List<Player> players) {
-		if (players.isEmpty()) {
-			sender.sendRichMessage("<red>there is no player•s selected!");
-			return true;
-		}
-		return false;
+		return failIf(sender, (!players.isEmpty()), "there is no player selected!");
 	}
 
 	public static void forEachValidPlayer(

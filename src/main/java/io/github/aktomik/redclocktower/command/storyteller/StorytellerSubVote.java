@@ -4,6 +4,8 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.github.aktomik.redclocktower.game.BloodGame;
+import io.github.aktomik.redclocktower.game.GameToolbox;
+import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.SubBrigadierBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -38,10 +40,34 @@ public class StorytellerSubVote extends SubBrigadierBase {
 	}
 
 	private int nominateCheck(CommandContext<CommandSourceStack> ctx) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx);
+
+		// the action
+		Player player = game.getStoryteller();
+		if (player == null)
+			sender.sendRichMessage("there is no one actually nominated.");
+		else
+			sender.sendRichMessage("<b><target></b> is nominated.",
+			Placeholder.parsed("target", player.getName())
+			);
 		return Command.SINGLE_SUCCESS;
 	};
 
 	private int nominateChange(CommandContext<CommandSourceStack> ctx) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final Player player = BrigadierToolbox.resolvePlayer(ctx);
+		final BloodGame game = BloodGame.get(ctx);
+
+		// checks
+		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIf(sender, !game.isVoteMoment(), "this is not the time to vote")) return Command.SINGLE_SUCCESS;
+
+		// the action
+		game.changeStoryteller(player);
+		sender.sendRichMessage("<b><target></b> is now the storyteller.",
+		Placeholder.parsed("target", player.getName())
+		);
 		return Command.SINGLE_SUCCESS;
 	};
 
