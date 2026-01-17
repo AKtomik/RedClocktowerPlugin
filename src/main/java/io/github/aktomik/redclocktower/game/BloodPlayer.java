@@ -7,7 +7,12 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
+import org.bukkit.Location;
 import org.bukkit.World;
+import org.bukkit.block.Block;
+import org.bukkit.block.BlockType;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.block.data.Lightable;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -138,14 +143,19 @@ public class BloodPlayer {
 	// is call by BloodGame to apply the game join player side (step 2/2)
 	void quitGame(BloodGame game)
 	{
-		clearGame();
+		revive();
+		quitLamp();
+
 		clearAlive();
 		clearVotePull();
 		clearVoteToken();
+		refreshLamp();
+
+		clearGame();// after that getGame is null
 
 		game.getTeam().removePlayer(player);
-		revive();
 		clearNameTag();
+
 	}
 
 	// is publicly call and will call removePlayer on player game (step 1/3)
@@ -191,6 +201,7 @@ public class BloodPlayer {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 9, true, false));
 		}
 		refreshNameTag();
+		refreshLamp();
 	}
 	public void kill()
 	{
@@ -205,12 +216,45 @@ public class BloodPlayer {
 	{
 		setVoteToken(value);
 		refreshNameTag();
+		refreshLamp();
 	}
 
 	public void changeVotePull(boolean value)
 	{
 		setVotePull(value);
 		refreshNameTag();
+		refreshLamp();
+	}
+
+
+	public void quitLamp()
+	{
+		BlockData data = BlockType.WAXED_COPPER_BLOCK.createBlockData();
+
+		BloodGame game = getGame();
+		BloodSlot slot = game.getSlot(getSlotIndex());
+		Location loc = slot.getPosition(BloodSlotPlace.LAMP);
+		game.world.setBlockData(loc, data);
+	}
+
+	public void refreshLamp()
+	{
+		boolean voting = getVotePull();
+		boolean alive = getAlive();
+
+		BlockData data = BlockType.WAXED_COPPER_BULB.createBlockData();
+		if (voting)
+		{
+			if (data instanceof Lightable lightable) {
+				lightable.setLit(true);
+				lightable.copyTo(data);
+			}
+		}
+
+		BloodGame game = getGame();
+		BloodSlot slot = game.getSlot(getSlotIndex());
+		Location loc = slot.getPosition(BloodSlotPlace.LAMP);
+		game.world.setBlockData(loc, data);
 	}
 
 	public void clearNameTag()

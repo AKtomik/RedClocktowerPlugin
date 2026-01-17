@@ -209,6 +209,7 @@ public class BloodGame {
 		slotsUuid.set(slotIndex, uuid);
 		setSlotsUuid(slotsUuid);
 		// blood player object join
+		// must be done after game add player
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		bloodPlayer.joinGame(this, slotIndex);
 		return bloodPlayer;
@@ -231,13 +232,14 @@ public class BloodGame {
 		}
 		// check
 		if (!removed) throw new RuntimeException("trying to remove an offline player in a game where he is not");
-		// really removing from the uuid list
-		setSlotsUuid(slotsUuid);
 		// blood player object quit if online
 		Player player = offlinePlayer.getPlayer();
-		if (player == null) return;
-		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		bloodPlayer.quitGame(this);
+		if (player != null) {// must be done before game remove player
+			BloodPlayer bloodPlayer = BloodPlayer.get(player);
+			bloodPlayer.quitGame(this);
+		};
+		// really removing from the uuid list
+		setSlotsUuid(slotsUuid);
 	}
 
 	public boolean isUuidIn(String uuid)
