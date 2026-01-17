@@ -53,14 +53,11 @@ public class PlayerListener implements Listener {
 
 		// get state
 		BlockData data = block.getBlockData();
-		Powerable powerable = (Powerable)data;
-		// fake pull
-		//powerable.setPowered(!powerable.isPowered());
-		//block.setBlockData(powerable, false);
+		boolean powered = !((Powerable)data).isPowered();
 
 		if (!bloodPlayer.canVote()) return;
-		player.sendRichMessage(powerable.isPowered() ? "own lever ON" : "own lever OFF");
-		bloodPlayer.changeVotePull(powerable.isPowered());
+		player.sendRichMessage(powered ? "own lever ON" : "own lever OFF");
+		bloodPlayer.changeVotePull(powered);
 	}
 
 }
