@@ -502,12 +502,12 @@ public class BloodGame {
 		// for the nominated player
 		int count = getAliveCitizenCount();
 		int majority = getAliveCitizenCount();
-		Player pyloriPlayer = getPyloriPlayer();
-		BloodPlayer pyloriBloodPlayer = BloodPlayer.get(pyloriPlayer);
-		int pyloriSlotIndex = pyloriBloodPlayer.getSlotIndex();
+		Player nominatedPlayer = getNominatedPlayer();
+		BloodPlayer nominatedBloodPlayer = BloodPlayer.get(nominatedPlayer);
+		int pyloriSlotIndex = nominatedBloodPlayer.getSlotIndex();
 
 		TagResolver[] resolvers = new TagResolver[]{
-			Placeholder.parsed("target", pyloriPlayer.getName()),
+			Placeholder.parsed("target", nominatedPlayer.getName()),
 			Placeholder.parsed("count", Integer.toString(count)),
 			Placeholder.parsed("majority", Integer.toString(majority))
 		};
