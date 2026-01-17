@@ -88,30 +88,30 @@ public class BloodGame {
 		return pdc.get(DataKey.GAME_STORYTELLER_UUID.key, PersistentDataType.STRING);
 	}
 
-	private void setVoteNominatedIndex(int index)
+	private void setVoteNominatedUuid(String uuid)
 	{
-		pdc.set(DataKey.GAME_VOTE_NOMINATED_INDEX.key, PersistentDataType.INTEGER, index);
+		pdc.set(DataKey.GAME_VOTE_NOMINATED_UUID.key, PersistentDataType.STRING, uuid);
 	}
-	private void clearVoteNominatedIndex()
+	private void clearVoteNominatedUuid()
 	{
-		pdc.remove(DataKey.GAME_VOTE_NOMINATED_INDEX.key);
+		pdc.remove(DataKey.GAME_VOTE_NOMINATED_UUID.key);
 	}
-	public int getVoteNominatedIndex()
+	public String getVoteNominatedUuid()
 	{
-		return pdc.get(DataKey.GAME_VOTE_NOMINATED_INDEX.key, PersistentDataType.INTEGER);
+		return pdc.get(DataKey.GAME_VOTE_NOMINATED_UUID.key, PersistentDataType.STRING);
 	}
 
-	private void setVotePyloriIndex(int index)
+	private void setVotePyloriUuid(String uuid)
 	{
-		pdc.set(DataKey.GAME_VOTE_PYLORI_INDEX.key, PersistentDataType.INTEGER, index);
+		pdc.set(DataKey.GAME_VOTE_PYLORI_UUID.key, PersistentDataType.STRING, uuid);
 	}
-	private void clearVotePyloriIndex()
+	private void clearVotePyloriUuid()
 	{
-		pdc.remove(DataKey.GAME_VOTE_PYLORI_INDEX.key);
+		pdc.remove(DataKey.GAME_VOTE_PYLORI_UUID.key);
 	}
-	public int getVotePyloriIndex()
+	public String getVotePyloriUuid()
 	{
-		return pdc.get(DataKey.GAME_VOTE_PYLORI_INDEX.key, PersistentDataType.INTEGER);
+		return pdc.get(DataKey.GAME_VOTE_PYLORI_UUID.key, PersistentDataType.STRING);
 	}
 
 	private void setSlotsUuid(List<String> uuids)
@@ -291,7 +291,7 @@ public class BloodGame {
 	{
 		String uuid = player.getUniqueId().toString();
 		if (!isUuidIn(uuid)) throw new RuntimeException("trying to put a player on pylori that is not in game");
-
+		setVotePyloriUuid(uuid);
 	}
 
 	public Player getPyloriPlayer()
