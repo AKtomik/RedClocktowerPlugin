@@ -623,7 +623,7 @@ public class BloodGame {
 		}, 40L);
 	}),
 	Map.entry(BloodGamePeriod.MEET, (game, sender) -> {
-		game.world.setTime(12000);
+		game.world.setTime(12500);
 		game.world.playSound(game.getPosition(BloodGamePlace.CENTER), Sound.BLOCK_BELL_USE, 123456789f, 0.3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
 			game.world.playSound(game.getPosition(BloodGamePlace.CENTER), Sound.BLOCK_BELL_USE, 123456789f, 0.4f);
