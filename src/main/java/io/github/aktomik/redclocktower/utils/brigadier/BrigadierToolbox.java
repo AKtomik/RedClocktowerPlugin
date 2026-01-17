@@ -5,17 +5,21 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.NullMarked;
 
 import java.util.List;
+import java.util.Objects;
 
 public class BrigadierToolbox {
 
 	private BrigadierToolbox() {};// is a static class
 
+	@NullMarked
 	public static Player resolvePlayer(String argumentKey, CommandContext<CommandSourceStack> ctx) {
 		try {
 			return ctx.getArgument(argumentKey, PlayerSelectorArgumentResolver.class).resolve(ctx.getSource()).getFirst();
 		} catch (CommandSyntaxException e) {
+			if (Objects.equals(e.getMessage(), "No player was found")) return null;
 			throw new RuntimeException(e);
 		}
 	}

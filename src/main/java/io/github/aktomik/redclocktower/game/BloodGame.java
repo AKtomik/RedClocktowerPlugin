@@ -259,7 +259,7 @@ public class BloodGame {
 			boolean wasStoryteller = bloodPlayer.isStoryteller();
 			bloodPlayer.quitGame(this);
 			// spectator & storyteller handle
-			if (wasStoryteller && Objects.equals(getStorytellerUuid(), player.getUniqueId().toString()))
+			if (wasStoryteller && Objects.equals(getStorytellerUuid(), player.getUniqueId()))
 			{
 				clearStorytellerUuid();
 			}
