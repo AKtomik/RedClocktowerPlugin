@@ -3,8 +3,6 @@ package io.github.aktomik.redclocktower.command.storyteller;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import io.github.aktomik.redclocktower.game.GameToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.SubBrigadierBase;
@@ -13,7 +11,6 @@ import io.github.aktomik.redclocktower.game.BloodPlayer;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
-import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
@@ -21,7 +18,6 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 import java.util.Objects;
-import java.util.function.BiConsumer;
 
 public class StorytellerSubPlayer extends SubBrigadierBase {
 
@@ -134,7 +130,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfEmpty(sender, players)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		for (Player player : players)
@@ -170,7 +166,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfEmpty(sender, players)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		for (Player player : players)
@@ -214,6 +210,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNoPlayer(sender, player)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		game.changeStoryteller(player);
@@ -231,7 +228,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfEmpty(sender, players)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		for (Player player : players)
@@ -258,7 +255,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfEmpty(sender, players)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
@@ -280,7 +277,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfEmpty(sender, players)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
@@ -312,7 +309,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfEmpty(sender, players)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
@@ -334,7 +331,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfEmpty(sender, players)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
@@ -366,7 +363,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfEmpty(sender, players)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
@@ -388,7 +385,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfEmpty(sender, players)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {

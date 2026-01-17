@@ -21,8 +21,11 @@ public class GameToolbox {
 	public static boolean failIfNotReady(CommandSender sender, BloodGame game) {
 		return failIf(sender, (!game.isReady()), "the game is not ready!");
 	}
-	public static boolean failIfEmpty(CommandSender sender, List<Player> players) {
+	public static boolean failIfNoPlayers(CommandSender sender, List<Player> players) {
 		return failIf(sender, (players.isEmpty()), "there is no player selected!");
+	}
+	public static boolean failIfNoPlayer(CommandSender sender, Player player) {
+		return failIf(sender, (player == null), "there is no player selected!");
 	}
 
 	public static void forEachValidPlayer(

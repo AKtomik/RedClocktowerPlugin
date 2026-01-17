@@ -24,7 +24,7 @@ public class StorytellerSubVote extends SubBrigadierBase {
 		return base()
 		.then(Commands.literal("nominate")
 			.executes(this::nominateCheck)
-			.then(Commands.argument("player", ArgumentTypes.players())
+			.then(Commands.argument("player", ArgumentTypes.player())
 				.executes(this::nominateChange)))
 		.then(Commands.literal("cancel")
 			.executes(this::votingCancel))
