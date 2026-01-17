@@ -23,6 +23,10 @@ public enum DataKey {
 	GAME_LOC_CENTER("game_loc_center"),
 	GAME_LOC_SPAWN("game_loc_spawn"),//UNUSED
 
+	GAME_VOTE_NOMINATOR_INDEX("game_vote_nominator_index"),//UNUSED
+	GAME_VOTE_NOMINATED_INDEX("game_vote_nominated_index"),
+	GAME_VOTE_PILORY_INDEX("game_vote_pilory_index"),
+
 	GAME_SETTINGS_SLOT_LIMIT("game_settings_slot_limit"),
 
 
