@@ -61,11 +61,16 @@ public class BloodSlot {
 				}
 			}
 
-			if (voken)
+			if (!voken)
 			{
-				if (data instanceof Powerable powerable) {
-					powerable.setPowered(true);
-					powerable.copyTo(data);
+				if (alive)
+				{
+					if (data instanceof Powerable powerable) {
+						powerable.setPowered(true);
+						powerable.copyTo(data);
+					}
+				} else {
+					data = BlockType.NETHERITE_BLOCK.createBlockData();
 				}
 			}
 		}
