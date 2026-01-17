@@ -484,7 +484,7 @@ public class BloodGame {
 
 	// vote process
 
-	public void startingVoteProcess()
+	public void startVoteProcess()
 	{
 		// for the nominated player
 		return;
@@ -495,7 +495,7 @@ public class BloodGame {
 		return;
 	}
 
-	public void executePylori()
+	public void startExecuteProcess()
 	{
 		return;
 	}

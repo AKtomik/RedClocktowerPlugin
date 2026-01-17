@@ -26,6 +26,10 @@ public class StorytellerSubVote extends SubBrigadierBase {
 			.executes(this::nominateCheck)
 			.then(Commands.argument("player", ArgumentTypes.player())
 				.executes(ctx -> nominateChange(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
+		.then(Commands.literal("pylori")
+			.executes(this::pyloriCheck)
+			.then(Commands.argument("player", ArgumentTypes.player())
+				.executes(ctx -> pyloriChange(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
 		.then(Commands.literal("cancel")
 			.executes(this::votingCancel))
 		.then(Commands.literal("start")
@@ -49,11 +53,10 @@ public class StorytellerSubVote extends SubBrigadierBase {
 			sender.sendRichMessage("there is no one actually nominated.");
 		else
 			sender.sendRichMessage("<b><target></b> is actually nominated.",
-			Placeholder.parsed("target", player.getName())
+				Placeholder.parsed("target", player.getName())
 			);
 		return Command.SINGLE_SUCCESS;
-	};
-
+	}
 	private int nominateChange(CommandContext<CommandSourceStack> ctx, Player player) {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx);
@@ -70,7 +73,42 @@ public class StorytellerSubVote extends SubBrigadierBase {
 		// the action
 		game.changeNominatedPlayer(player);
 		sender.sendRichMessage("<b><target></b> is <gold><b>nominated</b></gold>.",
-		Placeholder.parsed("target", player.getName())
+			Placeholder.parsed("target", player.getName())
+		);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private int pyloriCheck(CommandContext<CommandSourceStack> ctx) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx);
+
+		// the action
+		Player player = game.getPyloriPlayer();
+		if (player == null)
+			sender.sendRichMessage("there is no one on the pylori.");
+		else
+			sender.sendRichMessage("<b><target></b> is on the pylori.",
+				Placeholder.parsed("target", player.getName())
+			);
+		return Command.SINGLE_SUCCESS;
+	}
+	private int pyloriChange(CommandContext<CommandSourceStack> ctx, Player player) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx);
+
+		// checks
+		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIf(sender, !game.isVoteMoment(), "this is not the time to vote")) return Command.SINGLE_SUCCESS;
+		if (!game.isPlayerIn(player))
+		{
+			sender.sendRichMessage("<red><b><target></b> is not in game.",  Placeholder.parsed("target", player.getName()));
+			return Command.SINGLE_SUCCESS;
+		}
+
+		// the action
+		game.changeNominatedPlayer(player);
+		sender.sendRichMessage("<b><target></b> is now <red><b>on the pylori</b></red>.",
+			Placeholder.parsed("target", player.getName())
 		);
 		return Command.SINGLE_SUCCESS;
 	};
@@ -89,12 +127,12 @@ public class StorytellerSubVote extends SubBrigadierBase {
 		assert (nominatedPlayer != null);
 
 		// the action
-		game.startingVoteProcess();
+		game.startVoteProcess();
 		sender.sendRichMessage("<aqua>starting the vote for <b><target></b>.",
 			Placeholder.parsed("target", nominatedPlayer.getName())
 		);
 		return Command.SINGLE_SUCCESS;
-	};
+	}
 
 	private int votingCancel(CommandContext<CommandSourceStack> ctx) {
 
@@ -110,9 +148,26 @@ public class StorytellerSubVote extends SubBrigadierBase {
 		game.removeNominatedPlayer();
 		sender.sendRichMessage("<aqua>vote & nomination <red>canceled</red>.");
 		return Command.SINGLE_SUCCESS;
-	};
+	}
 
 	private int playerExecution(CommandContext<CommandSourceStack> ctx, Player player) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx);
+
+		if (player != null)  pyloriChange(ctx, player);
+		Player pyloriPlayer = game.getNominatedPlayer();
+
+		// checks
+		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIf(sender, !game.isVoteMoment(), "this is not the time to vote")) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIf(sender, pyloriPlayer == null, "there is no one on the pylori!")) return Command.SINGLE_SUCCESS;
+		assert (pyloriPlayer != null);
+
+		// the action
+		game.startExecuteProcess();
+		sender.sendRichMessage("<aqua><u>executing <b><target></b>.",
+			Placeholder.parsed("target", pyloriPlayer.getName())
+		);
 		return Command.SINGLE_SUCCESS;
-	};
+	}
 }
