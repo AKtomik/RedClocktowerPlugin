@@ -43,8 +43,9 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 				.executes(subSpectate)))
 
 		.then(Commands.literal("storyteller")
+			.executes(subStorytellCheck)
 			.then(Commands.argument("player", ArgumentTypes.player())
-				.executes(subStorytell)))
+				.executes(subStorytellChange)))
 
 		.then(Commands.literal("remove")
 			.then(Commands.argument("players", ArgumentTypes.players())
@@ -74,8 +75,8 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 	private BloodGame getGame(CommandSourceStack ctx) {
 		return BloodGame.get(ctx.getLocation().getWorld());
 	}
-	private Player resolvePlayer(CommandContext<CommandSourceStack> ctx) {
-		return ctx.getArgument("player", Player.class);
+	private Player resolvePlayer(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+		return ctx.getArgument("player", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource()).getFirst();
 	}
 	private List<Player> resolvePlayers(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
 		return ctx.getArgument("players", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource());
@@ -243,7 +244,25 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 	};
 
 
-	Command<CommandSourceStack> subStorytell = ctx -> {
+	Command<CommandSourceStack> subStorytellCheck = ctx -> {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = getGame(ctx.getSource());
+
+		// the action
+		Player player = game.getStoryteller();
+		if (player == null)
+			sender.sendRichMessage("this game does not have a storyteller.",
+			Placeholder.parsed("target", player.getName())
+			);
+		else
+			sender.sendRichMessage("<b><target></b> is the storyteller.",
+			Placeholder.parsed("target", player.getName())
+			);
+		return Command.SINGLE_SUCCESS;
+	};
+
+
+	Command<CommandSourceStack> subStorytellChange = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final Player player = resolvePlayer(ctx);
 		final BloodGame game = getGame(ctx.getSource());
