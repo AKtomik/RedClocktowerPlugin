@@ -34,13 +34,13 @@ public class VoteCommand extends CommandBrigadierBase {
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
 		.requires(ctx -> ctx.getExecutor() instanceof Player)
-		.executes(ctx -> exe(ctx, true))
+		.executes(ctx -> exe(ctx, null))
 		.then(Commands.argument("trigger", BoolArgumentType.bool())
 			.executes(ctx -> exe(ctx, ctx.getArgument("trigger", Boolean.class)))
 		);
 	}
 
-	private int exe(CommandContext<CommandSourceStack> ctx, boolean trigger) {
+	private int exe(CommandContext<CommandSourceStack> ctx, Boolean trigger) {
 		final CommandSender sender = ctx.getSource().getSender();
 		Player player = (Player)ctx.getSource().getExecutor();
 		assert player != null;
@@ -60,10 +60,11 @@ public class VoteCommand extends CommandBrigadierBase {
 		}
 
 		// actions
+		if (trigger == null) trigger = bloodPlayer.getVotePull();
 		bloodPlayer.changeVotePull(trigger);
 		sender.sendRichMessage((trigger)
-		? "you are now <red>voting</red>."
-		: "you are <yellow>not voting</yellow> anymore."
+		? "you are now <yellow>voting</yellow>."
+		: "you are <red>not voting</red> anymore."
 		);
 
 		return Command.SINGLE_SUCCESS;
