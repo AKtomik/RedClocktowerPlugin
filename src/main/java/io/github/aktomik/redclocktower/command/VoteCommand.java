@@ -63,7 +63,7 @@ public class VoteCommand extends CommandBrigadierBase {
 		if (trigger == null) trigger = !bloodPlayer.getVotePull();
 		bloodPlayer.changeVotePull(trigger);
 		sender.sendRichMessage((trigger)
-		? "you are now <yellow>voting</yellow>."
+		? "you are now <yellow><b>voting</b></yellow>."
 		: "you are <red>not voting</red> anymore."
 		);
 
