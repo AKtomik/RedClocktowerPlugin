@@ -49,6 +49,12 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 			.then(Commands.argument("players", ArgumentTypes.players())
 				.executes(subRemove)))
 
+		.then(Commands.literal("traveller")
+			.then(Commands.argument("players", ArgumentTypes.players())
+				.executes(subTravelerCheck)
+				.then(Commands.argument("change", BoolArgumentType.bool())
+					.executes(subTravelerChange))))
+
 		.then(Commands.literal("alive")
 			.then(Commands.argument("players", ArgumentTypes.players())
 				.executes(subAliveCheck)
@@ -246,6 +252,60 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 			Placeholder.parsed("target", player.getName())
 			);
 		}
+		return Command.SINGLE_SUCCESS;
+	};
+
+	public final Command<CommandSourceStack> subTravelerCheck = ctx -> {
+		final CommandSender sender = ctx.getSource().getSender();
+		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
+		final BloodGame game = BloodGame.get(ctx);
+
+		// checks
+		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+
+		// the action
+		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
+			sender.sendRichMessage(
+			bp.isTraveller()
+			? "<b><target></b> is a traveller."
+			: "<b><target></b> is not a traveller.",
+			Placeholder.parsed("target", player.getName())
+			);
+		});
+		return Command.SINGLE_SUCCESS;
+	};
+
+	public final Command<CommandSourceStack> subTravelerChange = ctx -> {
+		final CommandSender sender = ctx.getSource().getSender();
+		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
+		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
+		final BloodGame game = BloodGame.get(ctx);
+
+		// checks
+		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+
+		// the action
+		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
+			if (bp.isTraveller() == changeValue) {
+				sender.sendRichMessage(
+				changeValue
+				? "<gray><b><target></b> is already a traveller."
+				: "<gray><b><target></b> is already not a traveller.",
+				Placeholder.parsed("target", player.getName())
+				);
+				return;
+			}
+
+			bp.changeTraveller(changeValue);
+			sender.sendRichMessage(
+			changeValue
+			? "<b><target></b> is now <yellow>a traveller</yellow>."
+			: "<b><target></b> is <red>not a traveller</red> anymore.",
+			Placeholder.parsed("target", player.getName())
+			);
+		});
 		return Command.SINGLE_SUCCESS;
 	};
 

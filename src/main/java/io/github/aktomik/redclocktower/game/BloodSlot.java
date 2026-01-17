@@ -50,6 +50,7 @@ public class BloodSlot {
 			boolean voting = bloodPlayerAtSlot.getVotePull();
 			boolean voken = bloodPlayerAtSlot.getVoteToken();
 			boolean alive = bloodPlayerAtSlot.getAlive();
+			boolean traveler = bloodPlayerAtSlot.isTraveller();
 
 			lampData = (alive)
 				? BlockType.WAXED_COPPER_BULB.createBlockData()
@@ -67,12 +68,17 @@ public class BloodSlot {
 			{
 				if (alive)
 				{
-					if (lampData instanceof Powerable powerable) {
-						powerable.setPowered(true);
-						powerable.copyTo(lampData);
-					}
+					lampData = BlockType.REDSTONE_LAMP.createBlockData();
 				} else {
 					lampData = BlockType.NETHERITE_BLOCK.createBlockData();
+				}
+			}
+
+			if (traveler)
+			{
+				if (lampData instanceof Powerable powerable) {
+					powerable.setPowered(true);
+					powerable.copyTo(lampData);
 				}
 			}
 

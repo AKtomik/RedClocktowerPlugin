@@ -22,20 +22,25 @@ public class StorytellerSubVote extends SubBrigadierBase {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
+
 		.then(Commands.literal("nominate")
 			.executes(this::nominateCheck)
 			.then(Commands.argument("player", ArgumentTypes.player())
 				.executes(ctx -> nominateChange(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
+
 		.then(Commands.literal("pylori")
 			.executes(this::pyloriCheck)
 			.then(Commands.argument("player", ArgumentTypes.player())
 				.executes(ctx -> pyloriChange(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
+
 		.then(Commands.literal("cancel")
 			.executes(this::votingCancel))
+
 		.then(Commands.literal("start")
 			.executes(ctx -> votingStart(ctx, null))
 			.then(Commands.argument("player", ArgumentTypes.player())
 				.executes(ctx -> votingStart(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
+
 		.then(Commands.literal("execute")
 			.executes(ctx -> playerExecution(ctx, null))
 			.then(Commands.argument("player", ArgumentTypes.player())

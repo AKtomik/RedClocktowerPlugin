@@ -122,6 +122,19 @@ public class BloodPlayer {
 		return pdc.get(DataKey.PLAYER_GAME_SLOT_INDEX.key, PersistentDataType.INTEGER);
 	}
 
+	private void setTraveller(boolean isTraveller)
+	{
+		pdc.set(DataKey.PLAYER_TRAVELLER.key, PersistentDataType.BOOLEAN, isTraveller);
+	}
+	private void clearTraveller()
+	{
+		pdc.remove(DataKey.PLAYER_TRAVELLER.key);
+	}
+	public boolean getTraveller()
+	{
+		return pdc.getOrDefault(DataKey.PLAYER_TRAVELLER.key, PersistentDataType.BOOLEAN, false);
+	}
+
 	private void setSpectator(boolean isSpectator)
 	{
 		pdc.set(DataKey.PLAYER_GAME_SPECTATOR.key, PersistentDataType.BOOLEAN, isSpectator);
@@ -228,7 +241,7 @@ public class BloodPlayer {
 	}
 	public boolean isTraveller()
 	{
-		return false;
+		return getTraveller();
 	}
 	public boolean hasToken() { return getVoteToken(); }
 	public boolean isVoting()
@@ -258,6 +271,13 @@ public class BloodPlayer {
 	public void revive()
 	{
 		changeAlive(true);
+	}
+
+	public void changeTraveller(boolean value)
+	{
+		setTraveller(value);
+		refreshNameTag();
+		refreshSlotLamp();
 	}
 
 	public void changeVoteToken(boolean value)
