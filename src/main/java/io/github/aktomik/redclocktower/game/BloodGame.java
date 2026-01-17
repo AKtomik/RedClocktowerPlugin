@@ -2,6 +2,7 @@ package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.DataKey;
 import io.github.aktomik.redclocktower.RedClocktower;
+import io.github.aktomik.redclocktower.utils.UUIDDataType;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.*;
@@ -75,17 +76,17 @@ public class BloodGame {
 		return pdc.get(DataKey.GAME_ROUND_ID.key, PersistentDataType.STRING);
 	}
 
-	private void setStorytellerUuid(String uuid)
+	private void setStorytellerUuid(UUID uuid)
 	{
-		pdc.set(DataKey.GAME_STORYTELLER_UUID.key, PersistentDataType.STRING, uuid);
+		pdc.set(DataKey.GAME_STORYTELLER_UUID.key, UUIDDataType.INSTANCE, uuid);
 	}
 	private void clearStorytellerUuid()
 	{
 		pdc.remove(DataKey.GAME_STORYTELLER_UUID.key);
 	}
-	public String getStorytellerUuid()
+	public UUID getStorytellerUuid()
 	{
-		return pdc.get(DataKey.GAME_STORYTELLER_UUID.key, PersistentDataType.STRING);
+		return pdc.get(DataKey.GAME_STORYTELLER_UUID.key, UUIDDataType.INSTANCE);
 	}
 
 	private void setVoteNominatedUuid(String uuid)
@@ -296,7 +297,7 @@ public class BloodGame {
 		Player lastStoryteller = getStoryteller();
 		if (lastStoryteller != null)  removePlayer(lastStoryteller);
 
-		setStorytellerUuid(player.getUniqueId().toString());
+		setStorytellerUuid(player.getUniqueId());
 
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		bloodPlayer.joinGame(this, true);
@@ -304,9 +305,9 @@ public class BloodGame {
 
 	public Player getStoryteller()
 	{
-		String uuid = getStorytellerUuid();
+		UUID uuid = getStorytellerUuid();
 		if (uuid == null) return null;
-		return Bukkit.getPlayer(UUID.fromString(uuid));
+		return Bukkit.getPlayer(uuid);
 	}
 
 	public void changePyloriPlayer(Player player)
@@ -318,7 +319,7 @@ public class BloodGame {
 
 	public Player getPyloriPlayer()
 	{
-		return Bukkit.getPlayer(UUID.fromString(getStorytellerUuid()));
+		return Bukkit.getPlayer(getStorytellerUuid());
 	}
 
 	// slots
