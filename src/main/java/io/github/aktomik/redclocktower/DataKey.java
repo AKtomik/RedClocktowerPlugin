@@ -40,6 +40,8 @@ public enum DataKey {
 	PLAYER_GAME_WORLD_NAME("player_game_world_name"),
 	PLAYER_GAME_ROUND_ID("player_game_round_id"),
 	PLAYER_GAME_SLOT_INDEX("player_game_slot_index"),
+	PLAYER_GAME_SPECTATOR("player_game_spectator"),
+	PLAYER_GAME_STORYTELLER("player_game_storyteller"),
 
 	PLAYER_ALIVE("player_alive"),
 	PLAYER_VOTE_TOKEN("player_vote_token"),

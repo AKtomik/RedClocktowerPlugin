@@ -38,6 +38,14 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 			.then(Commands.argument("players", ArgumentTypes.players())
 				.executes(subAdd)))
 
+		.then(Commands.literal("spectator")
+			.then(Commands.argument("players", ArgumentTypes.players())
+				.executes(subSpectate)))
+
+		.then(Commands.literal("storyteller")
+			.then(Commands.argument("player", ArgumentTypes.player())
+				.executes(subStorytell)))
+
 		.then(Commands.literal("remove")
 			.then(Commands.argument("players", ArgumentTypes.players())
 				.executes(subRemove)))
@@ -65,6 +73,9 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 
 	private BloodGame getGame(CommandSourceStack ctx) {
 		return BloodGame.get(ctx.getLocation().getWorld());
+	}
+	private Player resolvePlayer(CommandContext<CommandSourceStack> ctx) {
+		return ctx.getArgument("player", Player.class);
 	}
 	private List<Player> resolvePlayers(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
 		return ctx.getArgument("players", PlayerSelectorArgumentResolver.class).resolve(ctx.getSource());
@@ -194,6 +205,60 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		}
 		return Command.SINGLE_SUCCESS;
 	};
+
+
+
+	Command<CommandSourceStack> subSpectate = ctx -> {
+		final CommandSender sender = ctx.getSource().getSender();
+		final List<Player> players = resolvePlayers(ctx);
+		final BloodGame game = getGame(ctx.getSource());
+
+		// checks
+		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (failIfEmpty(sender, players)) return Command.SINGLE_SUCCESS;
+
+		// the action
+		for (Player player : players)
+		{
+			if (game.isPlayerIn(player))
+			{
+				sender.sendRichMessage("<gray><b><target></b> is already in game.",
+				Placeholder.parsed("target", player.getName())
+				);
+				continue;
+			}
+			if (game.isFull())
+			{
+				sender.sendRichMessage("<red><b><target></b> can't be added because the game is full.",
+				Placeholder.parsed("target", player.getName())
+				);
+				continue;
+			}
+			game.addPlayer(player);
+			sender.sendRichMessage("you added <b><target></b>.",
+			Placeholder.parsed("target", player.getName())
+			);
+		}
+		return Command.SINGLE_SUCCESS;
+	};
+
+
+	Command<CommandSourceStack> subStorytell = ctx -> {
+		final CommandSender sender = ctx.getSource().getSender();
+		final Player player = resolvePlayer(ctx);
+		final BloodGame game = getGame(ctx.getSource());
+
+		// checks
+		if (failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+
+		// the action
+		game.changeStoryteller(player);
+		sender.sendRichMessage("<b><target></b> is now the storyteller.",
+		Placeholder.parsed("target", player.getName())
+		);
+		return Command.SINGLE_SUCCESS;
+	};
+
 
 	public final Command<CommandSourceStack> subRemove = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();

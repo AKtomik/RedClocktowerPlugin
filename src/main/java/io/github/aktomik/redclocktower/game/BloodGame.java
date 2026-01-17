@@ -226,7 +226,7 @@ public class BloodGame {
 		String uuid = player.getUniqueId().toString();
 		// check if player already exist
 		if (isUuidIn(uuid)) throw new RuntimeException("trying to add a player in a game where he already is");
-		// adding or filling to the uuid list
+		// fill it to the uuid list
 		ArrayList<String> slotsUuid = new ArrayList<>(getSlotsUuid());
 		List<Integer> emptySlotsIndex = getEmptySlotsIndex(slotsUuid);
 		if (emptySlotsIndex.isEmpty()) throw new RuntimeException("trying to add a player in a game with no available slot (check if the limit is well set and refresh)");
@@ -277,9 +277,12 @@ public class BloodGame {
 		return isUuidIn(player.getUniqueId().toString());
 	}
 
-	public void setStoryteller(Player player)
+	public void changeStoryteller(Player player)
 	{
 		setStorytellerUuid(player.getUniqueId().toString());
+
+		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		bloodPlayer.joinGame(this, true);
 	}
 
 	public Player getStoryteller()

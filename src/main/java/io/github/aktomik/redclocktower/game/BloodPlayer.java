@@ -122,6 +122,32 @@ public class BloodPlayer {
 		return pdc.get(DataKey.PLAYER_GAME_SLOT_INDEX.key, PersistentDataType.INTEGER);
 	}
 
+	private void setSpectator(boolean isSpectator)
+	{
+		pdc.set(DataKey.PLAYER_GAME_SPECTATOR.key, PersistentDataType.BOOLEAN, isSpectator);
+	}
+	private void clearSpectator()
+	{
+		pdc.remove(DataKey.PLAYER_GAME_SPECTATOR.key);
+	}
+	public boolean getSpectator()
+	{
+		return pdc.getOrDefault(DataKey.PLAYER_GAME_SPECTATOR.key, PersistentDataType.BOOLEAN, false);
+	}
+
+	private void setStoryteller(boolean isStoryteller)
+	{
+		pdc.set(DataKey.PLAYER_GAME_STORYTELLER.key, PersistentDataType.BOOLEAN, isStoryteller);
+	}
+	private void clearStoryteller()
+	{
+		pdc.remove(DataKey.PLAYER_GAME_STORYTELLER.key);
+	}
+	public boolean getStoryteller()
+	{
+		return pdc.getOrDefault(DataKey.PLAYER_GAME_STORYTELLER.key, PersistentDataType.BOOLEAN, false);
+	}
+
 	// game link
 	void joinGame(BloodGame game, int slotIndex)
 	{
@@ -132,6 +158,20 @@ public class BloodPlayer {
 
 		game.getTeam().addPlayer(player);
 		revive();
+		refreshNameTag();
+	}
+
+	// join without a slot index for the storyteller
+	// [storyteller] should be true from now
+	void joinGame(BloodGame game, boolean storyteller)
+	{
+		BloodGame lastGame = getGame();
+		if (lastGame != null) leaveGame();
+		setGame(game);
+		setSpectator(true);
+		setStoryteller(storyteller);
+
+		game.getTeam().addPlayer(player);
 		refreshNameTag();
 	}
 
@@ -176,9 +216,13 @@ public class BloodPlayer {
 	{
 		return getAlive();
 	}
+	public boolean isSpectator()
+	{
+		return getSpectator();
+	}
 	public boolean isStoryteller()
 	{
-		return false;
+		return getStoryteller();
 	}
 	public boolean isTraveller()
 	{
@@ -232,6 +276,7 @@ public class BloodPlayer {
 
 	public void quitSlotLamp()
 	{
+		if (isSpectator()) return;
 		BloodGame game = getGame();
 		BloodSlot slot = game.getSlot(getSlotIndex());
 		slot.refreshLamp(null);
@@ -239,6 +284,7 @@ public class BloodPlayer {
 
 	public void refreshSlotLamp()
 	{
+		if (isSpectator()) return;
 		BloodGame game = getGame();
 		BloodSlot slot = game.getSlot(getSlotIndex());
 		slot.refreshLamp(this);
@@ -259,11 +305,20 @@ public class BloodPlayer {
 		}
 		MiniMessage mini = MiniMessage.miniMessage();
 
-		String deathString = (isAlive()) ? "" : "<gray>☠";
-		String spaceOfDeath = (isAlive()) ? "" : " ";
 		String tokenColor = getTokenColor();
 		String tokenCharacter = getTokenCharacter();
-		String slotString =Integer.toString(getSlotIndex()+1);
+
+		String deathString = "";
+		String spaceOfDeath = "";
+		String slotString = "";
+
+		if (!isSpectator())
+		{
+			deathString = (isAlive()) ? "" : "<gray>☠";
+			spaceOfDeath = (isAlive()) ? "" : " ";
+			slotString =Integer.toString(getSlotIndex()+1);
+		}
+
 
 		String nameString = player.getName();
 		String oldNameString = "";
@@ -294,6 +349,7 @@ public class BloodPlayer {
 	String getTokenCharacter()
 	{
 		if (isStoryteller()) return "❇";
+		if (isSpectator()) return "♟";
 		if (isTraveller()) return "✳";
 		return "✴";
 	}
@@ -301,6 +357,7 @@ public class BloodPlayer {
 	String getTokenColor()
 	{
 		if (isStoryteller()) return "light_purple";
+		if (isSpectator()) return "gray";
 		return hasToken()
 			? isAlive()
 				? isVoting()
