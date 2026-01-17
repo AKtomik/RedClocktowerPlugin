@@ -233,7 +233,8 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		// the action
 		for (Player player : players)
 		{
-			if (!game.isPlayerIn(player))
+			BloodPlayer bloodPlayer = BloodPlayer.get(player);
+			if (!game.isPlayerIn(player) && !bloodPlayer.isSpectator())
 			{
 				sender.sendRichMessage("<gray><b><target></b> is not in game.",
 				Placeholder.parsed("target", player.getName())
