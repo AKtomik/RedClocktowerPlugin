@@ -84,6 +84,19 @@ public class BloodPlayer {
 		return pdc.getOrDefault(DataKey.PLAYER_VOTE_PULL.key, PersistentDataType.BOOLEAN, false);
 	}
 
+	private void setVoteLock(boolean isVoteLock)
+	{
+		pdc.set(DataKey.PLAYER_VOTE_LOCK.key, PersistentDataType.BOOLEAN, isVoteLock);
+	}
+	private void clearVoteLock()
+	{
+		pdc.remove(DataKey.PLAYER_VOTE_LOCK.key);
+	}
+	public boolean getVoteLock()
+	{
+		return pdc.getOrDefault(DataKey.PLAYER_VOTE_LOCK.key, PersistentDataType.BOOLEAN, false);
+	}
+
 	private void setGame(BloodGame game)
 	{
 		pdc.set(DataKey.PLAYER_GAME_WORLD_NAME.key, PersistentDataType.STRING, game.world.getName());
@@ -197,9 +210,12 @@ public class BloodPlayer {
 		clearAlive();
 		clearVotePull();
 		clearVoteToken();
+		clearVoteLock();
+		clearTraveller();
 		clearSpectator();
 		clearStoryteller();
 
+		clearSlotIndex();
 		clearGame();// after that getGame is null
 
 		game.getTeam().removePlayer(player);
@@ -291,6 +307,13 @@ public class BloodPlayer {
 	public void changeVotePull(boolean value)
 	{
 		setVotePull(value);
+		refreshNameTag();
+		refreshSlotLamp();
+	}
+
+	public void changeVoteLock(boolean value)
+	{
+		setVoteLock(value);
 		refreshNameTag();
 		refreshSlotLamp();
 	}

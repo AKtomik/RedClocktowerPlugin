@@ -46,6 +46,7 @@ public enum DataKey {
 	PLAYER_ALIVE("player_alive"),
 	PLAYER_VOTE_TOKEN("player_vote_token"),
 	PLAYER_VOTE_PULL("player_vote_pull"),
+	PLAYER_VOTE_LOCK("player_vote_lock"),
 	PLAYER_TRAVELLER("player_traveller"),
 
 	PLAYER_DISPLAY_NAME("player_display_name");
