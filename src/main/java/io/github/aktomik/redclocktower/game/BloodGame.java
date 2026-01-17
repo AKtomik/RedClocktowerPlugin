@@ -304,7 +304,9 @@ public class BloodGame {
 
 	public Player getStoryteller()
 	{
-		return Bukkit.getPlayer(UUID.fromString(getStorytellerUuid()));
+		String uuid = getStorytellerUuid();
+		if (uuid == null) return null;
+		return Bukkit.getPlayer(UUID.fromString(uuid));
 	}
 
 	public void changePyloriPlayer(Player player)
