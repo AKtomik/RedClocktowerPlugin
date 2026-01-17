@@ -25,6 +25,7 @@ public class StorytellerCommand extends CommandBrigadierBase {
         .then(new StorytellerSubTime().root())
         .then(new StorytellerSubGame().root())
         .then(new StorytellerSubPlayer().root())
-        .then(new StorytellerSubSettings().root());
+        .then(new StorytellerSubSettings().root())
+        .then(new StorytellerSubVote().root());
     }
 }

@@ -60,6 +60,5 @@ public class PlayerListener implements Listener {
 		if (!bloodPlayer.canVote()) return;
 		bloodPlayer.changeVotePull(powered);
 	}
-
 }
 
