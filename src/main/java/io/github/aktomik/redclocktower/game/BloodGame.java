@@ -337,6 +337,12 @@ public class BloodGame {
 		if (!isUuidIn(uuid)) throw new RuntimeException("trying to nominated that is not in game");
 		setVoteNominatedUuid(uuid);
 	}
+	public void removeNominatedPlayer()
+	{
+		Player player = getNominatedPlayer();
+		if (player == null) return;
+		clearVoteNominatedUuid();
+	}
 	public Player getNominatedPlayer()
 	{
 		UUID uuid = getVoteNominatedUuid();
@@ -477,7 +483,26 @@ public class BloodGame {
 		team.unregister();
 	}
 
+	// vote process
+
+	public void startingVoteProcess()
+	{
+		// for the nominated player
+		return;
+	}
+
+	public void cancelVoteProcess()
+	{
+		return;
+	}
+
+	public void executePylori()
+	{
+		return;
+	}
+
 	// runs
+
 	public void doAction(BloodGameAction action, CommandSender sender)
 	{
 		gameAction.get(action).accept(this, sender);

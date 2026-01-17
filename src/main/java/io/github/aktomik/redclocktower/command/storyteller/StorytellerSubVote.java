@@ -25,7 +25,7 @@ public class StorytellerSubVote extends SubBrigadierBase {
 		.then(Commands.literal("nominate")
 			.executes(this::nominateCheck)
 			.then(Commands.argument("player", ArgumentTypes.player())
-				.executes(this::nominateChange)))
+				.executes(ctx -> nominateChange(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
 		.then(Commands.literal("cancel")
 			.executes(this::votingCancel))
 		.then(Commands.literal("start")
@@ -48,15 +48,14 @@ public class StorytellerSubVote extends SubBrigadierBase {
 		if (player == null)
 			sender.sendRichMessage("there is no one actually nominated.");
 		else
-			sender.sendRichMessage("<b><target></b> is nominated.",
+			sender.sendRichMessage("<b><target></b> is actually nominated.",
 			Placeholder.parsed("target", player.getName())
 			);
 		return Command.SINGLE_SUCCESS;
 	};
 
-	private int nominateChange(CommandContext<CommandSourceStack> ctx) {
+	private int nominateChange(CommandContext<CommandSourceStack> ctx, Player player) {
 		final CommandSender sender = ctx.getSource().getSender();
-		final Player player = BrigadierToolbox.resolvePlayer(ctx);
 		final BloodGame game = BloodGame.get(ctx);
 
 		// checks
@@ -77,10 +76,39 @@ public class StorytellerSubVote extends SubBrigadierBase {
 	};
 
 	private int votingStart(CommandContext<CommandSourceStack> ctx, Player player) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx);
+
+		if (player != null)  nominateChange(ctx, player);
+		Player nominatedPlayer = game.getNominatedPlayer();
+
+		// checks
+		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIf(sender, !game.isVoteMoment(), "this is not the time to vote")) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIf(sender, nominatedPlayer == null, "there is no nominated player!")) return Command.SINGLE_SUCCESS;
+		assert (nominatedPlayer != null);
+
+		// the action
+		game.startingVoteProcess();
+		sender.sendRichMessage("<aqua>starting the vote for <b><target></b>.",
+			Placeholder.parsed("target", nominatedPlayer.getName())
+		);
 		return Command.SINGLE_SUCCESS;
 	};
 
 	private int votingCancel(CommandContext<CommandSourceStack> ctx) {
+
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx);
+
+		// checks
+		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIf(sender, !game.isVoteMoment(), "this is not the time to vote")) return Command.SINGLE_SUCCESS;
+
+		// the action
+		game.cancelVoteProcess();
+		game.removeNominatedPlayer();
+		sender.sendRichMessage("<aqua>vote & nomination <red>canceled</red>.");
 		return Command.SINGLE_SUCCESS;
 	};
 
