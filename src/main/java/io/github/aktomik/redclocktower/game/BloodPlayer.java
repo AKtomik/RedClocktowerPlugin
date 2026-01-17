@@ -102,7 +102,7 @@ public class BloodPlayer {
 		World world = Bukkit.getWorld(worldName);
 		if (world == null) return null;
 		BloodGame bloodGame = BloodGame.get(world);
-		if (!bloodGame.isPlayerIn(player)) {
+		if (!isSpectator() && !bloodGame.isPlayerIn(player)) {
 			clearGame();
 			return null;
 		}
@@ -184,6 +184,8 @@ public class BloodPlayer {
 		clearAlive();
 		clearVotePull();
 		clearVoteToken();
+		clearSpectator();
+		clearStoryteller();
 
 		clearGame();// after that getGame is null
 

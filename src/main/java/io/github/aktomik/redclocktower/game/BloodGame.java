@@ -243,6 +243,20 @@ public class BloodGame {
 	public void removePlayer(OfflinePlayer offlinePlayer)
 	{
 		String uuid = offlinePlayer.getUniqueId().toString();
+		// blood player object quit if online
+		Player player = offlinePlayer.getPlayer();
+		if (player != null) {// must be done before game remove player
+			BloodPlayer bloodPlayer = BloodPlayer.get(player);
+			boolean wasSpectator = bloodPlayer.isSpectator();
+			boolean wasStoryteller = bloodPlayer.isStoryteller();
+			bloodPlayer.quitGame(this);
+			// spectator & storyteller handle
+			if (wasStoryteller && Objects.equals(getStorytellerUuid(), player.getUniqueId().toString()))
+			{
+				clearStorytellerUuid();
+			}
+			if (wasSpectator) return;
+		};
 		// set null from the uuid list
 		ArrayList<String> slotsUuid = new ArrayList<>(getSlotsUuid());
 		boolean removed = false;
@@ -257,12 +271,6 @@ public class BloodGame {
 		}
 		// check
 		if (!removed) throw new RuntimeException("trying to remove an offline player in a game where he is not");
-		// blood player object quit if online
-		Player player = offlinePlayer.getPlayer();
-		if (player != null) {// must be done before game remove player
-			BloodPlayer bloodPlayer = BloodPlayer.get(player);
-			bloodPlayer.quitGame(this);
-		};
 		// really removing from the uuid list
 		setSlotsUuid(slotsUuid);
 	}
@@ -523,9 +531,9 @@ public class BloodGame {
 		game.clearStorytellerUuid();
 		//game.applySlotLimit();//!shouldn't
 		sender.sendRichMessage("<light_purple>game was brutally cleaned");
-		sender.sendRichMessage("<orange>this may result as unintended behavior and must be used in last resort.");
-		sender.sendRichMessage("<orange>it is advised to restart server or at least deco/reco all players.");
-		sender.sendRichMessage("<orange>after that, resetup your game.");
+		sender.sendRichMessage("<#ff6600>this may result as unintended behavior and must be used in last resort.");
+		sender.sendRichMessage("<#ff6600>it is advised to restart server or at least deco/reco all players.");
+		sender.sendRichMessage("<#ff6600>after that, resetup your game.");
 	})
 	);
 
