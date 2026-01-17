@@ -316,10 +316,24 @@ public class BloodGame {
 		if (!isUuidIn(uuid)) throw new RuntimeException("trying to put a player on pylori that is not in game");
 		setVotePyloriUuid(uuid);
 	}
-
 	public Player getPyloriPlayer()
 	{
-		return Bukkit.getPlayer(getStorytellerUuid());
+		UUID uuid = getVotePyloriUuid();
+		if (uuid == null) return null;
+		return Bukkit.getPlayer(uuid);
+	}
+
+	public void changeNominatedPlayer(Player player)
+	{
+		UUID uuid = player.getUniqueId();
+		if (!isUuidIn(uuid)) throw new RuntimeException("trying to nominated that is not in game");
+		setVoteNominatedUuid(uuid);
+	}
+	public Player getNominatedPlayer()
+	{
+		UUID uuid = getVoteNominatedUuid();
+		if (uuid == null) return null;
+		return Bukkit.getPlayer(uuid);
 	}
 
 	// slots
