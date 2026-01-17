@@ -47,9 +47,11 @@ public class PlayerListener implements Listener {
 		boolean isOwnLever = Objects.equals(loc,slot.getPosition(BloodSlotPlace.LEVER));
 
 		if (!isGameLever) return;
-		// stop redstone
-		event.setCancelled(true);
-		if (!isOwnLever) return;
+		if (!isOwnLever) {
+			// stop redstone
+			event.setCancelled(true);
+			return;
+		}
 
 		// get state
 		BlockData data = block.getBlockData();
