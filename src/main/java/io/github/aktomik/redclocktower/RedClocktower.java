@@ -3,6 +3,7 @@ package io.github.aktomik.redclocktower;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.github.aktomik.redclocktower.command.VoteCommand;
 import io.github.aktomik.redclocktower.command.setup.SetupCommand;
+import io.github.aktomik.redclocktower.game.BloodPlayer;
 import io.github.aktomik.redclocktower.game.PlayerListener;
 import io.github.aktomik.redclocktower.utils.PlayerDisplayTagManager;
 import io.github.aktomik.redclocktower.utils.brigadier.CommandBrigadierBase;
@@ -12,6 +13,8 @@ import io.github.aktomik.redclocktower.command.TagmeCommand;
 import io.github.aktomik.redclocktower.command.WhosendCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
+import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -24,7 +27,6 @@ public final class RedClocktower extends JavaPlugin {
     @Override
     public void onEnable() {
         // Plugin startup logic
-        getLogger().info("Enabled!");
         plugin = this;
 
         // setup data keys
@@ -49,11 +51,23 @@ public final class RedClocktower extends JavaPlugin {
                 commands.registrar().register(build, brigadier.aliases());
             }
         });
+
+        // message
+        getLogger().info("Enabled!");
     }
 
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+
+        // blood disconnect for all players
+        for (Player player : Bukkit.getOnlinePlayers())
+        {
+            BloodPlayer bloodPlayer = BloodPlayer.get(player);
+            bloodPlayer.disconnect();
+        }
+
+        // message
         getLogger().info("Disabled!");
     }
 }

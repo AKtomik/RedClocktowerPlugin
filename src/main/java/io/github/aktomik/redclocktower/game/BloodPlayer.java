@@ -160,6 +160,12 @@ public class BloodPlayer {
 		game.removePlayer(this.player);
 	}
 
+	// when player disconnect of the server (can be called twice on restart)
+	public void disconnect()
+	{
+		leaveGame();
+	}
+
 	// if
 	boolean isInGame()
 	{

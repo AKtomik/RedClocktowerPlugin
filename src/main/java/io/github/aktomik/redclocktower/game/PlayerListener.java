@@ -28,7 +28,7 @@ public class PlayerListener implements Listener {
 	public void onQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		bloodPlayer.leaveGame();
+		bloodPlayer.disconnect();
 	}
 
 	@EventHandler(ignoreCancelled = true)
