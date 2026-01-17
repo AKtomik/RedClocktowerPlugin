@@ -24,8 +24,8 @@ public class StorytellerSubVote extends SubBrigadierBase {
 		return base()
 		.then(Commands.literal("nominate")
 			.executes(this::nominateCheck)
-			.then(Commands.argument("player", ArgumentTypes.players()))
-				.executes(this::nominateChange))
+			.then(Commands.argument("player", ArgumentTypes.players())
+				.executes(this::nominateChange)))
 		.then(Commands.literal("cancel")
 			.executes(this::votingCancel))
 		.then(Commands.literal("start")
@@ -44,7 +44,7 @@ public class StorytellerSubVote extends SubBrigadierBase {
 		final BloodGame game = BloodGame.get(ctx);
 
 		// the action
-		Player player = game.getStoryteller();
+		Player player = game.getNominatedPlayer();
 		if (player == null)
 			sender.sendRichMessage("there is no one actually nominated.");
 		else
@@ -64,8 +64,8 @@ public class StorytellerSubVote extends SubBrigadierBase {
 		if (GameToolbox.failIf(sender, !game.isVoteMoment(), "this is not the time to vote")) return Command.SINGLE_SUCCESS;
 
 		// the action
-		game.changeStoryteller(player);
-		sender.sendRichMessage("<b><target></b> is now the storyteller.",
+		game.changeNominatedPlayer(player);
+		sender.sendRichMessage("<b><target></b> is <gold><b>nominated</b></gold>.",
 		Placeholder.parsed("target", player.getName())
 		);
 		return Command.SINGLE_SUCCESS;
