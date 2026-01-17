@@ -62,6 +62,11 @@ public class StorytellerSubVote extends SubBrigadierBase {
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
 		if (GameToolbox.failIf(sender, !game.isVoteMoment(), "this is not the time to vote")) return Command.SINGLE_SUCCESS;
+		if (!game.isPlayerIn(player))
+		{
+			sender.sendRichMessage("<red><target> is not in game.",  Placeholder.parsed("target", player.getName()));
+			return Command.SINGLE_SUCCESS;
+		}
 
 		// the action
 		game.changeNominatedPlayer(player);
