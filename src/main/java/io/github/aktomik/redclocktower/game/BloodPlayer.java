@@ -183,6 +183,7 @@ public class BloodPlayer {
 	{
 		return getVotePull();
 	}
+	public boolean canVote() { return isAlive() || hasToken(); }
 
 	// action
 	public void changeAlive(boolean value)
