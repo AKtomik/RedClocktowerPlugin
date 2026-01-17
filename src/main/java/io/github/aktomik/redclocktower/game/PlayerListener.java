@@ -58,7 +58,6 @@ public class PlayerListener implements Listener {
 		boolean powered = !((Powerable)data).isPowered();
 
 		if (!bloodPlayer.canVote()) return;
-		player.sendRichMessage(powered ? "own lever ON" : "own lever OFF");
 		bloodPlayer.changeVotePull(powered);
 	}
 
