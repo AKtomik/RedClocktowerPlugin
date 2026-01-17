@@ -25,7 +25,7 @@ public enum DataKey {
 
 	GAME_VOTE_NOMINATOR_INDEX("game_vote_nominator_index"),//UNUSED
 	GAME_VOTE_NOMINATED_INDEX("game_vote_nominated_index"),
-	GAME_VOTE_PILORY_INDEX("game_vote_pilory_index"),
+	GAME_VOTE_PYLORI_INDEX("game_vote_pylori_index"),
 
 	GAME_SETTINGS_SLOT_LIMIT("game_settings_slot_limit"),
 

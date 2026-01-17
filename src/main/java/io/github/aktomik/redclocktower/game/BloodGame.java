@@ -88,6 +88,32 @@ public class BloodGame {
 		return pdc.get(DataKey.GAME_STORYTELLER_UUID.key, PersistentDataType.STRING);
 	}
 
+	private void setVoteNominatedIndex(int index)
+	{
+		pdc.set(DataKey.GAME_VOTE_NOMINATED_INDEX.key, PersistentDataType.INTEGER, index);
+	}
+	private void clearVoteNominatedIndex()
+	{
+		pdc.remove(DataKey.GAME_VOTE_NOMINATED_INDEX.key);
+	}
+	public int getVoteNominatedIndex()
+	{
+		return pdc.get(DataKey.GAME_VOTE_NOMINATED_INDEX.key, PersistentDataType.INTEGER);
+	}
+
+	private void setVotePyloriIndex(int index)
+	{
+		pdc.set(DataKey.GAME_VOTE_PYLORI_INDEX.key, PersistentDataType.INTEGER, index);
+	}
+	private void clearVotePyloriIndex()
+	{
+		pdc.remove(DataKey.GAME_VOTE_PYLORI_INDEX.key);
+	}
+	public int getVotePyloriIndex()
+	{
+		return pdc.get(DataKey.GAME_VOTE_PYLORI_INDEX.key, PersistentDataType.INTEGER);
+	}
+
 	private void setSlotsUuid(List<String> uuids)
 	{
 		pdc.set(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.LIST.strings(), uuids);
