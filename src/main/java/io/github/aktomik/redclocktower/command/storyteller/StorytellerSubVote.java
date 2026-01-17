@@ -30,12 +30,12 @@ public class StorytellerSubVote extends SubBrigadierBase {
 			.executes(this::votingCancel))
 		.then(Commands.literal("start")
 			.executes(ctx -> votingStart(ctx, null))
-			.then(Commands.argument("players", ArgumentTypes.players()))
-				.executes(ctx -> votingStart(ctx, ctx.getArgument("player", Player.class))))
+			.then(Commands.argument("player", ArgumentTypes.player())
+				.executes(ctx -> votingStart(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
 		.then(Commands.literal("execute")
 			.executes(ctx -> playerExecution(ctx, null))
-			.then(Commands.argument("players", ArgumentTypes.players()))
-				.executes(ctx -> playerExecution(ctx, ctx.getArgument("player", Player.class))))
+			.then(Commands.argument("player", ArgumentTypes.player())
+				.executes(ctx -> playerExecution(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
 		;
 	}
 
