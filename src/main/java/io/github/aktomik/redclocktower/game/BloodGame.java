@@ -221,7 +221,7 @@ public class BloodGame {
 		return getAllPlayers().stream().map(BloodPlayer::get).toList();
 	}
 
-	public BloodPlayer addPlayer(Player player)
+	public void addPlayer(Player player)
 	{
 		String uuid = player.getUniqueId().toString();
 		// check if player already exist
@@ -237,7 +237,6 @@ public class BloodGame {
 		// must be done after game add player
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		bloodPlayer.joinGame(this, slotIndex);
-		return bloodPlayer;
 	}
 
 	public void removePlayer(OfflinePlayer offlinePlayer)
@@ -285,8 +284,18 @@ public class BloodGame {
 		return isUuidIn(player.getUniqueId().toString());
 	}
 
+	public void addSpectator(Player player)
+	{
+		// blood player object spectator join
+		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		bloodPlayer.joinGame(this, false);
+	}
+
 	public void changeStoryteller(Player player)
 	{
+		Player lastStoryteller = getStoryteller();
+		if (lastStoryteller != null)  removePlayer(lastStoryteller);
+
 		setStorytellerUuid(player.getUniqueId().toString());
 
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);

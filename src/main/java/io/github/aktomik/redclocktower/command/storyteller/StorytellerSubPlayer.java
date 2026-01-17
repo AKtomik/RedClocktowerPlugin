@@ -223,20 +223,13 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		{
 			if (game.isPlayerIn(player))
 			{
-				sender.sendRichMessage("<gray><b><target></b> is already in game.",
+				sender.sendRichMessage("<red><b><target></b> is already in the game as a player.",
 				Placeholder.parsed("target", player.getName())
 				);
 				continue;
 			}
-			if (game.isFull())
-			{
-				sender.sendRichMessage("<red><b><target></b> can't be added because the game is full.",
-				Placeholder.parsed("target", player.getName())
-				);
-				continue;
-			}
-			game.addPlayer(player);
-			sender.sendRichMessage("you added <b><target></b>.",
+			game.addSpectator(player);
+			sender.sendRichMessage("you added <b><target></b> as a spectator.",
 			Placeholder.parsed("target", player.getName())
 			);
 		}
