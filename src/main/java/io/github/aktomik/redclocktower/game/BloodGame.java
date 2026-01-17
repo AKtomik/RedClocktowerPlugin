@@ -8,7 +8,6 @@ import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
-import org.bukkit.persistence.PersistentDataHolder;
 import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
@@ -466,6 +465,17 @@ public class BloodGame {
 		game.world.setGameRule(GameRules.ADVANCE_TIME, true);
 		game.setState(BloodGameState.NOTHING);
 		sender.sendRichMessage("<light_purple>clearing game");
+	}),
+
+	Map.entry(BloodGameAction.BRUTAL_CLEAN, (game, sender) -> {
+		// game.clearSlotsPdc();//!should
+		game.clearSlotsUuid();
+		game.clearStorytellerUuid();
+		//game.applySlotLimit();//!shouldn't
+		sender.sendRichMessage("<light_purple>game was brutally cleaned");
+		sender.sendRichMessage("<orange>this may result as unintended behavior and must be used in last resort.");
+		sender.sendRichMessage("<orange>it is advised to restart server or at least deco/reco all players.");
+		sender.sendRichMessage("<orange>after that, resetup your game.");
 	})
 	);
 

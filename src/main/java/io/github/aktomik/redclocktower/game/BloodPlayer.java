@@ -149,7 +149,6 @@ public class BloodPlayer {
 		clearAlive();
 		clearVotePull();
 		clearVoteToken();
-		refreshLamp();
 
 		clearGame();// after that getGame is null
 

@@ -9,7 +9,8 @@ public enum BloodGameAction {
 	FINISH,
 	REPLAY,
 	RESET,
-	CLEAR;
+	CLEAR,
+	BRUTAL_CLEAN;
 
 	@Override
 	public String toString() {
