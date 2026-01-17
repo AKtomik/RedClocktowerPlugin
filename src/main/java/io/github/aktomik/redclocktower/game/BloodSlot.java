@@ -62,19 +62,21 @@ public class BloodSlot {
 	public void refreshLamp(BloodPlayer bloodPlayerAtSlot)
 	{
 		Location lampLoc = getPosition(BloodSlotPlace.LAMP);
-		BlockData lampData;
+		Location airLoc = lampLoc.clone();
+		airLoc.setY(lampLoc.getY() - 1);
+
 		Location leverLoc = getPosition(BloodSlotPlace.LEVER);
 		BlockData leverData = world.getBlockData(leverLoc);
+		BlockData lampData = BlockType.WAXED_COPPER_BLOCK.createBlockData();;
 
 		if (getLock())
 		{
-			lampLoc.setX(lampLoc.getX() - 1);
+			Location cacheLoc = lampLoc;
+			lampLoc = airLoc;
+			airLoc = cacheLoc;
 		}
 
-		if (bloodPlayerAtSlot == null)
-		{
-			lampData = BlockType.WAXED_COPPER_BLOCK.createBlockData();
-		} else {
+		if (bloodPlayerAtSlot != null) {
 			boolean voting = bloodPlayerAtSlot.getVotePull();
 			boolean voken = bloodPlayerAtSlot.getVoteToken();
 			boolean alive = bloodPlayerAtSlot.getAlive();
@@ -118,6 +120,7 @@ public class BloodSlot {
 
 
 		world.setBlockData(lampLoc, lampData);
+		world.setBlockData(airLoc, BlockType.AIR.createBlockData());
 		world.setBlockData(leverLoc, leverData);
 	}
 }

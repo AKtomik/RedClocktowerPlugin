@@ -513,7 +513,7 @@ public class BloodGame {
 		};
 		broadcast("<gold>there is <count> players alive", resolvers);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			broadcast("<gold>a majority of <majority> votes is required to place <b><player></b> on the pylori", resolvers);
+			broadcast("<gold>a majority of <majority> votes is required to place <b><target></b> on the pylori", resolvers);
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
 			broadcast("<gold>the vote will start in 3 seconds", resolvers);
@@ -530,11 +530,14 @@ public class BloodGame {
 
 	Runnable slotVoteProcessRunnable(int lastIndex, int startIndex)
 	{
+		broadcast("build process for index <index>+1", Placeholder.parsed("index", Integer.toString(lastIndex)));
 		return () -> {
+			broadcast("run process for index <index>+1", Placeholder.parsed("index", Integer.toString(lastIndex)));
 			List<BloodSlot> slots = getSlots();
 
 			int actualIndex = lastIndex + 1;
-			if (actualIndex > slots.size()) actualIndex = 0;
+			if (actualIndex >= slots.size()) actualIndex = 0;
+			broadcast("is index <index>", Placeholder.parsed("index", Integer.toString(actualIndex)));
 
 			BloodSlot slot = slots.get(actualIndex);
 			Player player = getPlayerAtIndex(actualIndex);
@@ -543,14 +546,13 @@ public class BloodGame {
 				BloodPlayer bloodPlayer = BloodPlayer.get(player);
 				slot.changeLock(true, bloodPlayer);
 			}
-			// slot.changeDown(true);
 
 			if (actualIndex == startIndex)
 			{
 				finishVoteProcess();
 				return;
 			}
-			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, slotVoteProcessRunnable(actualIndex, startIndex), 10L);
+			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, slotVoteProcessRunnable(actualIndex, startIndex), 20L);
 		};
 	}
 
