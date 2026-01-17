@@ -244,9 +244,7 @@ public class StorytellerSubPlayer extends SubBrigadierBase {
 		// the action
 		Player player = game.getStoryteller();
 		if (player == null)
-			sender.sendRichMessage("this game does not have a storyteller.",
-			Placeholder.parsed("target", player.getName())
-			);
+			sender.sendRichMessage("this game does not have a storyteller.");
 		else
 			sender.sendRichMessage("<b><target></b> is the storyteller.",
 			Placeholder.parsed("target", player.getName())
