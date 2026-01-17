@@ -7,12 +7,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
-import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Block;
-import org.bukkit.block.BlockType;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Lightable;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -144,7 +139,7 @@ public class BloodPlayer {
 	void quitGame(BloodGame game)
 	{
 		revive();
-		quitLamp();
+		quitSlotLamp();
 
 		clearAlive();
 		clearVotePull();
@@ -200,7 +195,7 @@ public class BloodPlayer {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 9, true, false));
 		}
 		refreshNameTag();
-		refreshLamp();
+		refreshSlotLamp();
 	}
 	public void kill()
 	{
@@ -215,45 +210,29 @@ public class BloodPlayer {
 	{
 		setVoteToken(value);
 		refreshNameTag();
-		refreshLamp();
+		refreshSlotLamp();
 	}
 
 	public void changeVotePull(boolean value)
 	{
 		setVotePull(value);
 		refreshNameTag();
-		refreshLamp();
+		refreshSlotLamp();
 	}
 
 
-	public void quitLamp()
+	public void quitSlotLamp()
 	{
-		BlockData data = BlockType.WAXED_COPPER_BLOCK.createBlockData();
-
 		BloodGame game = getGame();
 		BloodSlot slot = game.getSlot(getSlotIndex());
-		Location loc = slot.getPosition(BloodSlotPlace.LAMP);
-		game.world.setBlockData(loc, data);
+		slot.refreshLamp(null);
 	}
 
-	public void refreshLamp()
+	public void refreshSlotLamp()
 	{
-		boolean voting = getVotePull();
-		boolean alive = getAlive();
-
-		BlockData data = BlockType.WAXED_COPPER_BULB.createBlockData();
-		if (voting)
-		{
-			if (data instanceof Lightable lightable) {
-				lightable.setLit(true);
-				lightable.copyTo(data);
-			}
-		}
-
 		BloodGame game = getGame();
 		BloodSlot slot = game.getSlot(getSlotIndex());
-		Location loc = slot.getPosition(BloodSlotPlace.LAMP);
-		game.world.setBlockData(loc, data);
+		slot.refreshLamp(this);
 	}
 
 	public void clearNameTag()
