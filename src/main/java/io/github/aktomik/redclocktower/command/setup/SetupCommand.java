@@ -23,6 +23,8 @@ public class SetupCommand extends CommandBrigadierBase {
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
 		.then(new SetupSubPlace().root())
+		.then(new SetupSubSettings().root())
+		.then(new SetupSubDebug().root())
 		.then(new SetupSubSlot().root());
 	}
 }

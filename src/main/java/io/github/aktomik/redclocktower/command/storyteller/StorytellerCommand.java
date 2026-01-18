@@ -1,5 +1,6 @@
 package io.github.aktomik.redclocktower.command.storyteller;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.github.aktomik.redclocktower.command.setup.SetupSubSettings;
 import io.github.aktomik.redclocktower.utils.brigadier.CommandBrigadierBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 
@@ -25,7 +26,6 @@ public class StorytellerCommand extends CommandBrigadierBase {
         .then(new StorytellerSubTime().root())
         .then(new StorytellerSubGame().root())
         .then(new StorytellerSubPlayer().root())
-        .then(new StorytellerSubSettings().root())
         .then(new StorytellerSubVote().root());
     }
 }

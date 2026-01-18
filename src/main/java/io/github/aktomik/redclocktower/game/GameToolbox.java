@@ -9,7 +9,7 @@ import java.util.function.BiConsumer;
 
 public class GameToolbox {
 
-	private GameToolbox() {};// is a static class
+	private GameToolbox() {}// is a static class
 
 	public static boolean failIf(CommandSender sender, boolean condition, String errorMessage) {
 		if (condition) {

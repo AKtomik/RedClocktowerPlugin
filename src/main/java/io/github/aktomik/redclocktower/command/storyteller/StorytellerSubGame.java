@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
 import io.github.aktomik.redclocktower.utils.brigadier.SubBrigadierBase;
 import io.github.aktomik.redclocktower.game.BloodGame;
-import io.github.aktomik.redclocktower.game.BloodGameAction;
+import io.github.aktomik.redclocktower.game.BloodGameStepAction;
 import io.github.aktomik.redclocktower.game.BloodGameState;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -19,18 +19,18 @@ public class StorytellerSubGame extends SubBrigadierBase {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.argument("action", EnumArgument.simple(BloodGameAction.class, "Invalid game action"))
+		.then(Commands.argument("action", EnumArgument.simple(BloodGameStepAction.class, "Invalid game step action"))
 		.executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
 			BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
-			final BloodGameAction gameAction = ctx.getArgument("action", BloodGameAction.class);
+			final BloodGameStepAction gameAction = ctx.getArgument("action", BloodGameStepAction.class);
 
 			// execution
-			sender.sendRichMessage("<dark_gray>running action <b><action></b>...",
+			sender.sendRichMessage("<dark_gray>running step <b><action></b>...",
 			Placeholder.parsed("action", gameAction.toString())
 			);
-			game.doAction(gameAction, sender);
+			game.doStep(gameAction, sender);
 			return Command.SINGLE_SUCCESS;
 		})).executes(ctx -> {
 			// arguments

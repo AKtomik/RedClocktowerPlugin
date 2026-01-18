@@ -20,7 +20,6 @@ import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
 import java.util.*;
-import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 public class BloodGame {
@@ -97,7 +96,7 @@ public class BloodGame {
 	{
 		pdc.set(DataKey.GAME_STORYTELLER_UUID.key(), UUIDDataType.INSTANCE, uuid);
 	}
-	private void clearStorytellerUuid()
+	void clearStorytellerUuid()
 	{
 		pdc.remove(DataKey.GAME_STORYTELLER_UUID.key());
 	}
@@ -149,7 +148,7 @@ public class BloodGame {
 	{
 		pdc.set(DataKey.GAME_SLOTS_UUID.key(), PersistentDataType.LIST.listTypeFrom(UUIDDataType.INSTANCE), uuids);
 	}
-	private void clearSlotsUuid()
+	void clearSlotsUuid()
 	{
 		pdc.remove(DataKey.GAME_SLOTS_UUID.key());
 	}
@@ -162,7 +161,7 @@ public class BloodGame {
 	{
 		pdc.set(DataKey.GAME_SLOTS_PDC.key(), PersistentDataType.LIST.dataContainers(), uuids);
 	}
-	private void clearSlotsPdc()
+	void clearSlotsPdc()
 	{
 		pdc.remove(DataKey.GAME_SLOTS_PDC.key());
 	}
@@ -539,14 +538,14 @@ public class BloodGame {
 	}
 
 	// teams
-	private void generateNewId()
+	void generateNewId()
 	{
 		int incrementedRoundCount = getRoundCount() + 1;
 		setRoundCount(incrementedRoundCount);
 		setRoundId("blood-%s-%s".formatted(world.getName(), Integer.toString(incrementedRoundCount)));
 	}
 
-	private void setupTeam()
+	void setupTeam()
 	{
 		Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
 		String teamId = getRoundId();
@@ -565,12 +564,7 @@ public class BloodGame {
 		return Bukkit.getScoreboardManager().getMainScoreboard().getTeam(teamId);
 	}
 
-	Team getMutualTeam(String teamId)
-	{
-		return Bukkit.getScoreboardManager().getMainScoreboard().getTeam(teamId);
-	}
-
-	private void deleteTeam()
+	void deleteTeam()
 	{
 		if (getRoundId() == null) return;
 		Team team = getTeam();
@@ -724,15 +718,21 @@ public class BloodGame {
 
 	// runs
 
-	public void doAction(BloodGameAction action, CommandSender sender)
+	public void doStep(BloodGameStepAction action, CommandSender sender)
 	{
-		gameAction.get(action).accept(this, sender);
+		GameAction.step.get(action).accept(this, sender);
+	}
+	public void doDebug(BloodGameDebugAction action, CommandSender sender)
+	{
+		GameAction.debug.get(action).accept(this, sender);
 	}
 	public void switchTime(BloodGamePeriod period, CommandSender sender)
 	{
-		gamePeriodEnter.get(period).accept(this, sender);
+		GameAction.periodEnter.get(period).accept(this, sender);
 		setTime(period);
 	}
+
+	// utils
 
 	public void broadcast(String richString)
 	{
@@ -759,142 +759,4 @@ public class BloodGame {
 	{
 		Bukkit.getServer().broadcast(mini.deserialize(richString, tagResolvers));
 	}
-
-	// code/action
-	static Map<BloodGameAction, BiConsumer<BloodGame, CommandSender>> gameAction = Map.ofEntries(
-
-	Map.entry(BloodGameAction.SETUP, (game, sender) -> {
-		if (game.isReady()) {
-			sender.sendRichMessage("<red>game is already setup!");
-			return;
-		}
-		game.world.setTime(12000);
-		game.world.setGameRule(GameRules.ADVANCE_TIME, false);
-		game.world.setDifficulty(Difficulty.PEACEFUL);
-		game.generateNewId();
-		game.setupTeam();
-		game.applySlotLimit();
-		game.mutateSlots(BloodSlot::lock);
-		sender.sendRichMessage("<light_purple>setup game <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
-		game.setState(BloodGameState.WAITING);
-	}),
-
-	Map.entry(BloodGameAction.START, (game, sender) -> {
-		if (!game.isReady()) {
-			sender.sendRichMessage("<red>game is not setup!");
-			return;
-		}
-		game.setState(BloodGameState.INGAME);
-		sender.sendRichMessage("<light_purple>starting game <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
-		game.broadcast("<red><b>are you ready to bleed?");
-	}),
-
-	Map.entry(BloodGameAction.FINISH, (game, sender) -> {
-		if (!game.isStarted()) {
-			sender.sendRichMessage("<red>game is not started!");
-			return;
-		}
-		game.setState(BloodGameState.ENDED);
-		sender.sendRichMessage("<light_purple>ending game <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
-		game.broadcast("<red><b>the game is over!");
-	}),
-
-	Map.entry(BloodGameAction.RESET, (game, sender) -> {
-		for (OfflinePlayer offlinePlayer : game.getAllPlayersAsOffline())
-			game.removePlayer(offlinePlayer);
-		game.clearSlotsUuid();
-		game.removeNominatedPlayer();
-		game.removePyloriPlayer();
-		game.deleteTeam();
-		game.setState(BloodGameState.NOTHING);
-		sender.sendRichMessage("<light_purple>reseting game");
-	}),
-
-	Map.entry(BloodGameAction.REPLAY, (game, sender) -> {
-		if (!game.isStarted() && !game.isEnded()) {
-			sender.sendRichMessage("<red>game is not started nor ended!");
-			return;
-		}
-		game.setState(BloodGameState.WAITING);
-		sender.sendRichMessage("<light_purple>waiting for a new game with same players and settings <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
-	}),
-
-	Map.entry(BloodGameAction.CLEAR, (game, sender) -> {
-		if (game.isReady()) {
-			sender.sendRichMessage("<red>game is running!");
-			return;
-		}
-		game.world.setGameRule(GameRules.ADVANCE_TIME, true);
-		game.setState(BloodGameState.NOTHING);
-		sender.sendRichMessage("<light_purple>clearing game");
-	}),
-
-	Map.entry(BloodGameAction.BRUTAL_CLEAN, (game, sender) -> {
-		// game.clearSlotsPdc();//!should but boring
-		game.clearSlotsUuid();// will have to refresh slot limit
-		game.clearStorytellerUuid();
-		game.removeNominatedPlayer();
-		game.removePyloriPlayer();
-		sender.sendRichMessage("<light_purple>game was brutally cleaned");
-		sender.sendRichMessage("<#ff6600>this may result as unintended behavior and must be used in last resort.");
-		sender.sendRichMessage("<#ff6600>it is advised to restart server or at least deco/reco all players.");
-		sender.sendRichMessage("<#ff6600>after that, resetup your game.");
-	})
-	);
-
-	// code/period
-	static Map<BloodGamePeriod, BiConsumer<BloodGame, CommandSender>> gamePeriodEnter = Map.ofEntries(
-	Map.entry(BloodGamePeriod.MORNING, (game, sender) -> {
-		game.world.setTime(0);
-		game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.3f);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.4f);
-			game.broadcast("<white><b>it's the morning!");
-		}, 20L);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.5f);
-			game.broadcast("<gray><i>everyone is attended to the townhall");
-		}, 40L);
-	}),
-	Map.entry(BloodGamePeriod.FREE, (game, sender) -> {
-		game.world.setTime(6000);
-		game.pingSound(Sound.BLOCK_ANVIL_LAND, EVENT_VOLUME, 1.7f);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_ANVIL_LAND, EVENT_VOLUME, 1.7f);
-			game.broadcast("<white><b>wonder time");
-		}, 20L);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_ANVIL_LAND, EVENT_VOLUME, 1.7f);
-			game.broadcast("<gray><i>you are free to go and talk");
-		}, 40L);
-	}),
-	Map.entry(BloodGamePeriod.MEET, (game, sender) -> {
-		game.world.setTime(12500);
-		game.mutateSlots(BloodSlot::unlock);
-		game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.3f);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.4f);
-			game.broadcast("<white><b>debate time");
-		}, 20L);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.5f);
-			game.broadcast("<gray><i>everyone is attended to the townhall");
-		}, 40L);
-	}),
-	Map.entry(BloodGamePeriod.NIGHT, (game, sender) -> {
-		game.removeNominatedPlayer();
-		game.removePyloriPlayer();
-		game.world.setTime(18000);
-		game.mutateSlots(BloodSlot::lock);
-		game.pingSound(Sound.ENTITY_ALLAY_HURT, EVENT_VOLUME, 0f);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_WOODEN_DOOR_OPEN, EVENT_VOLUME, 0.5f);
-			game.broadcast("<white><b>the moon is rising...");
-		}, 20L);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_WOODEN_DOOR_CLOSE, EVENT_VOLUME, 0.5f);
-			game.broadcast("<gray><i>go to your house and sleep well");
-		}, 40L);
-	})
-	);
 }

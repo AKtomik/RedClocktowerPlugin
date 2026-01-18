@@ -1,4 +1,4 @@
-package io.github.aktomik.redclocktower.command.storyteller;
+package io.github.aktomik.redclocktower.command.setup;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -10,7 +10,7 @@ import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 
-public class StorytellerSubSettings extends SubBrigadierBase {
+public class SetupSubSettings extends SubBrigadierBase {
 
 	public String name() { return "settings"; }
 
