@@ -337,6 +337,10 @@ public class BloodGame {
 		if (!isUuidIn(uuid)) throw new RuntimeException("trying to put a player on pylori that is not in game");
 		setVotePyloriUuid(uuid);
 	}
+	public void clearPyloriPlayer()
+	{
+		clearVotePyloriUuid();
+	}
 	public Player getPyloriPlayer()
 	{
 		UUID uuid = getVotePyloriUuid();
@@ -514,8 +518,6 @@ public class BloodGame {
 
 	public void startVoteProcess()
 	{
-
-		// for the nominated player
 		int count = getAliveCitizenCount();
 		int majority = Math.ceilDiv(getAliveCitizenCount(), 2);
 		Player nominatedPlayer = getNominatedPlayer();
@@ -579,7 +581,52 @@ public class BloodGame {
 
 	Runnable finishVoteProcess = () ->
 	{
-		broadcast("<gold>the vote ended");
+		int count = getAliveCitizenCount();
+		int majority = Math.ceilDiv(getAliveCitizenCount(), 2);
+		int votes = 0;
+		Player nominatedPlayer = getNominatedPlayer();
+		BloodPlayer nominatedBloodPlayer = BloodPlayer.get(nominatedPlayer);
+		Player lastPyloriPlayer = getPyloriPlayer();
+		boolean hasLastPlayer = (lastPyloriPlayer != null);
+		BloodPlayer lastPyloriBloodPlayer = (hasLastPlayer) ?  BloodPlayer.get(lastPyloriPlayer) : null;
+
+		TagResolver[] resolvers = new TagResolver[]{
+			Placeholder.parsed("last", (hasLastPlayer) ? lastPyloriBloodPlayer.getName() : ""),
+			Placeholder.parsed("target", nominatedBloodPlayer.getName()),
+			Placeholder.parsed("count", Integer.toString(count)),
+			Placeholder.parsed("majority", Integer.toString(majority))
+		};
+
+		Runnable finishVoteProcessStepNo = () -> {
+			broadcast((hasLastPlayer)
+			? "<gold>this is not enough to mount <yellow><target></yellow> on the pylori"
+			: "<gold>this is not enough to replace <red><last></red> on the pylori"
+			, resolvers);
+			centerSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.7f);
+		};
+		Runnable finishVoteProcessStepEquality = () -> {
+			clearPyloriPlayer();
+			broadcast("<gold><b>EQUALITY!</b> <yellow><last><yellow> steps down from the pylori", resolvers);
+		};
+		Runnable finishVoteProcessStepPlace = () -> {
+			changePyloriPlayer(nominatedPlayer);
+			broadcast((hasLastPlayer)
+				? "<gold>this is enough for <b><red><target><red></b> to replace <yellow><last><yellow> on the pylori"
+				: "<gold>this is enough to place <b><red><target><red></b> on the pylori"
+			, resolvers);
+		};
+
+		//step 0
+		broadcast("<gold><votes> votes", resolvers);
+
+		Runnable lastStepRunnable;
+		if (votes < majority)
+			lastStepRunnable = finishVoteProcessStepNo;
+		else if (votes == majority && hasLastPlayer)
+			lastStepRunnable = finishVoteProcessStepEquality;
+		else
+			lastStepRunnable = finishVoteProcessStepPlace;
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, lastStepRunnable, 40L);
 	};
 
 	public void cancelVoteProcess()
