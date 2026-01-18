@@ -298,6 +298,14 @@ public class BloodPlayer {
 		refreshSlotLamp();
 	}
 
+	public int getVote()
+	{
+		return (isVoting())
+			? 1// we will be able to change vote power here
+			: 0;
+	}
+
+	// refresh
 
 	public void quitSlotLamp()
 	{

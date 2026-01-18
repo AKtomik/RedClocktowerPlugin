@@ -244,6 +244,11 @@ public class BloodGame {
 		return getAllBloodPlayers().stream().filter(bp -> bp.isAlive() && !bp.isTraveller()).toList().size();
 	}
 
+	public int getPyloriMajority(int aliveCitizenCount)
+	{
+		return Math.ceilDiv(aliveCitizenCount, 2);
+	}
+
 	public void addPlayer(Player player)
 	{
 		UUID uuid = player.getUniqueId();
@@ -516,10 +521,15 @@ public class BloodGame {
 
 	// vote process
 
+	public int countVotes()
+	{
+		return getAllBloodPlayers().stream().mapToInt(BloodPlayer::getVote).sum();
+	}
+
 	public void startVoteProcess()
 	{
 		int count = getAliveCitizenCount();
-		int majority = Math.ceilDiv(getAliveCitizenCount(), 2);
+		int majority = getPyloriMajority(count);
 		Player nominatedPlayer = getNominatedPlayer();
 		BloodPlayer nominatedBloodPlayer = BloodPlayer.get(nominatedPlayer);
 		int pyloriSlotIndex = nominatedBloodPlayer.getSlotIndex();
@@ -582,8 +592,8 @@ public class BloodGame {
 	Runnable finishVoteProcess = () ->
 	{
 		int count = getAliveCitizenCount();
-		int majority = Math.ceilDiv(getAliveCitizenCount(), 2);
-		int votes = 0;
+		int majority = getPyloriMajority(count);
+		int votes = countVotes();
 		Player nominatedPlayer = getNominatedPlayer();
 		BloodPlayer nominatedBloodPlayer = BloodPlayer.get(nominatedPlayer);
 		Player lastPyloriPlayer = getPyloriPlayer();
