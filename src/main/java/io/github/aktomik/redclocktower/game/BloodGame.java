@@ -517,13 +517,13 @@ public class BloodGame {
 		// for the nominated player
 
 		int count = getAliveCitizenCount();
-		int majority = getAliveCitizenCount();
+		int majority = Math.ceilDiv(getAliveCitizenCount(), 2);
 		Player nominatedPlayer = getNominatedPlayer();
 		BloodPlayer nominatedBloodPlayer = BloodPlayer.get(nominatedPlayer);
 		int pyloriSlotIndex = nominatedBloodPlayer.getSlotIndex();
 
 		TagResolver[] resolvers = new TagResolver[]{
-			Placeholder.parsed("target", nominatedPlayer.getName()),
+			Placeholder.parsed("target", nominatedBloodPlayer.getName()),
 			Placeholder.parsed("count", Integer.toString(count)),
 			Placeholder.parsed("majority", Integer.toString(majority))
 		};
@@ -535,7 +535,7 @@ public class BloodGame {
 			broadcast("<gold>a majority of <majority> votes is required to place <b><target></b> on the pylori", resolvers);
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			broadcast("<gold>the vote will start in 3 seconds", resolvers);
+			//broadcast("<gold>the vote will start in 3 seconds", resolvers);
 			centerSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.7f);
 		}, 40L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {

@@ -373,6 +373,13 @@ public class BloodPlayer {
 		));
 	}
 
+	String getName()
+	{
+		String displayName = getDisplayName();
+		if (displayName != null && !displayName.isEmpty()) return displayName;
+		return player.getName();
+	}
+
 	String getTokenCharacter()
 	{
 		if (isStoryteller()) return "❇";
