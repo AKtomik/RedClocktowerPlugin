@@ -557,16 +557,16 @@ public class BloodGame {
 		};
 
 		Runnable startVoteProcessStep4 = () -> {
-			centerSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.9f);
+			pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.9f);
 			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex), 20L);
 		};
 		Runnable startVoteProcessStep3 = () -> {
-			centerSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.8f);
+			pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.8f);
 			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, startVoteProcessStep4, 20L);
 		};
 		Runnable startVoteProcessStep2 = () -> {
 			// broadcast("<gold>the vote will start in 3 seconds", resolvers);
-			centerSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.7f);
+			pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.7f);
 			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, startVoteProcessStep3, 20L);
 		};
 		Runnable startVoteProcessStep1 = () -> {
@@ -637,7 +637,7 @@ public class BloodGame {
 				? "<gold>this is not enough to replace <red><last></red> on the pylori"
 				: "<gold>this is not enough to mount <yellow><target></yellow> on the pylori"
 				, resolvers);
-				centerSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.7f);
+				pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.7f);
 				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, finishRunnableStep2, 60L);
 			};
 
@@ -690,17 +690,20 @@ public class BloodGame {
 		Bukkit.getServer().broadcast(mini.deserialize(richString));
 	}
 
-	public void centerSound(Sound sound, float volume, float pitch)
+	public void pingSound(Sound sound, float volume, float pitch)
 	{
-		world.playSound(getPosition(BloodGamePlace.CENTER), sound, volume, pitch);
+		for (Player player : world.getPlayers()) {
+			Location loc = Objects.requireNonNull(player.getLocation());
+			player.playSound(loc, sound, SoundCategory.MASTER, volume, pitch);
+		}
 	}
-	public void centerSound(Sound sound, float pitch)
+	public void pingSound(Sound sound, float pitch)
 	{
-		centerSound(sound, 123456789f, pitch);
+		pingSound(sound, 1f, pitch);
 	}
-	public void centerSound(Sound sound)
+	public void pingSound(Sound sound)
 	{
-		centerSound(sound,1f);
+		pingSound(sound,1f);
 	}
 
 	public void broadcast(String richString, final TagResolver... tagResolvers)
@@ -794,38 +797,38 @@ public class BloodGame {
 	static Map<BloodGamePeriod, BiConsumer<BloodGame, CommandSender>> gamePeriodEnter = Map.ofEntries(
 	Map.entry(BloodGamePeriod.MORNING, (game, sender) -> {
 		game.world.setTime(0);
-		game.centerSound(Sound.BLOCK_BELL_USE, 0.3f);
+		game.pingSound(Sound.BLOCK_BELL_USE, 0.3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.centerSound(Sound.BLOCK_BELL_USE, 0.4f);
+			game.pingSound(Sound.BLOCK_BELL_USE, 0.4f);
 			game.broadcast("<white><b>it's the morning!");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.centerSound(Sound.BLOCK_BELL_USE, 0.5f);
+			game.pingSound(Sound.BLOCK_BELL_USE, 0.5f);
 			game.broadcast("<gray><i>everyone is attended to the townhall");
 		}, 40L);
 	}),
 	Map.entry(BloodGamePeriod.FREE, (game, sender) -> {
 		game.world.setTime(6000);
-		game.centerSound(Sound.BLOCK_ANVIL_LAND, 1.7f);
+		game.pingSound(Sound.BLOCK_ANVIL_LAND, 1.7f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.centerSound(Sound.BLOCK_ANVIL_LAND, 1.7f);
+			game.pingSound(Sound.BLOCK_ANVIL_LAND, 1.7f);
 			game.broadcast("<white><b>wonder time");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.centerSound(Sound.BLOCK_ANVIL_LAND, 1.7f);
+			game.pingSound(Sound.BLOCK_ANVIL_LAND, 1.7f);
 			game.broadcast("<gray><i>you are free to go and talk");
 		}, 40L);
 	}),
 	Map.entry(BloodGamePeriod.MEET, (game, sender) -> {
 		game.world.setTime(12500);
 		game.mutateSlots(BloodSlot::unlock);
-		game.centerSound(Sound.BLOCK_BELL_USE, 0.3f);
+		game.pingSound(Sound.BLOCK_BELL_USE, 0.3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.centerSound(Sound.BLOCK_BELL_USE, 0.4f);
+			game.pingSound(Sound.BLOCK_BELL_USE, 0.4f);
 			game.broadcast("<white><b>debate time");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.centerSound(Sound.BLOCK_BELL_USE, 0.5f);
+			game.pingSound(Sound.BLOCK_BELL_USE, 0.5f);
 			game.broadcast("<gray><i>everyone is attended to the townhall");
 		}, 40L);
 	}),
@@ -834,13 +837,13 @@ public class BloodGame {
 		game.clearVotePyloriUuid();
 		game.world.setTime(18000);
 		game.mutateSlots(BloodSlot::lock);
-		game.centerSound(Sound.ENTITY_ALLAY_HURT, 0f);
+		game.pingSound(Sound.ENTITY_ALLAY_HURT, 0f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.centerSound(Sound.BLOCK_WOODEN_DOOR_OPEN, .5f);
+			game.pingSound(Sound.BLOCK_WOODEN_DOOR_OPEN, .5f);
 			game.broadcast("<white><b>the moon is rising...");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.centerSound(Sound.BLOCK_WOODEN_DOOR_CLOSE, .5f);
+			game.pingSound(Sound.BLOCK_WOODEN_DOOR_CLOSE, .5f);
 			game.broadcast("<gray><i>go to your house and sleep well");
 		}, 40L);
 	})
