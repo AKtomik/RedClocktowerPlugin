@@ -514,8 +514,8 @@ public class BloodGame {
 
 	public void startVoteProcess()
 	{
-		// for the nominated player
 
+		// for the nominated player
 		int count = getAliveCitizenCount();
 		int majority = Math.ceilDiv(getAliveCitizenCount(), 2);
 		Player nominatedPlayer = getNominatedPlayer();
@@ -528,24 +528,30 @@ public class BloodGame {
 			Placeholder.parsed("majority", Integer.toString(majority))
 		};
 
+		Runnable startVoteProcessStep4 = () -> {
+			centerSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.9f);
+			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex), 20L);
+		};
+		Runnable startVoteProcessStep3 = () -> {
+			centerSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.8f);
+			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, startVoteProcessStep4, 20L);
+		};
+		Runnable startVoteProcessStep2 = () -> {
+			// broadcast("<gold>the vote will start in 3 seconds", resolvers);
+			centerSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.7f);
+			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, startVoteProcessStep3, 20L);
+		};
+		Runnable startVoteProcessStep1 = () -> {
+			broadcast("<gold>a majority of <majority> votes is required to place <b><target></b> on the pylori", resolvers);
+			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, startVoteProcessStep2, 40L);
+		};
+
+		//step 0
 		mutateSlots(BloodSlot::unlock);
 		broadcast("<gold>there is <count> players alive", resolvers);
-
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			broadcast("<gold>a majority of <majority> votes is required to place <b><target></b> on the pylori", resolvers);
-		}, 20L);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			//broadcast("<gold>the vote will start in 3 seconds", resolvers);
-			centerSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.7f);
-		}, 40L);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			centerSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.8f);
-		}, 60L);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			centerSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.9f);
-		}, 80L);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex), 100L);
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, startVoteProcessStep1, 40L);
 	}
+
 
 	Runnable slotVoteProcessRunnable(int lastIndex, int startIndex)
 	{
@@ -564,17 +570,17 @@ public class BloodGame {
 
 			if (actualIndex == startIndex)
 			{
-				finishVoteProcess();
+				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, finishVoteProcess, 60L);
 				return;
 			}
 			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, slotVoteProcessRunnable(actualIndex, startIndex), 20L);
 		};
 	}
 
-	void finishVoteProcess()
+	Runnable finishVoteProcess = () ->
 	{
 		broadcast("<gold>the vote ended");
-	}
+	};
 
 	public void cancelVoteProcess()
 	{
