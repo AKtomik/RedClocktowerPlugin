@@ -168,11 +168,11 @@ public class GameAction {
 		game.mutateSlots(BloodSlot::lock);
 		game.pingSound(Sound.ENTITY_ALLAY_HURT, BloodGame.EVENT_VOLUME, 0f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_WOODEN_DOOR_OPEN, BloodGame.EVENT_VOLUME, 0.5f);
+			game.pingSound(Sound.BLOCK_WOODEN_DOOR_OPEN, BloodGame.EVENT_VOLUME, 0.9f);
 			game.broadcast("<white><b>the moon is rising...");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_WOODEN_DOOR_CLOSE, BloodGame.EVENT_VOLUME, 0.5f);
+			game.pingSound(Sound.BLOCK_WOODEN_DOOR_CLOSE, BloodGame.EVENT_VOLUME, 0.9f);
 			game.broadcast("<gray><i>go to your house and sleep well");
 		}, 40L);
 	})
