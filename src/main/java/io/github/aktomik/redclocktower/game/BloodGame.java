@@ -5,6 +5,7 @@ import io.github.aktomik.redclocktower.DataKey;
 import io.github.aktomik.redclocktower.RedClocktower;
 import io.github.aktomik.redclocktower.utils.UUIDDataType;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
@@ -13,7 +14,6 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
-import org.bukkit.scoreboard.NameTagVisibility;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -509,15 +509,24 @@ public class BloodGame {
 		setRoundId("blood-%s-%s".formatted(world.getName(), Integer.toString(incrementedRoundCount)));
 	}
 
-	private void createTeam()
+	private void setupTeams()
 	{
 		Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
 		String teamId = getRoundId();
 		if (teamId == null) throw new RuntimeException("trying to create team but there is no round id");
 		Team team = board.registerNewTeam(teamId);
 		team.setAllowFriendlyFire(false);
-		team.setNameTagVisibility(NameTagVisibility.NEVER);
+		team.color(NamedTextColor.AQUA);
+		team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
 		team.setCanSeeFriendlyInvisibles(true);
+
+		Team nominatedTeam = board.getTeam("bloods-nominate");
+		if (nominatedTeam == null) nominatedTeam = board.registerNewTeam("bloods-nominate");
+		nominatedTeam.color(NamedTextColor.GOLD);
+
+		Team pyloriTeam = board.getTeam("bloods-pylori");
+		if (pyloriTeam == null) pyloriTeam = board.registerNewTeam("bloods-pylori");
+		pyloriTeam.color(NamedTextColor.RED);
 	}
 
 	Team getTeam()
@@ -533,6 +542,18 @@ public class BloodGame {
 		Team team = getTeam();
 		if (team == null) return;
 		team.unregister();
+	}
+
+	private void deleteTeams()
+	{
+		deleteTeam();
+		Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
+		Team team = null;
+
+		team = board.getTeam("bloods-nominate");
+		if (team != null) team.unregister();
+		team = board.getTeam("bloods-nominate");
+		if (team != null) team.unregister();
 	}
 
 	// vote process
@@ -728,7 +749,7 @@ public class BloodGame {
 		game.world.setGameRule(GameRules.ADVANCE_TIME, false);
 		game.world.setDifficulty(Difficulty.PEACEFUL);
 		game.generateNewId();
-		game.createTeam();
+		game.setupTeams();
 		game.applySlotLimit();
 		game.mutateSlots(BloodSlot::lock);
 		sender.sendRichMessage("<light_purple>setup game <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
