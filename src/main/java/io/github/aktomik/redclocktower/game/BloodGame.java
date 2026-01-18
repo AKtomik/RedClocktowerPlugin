@@ -19,6 +19,7 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 import java.util.function.BiConsumer;
+import java.util.function.Consumer;
 
 import static org.bukkit.Bukkit.getLogger;
 
@@ -347,7 +348,7 @@ public class BloodGame {
 	{
 		UUID uuid = player.getUniqueId();
 		if (!isUuidIn(uuid)) throw new RuntimeException("trying to nominated that is not in game");
-		getSlots().forEach(BloodSlot::unlock);
+		mutateSlots(BloodSlot::unlock);
 		setVoteNominatedUuid(uuid);
 	}
 	public void removeNominatedPlayer()
@@ -383,9 +384,22 @@ public class BloodGame {
 		slotsPdc.set(index, slot.pdc);
 		setSlotsPdc(slotsPdc);
 	}
-	public void setSlots(int index, List<BloodSlot> slots)
+	public void setSlots(List<BloodSlot> slots)
 	{
 		setSlotsPdc(slots.stream().map(slot -> slot.pdc).toList());
+	}
+
+	public void mutateSlots(Consumer<BloodSlot> action)
+	{
+		List<BloodSlot> slots = getSlots();
+		slots.forEach(action);
+		setSlots(slots);
+	}
+	public void mutateSlot(int index, Consumer<BloodSlot> action)
+	{
+		BloodSlot slot = getSlot(index);
+		action.accept(slot);
+		setSlot(index, slot);
 	}
 
 	public void addLastSlot()
@@ -514,7 +528,7 @@ public class BloodGame {
 			Placeholder.parsed("majority", Integer.toString(majority))
 		};
 
-		getSlots().forEach(BloodSlot::unlock);
+		mutateSlots(BloodSlot::unlock);
 		broadcast("<gold>there is <count> players alive", resolvers);
 
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
@@ -546,6 +560,7 @@ public class BloodGame {
 
 			BloodSlot slot = slots.get(actualIndex);
 			slot.lock();
+			setSlot(actualIndex, slot);
 
 			if (actualIndex == startIndex)
 			{
@@ -620,7 +635,7 @@ public class BloodGame {
 		game.generateNewId();
 		game.createTeam();
 		game.applySlotLimit();
-		game.getSlots().forEach(BloodSlot::lock);
+		game.mutateSlots(BloodSlot::lock);
 		sender.sendRichMessage("<light_purple>setup game <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
 		game.setState(BloodGameState.WAITING);
 	}),
@@ -716,7 +731,7 @@ public class BloodGame {
 	}),
 	Map.entry(BloodGamePeriod.MEET, (game, sender) -> {
 		game.world.setTime(12500);
-		game.getSlots().forEach(BloodSlot::unlock);
+		game.mutateSlots(BloodSlot::unlock);
 		game.centerSound(Sound.BLOCK_BELL_USE, 0.3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
 			game.centerSound(Sound.BLOCK_BELL_USE, 0.4f);
@@ -731,7 +746,7 @@ public class BloodGame {
 		game.clearVoteNominatedUuid();
 		game.clearVotePyloriUuid();
 		game.world.setTime(18000);
-		game.getSlots().forEach(BloodSlot::lock);
+		game.mutateSlots(BloodSlot::lock);
 		game.centerSound(Sound.ENTITY_ALLAY_HURT, 0f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
 			game.centerSound(Sound.BLOCK_WOODEN_DOOR_OPEN, .5f);
