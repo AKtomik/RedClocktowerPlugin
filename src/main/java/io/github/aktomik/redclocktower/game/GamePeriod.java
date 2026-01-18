@@ -1,10 +1,13 @@
 package io.github.aktomik.redclocktower.game;
 
-public enum BloodSlotPlace {
-	CHAIR,
-	LEVER,
-	LAMP,
-	HOUSE;
+import org.jspecify.annotations.NullMarked;
+
+@NullMarked
+public enum GamePeriod {
+	MORNING,
+	FREE,
+	MEET,
+	NIGHT;
 
 	@Override
 	public String toString() {

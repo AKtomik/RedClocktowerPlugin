@@ -1,6 +1,6 @@
 package io.github.aktomik.redclocktower.game;
 
-public enum BloodGamePlace {
+public enum GamePlace {
 	CENTER,
 	SPAWN;
 

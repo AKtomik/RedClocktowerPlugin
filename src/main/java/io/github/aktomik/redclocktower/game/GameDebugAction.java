@@ -3,13 +3,12 @@ package io.github.aktomik.redclocktower.game;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public enum BloodGameStepAction {
-	SETUP,
-	START,
-	FINISH,
-	REPLAY,
-	RESET,
-	CLEAR;
+public enum GameDebugAction {
+	CLEAN_PLAYERS,
+	CLEAN_SLOTS,
+	CLEAN_TEAM,
+	CLEAN_ALL;
+
 
 	@Override
 	public String toString() {

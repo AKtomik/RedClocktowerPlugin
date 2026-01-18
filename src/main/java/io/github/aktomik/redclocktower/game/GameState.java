@@ -1,13 +1,11 @@
 package io.github.aktomik.redclocktower.game;
 
-import org.jspecify.annotations.NullMarked;
-
-@NullMarked
-public enum BloodGamePeriod {
-	MORNING,
-	FREE,
-	MEET,
-	NIGHT;
+public enum GameState {
+	NOTHING,
+	WAITING,
+	INGAME,
+	ENDED,
+	OUT;//not used
 
 	@Override
 	public String toString() {

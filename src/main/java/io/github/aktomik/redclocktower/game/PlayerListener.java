@@ -44,7 +44,7 @@ public class PlayerListener implements Listener {
 		BloodSlot slot = game.getSlot(bloodPlayer.getSlotIndex());
 		Location loc = block.getLocation();
 		boolean isGameLever = game.isLevelInSlots(loc);
-		boolean isOwnLever = Objects.equals(loc,slot.getPosition(BloodSlotPlace.LEVER));
+		boolean isOwnLever = Objects.equals(loc,slot.getPosition(SlotPlace.LEVER));
 
 		if (!isGameLever) return;
 		if (!isOwnLever) {

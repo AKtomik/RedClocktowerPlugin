@@ -1,11 +1,10 @@
 package io.github.aktomik.redclocktower.game;
 
-public enum BloodGameState {
-	NOTHING,
-	WAITING,
-	INGAME,
-	ENDED,
-	OUT;//not used
+public enum SlotPlace {
+	CHAIR,
+	LEVER,
+	LAMP,
+	HOUSE;
 
 	@Override
 	public String toString() {

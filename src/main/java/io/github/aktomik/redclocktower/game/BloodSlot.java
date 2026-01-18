@@ -5,7 +5,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.World;
-import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockType;
 import org.bukkit.block.data.*;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -26,11 +25,11 @@ public class BloodSlot {
 	}
 
 	// get & set
-	public void setPosition(BloodSlotPlace place, Location pos)
+	public void setPosition(SlotPlace place, Location pos)
 	{
 		pdc.set(DataKey.SLOT_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
 	}
-	public Location getPosition(BloodSlotPlace place)
+	public Location getPosition(SlotPlace place)
 	{
 		int[] posArray = pdc.get(DataKey.SLOT_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY);
 		if (posArray == null || posArray.length != 3) return null;
@@ -70,7 +69,7 @@ public class BloodSlot {
 
 	public void refreshLock()
 	{
-		Location lampLoc = getPosition(BloodSlotPlace.LAMP);
+		Location lampLoc = getPosition(SlotPlace.LAMP);
 		Location lampLocM1 = lampLoc.clone();
 		lampLocM1.setY(lampLoc.getY() - 1);
 		Location lampLocM2 = lampLoc.clone();
@@ -88,10 +87,10 @@ public class BloodSlot {
 
 	public void refreshLamp(BloodPlayer bloodPlayerAtSlot)
 	{
-		Location lampLoc = getPosition(BloodSlotPlace.LAMP);
+		Location lampLoc = getPosition(SlotPlace.LAMP);
 		Location lampLocP1 = lampLoc.clone();
 		lampLocP1.setY(lampLoc.getY() + 1);
-		Location leverLoc = getPosition(BloodSlotPlace.LEVER);
+		Location leverLoc = getPosition(SlotPlace.LEVER);
 		BlockData leverData = world.getBlockData(leverLoc);
 		BlockData lampData = BlockType.WAXED_COPPER_BLOCK.createBlockData();;
 

@@ -3,7 +3,7 @@ package io.github.aktomik.redclocktower.command.setup;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.game.BloodGame;
-import io.github.aktomik.redclocktower.game.BloodGamePlace;
+import io.github.aktomik.redclocktower.game.GamePlace;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
 import io.github.aktomik.redclocktower.utils.brigadier.SubBrigadierBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -14,7 +14,6 @@ import io.papermc.paper.math.BlockPosition;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Location;
 import org.bukkit.World;
-import org.bukkit.block.Block;
 import org.bukkit.command.CommandSender;
 
 public class SetupSubPlace extends SubBrigadierBase {
@@ -24,7 +23,7 @@ public class SetupSubPlace extends SubBrigadierBase {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.argument("place", EnumArgument.simple(BloodGamePlace.class, "invalid game place"))
+		.then(Commands.argument("place", EnumArgument.simple(GamePlace.class, "invalid game place"))
 			.executes(placeCenterCheck)
 			.then(Commands.argument("position", ArgumentTypes.blockPosition())
 				.executes(placeCenterChange)
@@ -37,7 +36,7 @@ public class SetupSubPlace extends SubBrigadierBase {
 		final CommandSender sender = ctx.getSource().getSender();
 		final World world = ctx.getSource().getLocation().getWorld();
 		final BloodGame game = BloodGame.get(world);
-		final BloodGamePlace place = ctx.getArgument("place", BloodGamePlace.class);
+		final GamePlace place = ctx.getArgument("place", GamePlace.class);
 
 		// execution
 		final Location loc = game.getPosition(place);
@@ -55,7 +54,7 @@ public class SetupSubPlace extends SubBrigadierBase {
 		final CommandSender sender = ctx.getSource().getSender();
 		final World world = ctx.getSource().getLocation().getWorld();
 		final BloodGame game = BloodGame.get(world);
-		final BloodGamePlace place = ctx.getArgument("place", BloodGamePlace.class);
+		final GamePlace place = ctx.getArgument("place", GamePlace.class);
 		final BlockPosition pos = ctx.getArgument("position", BlockPositionResolver.class).resolve(ctx.getSource());
 
 		// execution

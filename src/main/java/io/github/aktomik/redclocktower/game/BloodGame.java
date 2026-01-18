@@ -54,24 +54,24 @@ public class BloodGame {
 	static final float EVENT_VOLUME = .5f;
 
 	// get & set
-	public void setState(BloodGameState gameState)
+	public void setState(GameState gameState)
 	{
 		pdc.set(DataKey.GAME_STATE.key(), PersistentDataType.INTEGER, gameState.ordinal());
 	}
-	public BloodGameState getState()
+	public GameState getState()
 	{
-		int ordinal = pdc.getOrDefault(DataKey.GAME_STATE.key(), PersistentDataType.INTEGER, BloodGameState.NOTHING.ordinal());
-		return BloodGameState.values()[ordinal];
+		int ordinal = pdc.getOrDefault(DataKey.GAME_STATE.key(), PersistentDataType.INTEGER, GameState.NOTHING.ordinal());
+		return GameState.values()[ordinal];
 	}
 
-	private void setTime(BloodGamePeriod gameState)
+	private void setTime(GamePeriod gameState)
 	{
 		pdc.set(DataKey.GAME_PERIOD.key(), PersistentDataType.INTEGER, gameState.ordinal());
 	}
-	public BloodGamePeriod getTime()
+	public GamePeriod getTime()
 	{
-		int ordinal = pdc.getOrDefault(DataKey.GAME_PERIOD.key(), PersistentDataType.INTEGER, BloodGamePeriod.FREE.ordinal());
-		return BloodGamePeriod.values()[ordinal];
+		int ordinal = pdc.getOrDefault(DataKey.GAME_PERIOD.key(), PersistentDataType.INTEGER, GamePeriod.FREE.ordinal());
+		return GamePeriod.values()[ordinal];
 	}
 
 	private void setRoundCount(int count)
@@ -170,11 +170,11 @@ public class BloodGame {
 		return pdc.getOrDefault(DataKey.GAME_SLOTS_PDC.key(), PersistentDataType.LIST.dataContainers(), List.of());
 	}
 
-	public void setPosition(BloodGamePlace place, Location pos)
+	public void setPosition(GamePlace place, Location pos)
 	{
 		pdc.set(DataKey.GAME_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
 	}
-	public Location getPosition(BloodGamePlace place)
+	public Location getPosition(GamePlace place)
 	{
 		int[] posArray = pdc.get(DataKey.GAME_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY);
 		if (posArray == null || posArray.length != 3) return null;
@@ -193,18 +193,18 @@ public class BloodGame {
 	// states & time
 	public boolean isStarted()
 	{
-		return getState() == BloodGameState.INGAME;
+		return getState() == GameState.INGAME;
 	}
 	public boolean isEnded()
 	{
-		return getState() == BloodGameState.ENDED;
+		return getState() == GameState.ENDED;
 	}
 	public boolean isReady()
 	{
-		BloodGameState state = getState();
-		return (state == BloodGameState.WAITING || state == BloodGameState.INGAME);
+		GameState state = getState();
+		return (state == GameState.WAITING || state == GameState.INGAME);
 	}
-	public boolean isVoteMoment() { return (getTime() == BloodGamePeriod.MEET); }
+	public boolean isVoteMoment() { return (getTime() == GamePeriod.MEET); }
 
 	// players
 	private int findPlayerIndex(UUID playerUuid)
@@ -532,7 +532,7 @@ public class BloodGame {
 	{
 		for (BloodSlot slot : getSlots())
 		{
-			if (Objects.equals(slot.getPosition(BloodSlotPlace.LEVER), loc)) return true;
+			if (Objects.equals(slot.getPosition(SlotPlace.LEVER), loc)) return true;
 		}
 		return false;
 	}
@@ -718,15 +718,15 @@ public class BloodGame {
 
 	// runs
 
-	public void doStep(BloodGameStepAction action, CommandSender sender)
+	public void doStep(GameStepAction action, CommandSender sender)
 	{
 		GameAction.step.get(action).accept(this, sender);
 	}
-	public void doDebug(BloodGameDebugAction action, CommandSender sender)
+	public void doDebug(GameDebugAction action, CommandSender sender)
 	{
 		GameAction.debug.get(action).accept(this, sender);
 	}
-	public void switchTime(BloodGamePeriod period, CommandSender sender)
+	public void switchTime(GamePeriod period, CommandSender sender)
 	{
 		GameAction.periodEnter.get(period).accept(this, sender);
 		setTime(period);

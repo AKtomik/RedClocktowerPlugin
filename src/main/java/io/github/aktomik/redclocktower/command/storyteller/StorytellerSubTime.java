@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
 import io.github.aktomik.redclocktower.utils.brigadier.SubBrigadierBase;
 import io.github.aktomik.redclocktower.game.BloodGame;
-import io.github.aktomik.redclocktower.game.BloodGamePeriod;
+import io.github.aktomik.redclocktower.game.GamePeriod;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -19,12 +19,12 @@ public class StorytellerSubTime extends SubBrigadierBase {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.argument("period", EnumArgument.simple(BloodGamePeriod.class, "Invalid game period"))
+		.then(Commands.argument("period", EnumArgument.simple(GamePeriod.class, "Invalid game period"))
 		.executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
 			BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
-			final BloodGamePeriod period = ctx.getArgument("period", BloodGamePeriod.class);
+			final GamePeriod period = ctx.getArgument("period", GamePeriod.class);
 
 			//	checks
 			if (!game.isStarted())
@@ -45,7 +45,7 @@ public class StorytellerSubTime extends SubBrigadierBase {
 			BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
 			// execute
-			BloodGamePeriod gamePeriod = game.getTime();
+			GamePeriod gamePeriod = game.getTime();
 			sender.sendRichMessage("game is in <b><period></b> time",
 			Placeholder.parsed("period", gamePeriod.toString())
 			);

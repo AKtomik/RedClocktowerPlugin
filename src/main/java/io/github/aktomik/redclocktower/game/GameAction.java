@@ -12,9 +12,9 @@ public class GameAction {
 
 	private GameAction() {}//static method
 
-	static Map<BloodGameStepAction, BiConsumer<BloodGame, CommandSender>> step = Map.ofEntries(
+	static Map<GameStepAction, BiConsumer<BloodGame, CommandSender>> step = Map.ofEntries(
 
-	Map.entry(BloodGameStepAction.SETUP, (game, sender) -> {
+	Map.entry(GameStepAction.SETUP, (game, sender) -> {
 		if (game.isReady()) {
 			sender.sendRichMessage("<red>game is already setup!");
 			return;
@@ -27,65 +27,65 @@ public class GameAction {
 		game.applySlotLimit();
 		game.mutateSlots(BloodSlot::lock);
 		sender.sendRichMessage("<light_purple>setup game <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
-		game.setState(BloodGameState.WAITING);
+		game.setState(GameState.WAITING);
 	}),
 
-	Map.entry(BloodGameStepAction.START, (game, sender) -> {
+	Map.entry(GameStepAction.START, (game, sender) -> {
 		if (!game.isReady()) {
 			sender.sendRichMessage("<red>game is not setup!");
 			return;
 		}
-		game.setState(BloodGameState.INGAME);
+		game.setState(GameState.INGAME);
 		sender.sendRichMessage("<light_purple>starting game <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
 		game.broadcast("<red><b>are you ready to bleed?");
 	}),
 
-	Map.entry(BloodGameStepAction.FINISH, (game, sender) -> {
+	Map.entry(GameStepAction.FINISH, (game, sender) -> {
 		if (!game.isStarted()) {
 			sender.sendRichMessage("<red>game is not started!");
 			return;
 		}
-		game.setState(BloodGameState.ENDED);
+		game.setState(GameState.ENDED);
 		sender.sendRichMessage("<light_purple>ending game <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
 		game.broadcast("<red><b>the game is over!");
 	}),
 
-	Map.entry(BloodGameStepAction.RESET, (game, sender) -> {
+	Map.entry(GameStepAction.RESET, (game, sender) -> {
 		for (OfflinePlayer offlinePlayer : game.getAllPlayersAsOffline())
 			game.removePlayer(offlinePlayer);
 		game.clearSlotsUuid();
 		game.removeNominatedPlayer();
 		game.removePyloriPlayer();
 		game.deleteTeam();
-		game.setState(BloodGameState.NOTHING);
+		game.setState(GameState.NOTHING);
 		sender.sendRichMessage("<light_purple>reseting game");
 	}),
 
-	Map.entry(BloodGameStepAction.REPLAY, (game, sender) -> {
+	Map.entry(GameStepAction.REPLAY, (game, sender) -> {
 		if (!game.isStarted() && !game.isEnded()) {
 			sender.sendRichMessage("<red>game is not started nor ended!");
 			return;
 		}
-		game.setState(BloodGameState.WAITING);
+		game.setState(GameState.WAITING);
 		sender.sendRichMessage("<light_purple>waiting for a new game with same players and settings <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
 	}),
 
-	Map.entry(BloodGameStepAction.CLEAR, (game, sender) -> {
+	Map.entry(GameStepAction.CLEAR, (game, sender) -> {
 		if (game.isReady()) {
 			sender.sendRichMessage("<red>game is running!");
 			return;
 		}
 		game.world.setGameRule(GameRules.ADVANCE_TIME, true);
-		game.setState(BloodGameState.NOTHING);
+		game.setState(GameState.NOTHING);
 		sender.sendRichMessage("<light_purple>clearing game");
 	})
 
 	);
 
 
-	static Map<BloodGameDebugAction, BiConsumer<BloodGame, CommandSender>> debug = Map.ofEntries(
+	static Map<GameDebugAction, BiConsumer<BloodGame, CommandSender>> debug = Map.ofEntries(
 
-	Map.entry(BloodGameDebugAction.CLEAN_PLAYERS, (game, sender) -> {
+	Map.entry(GameDebugAction.CLEAN_PLAYERS, (game, sender) -> {
 		game.clearSlotsUuid();// will have to refresh slot limit
 		game.clearStorytellerUuid();
 		game.removeNominatedPlayer();
@@ -95,23 +95,23 @@ public class GameAction {
 		sender.sendRichMessage("<#ff6600>ADVICE: restart server or at least deco/reco all players.");
 	}),
 
-	Map.entry(BloodGameDebugAction.CLEAN_SLOTS, (game, sender) -> {
+	Map.entry(GameDebugAction.CLEAN_SLOTS, (game, sender) -> {
 	 	game.clearSlotsPdc();
 		sender.sendRichMessage("<light_purple>slots of game were brutally cleaned");
 		sender.sendRichMessage("<#ff6600>NECESSARY: you have to add and place back all slots.");
 	}),
 
-	Map.entry(BloodGameDebugAction.CLEAN_TEAM, (game, sender) -> {
+	Map.entry(GameDebugAction.CLEAN_TEAM, (game, sender) -> {
 		game.deleteTeam();
 		sender.sendRichMessage("<light_purple>team was brutally cleaned");
 		sender.sendRichMessage("<#ff6600>NECESSARY: you have to run game setup.");
 	}),
 
-	Map.entry(BloodGameDebugAction.CLEAN_ALL, (game, sender) -> {
+	Map.entry(GameDebugAction.CLEAN_ALL, (game, sender) -> {
 		sender.sendRichMessage("<light_purple><b>running all clean actions...");
-		game.doDebug(BloodGameDebugAction.CLEAN_PLAYERS, sender);
-		game.doDebug(BloodGameDebugAction.CLEAN_SLOTS, sender);
-		game.doDebug(BloodGameDebugAction.CLEAN_TEAM, sender);
+		game.doDebug(GameDebugAction.CLEAN_PLAYERS, sender);
+		game.doDebug(GameDebugAction.CLEAN_SLOTS, sender);
+		game.doDebug(GameDebugAction.CLEAN_TEAM, sender);
 		sender.sendRichMessage("<light_purple><b>done!");
 	})
 
@@ -119,9 +119,9 @@ public class GameAction {
 
 
 	// code/period
-	static Map<BloodGamePeriod, BiConsumer<BloodGame, CommandSender>> periodEnter = Map.ofEntries(
+	static Map<GamePeriod, BiConsumer<BloodGame, CommandSender>> periodEnter = Map.ofEntries(
 
-	Map.entry(BloodGamePeriod.MORNING, (game, sender) -> {
+	Map.entry(GamePeriod.MORNING, (game, sender) -> {
 		game.world.setTime(0);
 		game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
@@ -134,7 +134,7 @@ public class GameAction {
 		}, 40L);
 	}),
 
-	Map.entry(BloodGamePeriod.FREE, (game, sender) -> {
+	Map.entry(GamePeriod.FREE, (game, sender) -> {
 		game.world.setTime(6000);
 		game.pingSound(Sound.BLOCK_ANVIL_LAND, BloodGame.EVENT_VOLUME, 1.7f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
@@ -147,7 +147,7 @@ public class GameAction {
 		}, 40L);
 	}),
 
-	Map.entry(BloodGamePeriod.MEET, (game, sender) -> {
+	Map.entry(GamePeriod.MEET, (game, sender) -> {
 		game.world.setTime(12500);
 		game.mutateSlots(BloodSlot::unlock);
 		game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .3f);
@@ -161,7 +161,7 @@ public class GameAction {
 		}, 40L);
 	}),
 
-	Map.entry(BloodGamePeriod.NIGHT, (game, sender) -> {
+	Map.entry(GamePeriod.NIGHT, (game, sender) -> {
 		game.removeNominatedPlayer();
 		game.removePyloriPlayer();
 		game.world.setTime(18000);

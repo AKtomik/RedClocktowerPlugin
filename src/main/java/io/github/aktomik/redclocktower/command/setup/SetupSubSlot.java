@@ -4,9 +4,8 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.game.BloodGame;
-import io.github.aktomik.redclocktower.game.BloodGamePlace;
 import io.github.aktomik.redclocktower.game.BloodSlot;
-import io.github.aktomik.redclocktower.game.BloodSlotPlace;
+import io.github.aktomik.redclocktower.game.SlotPlace;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
 import io.github.aktomik.redclocktower.utils.brigadier.SubBrigadierBase;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -40,7 +39,7 @@ public class SetupSubSlot extends SubBrigadierBase {
 				return builder.buildFuture();
 			})
 				.then(Commands.literal("position")
-					.then(Commands.argument("place", EnumArgument.simple(BloodSlotPlace.class, "invalid slot place"))
+					.then(Commands.argument("place", EnumArgument.simple(SlotPlace.class, "invalid slot place"))
 						.executes(subEditPositionCheck)
 						.then(Commands.argument("position", ArgumentTypes.blockPosition())
 							.executes(subEditPositionChange))
@@ -92,7 +91,7 @@ public class SetupSubSlot extends SubBrigadierBase {
 		final World world = ctx.getSource().getLocation().getWorld();
 		final BloodGame game = BloodGame.get(world);
 		final int slotIndex = ctx.getArgument("slot number", Integer.class) - 1;
-		final BloodSlotPlace place = ctx.getArgument("place", BloodSlotPlace.class);
+		final SlotPlace place = ctx.getArgument("place", SlotPlace.class);
 
 		// check
 		int slotCount = game.getSlotCount();
@@ -124,7 +123,7 @@ public class SetupSubSlot extends SubBrigadierBase {
 		final World world = ctx.getSource().getLocation().getWorld();
 		final BloodGame game = BloodGame.get(world);
 		final int slotIndex = ctx.getArgument("slot number", Integer.class) - 1;
-		final BloodSlotPlace place = ctx.getArgument("place", BloodSlotPlace.class);
+		final SlotPlace place = ctx.getArgument("place", SlotPlace.class);
 		final BlockPosition pos = ctx.getArgument("position", BlockPositionResolver.class).resolve(ctx.getSource());
 
 		// check
