@@ -597,35 +597,31 @@ public class BloodGame {
 			Placeholder.parsed("majority", Integer.toString(majority))
 		};
 
-		Runnable finishVoteProcessStepNo = () -> {
-			broadcast((hasLastPlayer)
-			? "<gold>this is not enough to mount <yellow><target></yellow> on the pylori"
-			: "<gold>this is not enough to replace <red><last></red> on the pylori"
-			, resolvers);
-			centerSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.7f);
-		};
-		Runnable finishVoteProcessStepEquality = () -> {
-			clearPyloriPlayer();
-			broadcast("<gold><b>EQUALITY!</b> <yellow><last><yellow> steps down from the pylori", resolvers);
-		};
-		Runnable finishVoteProcessStepPlace = () -> {
-			changePyloriPlayer(nominatedPlayer);
-			broadcast((hasLastPlayer)
-				? "<gold>this is enough for <b><red><target><red></b> to replace <yellow><last><yellow> on the pylori"
-				: "<gold>this is enough to place <b><red><target><red></b> on the pylori"
-			, resolvers);
-		};
-
 		//step 0
 		broadcast("<gold><votes> votes", resolvers);
 
 		Runnable lastStepRunnable;
 		if (votes < majority)
-			lastStepRunnable = finishVoteProcessStepNo;
+			lastStepRunnable = () -> {
+				broadcast((hasLastPlayer)
+				? "<gold>this is not enough to mount <yellow><target></yellow> on the pylori"
+				: "<gold>this is not enough to replace <red><last></red> on the pylori"
+				, resolvers);
+				centerSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.7f);
+			};
 		else if (votes == majority && hasLastPlayer)
-			lastStepRunnable = finishVoteProcessStepEquality;
+			lastStepRunnable = () -> {
+				clearPyloriPlayer();
+				broadcast("<gold><b>EQUALITY!</b> <yellow><last><yellow> steps down from the pylori", resolvers);
+			};
 		else
-			lastStepRunnable = finishVoteProcessStepPlace;
+			lastStepRunnable = () -> {
+				changePyloriPlayer(nominatedPlayer);
+				broadcast((hasLastPlayer)
+				? "<gold>this is enough for <b><red><target><red></b> to replace <yellow><last><yellow> on the pylori"
+				: "<gold>this is enough to place <b><red><target><red></b> on the pylori"
+				, resolvers);
+			};
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, lastStepRunnable, 40L);
 	};
 
