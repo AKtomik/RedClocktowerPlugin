@@ -23,8 +23,6 @@ import java.util.*;
 import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
-import static org.bukkit.Bukkit.getLogger;
-
 public class BloodGame {
 
 	// class
@@ -49,13 +47,12 @@ public class BloodGame {
 		return BloodGame.get(ctx.getSource());
 	}
 
-	//
-	static final String MUTUAL_GAME_TEAM_NAME = "blood-game";// UNUSED
-	static final String MUTUAL_DEAD_TEAM_NAME = "blood-dead";// UNUSED
-	static final String MUTUAL_NOMINATE_TEAM_NAME = "blood-nominate";
-	static final String MUTUAL_PYLORI_TEAM_NAME = "blood-pylori";
-	static final String MUTUAL_DATA_TEAM_NAME = "blood-data";// UNUSED
-
+	// sett
+	static final NamedTextColor NOMINATE_TEAM_COLOR = NamedTextColor.GOLD;
+	static final NamedTextColor PYLORI_TEAM_COLOR = NamedTextColor.RED;
+	static final float DEFAULT_VOLUME = .25f;
+	static final float VOTE_VOLUME = .25f;
+	static final float EVENT_VOLUME = .25f;
 
 	// get & set
 	public void setState(BloodGameState gameState)
@@ -310,7 +307,7 @@ public class BloodGame {
 			if (wasSpectator) return;
 		}
 		// player team
-		cleanPlayerTeam(offlinePlayer);
+		getTeam().removePlayer(offlinePlayer);
 		// set null from the uuid list
 		ArrayList<UUID> slotsUuid = new ArrayList<>(getSlotsUuid());
 		boolean removed = false;
@@ -364,6 +361,13 @@ public class BloodGame {
 		return Bukkit.getPlayer(uuid);
 	}
 
+	void applyColorGlowingToOne(Player player, NamedTextColor color)
+	{
+		getAllPlayers().forEach(loopPlayer -> loopPlayer.removePotionEffect(PotionEffectType.GLOWING));
+		getTeam().color(color);
+		player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, -1, 9, true, false, true));
+	}
+
 	public void changePyloriPlayer(Player player, int votesAgainst)
 	{
 		UUID uuid = player.getUniqueId();
@@ -372,9 +376,7 @@ public class BloodGame {
 		removePyloriPlayer();
 		if (Objects.equals(getVoteNominatedUuid(), uuid)) removeNominatedPlayer();
 
-		getMutualTeam(MUTUAL_PYLORI_TEAM_NAME).addPlayer(player);
-		player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, -1, 9, true, false, true));
-
+		applyColorGlowingToOne(player, NOMINATE_TEAM_COLOR);
 		setVotePyloriAgainst(votesAgainst);
 		setVotePyloriUuid(uuid);
 	}
@@ -382,8 +384,10 @@ public class BloodGame {
 	{
 		Player lastPlayer = getPyloriPlayer();
 		if (lastPlayer == null) return;
-		getMutualTeam(MUTUAL_PYLORI_TEAM_NAME).removePlayer(lastPlayer);
 		lastPlayer.removePotionEffect(PotionEffectType.GLOWING);
+
+		Player nominatePlayer = getNominatedPlayer();
+		if (nominatePlayer != null) applyColorGlowingToOne(nominatePlayer, NOMINATE_TEAM_COLOR);
 
 		clearVotePyloriAgainst();
 		clearVotePyloriUuid();
@@ -403,9 +407,7 @@ public class BloodGame {
 		removeNominatedPlayer();
 		if (Objects.equals(getVotePyloriUuid(), uuid)) removePyloriPlayer();
 
-		getMutualTeam(MUTUAL_NOMINATE_TEAM_NAME).addPlayer(player);
-		player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, -1, 9, true, false, true));
-
+		applyColorGlowingToOne(player, PYLORI_TEAM_COLOR);
 		mutateSlots(BloodSlot::unlock);
 		setVoteNominatedUuid(uuid);
 	}
@@ -413,8 +415,10 @@ public class BloodGame {
 	{
 		Player lastPlayer = getNominatedPlayer();
 		if (lastPlayer == null) return;
-		getMutualTeam(MUTUAL_NOMINATE_TEAM_NAME).removePlayer(lastPlayer);
 		lastPlayer.removePotionEffect(PotionEffectType.GLOWING);
+
+		Player pyloriPlayer = getPyloriPlayer();
+		if (pyloriPlayer != null) applyColorGlowingToOne(pyloriPlayer, PYLORI_TEAM_COLOR);
 
 		clearVoteNominatedUuid();
 	}
@@ -542,7 +546,7 @@ public class BloodGame {
 		setRoundId("blood-%s-%s".formatted(world.getName(), Integer.toString(incrementedRoundCount)));
 	}
 
-	private void setupTeams()
+	private void setupTeam()
 	{
 		Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
 		String teamId = getRoundId();
@@ -552,14 +556,6 @@ public class BloodGame {
 		team.color(NamedTextColor.AQUA);
 		team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
 		team.setCanSeeFriendlyInvisibles(true);
-
-		Team nominatedTeam = getMutualTeam(MUTUAL_NOMINATE_TEAM_NAME);
-		if (nominatedTeam == null) nominatedTeam = board.registerNewTeam(MUTUAL_NOMINATE_TEAM_NAME);
-		nominatedTeam.color(NamedTextColor.GOLD);
-
-		Team pyloriTeam = board.getTeam(MUTUAL_PYLORI_TEAM_NAME);
-		if (pyloriTeam == null) pyloriTeam = board.registerNewTeam(MUTUAL_PYLORI_TEAM_NAME);
-		pyloriTeam.color(NamedTextColor.RED);
 	}
 
 	Team getTeam()
@@ -580,26 +576,6 @@ public class BloodGame {
 		Team team = getTeam();
 		if (team == null) return;
 		team.unregister();
-	}
-
-	private void deleteTeams()
-	{
-		deleteTeam();
-		Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
-		Team team = null;
-
-		team = board.getTeam(MUTUAL_PYLORI_TEAM_NAME);
-		if (team != null) team.unregister();
-		team = board.getTeam(MUTUAL_NOMINATE_TEAM_NAME);
-		if (team != null) team.unregister();
-	}
-
-	void cleanPlayerTeam(OfflinePlayer player)
-	{
-		Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
-		getTeam().removePlayer(player);
-		board.getTeam(MUTUAL_PYLORI_TEAM_NAME).removePlayer(player);
-		board.getTeam(MUTUAL_NOMINATE_TEAM_NAME).removePlayer(player);
 	}
 
 	// vote process
@@ -624,16 +600,16 @@ public class BloodGame {
 		};
 
 		Runnable startVoteProcessStep4 = () -> {
-			pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, .5f, 0.9f);
+			pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, VOTE_VOLUME, 0.9f);
 			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex), 20L);
 		};
 		Runnable startVoteProcessStep3 = () -> {
-			pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, .5f, 0.8f);
+			pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, VOTE_VOLUME, 0.8f);
 			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, startVoteProcessStep4, 20L);
 		};
 		Runnable startVoteProcessStep2 = () -> {
 			// broadcast("<gold>the vote will start in 3 seconds", resolvers);
-			pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, .5f, 0.7f);
+			pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, VOTE_VOLUME, 0.7f);
 			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, startVoteProcessStep3, 20L);
 		};
 		Runnable startVoteProcessStep1 = () -> {
@@ -689,7 +665,7 @@ public class BloodGame {
 		};
 
 		//step 0
-		pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, .5f, 1f);
+		pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, VOTE_VOLUME, 1f);
 		broadcast("<gold><votes> votes", resolvers);
 
 		//step 2
@@ -714,7 +690,7 @@ public class BloodGame {
 			finishRunnableStep1 = () -> {
 				removeNominatedPlayer();
 				removePyloriPlayer();
-				pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, .5f, 0.5f);
+				pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, VOTE_VOLUME, 0.25f);
 				broadcast("<gold><b>EQUALITY!</b> <yellow><last></yellow> steps down from the pylori", resolvers);
 				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, finishRunnableStep2, 60L);
 			};
@@ -724,7 +700,7 @@ public class BloodGame {
 			finishRunnableStep1 = () -> {
 				removeNominatedPlayer();
 				changePyloriPlayer(nominatedPlayer, votes);
-				pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, .5f, 1.5f);
+				pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, VOTE_VOLUME, 1.25f);
 				broadcast((hasLastPlayer)
 				? "<gold>this is enough for <b><red><target></red></b> to replace <yellow><last></yellow> on the pylori"
 				: "<gold>this is enough to place <b><red><target></red></b> on the pylori"
@@ -771,7 +747,7 @@ public class BloodGame {
 	}
 	public void pingSound(Sound sound, float pitch)
 	{
-		pingSound(sound, 1f, pitch);
+		pingSound(sound, DEFAULT_VOLUME, pitch);
 	}
 	public void pingSound(Sound sound)
 	{
@@ -795,7 +771,7 @@ public class BloodGame {
 		game.world.setGameRule(GameRules.ADVANCE_TIME, false);
 		game.world.setDifficulty(Difficulty.PEACEFUL);
 		game.generateNewId();
-		game.setupTeams();
+		game.setupTeam();
 		game.applySlotLimit();
 		game.mutateSlots(BloodSlot::lock);
 		sender.sendRichMessage("<light_purple>setup game <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
@@ -869,38 +845,38 @@ public class BloodGame {
 	static Map<BloodGamePeriod, BiConsumer<BloodGame, CommandSender>> gamePeriodEnter = Map.ofEntries(
 	Map.entry(BloodGamePeriod.MORNING, (game, sender) -> {
 		game.world.setTime(0);
-		game.pingSound(Sound.BLOCK_BELL_USE, 0.3f);
+		game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.pingSound(Sound.BLOCK_BELL_USE, 0.4f);
+			game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.4f);
 			game.broadcast("<white><b>it's the morning!");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.pingSound(Sound.BLOCK_BELL_USE, 0.5f);
+			game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.5f);
 			game.broadcast("<gray><i>everyone is attended to the townhall");
 		}, 40L);
 	}),
 	Map.entry(BloodGamePeriod.FREE, (game, sender) -> {
 		game.world.setTime(6000);
-		game.pingSound(Sound.BLOCK_ANVIL_LAND, 1.7f);
+		game.pingSound(Sound.BLOCK_ANVIL_LAND, EVENT_VOLUME, 1.7f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.pingSound(Sound.BLOCK_ANVIL_LAND, 1.7f);
+			game.pingSound(Sound.BLOCK_ANVIL_LAND, EVENT_VOLUME, 1.7f);
 			game.broadcast("<white><b>wonder time");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.pingSound(Sound.BLOCK_ANVIL_LAND, 1.7f);
+			game.pingSound(Sound.BLOCK_ANVIL_LAND, EVENT_VOLUME, 1.7f);
 			game.broadcast("<gray><i>you are free to go and talk");
 		}, 40L);
 	}),
 	Map.entry(BloodGamePeriod.MEET, (game, sender) -> {
 		game.world.setTime(12500);
 		game.mutateSlots(BloodSlot::unlock);
-		game.pingSound(Sound.BLOCK_BELL_USE, 0.3f);
+		game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.pingSound(Sound.BLOCK_BELL_USE, 0.4f);
+			game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.4f);
 			game.broadcast("<white><b>debate time");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.pingSound(Sound.BLOCK_BELL_USE, 0.5f);
+			game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.5f);
 			game.broadcast("<gray><i>everyone is attended to the townhall");
 		}, 40L);
 	}),
@@ -909,13 +885,13 @@ public class BloodGame {
 		game.removePyloriPlayer();
 		game.world.setTime(18000);
 		game.mutateSlots(BloodSlot::lock);
-		game.pingSound(Sound.ENTITY_ALLAY_HURT, 0f);
+		game.pingSound(Sound.ENTITY_ALLAY_HURT, EVENT_VOLUME, 0f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.pingSound(Sound.BLOCK_WOODEN_DOOR_OPEN, .5f);
+			game.pingSound(Sound.BLOCK_WOODEN_DOOR_OPEN, EVENT_VOLUME, 0.5f);
 			game.broadcast("<white><b>the moon is rising...");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
-			game.pingSound(Sound.BLOCK_WOODEN_DOOR_CLOSE, .5f);
+			game.pingSound(Sound.BLOCK_WOODEN_DOOR_CLOSE, EVENT_VOLUME, 0.5f);
 			game.broadcast("<gray><i>go to your house and sleep well");
 		}, 40L);
 	})
