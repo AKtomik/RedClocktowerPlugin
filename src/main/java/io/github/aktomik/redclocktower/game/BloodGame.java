@@ -514,7 +514,7 @@ public class BloodGame {
 			Placeholder.parsed("majority", Integer.toString(majority))
 		};
 
-		getSlots().forEach(slot -> slot.unlock());
+		getSlots().forEach(BloodSlot::unlock);
 		broadcast("<gold>there is <count> players alive", resolvers);
 
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
@@ -545,7 +545,7 @@ public class BloodGame {
 			broadcast("is index <index>", Placeholder.parsed("index", Integer.toString(actualIndex)));
 
 			BloodSlot slot = slots.get(actualIndex);
-			slot.changeLock(true);
+			slot.lock();
 
 			if (actualIndex == startIndex)
 			{

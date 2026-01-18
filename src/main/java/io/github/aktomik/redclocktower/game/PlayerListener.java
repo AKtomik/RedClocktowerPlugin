@@ -57,7 +57,7 @@ public class PlayerListener implements Listener {
 		BlockData data = block.getBlockData();
 		boolean powered = !((Powerable)data).isPowered();
 
-		if (!bloodPlayer.canVote()) return;
+		if (!bloodPlayer.hasVote()) return;
 		bloodPlayer.changeVotePull(powered);
 	}
 }

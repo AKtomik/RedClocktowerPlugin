@@ -58,7 +58,7 @@ public class VoteCommand extends CommandBrigadierBase {
 			sender.sendRichMessage("<red>it's not the moment to vote.");
 			return Command.SINGLE_SUCCESS;
 		}
-		if (!bloodPlayer.canVote())
+		if (!bloodPlayer.hasVote())
 		{
 			sender.sendRichMessage("<red>you don't have any vote.");
 			return Command.SINGLE_SUCCESS;

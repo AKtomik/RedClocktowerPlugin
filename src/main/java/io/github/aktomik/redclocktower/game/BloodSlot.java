@@ -74,9 +74,9 @@ public class BloodSlot {
 		Location lampLocM1 = lampLoc.clone();
 		lampLocM1.setY(lampLoc.getY() - 1);
 		Location lampLocM2 = lampLoc.clone();
-		lampLocM2.setY(lampLoc.getY() - 1);
+		lampLocM2.setY(lampLoc.getY() - 2);
 
-		if (world.getBlockData(lampLocM1) != BlockType.STICKY_PISTON)
+		if (world.getBlockData(lampLocM1).getMaterial() != Material.STICKY_PISTON)
 		{
 			BlockData pistonData = Bukkit.createBlockData("minecraft:sticky_piston[facing=up]");
 			world.setBlockData(lampLocM1, pistonData);
@@ -89,14 +89,11 @@ public class BloodSlot {
 	public void refreshLamp(BloodPlayer bloodPlayerAtSlot)
 	{
 		Location lampLoc = getPosition(BloodSlotPlace.LAMP);
+		Location lampLocP1 = lampLoc.clone();
+		lampLocP1.setY(lampLoc.getY() + 1);
 		Location leverLoc = getPosition(BloodSlotPlace.LEVER);
 		BlockData leverData = world.getBlockData(leverLoc);
 		BlockData lampData = BlockType.WAXED_COPPER_BLOCK.createBlockData();;
-
-		if (!getLock())
-		{
-			lampLoc.setY(lampLoc.getY() + 1);
-		}
 
 		if (bloodPlayerAtSlot != null) {
 			boolean voting = bloodPlayerAtSlot.getVotePull();
@@ -140,8 +137,14 @@ public class BloodSlot {
 			}
 		}
 
-		world.setBlockData(lampLoc, lampData);
 		world.setBlockData(leverLoc, leverData);
+		if (getLock())
+		{
+			world.setBlockData(lampLoc, lampData);
+			world.setBlockData(lampLocP1, BlockType.AIR.createBlockData());
+		} else {
+			world.setBlockData(lampLocP1, lampData);
+		}
 
 		refreshLock();
 	}

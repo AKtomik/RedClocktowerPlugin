@@ -15,8 +15,6 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-import java.util.List;
-
 public class BloodPlayer {
 
 	// class
@@ -252,8 +250,8 @@ public class BloodPlayer {
 	{
 		return getVotePull();
 	}
-	public boolean canVote() { return (isAlive() || hasToken()) && !isVoteSlotLocked(); }
-	public boolean isVoteSlotLocked() { return getGame().getSlots().get(getSlotIndex()).getLock(); }
+	public boolean hasVote() { return (isAlive() || hasToken()); }
+	public boolean isVoteMoment() { return !getGame().getSlots().get(getSlotIndex()).getLock(); }
 
 	// action
 	public void changeAlive(boolean value)
@@ -265,7 +263,7 @@ public class BloodPlayer {
 		} else {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 9, true, false));
 		}
-		if (!canVote()) setVotePull(false);
+		if (!hasVote()) setVotePull(false);
 		refreshNameTag();
 		refreshSlotLamp();
 	}
@@ -288,7 +286,7 @@ public class BloodPlayer {
 	public void changeVoteToken(boolean value)
 	{
 		setVoteToken(value);
-		if (!canVote()) setVotePull(false);
+		if (!hasVote()) setVotePull(false);
 		refreshNameTag();
 		refreshSlotLamp();
 	}
