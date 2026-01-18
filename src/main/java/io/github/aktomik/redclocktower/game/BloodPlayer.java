@@ -251,7 +251,7 @@ public class BloodPlayer {
 		return getVotePull();
 	}
 	public boolean hasVote() { return (isAlive() || hasToken()); }
-	public boolean isVoteMoment() { return !getGame().getSlots().get(getSlotIndex()).getLock(); }
+	public boolean isSlotVoteLock() { return getGame().getSlots().get(getSlotIndex()).getLock(); }
 
 	// action
 	public void changeAlive(boolean value)

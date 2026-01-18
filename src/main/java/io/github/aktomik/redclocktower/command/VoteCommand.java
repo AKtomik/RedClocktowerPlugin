@@ -53,7 +53,7 @@ public class VoteCommand extends CommandBrigadierBase {
 			sender.sendRichMessage("<red>you are not in a blood game.");
 			return Command.SINGLE_SUCCESS;
 		}
-		if (!game.isVoteMoment())
+		if (!game.isVoteMoment() && bloodPlayer.isSlotVoteLock())
 		{
 			sender.sendRichMessage("<red>it's not the moment to vote.");
 			return Command.SINGLE_SUCCESS;
