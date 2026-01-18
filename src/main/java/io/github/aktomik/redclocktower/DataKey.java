@@ -53,11 +53,11 @@ public enum DataKey {
 	PLAYER_DISPLAY_NAME("player_display_name");
 
 	// shortcut
-	public static Map<BloodGamePlace, DataKey> GAME_LOC = Map.ofEntries(
+	public static final Map<BloodGamePlace, DataKey> GAME_LOC = Map.ofEntries(
 		Map.entry(BloodGamePlace.CENTER, DataKey.GAME_LOC_CENTER),
 		Map.entry(BloodGamePlace.SPAWN, DataKey.GAME_LOC_SPAWN)
 	);
-	public static Map<BloodSlotPlace, DataKey> SLOT_LOC = Map.ofEntries(
+	public static final Map<BloodSlotPlace, DataKey> SLOT_LOC = Map.ofEntries(
 		Map.entry(BloodSlotPlace.CHAIR, DataKey.SLOT_LOC_CHAIR),
 		Map.entry(BloodSlotPlace.LEVER, DataKey.SLOT_LOC_LEVER),
 		Map.entry(BloodSlotPlace.LAMP, DataKey.SLOT_LOC_LAMP),
@@ -65,8 +65,11 @@ public enum DataKey {
 	);
 
 	// system
-	public final String path;
-	public NamespacedKey key;
+	final String path;
+	public NamespacedKey key() {
+		return key;
+	}
+	private NamespacedKey key;
 
 	DataKey(String path) {
 		this.path = path;

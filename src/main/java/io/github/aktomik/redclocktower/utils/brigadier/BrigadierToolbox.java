@@ -6,15 +6,16 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.List;
 import java.util.Objects;
 
 public class BrigadierToolbox {
 
-	private BrigadierToolbox() {};// is a static class
+	private BrigadierToolbox() {}// is a static class
 
-	@NullMarked
+	@Nullable
 	public static Player resolvePlayer(String argumentKey, CommandContext<CommandSourceStack> ctx) {
 		try {
 			return ctx.getArgument(argumentKey, PlayerSelectorArgumentResolver.class).resolve(ctx.getSource()).getFirst();

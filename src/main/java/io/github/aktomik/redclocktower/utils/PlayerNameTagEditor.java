@@ -15,7 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
 
-public class PlayerDisplayTagManager implements Listener {
+public class PlayerNameTagEditor {
 
 	private static final Map<UUID, TextDisplay> displays = new HashMap<>();
 
@@ -67,10 +67,5 @@ public class PlayerDisplayTagManager implements Listener {
 				updatePosition(player);
 			}
 		}, 0L, 1L);
-	}
-
-	@EventHandler
-	public void onQuit(PlayerQuitEvent event) {
-		clearDisplay(event.getPlayer());
 	}
 }

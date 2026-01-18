@@ -26,7 +26,7 @@ import java.util.function.Consumer;
 public class BloodGame {
 
 	// class
-	static MiniMessage mini = MiniMessage.miniMessage();
+	private static MiniMessage mini = MiniMessage.miniMessage();
 
 	public final World world;
 	private final PersistentDataContainer pdc;
@@ -57,138 +57,138 @@ public class BloodGame {
 	// get & set
 	public void setState(BloodGameState gameState)
 	{
-		pdc.set(DataKey.GAME_STATE.key, PersistentDataType.INTEGER, gameState.ordinal());
+		pdc.set(DataKey.GAME_STATE.key(), PersistentDataType.INTEGER, gameState.ordinal());
 	}
 	public BloodGameState getState()
 	{
-		int ordinal = pdc.getOrDefault(DataKey.GAME_STATE.key, PersistentDataType.INTEGER, BloodGameState.NOTHING.ordinal());
+		int ordinal = pdc.getOrDefault(DataKey.GAME_STATE.key(), PersistentDataType.INTEGER, BloodGameState.NOTHING.ordinal());
 		return BloodGameState.values()[ordinal];
 	}
 
 	private void setTime(BloodGamePeriod gameState)
 	{
-		pdc.set(DataKey.GAME_PERIOD.key, PersistentDataType.INTEGER, gameState.ordinal());
+		pdc.set(DataKey.GAME_PERIOD.key(), PersistentDataType.INTEGER, gameState.ordinal());
 	}
 	public BloodGamePeriod getTime()
 	{
-		int ordinal = pdc.getOrDefault(DataKey.GAME_PERIOD.key, PersistentDataType.INTEGER, BloodGamePeriod.FREE.ordinal());
+		int ordinal = pdc.getOrDefault(DataKey.GAME_PERIOD.key(), PersistentDataType.INTEGER, BloodGamePeriod.FREE.ordinal());
 		return BloodGamePeriod.values()[ordinal];
 	}
 
 	private void setRoundCount(int count)
 	{
-		pdc.set(DataKey.GAME_ROUND_COUNT.key, PersistentDataType.INTEGER, count);
+		pdc.set(DataKey.GAME_ROUND_COUNT.key(), PersistentDataType.INTEGER, count);
 	}
 	public int getRoundCount()
 	{
-		return pdc.getOrDefault(DataKey.GAME_ROUND_COUNT.key, PersistentDataType.INTEGER, 0);
+		return pdc.getOrDefault(DataKey.GAME_ROUND_COUNT.key(), PersistentDataType.INTEGER, 0);
 	}
 
 	private void setRoundId(String strid)
 	{
-		pdc.set(DataKey.GAME_ROUND_ID.key, PersistentDataType.STRING, strid);
+		pdc.set(DataKey.GAME_ROUND_ID.key(), PersistentDataType.STRING, strid);
 	}
 	public String getRoundId()
 	{
-		return pdc.get(DataKey.GAME_ROUND_ID.key, PersistentDataType.STRING);
+		return pdc.get(DataKey.GAME_ROUND_ID.key(), PersistentDataType.STRING);
 	}
 
 	private void setStorytellerUuid(UUID uuid)
 	{
-		pdc.set(DataKey.GAME_STORYTELLER_UUID.key, UUIDDataType.INSTANCE, uuid);
+		pdc.set(DataKey.GAME_STORYTELLER_UUID.key(), UUIDDataType.INSTANCE, uuid);
 	}
 	private void clearStorytellerUuid()
 	{
-		pdc.remove(DataKey.GAME_STORYTELLER_UUID.key);
+		pdc.remove(DataKey.GAME_STORYTELLER_UUID.key());
 	}
 	public UUID getStorytellerUuid()
 	{
-		return pdc.get(DataKey.GAME_STORYTELLER_UUID.key, UUIDDataType.INSTANCE);
+		return pdc.get(DataKey.GAME_STORYTELLER_UUID.key(), UUIDDataType.INSTANCE);
 	}
 
 	private void setVoteNominatedUuid(UUID uuid)
 	{
-		pdc.set(DataKey.GAME_VOTE_NOMINATED_UUID.key, UUIDDataType.INSTANCE, uuid);
+		pdc.set(DataKey.GAME_VOTE_NOMINATED_UUID.key(), UUIDDataType.INSTANCE, uuid);
 	}
 	private void clearVoteNominatedUuid()
 	{
-		pdc.remove(DataKey.GAME_VOTE_NOMINATED_UUID.key);
+		pdc.remove(DataKey.GAME_VOTE_NOMINATED_UUID.key());
 	}
 	public UUID getVoteNominatedUuid()
 	{
-		return pdc.get(DataKey.GAME_VOTE_NOMINATED_UUID.key, UUIDDataType.INSTANCE);
+		return pdc.get(DataKey.GAME_VOTE_NOMINATED_UUID.key(), UUIDDataType.INSTANCE);
 	}
 
 	private void setVotePyloriUuid(UUID uuid)
 	{
-		pdc.set(DataKey.GAME_VOTE_PYLORI_UUID.key, UUIDDataType.INSTANCE, uuid);
+		pdc.set(DataKey.GAME_VOTE_PYLORI_UUID.key(), UUIDDataType.INSTANCE, uuid);
 	}
 	private void clearVotePyloriUuid()
 	{
-		pdc.remove(DataKey.GAME_VOTE_PYLORI_UUID.key);
+		pdc.remove(DataKey.GAME_VOTE_PYLORI_UUID.key());
 	}
 	private UUID getVotePyloriUuid()
 	{
-		return pdc.get(DataKey.GAME_VOTE_PYLORI_UUID.key, UUIDDataType.INSTANCE);
+		return pdc.get(DataKey.GAME_VOTE_PYLORI_UUID.key(), UUIDDataType.INSTANCE);
 	}
 
 	private void setVotePyloriAgainst(int count)
 	{
-		pdc.set(DataKey.GAME_VOTE_PYLORI_AGAINST.key, PersistentDataType.INTEGER, count);
+		pdc.set(DataKey.GAME_VOTE_PYLORI_AGAINST.key(), PersistentDataType.INTEGER, count);
 	}
 	private void clearVotePyloriAgainst()
 	{
-		pdc.remove(DataKey.GAME_VOTE_PYLORI_AGAINST.key);
+		pdc.remove(DataKey.GAME_VOTE_PYLORI_AGAINST.key());
 	}
 	public int getVotePyloriAgainst()
 	{
-		return pdc.getOrDefault(DataKey.GAME_VOTE_PYLORI_AGAINST.key, PersistentDataType.INTEGER, 0);
+		return pdc.getOrDefault(DataKey.GAME_VOTE_PYLORI_AGAINST.key(), PersistentDataType.INTEGER, 0);
 	}
 
 	private void setSlotsUuid(List<UUID> uuids)
 	{
-		pdc.set(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.LIST.listTypeFrom(UUIDDataType.INSTANCE), uuids);
+		pdc.set(DataKey.GAME_SLOTS_UUID.key(), PersistentDataType.LIST.listTypeFrom(UUIDDataType.INSTANCE), uuids);
 	}
 	private void clearSlotsUuid()
 	{
-		pdc.remove(DataKey.GAME_SLOTS_UUID.key);
+		pdc.remove(DataKey.GAME_SLOTS_UUID.key());
 	}
 	public List<UUID> getSlotsUuid()
 	{
-		return pdc.getOrDefault(DataKey.GAME_SLOTS_UUID.key, PersistentDataType.LIST.listTypeFrom(UUIDDataType.INSTANCE), List.of());
+		return pdc.getOrDefault(DataKey.GAME_SLOTS_UUID.key(), PersistentDataType.LIST.listTypeFrom(UUIDDataType.INSTANCE), List.of());
 	}
 
 	private void setSlotsPdc(List<PersistentDataContainer> uuids)
 	{
-		pdc.set(DataKey.GAME_SLOTS_PDC.key, PersistentDataType.LIST.dataContainers(), uuids);
+		pdc.set(DataKey.GAME_SLOTS_PDC.key(), PersistentDataType.LIST.dataContainers(), uuids);
 	}
 	private void clearSlotsPdc()
 	{
-		pdc.remove(DataKey.GAME_SLOTS_PDC.key);
+		pdc.remove(DataKey.GAME_SLOTS_PDC.key());
 	}
 	private List<PersistentDataContainer> getSlotsPdc()
 	{
-		return pdc.getOrDefault(DataKey.GAME_SLOTS_PDC.key, PersistentDataType.LIST.dataContainers(), List.of());
+		return pdc.getOrDefault(DataKey.GAME_SLOTS_PDC.key(), PersistentDataType.LIST.dataContainers(), List.of());
 	}
 
 	public void setPosition(BloodGamePlace place, Location pos)
 	{
-		pdc.set(DataKey.GAME_LOC.get(place).key, PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
+		pdc.set(DataKey.GAME_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
 	}
 	public Location getPosition(BloodGamePlace place)
 	{
-		int[] posArray = pdc.get(DataKey.GAME_LOC.get(place).key, PersistentDataType.INTEGER_ARRAY);
+		int[] posArray = pdc.get(DataKey.GAME_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY);
 		if (posArray == null || posArray.length != 3) return null;
 		return new Location(world, posArray[0], posArray[1], posArray[2]);
 	}
 
 	private void setSettingsSlotLimit(int count)
 	{
-		pdc.set(DataKey.GAME_SETTINGS_SLOT_LIMIT.key, PersistentDataType.INTEGER, count);
+		pdc.set(DataKey.GAME_SETTINGS_SLOT_LIMIT.key(), PersistentDataType.INTEGER, count);
 	}
 	public int getSettingsSlotLimit()
 	{
-		return pdc.getOrDefault(DataKey.GAME_SETTINGS_SLOT_LIMIT.key, PersistentDataType.INTEGER, 15);
+		return pdc.getOrDefault(DataKey.GAME_SETTINGS_SLOT_LIMIT.key(), PersistentDataType.INTEGER, 15);
 	}
 
 	// states & time
@@ -302,7 +302,7 @@ public class BloodGame {
 		if (player != null) {// must be done before game remove player
 			BloodPlayer bloodPlayer = BloodPlayer.get(player);
 			boolean wasSpectator = bloodPlayer.isSpectator();
-			bloodPlayer.quitGame(this);
+			bloodPlayer.quitGameFinalStep();
 			// spectators are not in game uuid
 			if (wasSpectator) return;
 		}
@@ -507,7 +507,7 @@ public class BloodGame {
 				Player player = Bukkit.getPlayer(lastUuid);
 				if (player == null || !player.isOnline()) continue;
 				BloodPlayer bloodPlayer = BloodPlayer.get(player);
-				bloodPlayer.quitGame(this);
+				bloodPlayer.quitGameFinalStep();
 			}
 			setSlotsUuid(slotsUuid);
 		}
@@ -601,26 +601,26 @@ public class BloodGame {
 
 		Runnable startVoteProcessStep4 = () -> {
 			pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.1f);
-			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex), 20L);
+			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex), 20L);
 		};
 		Runnable startVoteProcessStep3 = () -> {
 			pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.2f);
-			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, startVoteProcessStep4, 20L);
+			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), startVoteProcessStep4, 20L);
 		};
 		Runnable startVoteProcessStep2 = () -> {
 			// broadcast("<gold>the vote will start in 3 seconds", resolvers);
 			pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.3f);
-			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, startVoteProcessStep3, 20L);
+			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), startVoteProcessStep3, 20L);
 		};
 		Runnable startVoteProcessStep1 = () -> {
 			broadcast("<gold>a majority of <majority> votes is required to place <b><target></b> on the pylori", resolvers);
-			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, startVoteProcessStep2, 40L);
+			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), startVoteProcessStep2, 40L);
 		};
 
 		//step 0
 		mutateSlots(BloodSlot::unlock);
 		broadcast("<gold>there is <count> players alive", resolvers);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, startVoteProcessStep1, 40L);
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), startVoteProcessStep1, 40L);
 	}
 
 
@@ -638,10 +638,10 @@ public class BloodGame {
 
 			if (actualIndex == startIndex)
 			{
-				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, finishVoteProcess, 60L);
+				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishVoteProcess, 60L);
 				return;
 			}
-			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, slotVoteProcessRunnable(actualIndex, startIndex), 20L);
+			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), slotVoteProcessRunnable(actualIndex, startIndex), 20L);
 		};
 	}
 
@@ -683,7 +683,7 @@ public class BloodGame {
 				? "<gold>this is not enough to replace <red><last></red> on the pylori"
 				: "<gold>this is not enough to mount <yellow><target></yellow> on the pylori"
 				, resolvers);
-				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, finishRunnableStep2, 60L);
+				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishRunnableStep2, 60L);
 			};
 
 		else if (votes == majority && hasLastPlayer)
@@ -693,7 +693,7 @@ public class BloodGame {
 				removePyloriPlayer();
 				pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 0.5f);
 				broadcast("<gold><b>EQUALITY!</b> <yellow><last></yellow> steps down from the pylori", resolvers);
-				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, finishRunnableStep2, 60L);
+				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishRunnableStep2, 60L);
 			};
 
 		else
@@ -706,10 +706,10 @@ public class BloodGame {
 				? "<gold>this is enough for <b><red><target></red></b> to replace <yellow><last></yellow> on the pylori"
 				: "<gold>this is enough to place <b><red><target></red></b> on the pylori"
 				, resolvers);
-				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, finishRunnableStep2, 60L);
+				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishRunnableStep2, 60L);
 			};
 
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, finishRunnableStep1, 40L);
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishRunnableStep1, 40L);
 	};
 
 	public void cancelVoteProcess()
@@ -847,11 +847,11 @@ public class BloodGame {
 	Map.entry(BloodGamePeriod.MORNING, (game, sender) -> {
 		game.world.setTime(0);
 		game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.3f);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
 			game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.4f);
 			game.broadcast("<white><b>it's the morning!");
 		}, 20L);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
 			game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.5f);
 			game.broadcast("<gray><i>everyone is attended to the townhall");
 		}, 40L);
@@ -859,11 +859,11 @@ public class BloodGame {
 	Map.entry(BloodGamePeriod.FREE, (game, sender) -> {
 		game.world.setTime(6000);
 		game.pingSound(Sound.BLOCK_ANVIL_LAND, EVENT_VOLUME, 1.7f);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
 			game.pingSound(Sound.BLOCK_ANVIL_LAND, EVENT_VOLUME, 1.7f);
 			game.broadcast("<white><b>wonder time");
 		}, 20L);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
 			game.pingSound(Sound.BLOCK_ANVIL_LAND, EVENT_VOLUME, 1.7f);
 			game.broadcast("<gray><i>you are free to go and talk");
 		}, 40L);
@@ -872,11 +872,11 @@ public class BloodGame {
 		game.world.setTime(12500);
 		game.mutateSlots(BloodSlot::unlock);
 		game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.3f);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
 			game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.4f);
 			game.broadcast("<white><b>debate time");
 		}, 20L);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
 			game.pingSound(Sound.BLOCK_BELL_USE, EVENT_VOLUME, 0.5f);
 			game.broadcast("<gray><i>everyone is attended to the townhall");
 		}, 40L);
@@ -887,11 +887,11 @@ public class BloodGame {
 		game.world.setTime(18000);
 		game.mutateSlots(BloodSlot::lock);
 		game.pingSound(Sound.ENTITY_ALLAY_HURT, EVENT_VOLUME, 0f);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
 			game.pingSound(Sound.BLOCK_WOODEN_DOOR_OPEN, EVENT_VOLUME, 0.5f);
 			game.broadcast("<white><b>the moon is rising...");
 		}, 20L);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
 			game.pingSound(Sound.BLOCK_WOODEN_DOOR_CLOSE, EVENT_VOLUME, 0.5f);
 			game.broadcast("<gray><i>go to your house and sleep well");
 		}, 40L);

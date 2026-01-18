@@ -11,6 +11,7 @@ public abstract class CommandBrigadierBase extends SubBrigadierBase {
     public abstract String permission();
     public abstract String description();
 
+    @Override
     public LiteralArgumentBuilder<CommandSourceStack> base()
     {
         return Commands.literal(name()).requires(

@@ -28,26 +28,26 @@ public class BloodSlot {
 	// get & set
 	public void setPosition(BloodSlotPlace place, Location pos)
 	{
-		pdc.set(DataKey.SLOT_LOC.get(place).key, PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
+		pdc.set(DataKey.SLOT_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
 	}
 	public Location getPosition(BloodSlotPlace place)
 	{
-		int[] posArray = pdc.get(DataKey.SLOT_LOC.get(place).key, PersistentDataType.INTEGER_ARRAY);
+		int[] posArray = pdc.get(DataKey.SLOT_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY);
 		if (posArray == null || posArray.length != 3) return null;
 		return new Location(world, posArray[0], posArray[1], posArray[2]);
 	}
 
 	private void setLock(boolean isLocked)
 	{
-		pdc.set(DataKey.SLOT_LOCK.key, PersistentDataType.BOOLEAN, isLocked);
+		pdc.set(DataKey.SLOT_LOCK.key(), PersistentDataType.BOOLEAN, isLocked);
 	}
 	private void clearLock()
 	{
-		pdc.remove(DataKey.SLOT_LOCK.key);
+		pdc.remove(DataKey.SLOT_LOCK.key());
 	}
 	public boolean getLock()
 	{
-		return pdc.getOrDefault(DataKey.SLOT_LOCK.key, PersistentDataType.BOOLEAN, true);
+		return pdc.getOrDefault(DataKey.SLOT_LOCK.key(), PersistentDataType.BOOLEAN, true);
 	}
 
 	// action

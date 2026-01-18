@@ -5,7 +5,8 @@ import io.github.aktomik.redclocktower.command.VoteCommand;
 import io.github.aktomik.redclocktower.command.setup.SetupCommand;
 import io.github.aktomik.redclocktower.game.BloodPlayer;
 import io.github.aktomik.redclocktower.game.PlayerListener;
-import io.github.aktomik.redclocktower.utils.PlayerDisplayTagManager;
+import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
+import io.github.aktomik.redclocktower.utils.PlayerNameTagEditorListener;
 import io.github.aktomik.redclocktower.utils.brigadier.CommandBrigadierBase;
 import io.github.aktomik.redclocktower.command.RichmessageCommand;
 import io.github.aktomik.redclocktower.command.storyteller.StorytellerCommand;
@@ -22,7 +23,10 @@ import java.util.List;
 
 public final class RedClocktower extends JavaPlugin {
 
-    public static Plugin plugin;
+    private static Plugin plugin;
+    public static Plugin plugin() {
+        return plugin;
+    }
 
     @Override
     public void onEnable() {
@@ -34,10 +38,10 @@ public final class RedClocktower extends JavaPlugin {
 
         // setup events
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerDisplayTagManager(), this);
+        getServer().getPluginManager().registerEvents(new PlayerNameTagEditorListener(), this);
 
         // startups
-        PlayerDisplayTagManager.startUpdateTask(this);
+        PlayerNameTagEditor.startUpdateTask(this);
 
         // list bridge commands
         List<CommandBrigadierBase> bridgeCommandsSource = List
