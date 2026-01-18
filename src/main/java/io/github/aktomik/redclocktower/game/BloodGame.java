@@ -286,7 +286,7 @@ public class BloodGame {
 		UUID uuid = offlinePlayer.getUniqueId();
 		// clear special uuid if in it
 		if (Objects.equals(getVoteNominatedUuid(), uuid)) clearVoteNominatedUuid();
-		if (Objects.equals(getVotePyloriUuid(), uuid)) clearPyloriPlayer();
+		if (Objects.equals(getVotePyloriUuid(), uuid)) removePyloriPlayer();
 		if (Objects.equals(getStorytellerUuid(), uuid)) clearStorytellerUuid();
 		// blood player object quit if online
 		Player player = offlinePlayer.getPlayer();
@@ -357,7 +357,7 @@ public class BloodGame {
 		if (!isUuidIn(uuid)) throw new RuntimeException("trying to put a player on pylori that is not in game");
 		setVotePyloriUuid(uuid);
 	}
-	public void clearPyloriPlayer()
+	public void removePyloriPlayer()
 	{
 		clearVotePyloriAgainst();
 		clearVotePyloriUuid();
@@ -557,16 +557,16 @@ public class BloodGame {
 		};
 
 		Runnable startVoteProcessStep4 = () -> {
-			pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.9f);
+			pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, .5f, 0.9f);
 			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex), 20L);
 		};
 		Runnable startVoteProcessStep3 = () -> {
-			pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.8f);
+			pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, .5f, 0.8f);
 			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, startVoteProcessStep4, 20L);
 		};
 		Runnable startVoteProcessStep2 = () -> {
 			// broadcast("<gold>the vote will start in 3 seconds", resolvers);
-			pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.7f);
+			pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, .5f, 0.7f);
 			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, startVoteProcessStep3, 20L);
 		};
 		Runnable startVoteProcessStep1 = () -> {
@@ -622,6 +622,7 @@ public class BloodGame {
 		};
 
 		//step 0
+		pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, .5f, 1f);
 		broadcast("<gold><votes> votes", resolvers);
 
 		//step 2
@@ -633,18 +634,20 @@ public class BloodGame {
 		if (votes < majority)
 			// no/less
 			finishRunnableStep1 = () -> {
+				removeNominatedPlayer();
 				broadcast((hasLastPlayer)
 				? "<gold>this is not enough to replace <red><last></red> on the pylori"
 				: "<gold>this is not enough to mount <yellow><target></yellow> on the pylori"
 				, resolvers);
-				pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.7f);
 				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, finishRunnableStep2, 60L);
 			};
 
 		else if (votes == majority && hasLastPlayer)
 			// equality
 			finishRunnableStep1 = () -> {
-				clearPyloriPlayer();
+				removeNominatedPlayer();
+				removePyloriPlayer();
+				pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, .5f, 0.5f);
 				broadcast("<gold><b>EQUALITY!</b> <yellow><last></yellow> steps down from the pylori", resolvers);
 				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, finishRunnableStep2, 60L);
 			};
@@ -652,7 +655,9 @@ public class BloodGame {
 		else
 			// place/replace
 			finishRunnableStep1 = () -> {
+				removeNominatedPlayer();
 				changePyloriPlayer(nominatedPlayer, votes);
+				pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, .5f, 1.5f);
 				broadcast((hasLastPlayer)
 				? "<gold>this is enough for <b><red><target></red></b> to replace <yellow><last></yellow> on the pylori"
 				: "<gold>this is enough to place <b><red><target></red></b> on the pylori"
@@ -755,7 +760,7 @@ public class BloodGame {
 			game.removePlayer(offlinePlayer);
 		game.clearSlotsUuid();
 		game.clearVoteNominatedUuid();
-		game.clearPyloriPlayer();
+		game.removePyloriPlayer();
 		game.deleteTeam();
 		game.setState(BloodGameState.NOTHING);
 		sender.sendRichMessage("<light_purple>reseting game");
@@ -785,7 +790,7 @@ public class BloodGame {
 		game.clearSlotsUuid();// will have to refresh slot limit
 		game.clearStorytellerUuid();
 		game.clearVoteNominatedUuid();
-		game.clearPyloriPlayer();
+		game.removePyloriPlayer();
 		sender.sendRichMessage("<light_purple>game was brutally cleaned");
 		sender.sendRichMessage("<#ff6600>this may result as unintended behavior and must be used in last resort.");
 		sender.sendRichMessage("<#ff6600>it is advised to restart server or at least deco/reco all players.");
