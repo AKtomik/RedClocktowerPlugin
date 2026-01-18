@@ -120,9 +120,22 @@ public class BloodGame {
 	{
 		pdc.remove(DataKey.GAME_VOTE_PYLORI_UUID.key);
 	}
-	public UUID getVotePyloriUuid()
+	private UUID getVotePyloriUuid()
 	{
 		return pdc.get(DataKey.GAME_VOTE_PYLORI_UUID.key, UUIDDataType.INSTANCE);
+	}
+
+	private void setVotePyloriAgainst(int count)
+	{
+		pdc.set(DataKey.GAME_VOTE_PYLORI_AGAINST.key, PersistentDataType.INTEGER, count);
+	}
+	private void clearVotePyloriAgainst()
+	{
+		pdc.remove(DataKey.GAME_VOTE_PYLORI_AGAINST.key);
+	}
+	public int getVotePyloriAgainst()
+	{
+		return pdc.getOrDefault(DataKey.GAME_VOTE_PYLORI_AGAINST.key, PersistentDataType.INTEGER, 0);
 	}
 
 	private void setSlotsUuid(List<UUID> uuids)
@@ -246,6 +259,7 @@ public class BloodGame {
 
 	public int getPyloriMajority(int aliveCitizenCount)
 	{
+		if (getVotePyloriUuid() != null) return getVotePyloriAgainst();
 		return Math.ceilDiv(aliveCitizenCount, 2);
 	}
 
@@ -272,7 +286,7 @@ public class BloodGame {
 		UUID uuid = offlinePlayer.getUniqueId();
 		// clear special uuid if in it
 		if (Objects.equals(getVoteNominatedUuid(), uuid)) clearVoteNominatedUuid();
-		if (Objects.equals(getVotePyloriUuid(), uuid)) clearVotePyloriUuid();
+		if (Objects.equals(getVotePyloriUuid(), uuid)) clearPyloriPlayer();
 		if (Objects.equals(getStorytellerUuid(), uuid)) clearStorytellerUuid();
 		// blood player object quit if online
 		Player player = offlinePlayer.getPlayer();
@@ -336,14 +350,16 @@ public class BloodGame {
 		return Bukkit.getPlayer(uuid);
 	}
 
-	public void changePyloriPlayer(Player player)
+	public void changePyloriPlayer(Player player, int votesAgainst)
 	{
+		setVotePyloriAgainst(votesAgainst);
 		UUID uuid = player.getUniqueId();
 		if (!isUuidIn(uuid)) throw new RuntimeException("trying to put a player on pylori that is not in game");
 		setVotePyloriUuid(uuid);
 	}
 	public void clearPyloriPlayer()
 	{
+		clearVotePyloriAgainst();
 		clearVotePyloriUuid();
 	}
 	public Player getPyloriPlayer()
@@ -567,14 +583,11 @@ public class BloodGame {
 
 	Runnable slotVoteProcessRunnable(int lastIndex, int startIndex)
 	{
-		broadcast("build process for index <index>+1", Placeholder.parsed("index", Integer.toString(lastIndex)));
 		return () -> {
-			broadcast("run process for index <index>+1", Placeholder.parsed("index", Integer.toString(lastIndex)));
 			List<BloodSlot> slots = getSlots();
 
 			int actualIndex = lastIndex + 1;
 			if (actualIndex >= slots.size()) actualIndex = 0;
-			broadcast("is index <index>", Placeholder.parsed("index", Integer.toString(actualIndex)));
 
 			BloodSlot slot = slots.get(actualIndex);
 			slot.lock();
@@ -604,35 +617,50 @@ public class BloodGame {
 			Placeholder.parsed("last", (hasLastPlayer) ? lastPyloriBloodPlayer.getName() : ""),
 			Placeholder.parsed("target", nominatedBloodPlayer.getName()),
 			Placeholder.parsed("count", Integer.toString(count)),
-			Placeholder.parsed("majority", Integer.toString(majority))
+			Placeholder.parsed("majority", Integer.toString(majority)),
+			Placeholder.parsed("votes", Integer.toString(votes))
 		};
 
 		//step 0
 		broadcast("<gold><votes> votes", resolvers);
 
-		Runnable lastStepRunnable;
+		//step 2
+		Runnable finishRunnableStep2 = () -> mutateSlots(BloodSlot::unlock);
+
+		//step 1
+		Runnable finishRunnableStep1;
+
 		if (votes < majority)
-			lastStepRunnable = () -> {
+			// no/less
+			finishRunnableStep1 = () -> {
 				broadcast((hasLastPlayer)
-				? "<gold>this is not enough to mount <yellow><target></yellow> on the pylori"
-				: "<gold>this is not enough to replace <red><last></red> on the pylori"
+				? "<gold>this is not enough to replace <red><last></red> on the pylori"
+				: "<gold>this is not enough to mount <yellow><target></yellow> on the pylori"
 				, resolvers);
 				centerSound(Sound.ENTITY_ARROW_HIT_PLAYER, 0.7f);
+				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, finishRunnableStep2, 60L);
 			};
+
 		else if (votes == majority && hasLastPlayer)
-			lastStepRunnable = () -> {
+			// equality
+			finishRunnableStep1 = () -> {
 				clearPyloriPlayer();
-				broadcast("<gold><b>EQUALITY!</b> <yellow><last><yellow> steps down from the pylori", resolvers);
+				broadcast("<gold><b>EQUALITY!</b> <yellow><last></yellow> steps down from the pylori", resolvers);
+				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, finishRunnableStep2, 60L);
 			};
+
 		else
-			lastStepRunnable = () -> {
-				changePyloriPlayer(nominatedPlayer);
+			// place/replace
+			finishRunnableStep1 = () -> {
+				changePyloriPlayer(nominatedPlayer, votes);
 				broadcast((hasLastPlayer)
-				? "<gold>this is enough for <b><red><target><red></b> to replace <yellow><last><yellow> on the pylori"
-				: "<gold>this is enough to place <b><red><target><red></b> on the pylori"
+				? "<gold>this is enough for <b><red><target></red></b> to replace <yellow><last></yellow> on the pylori"
+				: "<gold>this is enough to place <b><red><target></red></b> on the pylori"
 				, resolvers);
+				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, finishRunnableStep2, 60L);
 			};
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, lastStepRunnable, 40L);
+
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, finishRunnableStep1, 40L);
 	};
 
 	public void cancelVoteProcess()
@@ -724,7 +752,7 @@ public class BloodGame {
 			game.removePlayer(offlinePlayer);
 		game.clearSlotsUuid();
 		game.clearVoteNominatedUuid();
-		game.clearVotePyloriUuid();
+		game.clearPyloriPlayer();
 		game.deleteTeam();
 		game.setState(BloodGameState.NOTHING);
 		sender.sendRichMessage("<light_purple>reseting game");
@@ -754,7 +782,7 @@ public class BloodGame {
 		game.clearSlotsUuid();// will have to refresh slot limit
 		game.clearStorytellerUuid();
 		game.clearVoteNominatedUuid();
-		game.clearVotePyloriUuid();
+		game.clearPyloriPlayer();
 		sender.sendRichMessage("<light_purple>game was brutally cleaned");
 		sender.sendRichMessage("<#ff6600>this may result as unintended behavior and must be used in last resort.");
 		sender.sendRichMessage("<#ff6600>it is advised to restart server or at least deco/reco all players.");
