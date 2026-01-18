@@ -111,7 +111,7 @@ public class StorytellerSubVote extends SubBrigadierBase {
 		}
 
 		// the action
-		game.changeNominatedPlayer(player);
+		game.changePyloriPlayer(player, 0);
 		sender.sendRichMessage("<b><target></b> is now <red><b>on the pylori</b></red>.",
 			Placeholder.parsed("target", player.getName())
 		);

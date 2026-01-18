@@ -14,6 +14,8 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 
@@ -46,6 +48,14 @@ public class BloodGame {
 	public static BloodGame get(CommandContext<CommandSourceStack> ctx) {
 		return BloodGame.get(ctx.getSource());
 	}
+
+	//
+	static final String MUTUAL_GAME_TEAM_NAME = "blood-game";// UNUSED
+	static final String MUTUAL_DEAD_TEAM_NAME = "blood-dead";// UNUSED
+	static final String MUTUAL_NOMINATE_TEAM_NAME = "blood-nominate";
+	static final String MUTUAL_PYLORI_TEAM_NAME = "blood-pylori";
+	static final String MUTUAL_DATA_TEAM_NAME = "blood-data";// UNUSED
+
 
 	// get & set
 	public void setState(BloodGameState gameState)
@@ -275,6 +285,8 @@ public class BloodGame {
 		int slotIndex = emptySlotsIndex.getFirst();
 		slotsUuid.set(slotIndex, uuid);
 		setSlotsUuid(slotsUuid);
+		// team
+		getTeam().addPlayer(player);
 		// blood player object join
 		// must be done after game add player
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
@@ -285,7 +297,7 @@ public class BloodGame {
 	{
 		UUID uuid = offlinePlayer.getUniqueId();
 		// clear special uuid if in it
-		if (Objects.equals(getVoteNominatedUuid(), uuid)) clearVoteNominatedUuid();
+		if (Objects.equals(getVoteNominatedUuid(), uuid)) removeNominatedPlayer();
 		if (Objects.equals(getVotePyloriUuid(), uuid)) removePyloriPlayer();
 		if (Objects.equals(getStorytellerUuid(), uuid)) clearStorytellerUuid();
 		// blood player object quit if online
@@ -296,7 +308,9 @@ public class BloodGame {
 			bloodPlayer.quitGame(this);
 			// spectators are not in game uuid
 			if (wasSpectator) return;
-		};
+		}
+		// player team
+		cleanPlayerTeam(offlinePlayer);
 		// set null from the uuid list
 		ArrayList<UUID> slotsUuid = new ArrayList<>(getSlotsUuid());
 		boolean removed = false;
@@ -352,13 +366,25 @@ public class BloodGame {
 
 	public void changePyloriPlayer(Player player, int votesAgainst)
 	{
-		setVotePyloriAgainst(votesAgainst);
 		UUID uuid = player.getUniqueId();
 		if (!isUuidIn(uuid)) throw new RuntimeException("trying to put a player on pylori that is not in game");
+
+		removePyloriPlayer();
+		if (Objects.equals(getVoteNominatedUuid(), uuid)) removeNominatedPlayer();
+
+		getMutualTeam(MUTUAL_PYLORI_TEAM_NAME).addPlayer(player);
+		player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, -1, 9, true, false, true));
+
+		setVotePyloriAgainst(votesAgainst);
 		setVotePyloriUuid(uuid);
 	}
 	public void removePyloriPlayer()
 	{
+		Player lastPlayer = getPyloriPlayer();
+		if (lastPlayer == null) return;
+		getMutualTeam(MUTUAL_PYLORI_TEAM_NAME).removePlayer(lastPlayer);
+		lastPlayer.removePotionEffect(PotionEffectType.GLOWING);
+
 		clearVotePyloriAgainst();
 		clearVotePyloriUuid();
 	}
@@ -373,13 +399,23 @@ public class BloodGame {
 	{
 		UUID uuid = player.getUniqueId();
 		if (!isUuidIn(uuid)) throw new RuntimeException("trying to nominated that is not in game");
+
+		removeNominatedPlayer();
+		if (Objects.equals(getVotePyloriUuid(), uuid)) removePyloriPlayer();
+
+		getMutualTeam(MUTUAL_NOMINATE_TEAM_NAME).addPlayer(player);
+		player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, -1, 9, true, false, true));
+
 		mutateSlots(BloodSlot::unlock);
 		setVoteNominatedUuid(uuid);
 	}
 	public void removeNominatedPlayer()
 	{
-		Player player = getNominatedPlayer();
-		if (player == null) return;
+		Player lastPlayer = getNominatedPlayer();
+		if (lastPlayer == null) return;
+		getMutualTeam(MUTUAL_NOMINATE_TEAM_NAME).removePlayer(lastPlayer);
+		lastPlayer.removePotionEffect(PotionEffectType.GLOWING);
+
 		clearVoteNominatedUuid();
 	}
 	public Player getNominatedPlayer()
@@ -517,12 +553,12 @@ public class BloodGame {
 		team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
 		team.setCanSeeFriendlyInvisibles(true);
 
-		Team nominatedTeam = board.getTeam("bloods-nominate");
-		if (nominatedTeam == null) nominatedTeam = board.registerNewTeam("bloods-nominate");
+		Team nominatedTeam = getMutualTeam(MUTUAL_NOMINATE_TEAM_NAME);
+		if (nominatedTeam == null) nominatedTeam = board.registerNewTeam(MUTUAL_NOMINATE_TEAM_NAME);
 		nominatedTeam.color(NamedTextColor.GOLD);
 
-		Team pyloriTeam = board.getTeam("bloods-pylori");
-		if (pyloriTeam == null) pyloriTeam = board.registerNewTeam("bloods-pylori");
+		Team pyloriTeam = board.getTeam(MUTUAL_PYLORI_TEAM_NAME);
+		if (pyloriTeam == null) pyloriTeam = board.registerNewTeam(MUTUAL_PYLORI_TEAM_NAME);
 		pyloriTeam.color(NamedTextColor.RED);
 	}
 
@@ -530,6 +566,11 @@ public class BloodGame {
 	{
 		String teamId = getRoundId();
 		if (teamId == null) throw new RuntimeException("trying to get team but there is no round id");
+		return Bukkit.getScoreboardManager().getMainScoreboard().getTeam(teamId);
+	}
+
+	Team getMutualTeam(String teamId)
+	{
 		return Bukkit.getScoreboardManager().getMainScoreboard().getTeam(teamId);
 	}
 
@@ -547,10 +588,18 @@ public class BloodGame {
 		Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
 		Team team = null;
 
-		team = board.getTeam("bloods-nominate");
+		team = board.getTeam(MUTUAL_PYLORI_TEAM_NAME);
 		if (team != null) team.unregister();
-		team = board.getTeam("bloods-nominate");
+		team = board.getTeam(MUTUAL_NOMINATE_TEAM_NAME);
 		if (team != null) team.unregister();
+	}
+
+	void cleanPlayerTeam(OfflinePlayer player)
+	{
+		Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
+		getTeam().removePlayer(player);
+		board.getTeam(MUTUAL_PYLORI_TEAM_NAME).removePlayer(player);
+		board.getTeam(MUTUAL_NOMINATE_TEAM_NAME).removePlayer(player);
 	}
 
 	// vote process
@@ -777,7 +826,7 @@ public class BloodGame {
 		for (OfflinePlayer offlinePlayer : game.getAllPlayersAsOffline())
 			game.removePlayer(offlinePlayer);
 		game.clearSlotsUuid();
-		game.clearVoteNominatedUuid();
+		game.removeNominatedPlayer();
 		game.removePyloriPlayer();
 		game.deleteTeam();
 		game.setState(BloodGameState.NOTHING);
@@ -807,7 +856,7 @@ public class BloodGame {
 		// game.clearSlotsPdc();//!should but boring
 		game.clearSlotsUuid();// will have to refresh slot limit
 		game.clearStorytellerUuid();
-		game.clearVoteNominatedUuid();
+		game.removeNominatedPlayer();
 		game.removePyloriPlayer();
 		sender.sendRichMessage("<light_purple>game was brutally cleaned");
 		sender.sendRichMessage("<#ff6600>this may result as unintended behavior and must be used in last resort.");
@@ -856,8 +905,8 @@ public class BloodGame {
 		}, 40L);
 	}),
 	Map.entry(BloodGamePeriod.NIGHT, (game, sender) -> {
-		game.clearVoteNominatedUuid();
-		game.clearVotePyloriUuid();
+		game.removeNominatedPlayer();
+		game.removePyloriPlayer();
 		game.world.setTime(18000);
 		game.mutateSlots(BloodSlot::lock);
 		game.pingSound(Sound.ENTITY_ALLAY_HURT, 0f);

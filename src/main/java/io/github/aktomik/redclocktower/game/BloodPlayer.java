@@ -161,6 +161,7 @@ public class BloodPlayer {
 	}
 
 	// game link
+
 	void joinGame(BloodGame game, int slotIndex)
 	{
 		BloodGame lastGame = getGame();
@@ -174,8 +175,7 @@ public class BloodPlayer {
 		refreshNameTag();
 	}
 
-	// join without a slot index for the storyteller
-	// [storyteller] should be true from now
+	// join without a slot index for spectators and storyteller
 	void joinGame(BloodGame game, boolean storyteller)
 	{
 		BloodGame lastGame = getGame();
@@ -204,9 +204,7 @@ public class BloodPlayer {
 		clearSlotIndex();
 		clearGame();// after that getGame is null
 
-		game.getTeam().removePlayer(player);
 		clearNameTag();
-
 	}
 
 	// is publicly call and will call removePlayer on player game (step 1/3)
@@ -261,7 +259,7 @@ public class BloodPlayer {
 		{
 			player.removePotionEffect(PotionEffectType.INVISIBILITY);
 		} else {
-			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 9, true, false));
+			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 9, true, false, false));
 		}
 		if (!hasVote()) setVotePull(false);
 		refreshNameTag();
