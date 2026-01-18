@@ -53,9 +53,9 @@ public class VoteCommand extends CommandBrigadierBase {
 			sender.sendRichMessage("<red>you are not in a blood game.");
 			return Command.SINGLE_SUCCESS;
 		}
-		if (!game.isVoteMoment() && bloodPlayer.isSlotVoteLock())
+		if (bloodPlayer.isSlotVoteLock())
 		{
-			sender.sendRichMessage("<red>it's not the moment to vote.");
+			sender.sendRichMessage("<red>you can't vote right now.");
 			return Command.SINGLE_SUCCESS;
 		}
 		if (!bloodPlayer.hasVote())
@@ -67,7 +67,7 @@ public class VoteCommand extends CommandBrigadierBase {
 		// actions
 		if (trigger == null) trigger = !bloodPlayer.getVotePull();
 		bloodPlayer.changeVotePull(trigger);
-		sender.sendRichMessage((trigger)
+		sender.sendRichMessage(trigger
 		? "you are now <yellow><b>voting</b></yellow>."
 		: "you are <red>not voting</red> anymore."
 		);

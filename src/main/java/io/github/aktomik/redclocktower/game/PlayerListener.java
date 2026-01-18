@@ -52,11 +52,8 @@ public class PlayerListener implements Listener {
 			event.setCancelled(true);
 			return;
 		}
-		if (bloodPlayer.isSlotVoteLock()) {
-			// stop redstone
-			event.setCancelled(true);
-			return;
-		}
+
+		if (bloodPlayer.isSlotVoteLock()) return;
 		if (!bloodPlayer.hasVote()) return;
 
 		// get state
