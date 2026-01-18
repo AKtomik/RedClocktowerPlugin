@@ -376,7 +376,7 @@ public class BloodGame {
 		removePyloriPlayer();
 		if (Objects.equals(getVoteNominatedUuid(), uuid)) removeNominatedPlayer();
 
-		applyColorGlowingToOne(player, NOMINATE_TEAM_COLOR);
+		applyColorGlowingToOne(player, PYLORI_TEAM_COLOR);
 		setVotePyloriAgainst(votesAgainst);
 		setVotePyloriUuid(uuid);
 	}
@@ -407,7 +407,7 @@ public class BloodGame {
 		removeNominatedPlayer();
 		if (Objects.equals(getVotePyloriUuid(), uuid)) removePyloriPlayer();
 
-		applyColorGlowingToOne(player, PYLORI_TEAM_COLOR);
+		applyColorGlowingToOne(player, NOMINATE_TEAM_COLOR);
 		mutateSlots(BloodSlot::unlock);
 		setVoteNominatedUuid(uuid);
 	}
