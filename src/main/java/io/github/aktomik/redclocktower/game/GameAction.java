@@ -123,13 +123,13 @@ public class GameAction {
 
 	Map.entry(BloodGamePeriod.MORNING, (game, sender) -> {
 		game.world.setTime(0);
-		game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, 0.3f);
+		game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, 0.4f);
+			game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .4f);
 			game.broadcast("<white><b>it's the morning!");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, 0.5f);
+			game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .5f);
 			game.broadcast("<gray><i>everyone is attended to the townhall");
 		}, 40L);
 	}),
@@ -150,13 +150,13 @@ public class GameAction {
 	Map.entry(BloodGamePeriod.MEET, (game, sender) -> {
 		game.world.setTime(12500);
 		game.mutateSlots(BloodSlot::unlock);
-		game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, 0.3f);
+		game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, 0.4f);
+			game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .4f);
 			game.broadcast("<white><b>debate time");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, 0.5f);
+			game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .5f);
 			game.broadcast("<gray><i>everyone is attended to the townhall");
 		}, 40L);
 	}),
@@ -166,13 +166,13 @@ public class GameAction {
 		game.removePyloriPlayer();
 		game.world.setTime(18000);
 		game.mutateSlots(BloodSlot::lock);
-		game.pingSound(Sound.ENTITY_ALLAY_HURT, BloodGame.EVENT_VOLUME, 0f);
+		game.pingSound(Sound.ENTITY_ALLAY_HURT, BloodGame.EVENT_VOLUME, .0f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_WOODEN_DOOR_OPEN, BloodGame.EVENT_VOLUME, 0.9f);
+			game.pingSound(Sound.BLOCK_WOODEN_DOOR_OPEN, BloodGame.EVENT_VOLUME, .9f);
 			game.broadcast("<white><b>the moon is rising...");
 		}, 20L);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
-			game.pingSound(Sound.BLOCK_WOODEN_DOOR_CLOSE, BloodGame.EVENT_VOLUME, 0.9f);
+			game.pingSound(Sound.BLOCK_WOODEN_DOOR_CLOSE, BloodGame.EVENT_VOLUME, .9f);
 			game.broadcast("<gray><i>go to your house and sleep well");
 		}, 40L);
 	})

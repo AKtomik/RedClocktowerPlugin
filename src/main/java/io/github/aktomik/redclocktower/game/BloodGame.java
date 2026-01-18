@@ -672,7 +672,7 @@ public class BloodGame {
 			// no/less
 			finishRunnableStep1 = () -> {
 				removeNominatedPlayer();
-				pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 0.9f);
+				pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, .9f);
 				broadcast((hasLastPlayer)
 				? "<gold>this is not enough to replace <red><last></red> on the pylori"
 				: "<gold>this is not enough to mount <yellow><target></yellow> on the pylori"
@@ -685,7 +685,7 @@ public class BloodGame {
 			finishRunnableStep1 = () -> {
 				removeNominatedPlayer();
 				removePyloriPlayer();
-				pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 0.5f);
+				pingSound(Sound.ENTITY_PLAYER_LEVELUP, VOTE_VOLUME, .9f);
 				broadcast("<gold><b>EQUALITY!</b> <yellow><last></yellow> steps down from the pylori", resolvers);
 				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishRunnableStep2, 60L);
 			};
