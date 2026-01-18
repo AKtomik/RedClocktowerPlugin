@@ -1,12 +1,13 @@
 package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.DataKey;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Material;
 import org.bukkit.World;
+import org.bukkit.block.BlockFace;
 import org.bukkit.block.BlockType;
-import org.bukkit.block.data.BlockData;
-import org.bukkit.block.data.Lightable;
-import org.bukkit.block.data.Powerable;
+import org.bukkit.block.data.*;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -46,34 +47,55 @@ public class BloodSlot {
 	}
 	public boolean getLock()
 	{
-		return pdc.getOrDefault(DataKey.SLOT_LOCK.key, PersistentDataType.BOOLEAN, false);
+		return pdc.getOrDefault(DataKey.SLOT_LOCK.key, PersistentDataType.BOOLEAN, true);
 	}
 
 	// action
 
-	public void changeLock(boolean isLocked, BloodPlayer player)
+	public void changeLock(boolean isLocked)
 	{
 		setLock(isLocked);
-		refreshLamp(player);
+		refreshLock();
+	}
+	public void lock()
+	{
+		changeLock(true);
+	}
+	public void unlock()
+	{
+		changeLock(false);
 	}
 
 	// refresh
 
+	public void refreshLock()
+	{
+		Location lampLoc = getPosition(BloodSlotPlace.LAMP);
+		Location lampLocM1 = lampLoc.clone();
+		lampLocM1.setY(lampLoc.getY() - 1);
+		Location lampLocM2 = lampLoc.clone();
+		lampLocM2.setY(lampLoc.getY() - 1);
+
+		if (world.getBlockData(lampLocM1) != BlockType.STICKY_PISTON)
+		{
+			BlockData pistonData = Bukkit.createBlockData("minecraft:sticky_piston[facing=up]");
+			world.setBlockData(lampLocM1, pistonData);
+		}
+
+		BlockData powerBlock = ((getLock()) ? BlockType.LAPIS_BLOCK : BlockType.REDSTONE_BLOCK).createBlockData();
+		world.setBlockData(lampLocM2, powerBlock);
+	}
+
 	public void refreshLamp(BloodPlayer bloodPlayerAtSlot)
 	{
 		Location lampLoc = getPosition(BloodSlotPlace.LAMP);
-		Location airLoc = lampLoc.clone();
-		airLoc.setY(lampLoc.getY() - 1);
-
 		Location leverLoc = getPosition(BloodSlotPlace.LEVER);
 		BlockData leverData = world.getBlockData(leverLoc);
 		BlockData lampData = BlockType.WAXED_COPPER_BLOCK.createBlockData();;
 
-		if (getLock())
+		if (!getLock())
 		{
-			Location cacheLoc = lampLoc;
-			lampLoc = airLoc;
-			airLoc = cacheLoc;
+			lampLoc.setY(lampLoc.getY() + 1);
 		}
 
 		if (bloodPlayerAtSlot != null) {
@@ -118,9 +140,9 @@ public class BloodSlot {
 			}
 		}
 
-
 		world.setBlockData(lampLoc, lampData);
-		world.setBlockData(airLoc, BlockType.AIR.createBlockData());
 		world.setBlockData(leverLoc, leverData);
+
+		refreshLock();
 	}
 }

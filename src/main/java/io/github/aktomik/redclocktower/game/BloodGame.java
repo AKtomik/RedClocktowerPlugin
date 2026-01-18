@@ -347,6 +347,7 @@ public class BloodGame {
 	{
 		UUID uuid = player.getUniqueId();
 		if (!isUuidIn(uuid)) throw new RuntimeException("trying to nominated that is not in game");
+		getSlots().forEach(BloodSlot::unlock);
 		setVoteNominatedUuid(uuid);
 	}
 	public void removeNominatedPlayer()
@@ -500,6 +501,7 @@ public class BloodGame {
 	public void startVoteProcess()
 	{
 		// for the nominated player
+
 		int count = getAliveCitizenCount();
 		int majority = getAliveCitizenCount();
 		Player nominatedPlayer = getNominatedPlayer();
@@ -511,7 +513,10 @@ public class BloodGame {
 			Placeholder.parsed("count", Integer.toString(count)),
 			Placeholder.parsed("majority", Integer.toString(majority))
 		};
+
+		getSlots().forEach(slot -> slot.unlock());
 		broadcast("<gold>there is <count> players alive", resolvers);
+
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
 			broadcast("<gold>a majority of <majority> votes is required to place <b><target></b> on the pylori", resolvers);
 		}, 20L);
@@ -540,12 +545,7 @@ public class BloodGame {
 			broadcast("is index <index>", Placeholder.parsed("index", Integer.toString(actualIndex)));
 
 			BloodSlot slot = slots.get(actualIndex);
-			Player player = getPlayerAtIndex(actualIndex);
-			if (player != null)
-			{
-				BloodPlayer bloodPlayer = BloodPlayer.get(player);
-				slot.changeLock(true, bloodPlayer);
-			}
+			slot.changeLock(true);
 
 			if (actualIndex == startIndex)
 			{
@@ -620,6 +620,7 @@ public class BloodGame {
 		game.generateNewId();
 		game.createTeam();
 		game.applySlotLimit();
+		game.getSlots().forEach(BloodSlot::lock);
 		sender.sendRichMessage("<light_purple>setup game <dark_gray><round_id>", Placeholder.parsed("round_id", game.getRoundId()));
 		game.setState(BloodGameState.WAITING);
 	}),
@@ -715,6 +716,7 @@ public class BloodGame {
 	}),
 	Map.entry(BloodGamePeriod.MEET, (game, sender) -> {
 		game.world.setTime(12500);
+		game.getSlots().forEach(BloodSlot::unlock);
 		game.centerSound(Sound.BLOCK_BELL_USE, 0.3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
 			game.centerSound(Sound.BLOCK_BELL_USE, 0.4f);
@@ -729,6 +731,7 @@ public class BloodGame {
 		game.clearVoteNominatedUuid();
 		game.clearVotePyloriUuid();
 		game.world.setTime(18000);
+		game.getSlots().forEach(BloodSlot::lock);
 		game.centerSound(Sound.ENTITY_ALLAY_HURT, 0f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin, () -> {
 			game.centerSound(Sound.BLOCK_WOODEN_DOOR_OPEN, .5f);

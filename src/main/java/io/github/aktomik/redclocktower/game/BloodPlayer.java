@@ -7,6 +7,7 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
@@ -170,6 +171,7 @@ public class BloodPlayer {
 		setSlotIndex(slotIndex);
 
 		game.getTeam().addPlayer(player);
+		player.setGameMode(GameMode.ADVENTURE);
 		revive();
 		refreshNameTag();
 	}
@@ -250,7 +252,8 @@ public class BloodPlayer {
 	{
 		return getVotePull();
 	}
-	public boolean canVote() { return isAlive() || hasToken(); }
+	public boolean canVote() { return (isAlive() || hasToken()) && !isVoteSlotLocked(); }
+	public boolean isVoteSlotLocked() { return getGame().getSlots().get(getSlotIndex()).getLock(); }
 
 	// action
 	public void changeAlive(boolean value)
