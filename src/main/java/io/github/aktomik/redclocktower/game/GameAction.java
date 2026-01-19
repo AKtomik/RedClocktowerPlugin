@@ -21,6 +21,8 @@ public class GameAction {
 		}
 		game.world.setTime(12000);
 		game.world.setGameRule(GameRules.ADVANCE_TIME, false);
+		game.world.setGameRule(GameRules.KEEP_INVENTORY, true);
+		game.world.setSpawnLocation(game.getPosition(GamePlace.SPAWN));
 		game.world.setDifficulty(Difficulty.PEACEFUL);
 		game.generateNewId();
 		game.setupTeam();

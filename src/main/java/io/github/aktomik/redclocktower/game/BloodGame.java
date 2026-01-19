@@ -716,11 +716,11 @@ public class BloodGame {
 		};
 
 		//step 1
-		Runnable finishRunnableStep1;
+		Runnable runnableStep1;
 
 		if (votes < majority)
 			// no/less
-			finishRunnableStep1 = () -> {
+			runnableStep1 = () -> {
 				if (isVoteProcessCanceled()) return;
 				removeNominatedPlayer();
 				pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, .9f);
@@ -733,7 +733,7 @@ public class BloodGame {
 
 		else if (votes == majority && hasLastPlayer)
 			// equality
-			finishRunnableStep1 = () -> {
+			runnableStep1 = () -> {
 				if (isVoteProcessCanceled()) return;
 				removeNominatedPlayer();
 				removePyloriPlayer();
@@ -744,7 +744,7 @@ public class BloodGame {
 
 		else
 			// place/replace
-			finishRunnableStep1 = () -> {
+			runnableStep1 = () -> {
 				if (isVoteProcessCanceled()) return;
 				removeNominatedPlayer();
 				changePyloriPlayer(nominatedPlayer, votes);
@@ -756,7 +756,7 @@ public class BloodGame {
 				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishRunnableStep2, 60L);
 			};
 
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishRunnableStep1, 40L);
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), runnableStep1, 40L);
 	};
 
 	public void cancelVoteProcess(CommandSender sender)
@@ -810,9 +810,43 @@ public class BloodGame {
 		}
 	}
 
+
 	public void startExecuteProcess()
 	{
-		return;
+		startExecuteProcess(true);
+	}
+
+	public void startExecuteProcess(boolean reallyDies)
+	{
+		Player pyloriPlayer = getNominatedPlayer();
+		BloodPlayer pyloriBloodPlayer = BloodPlayer.get(pyloriPlayer);
+
+		TagResolver[] resolvers = new TagResolver[]{
+			Placeholder.parsed("target", pyloriBloodPlayer.getName()),
+		};
+
+		// step 1
+		Runnable runnableStep1;
+
+		if (reallyDies)
+			// die
+			runnableStep1 = () -> {
+				if (isExecutionProcessCanceled()) return;
+				pyloriBloodPlayer.changeAlive(false);
+				broadcast("<red><u>and dies", resolvers);
+			};
+
+		else
+			runnableStep1 = () -> {
+				if (isExecutionProcessCanceled()) return;
+				broadcast("<yellow><u>and <b>DOES NOT</b> dies", resolvers);
+			};
+
+		// step 0
+		pyloriPlayer.setHealth(0);
+		removePyloriPlayer();
+		broadcast("<red><b><target></b> was executed", resolvers);
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), runnableStep1, 40L);
 	}
 
 	// runs
