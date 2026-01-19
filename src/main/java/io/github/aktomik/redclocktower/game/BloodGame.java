@@ -818,7 +818,7 @@ public class BloodGame {
 
 	public void startExecuteProcess(boolean reallyDies)
 	{
-		Player pyloriPlayer = getNominatedPlayer();
+		Player pyloriPlayer = getPyloriPlayer();
 		BloodPlayer pyloriBloodPlayer = BloodPlayer.get(pyloriPlayer);
 
 		TagResolver[] resolvers = new TagResolver[]{
