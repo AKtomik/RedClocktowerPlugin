@@ -1,5 +1,7 @@
 package io.github.aktomik.redclocktower.game;
 
+import io.github.aktomik.redclocktower.RedClocktower;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -12,6 +14,7 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerRespawnEvent;
 
 import java.util.Objects;
 
@@ -29,6 +32,19 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		bloodPlayer.disconnect();
+	}
+
+	@EventHandler
+	public void onRespawn(PlayerRespawnEvent event) {
+		Player player = event.getPlayer();
+		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		BloodGame game = bloodPlayer.getGame();
+		if (game == null) return;
+
+		event.setRespawnLocation(game.getPosition(GamePlace.SPAWN));
+		Bukkit.getScheduler().runTask(RedClocktower.plugin(), () -> {
+			if (!bloodPlayer.isAlive()) bloodPlayer.changeAlive(false);
+		});
 	}
 
 	@EventHandler(ignoreCancelled = true)
