@@ -160,7 +160,7 @@ public class StorytellerSubVote extends SubBrigadierBase {
 		final BloodGame game = BloodGame.get(ctx);
 
 		if (player != null)  pyloriChange(ctx, player);
-		Player pyloriPlayer = game.getNominatedPlayer();
+		Player pyloriPlayer = game.getPyloriPlayer();
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;

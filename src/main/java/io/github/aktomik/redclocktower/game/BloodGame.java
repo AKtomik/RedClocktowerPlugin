@@ -834,15 +834,18 @@ public class BloodGame {
 				if (isExecutionProcessCanceled()) return;
 				pyloriBloodPlayer.changeAlive(false);
 				broadcast("<red><u>and dies", resolvers);
+				setVoteStep(GameVoteStep.NOTHING);
 			};
 
 		else
 			runnableStep1 = () -> {
 				if (isExecutionProcessCanceled()) return;
 				broadcast("<yellow><u>and <b>DOES NOT</b> dies", resolvers);
+				setVoteStep(GameVoteStep.NOTHING);
 			};
 
 		// step 0
+		setVoteStep(GameVoteStep.EXECUTION_PROCESS);
 		pyloriPlayer.setHealth(0);
 		removePyloriPlayer();
 		broadcast("<red><b><target></b> was executed", resolvers);
