@@ -68,7 +68,7 @@ public class StorytellerSubVote extends SubBrigadierBase {
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIf(sender, !game.isVoteMoment(), "this is not the time to vote")) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
 		if (!game.isPlayerIn(player))
 		{
 			sender.sendRichMessage("<red><b><target></b> is not in game.",  Placeholder.parsed("target", player.getName()));
@@ -103,7 +103,7 @@ public class StorytellerSubVote extends SubBrigadierBase {
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIf(sender, !game.isVoteMoment(), "this is not the time to vote")) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
 		if (!game.isPlayerIn(player))
 		{
 			sender.sendRichMessage("<red><b><target></b> is not in game.",  Placeholder.parsed("target", player.getName()));
@@ -127,7 +127,8 @@ public class StorytellerSubVote extends SubBrigadierBase {
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIf(sender, !game.isVoteMoment(), "this is not the time to vote")) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfVoteBusy(sender, game)) return Command.SINGLE_SUCCESS;
 		if (GameToolbox.failIf(sender, nominatedPlayer == null, "there is no nominated player!")) return Command.SINGLE_SUCCESS;
 		assert (nominatedPlayer != null);
 
@@ -146,12 +147,11 @@ public class StorytellerSubVote extends SubBrigadierBase {
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIf(sender, !game.isVoteMoment(), "this is not the time to vote")) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
 
 		// the action
-		game.cancelVoteProcess();
-		game.removeNominatedPlayer();
-		sender.sendRichMessage("<aqua>vote & nomination <red>canceled</red>.");
+		sender.sendRichMessage("<dark_gray>canceling the last vote action...");
+		game.cancelVoteProcess(sender);
 		return Command.SINGLE_SUCCESS;
 	}
 
@@ -164,7 +164,7 @@ public class StorytellerSubVote extends SubBrigadierBase {
 
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIf(sender, !game.isVoteMoment(), "this is not the time to vote")) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
 		if (GameToolbox.failIf(sender, pyloriPlayer == null, "there is no one on the pylori!")) return Command.SINGLE_SUCCESS;
 		assert (pyloriPlayer != null);
 

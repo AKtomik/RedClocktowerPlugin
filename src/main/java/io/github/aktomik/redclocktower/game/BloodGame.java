@@ -105,6 +105,20 @@ public class BloodGame {
 		return pdc.get(DataKey.GAME_STORYTELLER_UUID.key(), UUIDDataType.INSTANCE);
 	}
 
+	public void setVoteStep(GameVoteStep voteStep)
+	{
+		pdc.set(DataKey.GAME_VOTE_STEP.key(), PersistentDataType.INTEGER, voteStep.ordinal());
+	}
+	public void clearVoteStep()
+	{
+		pdc.remove(DataKey.GAME_VOTE_STEP.key());
+	}
+	public GameVoteStep getVoteStep()
+	{
+		int ordinal = pdc.getOrDefault(DataKey.GAME_VOTE_STEP.key(), PersistentDataType.INTEGER, GameVoteStep.NOTHING.ordinal());
+		return GameVoteStep.values()[ordinal];
+	}
+
 	private void setVoteNominatedUuid(UUID uuid)
 	{
 		pdc.set(DataKey.GAME_VOTE_NOMINATED_UUID.key(), UUIDDataType.INSTANCE, uuid);
@@ -572,11 +586,36 @@ public class BloodGame {
 		team.unregister();
 	}
 
-	// vote process
+	// vote system
 
 	public int countVotes()
 	{
 		return getAllBloodPlayers().stream().mapToInt(BloodPlayer::getVote).sum();
+	}
+
+	public boolean isVoteSystemBusy()
+	{
+		return (getVoteStep() != GameVoteStep.NOTHING);
+	}
+
+	public boolean isVoteProcessCanceled()
+	{
+		GameVoteStep step = getVoteStep();
+		boolean canceled = step != GameVoteStep.VOTE_PROCESS;
+		if (!canceled) return false;
+		if (step != GameVoteStep.CANCEL_VOTE_PROCESS) return true;
+		setVoteStep(GameVoteStep.NOTHING);
+		return true;
+	}
+
+	public boolean isExecutionProcessCanceled()
+	{
+		GameVoteStep step = getVoteStep();
+		boolean canceled = step != GameVoteStep.EXECUTION_PROCESS;
+		if (!canceled) return false;
+		if (step != GameVoteStep.CANCEL_EXECUTION_PROCESS) return true;
+		setVoteStep(GameVoteStep.NOTHING);
+		return true;
 	}
 
 	public void startVoteProcess()
@@ -594,24 +633,29 @@ public class BloodGame {
 		};
 
 		Runnable startVoteProcessStep4 = () -> {
+			if (isVoteProcessCanceled()) return;
 			pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.1f);
 			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex), 20L);
 		};
 		Runnable startVoteProcessStep3 = () -> {
+			if (isVoteProcessCanceled()) return;
 			pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.2f);
 			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), startVoteProcessStep4, 20L);
 		};
 		Runnable startVoteProcessStep2 = () -> {
+			if (isVoteProcessCanceled()) return;
 			// broadcast("<gold>the vote will start in 3 seconds", resolvers);
 			pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.3f);
 			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), startVoteProcessStep3, 20L);
 		};
 		Runnable startVoteProcessStep1 = () -> {
+			if (isVoteProcessCanceled()) return;
 			broadcast("<gold>a majority of <majority> votes is required to place <b><target></b> on the pylori", resolvers);
 			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), startVoteProcessStep2, 40L);
 		};
 
 		//step 0
+		setVoteStep(GameVoteStep.VOTE_PROCESS);
 		mutateSlots(BloodSlot::unlock);
 		broadcast("<gold>there is <count> players alive", resolvers);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), startVoteProcessStep1, 40L);
@@ -621,6 +665,7 @@ public class BloodGame {
 	Runnable slotVoteProcessRunnable(int lastIndex, int startIndex)
 	{
 		return () -> {
+			if (isVoteProcessCanceled()) return;
 			List<BloodSlot> slots = getSlots();
 
 			int actualIndex = lastIndex + 1;
@@ -659,11 +704,16 @@ public class BloodGame {
 		};
 
 		//step 0
+		if (isVoteProcessCanceled()) return;
 		pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.4f);
 		broadcast("<gold><votes> votes", resolvers);
 
 		//step 2
-		Runnable finishRunnableStep2 = () -> mutateSlots(BloodSlot::unlock);
+		Runnable finishRunnableStep2 = () -> {
+			if (isVoteProcessCanceled()) return;
+			setVoteStep(GameVoteStep.NOTHING);
+			mutateSlots(BloodSlot::unlock);
+		};
 
 		//step 1
 		Runnable finishRunnableStep1;
@@ -671,6 +721,7 @@ public class BloodGame {
 		if (votes < majority)
 			// no/less
 			finishRunnableStep1 = () -> {
+				if (isVoteProcessCanceled()) return;
 				removeNominatedPlayer();
 				pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, .9f);
 				broadcast((hasLastPlayer)
@@ -683,6 +734,7 @@ public class BloodGame {
 		else if (votes == majority && hasLastPlayer)
 			// equality
 			finishRunnableStep1 = () -> {
+				if (isVoteProcessCanceled()) return;
 				removeNominatedPlayer();
 				removePyloriPlayer();
 				pingSound(Sound.ENTITY_PLAYER_LEVELUP, VOTE_VOLUME, .9f);
@@ -693,6 +745,7 @@ public class BloodGame {
 		else
 			// place/replace
 			finishRunnableStep1 = () -> {
+				if (isVoteProcessCanceled()) return;
 				removeNominatedPlayer();
 				changePyloriPlayer(nominatedPlayer, votes);
 				pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 2f);
@@ -706,9 +759,55 @@ public class BloodGame {
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishRunnableStep1, 40L);
 	};
 
-	public void cancelVoteProcess()
+	public void cancelVoteProcess(CommandSender sender)
 	{
-		return;
+		switch (getVoteStep())
+		{
+			case GameVoteStep.NOTHING:
+			{
+				if (getVoteNominatedUuid() != null)
+				{
+					removeNominatedPlayer();
+					sender.sendRichMessage("<aqua>the nomination was <red>canceled</red>.");
+				} else if (getVotePyloriUuid() != null) {
+					removePyloriPlayer();
+					sender.sendRichMessage("<aqua>the pylori was <red>cleared</red>.");
+				} else {
+					mutateSlots(BloodSlot::unlock);
+					sender.sendRichMessage("<aqua>reseting votes pistons.<white> there is nothing else to cancel.");
+				}
+			} break;
+
+			case GameVoteStep.VOTE_PROCESS:
+			{
+				removeNominatedPlayer();
+				mutateSlots(BloodSlot::unlock);
+				setVoteStep(GameVoteStep.CANCEL_VOTE_PROCESS);
+				sender.sendRichMessage("<aqua><red>canceling</red> the vote...");
+			} break;
+			case GameVoteStep.CANCEL_VOTE_PROCESS:
+			{
+				setVoteStep(GameVoteStep.VOTE_PROCESS);
+				sender.sendRichMessage("<aqua>cancel the vote cancel");
+			} break;
+
+			case GameVoteStep.EXECUTION_PROCESS:
+			{
+				setVoteStep(GameVoteStep.CANCEL_EXECUTION_PROCESS);
+				sender.sendRichMessage("<aqua><red>canceling</red> the execution...");
+			} break;
+			case GameVoteStep.CANCEL_EXECUTION_PROCESS:
+			{
+				setVoteStep(GameVoteStep.EXECUTION_PROCESS);
+				sender.sendRichMessage("<aqua>cancel the execution cancel");
+			} break;
+
+			case GameVoteStep.PYLORI_MOUNT:
+			{
+				setVoteStep(GameVoteStep.NOTHING);
+				sender.sendRichMessage("<aqua>the mount was <red>canceled</red>.");
+			} break;
+		}
 	}
 
 	public void startExecuteProcess()

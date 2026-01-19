@@ -18,6 +18,13 @@ public class GameToolbox {
 		}
 		return false;
 	}
+
+	public static boolean failIfNotVotingMoment(CommandSender sender, BloodGame game) {
+		return failIf(sender, (!game.isVoteMoment()), "this is not the time to vote");
+	}
+	public static boolean failIfVoteBusy(CommandSender sender, BloodGame game) {
+		return failIf(sender, game.isVoteSystemBusy(), "vote or execution is running");
+	}
 	public static boolean failIfNotReady(CommandSender sender, BloodGame game) {
 		return failIf(sender, (!game.isReady()), "the game is not ready!");
 	}

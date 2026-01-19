@@ -149,6 +149,7 @@ public class GameAction {
 
 	Map.entry(GamePeriod.MEET, (game, sender) -> {
 		game.world.setTime(12500);
+		game.clearVoteStep();
 		game.mutateSlots(BloodSlot::unlock);
 		game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
@@ -162,9 +163,10 @@ public class GameAction {
 	}),
 
 	Map.entry(GamePeriod.NIGHT, (game, sender) -> {
+		game.world.setTime(18000);
 		game.removeNominatedPlayer();
 		game.removePyloriPlayer();
-		game.world.setTime(18000);
+		game.clearVoteStep();
 		game.mutateSlots(BloodSlot::lock);
 		game.pingSound(Sound.ENTITY_ALLAY_HURT, BloodGame.EVENT_VOLUME, .0f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
