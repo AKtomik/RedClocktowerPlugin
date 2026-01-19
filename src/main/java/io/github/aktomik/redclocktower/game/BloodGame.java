@@ -787,8 +787,8 @@ public class BloodGame {
 			} break;
 			case GameVoteStep.CANCEL_VOTE_PROCESS:
 			{
-				setVoteStep(GameVoteStep.VOTE_PROCESS);
-				sender.sendRichMessage("<aqua>cancel the vote cancel");
+				setVoteStep(GameVoteStep.NOTHING);
+				sender.sendRichMessage("<aqua><red>force</red> the vote cancel");
 			} break;
 
 			case GameVoteStep.EXECUTION_PROCESS:
@@ -798,8 +798,8 @@ public class BloodGame {
 			} break;
 			case GameVoteStep.CANCEL_EXECUTION_PROCESS:
 			{
-				setVoteStep(GameVoteStep.EXECUTION_PROCESS);
-				sender.sendRichMessage("<aqua>cancel the execution cancel");
+				setVoteStep(GameVoteStep.NOTHING);
+				sender.sendRichMessage("<aqua><red>force</red> the execution cancel");
 			} break;
 
 			case GameVoteStep.PYLORI_MOUNT:
