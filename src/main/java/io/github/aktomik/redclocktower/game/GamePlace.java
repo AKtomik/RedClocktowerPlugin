@@ -2,6 +2,7 @@ package io.github.aktomik.redclocktower.game;
 
 public enum GamePlace {
 	CENTER,
+	PYLORI,
 	SPAWN;
 
 	@Override

@@ -22,6 +22,7 @@ public enum DataKey {
 
 	GAME_LOC_CENTER("game_loc_center"),
 	GAME_LOC_SPAWN("game_loc_spawn"),//UNUSED
+	GAME_LOC_PYLORI("game_loc_pylori"),
 
 	GAME_VOTE_STEP("game_vote_step"),
 	GAME_VOTE_NOMINATOR_UUID("game_vote_nominator_uuid"),//UNUSED
@@ -56,7 +57,8 @@ public enum DataKey {
 	// shortcut
 	public static final Map<GamePlace, DataKey> GAME_LOC = Map.ofEntries(
 		Map.entry(GamePlace.CENTER, DataKey.GAME_LOC_CENTER),
-		Map.entry(GamePlace.SPAWN, DataKey.GAME_LOC_SPAWN)
+		Map.entry(GamePlace.SPAWN, DataKey.GAME_LOC_SPAWN),
+		Map.entry(GamePlace.PYLORI, DataKey.GAME_LOC_PYLORI)
 	);
 	public static final Map<SlotPlace, DataKey> SLOT_LOC = Map.ofEntries(
 		Map.entry(SlotPlace.CHAIR, DataKey.SLOT_LOC_CHAIR),

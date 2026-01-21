@@ -10,7 +10,11 @@ import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.*;
+import org.bukkit.block.BlockType;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -825,31 +829,50 @@ public class BloodGame {
 			Placeholder.parsed("target", pyloriBloodPlayer.getName()),
 		};
 
+		// step 0
+		setVoteStep(GameVoteStep.EXECUTION_PROCESS);
+		removePyloriPlayer();
+		broadcast("<red><b><target></b> is executed", resolvers);
+
+		Location location = getPosition(GamePlace.PYLORI);
+		pyloriPlayer.teleport(location.toCenterLocation());
+		location.setY(location.getY() + 60);
+
+		Entity fallingEntity = world.spawnEntity(location.toCenterLocation(), EntityType.FALLING_BLOCK);
+		FallingBlock fallingAnvil = (FallingBlock)fallingEntity;
+		fallingAnvil.setBlockData(BlockType.ANVIL.createBlockData());
+		fallingAnvil.setDropItem(false);
+		fallingAnvil.setCancelDrop(true);
+		fallingAnvil.setHurtEntities(true);
+		fallingAnvil.setDamagePerBlock(42);
+		fallingAnvil.setFallDistance(42);
+
 		// step 1
 		Runnable runnableStep1;
 
 		if (reallyDies)
+		{
 			// die
 			runnableStep1 = () -> {
 				if (isExecutionProcessCanceled()) return;
+				pyloriPlayer.setHealth(0);
 				pyloriBloodPlayer.changeAlive(false);
 				broadcast("<red><u>and dies", resolvers);
 				setVoteStep(GameVoteStep.NOTHING);
 			};
-
+		}
 		else
+		{
+			// do not die
 			runnableStep1 = () -> {
 				if (isExecutionProcessCanceled()) return;
 				broadcast("<yellow><u>and <b>DOES NOT</b> dies", resolvers);
 				setVoteStep(GameVoteStep.NOTHING);
 			};
+			pyloriPlayer.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 100, 9, false, false, false));
+		}
 
-		// step 0
-		setVoteStep(GameVoteStep.EXECUTION_PROCESS);
-		pyloriPlayer.setHealth(0);
-		removePyloriPlayer();
-		broadcast("<red><b><target></b> was executed", resolvers);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), runnableStep1, 40L);
+		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), runnableStep1, 66L);
 	}
 
 	// runs
