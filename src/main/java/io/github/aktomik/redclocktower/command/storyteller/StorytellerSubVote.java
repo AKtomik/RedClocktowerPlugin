@@ -124,7 +124,7 @@ public class StorytellerSubVote extends SubBrigadierBase {
 			Placeholder.parsed("target", player.getName())
 		);
 		return Command.SINGLE_SUCCESS;
-	};
+	}
 
 	private int votingStart(CommandContext<CommandSourceStack> ctx, Player player) {
 		final CommandSender sender = ctx.getSource().getSender();

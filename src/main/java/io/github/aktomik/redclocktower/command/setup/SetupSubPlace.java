@@ -62,8 +62,8 @@ public class SetupSubPlace extends SubBrigadierBase {
 		game.setPosition(place, loc);
 		sender.sendRichMessage("set <b><place></b> position at <x> <y> <z>",
 			Placeholder.parsed("x", Integer.toString(loc.getBlockX())),
-			Placeholder.parsed("y", Integer.toString(loc.getBlockX())),
-			Placeholder.parsed("z", Integer.toString(loc.getBlockX())),
+			Placeholder.parsed("y", Integer.toString(loc.getBlockY())),
+			Placeholder.parsed("z", Integer.toString(loc.getBlockZ())),
 			Placeholder.parsed("place", place.toString())
 		);
 		return Command.SINGLE_SUCCESS;
