@@ -743,7 +743,7 @@ public class BloodGame {
 				removeNominatedPlayer();
 				removePyloriPlayer();
 				pingSound(Sound.ENTITY_PLAYER_LEVELUP, VOTE_VOLUME, .9f);
-				broadcast("<gold><b>EQUALITY!</b> <yellow><last></yellow> steps down from the pylori", resolvers);
+				broadcast("<gold><b>EQUALITY!</b> <b><yellow><last></yellow></b> steps down from the pylori", resolvers);
 				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishRunnableStep2, 60L);
 			};
 
@@ -755,8 +755,8 @@ public class BloodGame {
 				changePyloriPlayer(nominatedPlayer, votes);
 				pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 2f);
 				broadcast((hasLastPlayer)
-				? "<gold>this is enough for <b><red><target></red></b> to replace <yellow><last></yellow> on the pylori"
-				: "<gold>this is enough to place <b><red><target></red></b> on the pylori"
+				? "<gold>this is enough for <b><yellow><target></red></b> to replace <yellow><last></yellow> on the pylori"
+				: "<gold>this is enough to place <b><yellow><target></red></b> on the pylori"
 				, resolvers);
 				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishRunnableStep2, 60L);
 			};
@@ -764,9 +764,11 @@ public class BloodGame {
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), runnableStep1, 40L);
 	};
 
-	public void startExecuteProcess()
+	public void mountBeforeExecution()
 	{
-		startExecuteProcess(true);
+		Player pyloriPlayer = getPyloriPlayer();
+		Location location = getPosition(GamePlace.PYLORI);
+		pyloriPlayer.teleport(location.toCenterLocation());
 	}
 
 	public void startExecuteProcess(boolean reallyDies)
@@ -783,11 +785,20 @@ public class BloodGame {
 		removePyloriPlayer();
 		broadcast("<red><b><target></b> is executed", resolvers);
 
-		Location location = getPosition(GamePlace.PYLORI);
-		pyloriPlayer.teleport(location.toCenterLocation());
-		location.setY(location.getY() + 60);
+		Location location = getPosition(GamePlace.PYLORI).toCenterLocation();
+		Location lastLocation = Objects.requireNonNull(pyloriPlayer.getLocation());
+		if (location.distance(lastLocation) > .75)
+		{
+			pyloriPlayer.teleport(location.setDirection(lastLocation.getDirection()));
+		}
 
-		Entity fallingEntity = world.spawnEntity(location.toCenterLocation(), EntityType.FALLING_BLOCK);
+		Location honeyLocation = getPosition(GamePlace.PYLORI);
+		honeyLocation.setY(honeyLocation.getY() - 1);
+		BlockData beforeHoney = world.getBlockData(honeyLocation);
+		world.setBlockData(honeyLocation, BlockType.HONEY_BLOCK.createBlockData());
+
+		location.setY(location.getY() + 60);
+		Entity fallingEntity = world.spawnEntity(location, EntityType.FALLING_BLOCK);
 		FallingBlock fallingAnvil = (FallingBlock)fallingEntity;
 		fallingAnvil.setBlockData(BlockType.ANVIL.createBlockData());
 		fallingAnvil.setDropItem(false);
@@ -795,11 +806,6 @@ public class BloodGame {
 		fallingAnvil.setHurtEntities(true);
 		fallingAnvil.setDamagePerBlock(42);
 		fallingAnvil.setFallDistance(42);
-
-		Location honeyLocation = getPosition(GamePlace.PYLORI);
-		honeyLocation.setY(honeyLocation.getY() - 1);
-		BlockData beforeHoney = world.getBlockData(honeyLocation);
-		world.setBlockData(honeyLocation, BlockType.HONEY_BLOCK.createBlockData());
 
 		// step 1
 		Runnable runnableStep1;
@@ -815,7 +821,7 @@ public class BloodGame {
 				if (isExecutionProcessCanceled()) return;
 				pyloriPlayer.setHealth(0);
 				pyloriBloodPlayer.changeAlive(false);
-//				broadcast("<red><u>and dies", resolvers);
+				//broadcast("<red><target></red> died", resolvers);
 				setVoteStep(GameVoteStep.NOTHING);
 				runnableResetStep.run();
 			};
@@ -825,7 +831,6 @@ public class BloodGame {
 			// do not die
 			runnableStep1 = () -> {
 				if (isExecutionProcessCanceled()) return;
-//				broadcast("<yellow><u>and <b>DOES NOT</b> dies", resolvers);
 				setVoteStep(GameVoteStep.NOTHING);
 				runnableResetStep.run();
 			};

@@ -29,11 +29,6 @@ public class StorytellerSubVote extends SubBrigadierBase {
 			.then(Commands.argument("player", ArgumentTypes.player())
 				.executes(ctx -> nominateChange(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
 
-		.then(Commands.literal("pylori")
-			.executes(this::pyloriCheck)
-			.then(Commands.argument("player", ArgumentTypes.player())
-				.executes(ctx -> pyloriChange(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
-
 		.then(Commands.literal("cancel")
 			.executes(this::votingCancel))
 
@@ -41,6 +36,16 @@ public class StorytellerSubVote extends SubBrigadierBase {
 			.executes(ctx -> votingStart(ctx, null))
 			.then(Commands.argument("player", ArgumentTypes.player())
 				.executes(ctx -> votingStart(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
+
+		.then(Commands.literal("pylori")
+			.executes(this::pyloriCheck)
+			.then(Commands.argument("player", ArgumentTypes.player())
+				.executes(ctx -> pyloriChange(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
+
+		.then(Commands.literal("mount")
+			.executes(ctx -> playerMount(ctx, null))
+			.then(Commands.argument("player", ArgumentTypes.player())
+				.executes(ctx -> playerMount(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
 
 		.then(Commands.literal("execute")
 			.executes(ctx -> playerExecution(ctx, null, true))
@@ -155,6 +160,28 @@ public class StorytellerSubVote extends SubBrigadierBase {
 		// the action
 		sender.sendRichMessage("<dark_gray>canceling the last vote action...");
 		game.cancelVoteProcess(sender);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private int playerMount(CommandContext<CommandSourceStack> ctx, Player player) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx);
+
+		if (player != null)  pyloriChange(ctx, player);
+		Player pyloriPlayer = game.getPyloriPlayer();
+
+		// checks
+		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfVoteBusy(sender, game)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIf(sender, pyloriPlayer == null, "there is no one on the pylori!")) return Command.SINGLE_SUCCESS;
+		assert (pyloriPlayer != null);
+
+		// the action
+		game.mountBeforeExecution();
+		sender.sendRichMessage("<aqua>teleport <b><target></b> to the pylori.",
+		Placeholder.parsed("target", pyloriPlayer.getName())
+		);
 		return Command.SINGLE_SUCCESS;
 	}
 
