@@ -11,6 +11,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.*;
 import org.bukkit.block.BlockType;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
@@ -847,8 +848,17 @@ public class BloodGame {
 		fallingAnvil.setDamagePerBlock(42);
 		fallingAnvil.setFallDistance(42);
 
+		Location honeyLocation = getPosition(GamePlace.PYLORI);
+		honeyLocation.setY(honeyLocation.getY() - 1);
+		BlockData beforeHoney = world.getBlockData(honeyLocation);
+		world.setBlockData(honeyLocation, BlockType.HONEY_BLOCK.createBlockData());
+
 		// step 1
 		Runnable runnableStep1;
+		Runnable runnableResetStep = () -> {
+			world.setBlockData(honeyLocation, beforeHoney);
+			setVoteStep(GameVoteStep.NOTHING);
+		};
 
 		if (reallyDies)
 		{
@@ -857,8 +867,9 @@ public class BloodGame {
 				if (isExecutionProcessCanceled()) return;
 				pyloriPlayer.setHealth(0);
 				pyloriBloodPlayer.changeAlive(false);
-				broadcast("<red><u>and dies", resolvers);
+//				broadcast("<red><u>and dies", resolvers);
 				setVoteStep(GameVoteStep.NOTHING);
+				runnableResetStep.run();
 			};
 		}
 		else
@@ -866,8 +877,9 @@ public class BloodGame {
 			// do not die
 			runnableStep1 = () -> {
 				if (isExecutionProcessCanceled()) return;
-				broadcast("<yellow><u>and <b>DOES NOT</b> dies", resolvers);
+//				broadcast("<yellow><u>and <b>DOES NOT</b> dies", resolvers);
 				setVoteStep(GameVoteStep.NOTHING);
+				runnableResetStep.run();
 			};
 			pyloriPlayer.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 100, 9, false, false, false));
 		}

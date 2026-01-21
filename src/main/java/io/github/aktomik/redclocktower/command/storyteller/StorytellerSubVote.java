@@ -1,6 +1,7 @@
 package io.github.aktomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.github.aktomik.redclocktower.game.BloodGame;
@@ -42,9 +43,11 @@ public class StorytellerSubVote extends SubBrigadierBase {
 				.executes(ctx -> votingStart(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
 
 		.then(Commands.literal("execute")
-			.executes(ctx -> playerExecution(ctx, null))
+			.executes(ctx -> playerExecution(ctx, null, true))
 			.then(Commands.argument("player", ArgumentTypes.player())
-				.executes(ctx -> playerExecution(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
+				.executes(ctx -> playerExecution(ctx, BrigadierToolbox.resolvePlayer(ctx), true))
+				.then(Commands.argument("is deadly", BoolArgumentType.bool())
+					.executes(ctx -> playerExecution(ctx, BrigadierToolbox.resolvePlayer(ctx), BrigadierToolbox.resolveBool("is deadly", ctx))))))
 		;
 	}
 
@@ -155,7 +158,7 @@ public class StorytellerSubVote extends SubBrigadierBase {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private int playerExecution(CommandContext<CommandSourceStack> ctx, Player player) {
+	private int playerExecution(CommandContext<CommandSourceStack> ctx, Player player, boolean isReal) {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx);
 
@@ -165,11 +168,12 @@ public class StorytellerSubVote extends SubBrigadierBase {
 		// checks
 		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
 		if (GameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfVoteBusy(sender, game)) return Command.SINGLE_SUCCESS;
 		if (GameToolbox.failIf(sender, pyloriPlayer == null, "there is no one on the pylori!")) return Command.SINGLE_SUCCESS;
 		assert (pyloriPlayer != null);
 
 		// the action
-		game.startExecuteProcess();
+		game.startExecuteProcess(isReal);
 		sender.sendRichMessage("<aqua><u>executing <b><target></b>.",
 			Placeholder.parsed("target", pyloriPlayer.getName())
 		);
