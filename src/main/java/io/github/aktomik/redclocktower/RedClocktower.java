@@ -8,7 +8,7 @@ import io.github.aktomik.redclocktower.game.PlayerListener;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditorListener;
 import io.github.aktomik.redclocktower.utils.brigadier.CommandBrigadierBase;
-import io.github.aktomik.redclocktower.command.RichmessageCommand;
+import io.github.aktomik.redclocktower.command.BroadcastCommand;
 import io.github.aktomik.redclocktower.command.storyteller.StorytellerCommand;
 import io.github.aktomik.redclocktower.command.TagmeCommand;
 import io.github.aktomik.redclocktower.command.WhosendCommand;
@@ -45,7 +45,7 @@ public final class RedClocktower extends JavaPlugin {
 
         // list bridge commands
         List<CommandBrigadierBase> bridgeCommandsSource = List
-        .of(new StorytellerCommand(), new SetupCommand(), new VoteCommand(), new TagmeCommand(), new WhosendCommand(), new RichmessageCommand());
+        .of(new StorytellerCommand(), new SetupCommand(), new VoteCommand(), new TagmeCommand(), new WhosendCommand(), new BroadcastCommand());
 
         // load bridge commands
         this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
