@@ -91,10 +91,10 @@ public class PlayerListener implements Listener {
 		if (bloodGame == null) return;
 
 		Block bell = event.getBlock();
-		if (bloodGame.getPosition(GamePlace.BELL) != bell.getLocation()) return;
+		if (bell.getLocation().distance(bloodGame.getPosition(GamePlace.BELL)) > 1) return;
 
 		// your condition
-		if (Objects.equals(bloodGame.getStoryteller().getUniqueId(), player.getUniqueId())) {
+		if (Objects.equals(bloodGame.getStorytellerUuid(), player.getUniqueId())) {
 			GameAction.next.accept(bloodGame, player);
 		} else {
 			event.setCancelled(true);

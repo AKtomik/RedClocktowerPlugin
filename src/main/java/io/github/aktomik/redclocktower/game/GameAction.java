@@ -205,6 +205,9 @@ public class GameAction {
 					case MORNING -> {
 						game.switchTime(GamePeriod.FREE, sender);
 					}
+					case FREE -> {
+						game.switchTime(GamePeriod.MEET, sender);
+					}
 				}
 			}
 			case ENDED -> {

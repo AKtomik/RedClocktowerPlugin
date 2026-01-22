@@ -366,10 +366,10 @@ public class BloodGame {
 		Player lastStoryteller = getStoryteller();
 		if (lastStoryteller != null)  removePlayer(lastStoryteller);
 
-		setStorytellerUuid(player.getUniqueId());
-
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		bloodPlayer.joinGame(this, true);
+
+		setStorytellerUuid(player.getUniqueId());
 	}
 
 	public Player getStoryteller()
