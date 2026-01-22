@@ -183,4 +183,34 @@ public class GameAction {
 
 	);
 
+	public static BiConsumer<BloodGame, CommandSender> next = (game, sender) -> {
+
+		sender.sendRichMessage("<gray>doing the next logic step...");
+
+		switch (game.getState()) {
+			case NOTHING -> {
+				game.doStep(GameStepAction.SETUP, sender);
+			}
+			case WAITING -> {
+				game.doStep(GameStepAction.START, sender);
+			}
+			case INGAME -> {
+				switch (game.getTime()) {
+					case MEET -> {
+						game.switchTime(GamePeriod.NIGHT, sender);
+					}
+					case NIGHT -> {
+						game.switchTime(GamePeriod.MORNING, sender);
+					}
+					case MORNING -> {
+						game.switchTime(GamePeriod.FREE, sender);
+					}
+				}
+			}
+			case ENDED -> {
+				game.doStep(GameStepAction.RESET, sender);
+			}
+		}
+	};
+
 }

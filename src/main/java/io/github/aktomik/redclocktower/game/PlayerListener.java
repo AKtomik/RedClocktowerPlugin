@@ -11,6 +11,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BellRingEvent;
 import org.bukkit.event.player.PlayerInteractEvent;
 import org.bukkit.event.player.PlayerJoinEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
@@ -77,6 +78,27 @@ public class PlayerListener implements Listener {
 		boolean powered = !((Powerable)data).isPowered();
 
 		bloodPlayer.changeVotePull(powered);
+	}
+
+	@EventHandler(ignoreCancelled = true)
+	public void onBellRing(BellRingEvent event) {
+		if (!(event.getEntity() instanceof Player player)) {
+			return; // not a player
+		}
+
+		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		BloodGame bloodGame = bloodPlayer.getGame();
+		if (bloodGame == null) return;
+
+		Block bell = event.getBlock();
+		if (bloodGame.getPosition(GamePlace.BELL) != bell.getLocation()) return;
+
+		// your condition
+		if (Objects.equals(bloodGame.getStoryteller().getUniqueId(), player.getUniqueId())) {
+			GameAction.next.accept(bloodGame, player);
+		} else {
+			event.setCancelled(true);
+		}
 	}
 }
 
