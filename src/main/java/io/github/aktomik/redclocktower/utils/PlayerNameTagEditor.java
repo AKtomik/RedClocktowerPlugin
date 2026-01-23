@@ -67,7 +67,7 @@ public class PlayerNameTagEditor {
 			Location newLoc;
 			Location forceLoc = forcePlace.get(uuid);
 			if (player.getGameMode() == GameMode.SPECTATOR)
-				newLoc = new Location(player.getWorld(), 0,-100, 0);
+				newLoc = player.getLocation().add(0, -100, 0);
 			else if (forceLoc != null)
 				newLoc = forceLoc;
 			else
