@@ -69,7 +69,7 @@ public class BloodGame {
 		return GameState.values()[ordinal];
 	}
 
-	private void setTime(GamePeriod gameState)
+	void setTime(GamePeriod gameState)
 	{
 		pdc.set(DataKey.GAME_PERIOD.key(), PersistentDataType.INTEGER, gameState.ordinal());
 	}

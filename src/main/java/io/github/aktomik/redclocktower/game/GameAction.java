@@ -193,6 +193,7 @@ public class GameAction {
 			}
 			case WAITING -> {
 				game.doStep(GameStepAction.START, sender);
+				game.setTime(GamePeriod.MEET);
 			}
 			case INGAME -> {
 				switch (game.getTime()) {
