@@ -3,6 +3,7 @@ package io.github.aktomik.redclocktower.game;
 import com.mojang.brigadier.context.CommandContext;
 import io.github.aktomik.redclocktower.DataKey;
 import io.github.aktomik.redclocktower.RedClocktower;
+import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
 import io.github.aktomik.redclocktower.utils.UUIDDataType;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -445,6 +446,28 @@ public class BloodGame {
 		UUID uuid = getVoteNominatedUuid();
 		if (uuid == null) return null;
 		return Bukkit.getPlayer(uuid);
+	}
+
+	public void unsitTags()
+	{
+		for (Player player : getAllPlayers())
+		{
+			PlayerNameTagEditor.forceUnplace(player);
+		}
+	}
+
+	public void sitTags()
+	{
+		List<BloodSlot> slots = getSlots();
+		for (Player player : getAllPlayers())
+		{
+			BloodPlayer bloodPlayer = BloodPlayer.get(player);
+			int index = bloodPlayer.getSlotIndex();
+			Location loc = slots.get(index).getPosition(SlotPlace.CHAIR);
+			if (loc == null) continue;
+			loc = loc.add(0, 2.5, 0).toCenterLocation();
+			PlayerNameTagEditor.forcePlace(player, loc);
+		}
 	}
 
 	// slots

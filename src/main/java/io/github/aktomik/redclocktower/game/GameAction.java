@@ -124,6 +124,7 @@ public class GameAction {
 	static Map<GamePeriod, BiConsumer<BloodGame, CommandSender>> periodEnter = Map.ofEntries(
 
 	Map.entry(GamePeriod.MORNING, (game, sender) -> {
+		game.sitTags();
 		game.world.setTime(0);
 		game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
@@ -137,6 +138,7 @@ public class GameAction {
 	}),
 
 	Map.entry(GamePeriod.FREE, (game, sender) -> {
+		game.unsitTags();
 		game.world.setTime(6000);
 		game.pingSound(Sound.BLOCK_ANVIL_LAND, BloodGame.EVENT_VOLUME, 1.7f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
@@ -150,6 +152,7 @@ public class GameAction {
 	}),
 
 	Map.entry(GamePeriod.MEET, (game, sender) -> {
+		game.sitTags();
 		game.world.setTime(12500);
 		game.clearVoteStep();
 		game.mutateSlots(BloodSlot::unlock);
@@ -165,6 +168,7 @@ public class GameAction {
 	}),
 
 	Map.entry(GamePeriod.NIGHT, (game, sender) -> {
+		game.unsitTags();
 		game.world.setTime(18000);
 		game.removeNominatedPlayer();
 		game.removePyloriPlayer();
