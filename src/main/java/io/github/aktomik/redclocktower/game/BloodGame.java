@@ -755,8 +755,8 @@ public class BloodGame {
 				changePyloriPlayer(nominatedPlayer, votes);
 				pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 2f);
 				broadcast((hasLastPlayer)
-				? "<gold>this is enough for <b><yellow><target></red></b> to replace <yellow><last></yellow> on the pylori"
-				: "<gold>this is enough to place <b><yellow><target></red></b> on the pylori"
+				? "<gold>this is enough for <b><yellow><target></yellow></b> to replace <yellow><last></yellow> on the pylori"
+				: "<gold>this is enough to place <b><yellow><target></yellow></b> on the pylori"
 				, resolvers);
 				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishRunnableStep2, 60L);
 			};
