@@ -1,11 +1,11 @@
 package io.github.aktomik.redclocktower.command.setup;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.utils.brigadier.CommandBrigadierBase;
+import io.github.aktomik.redclocktower.utils.brigadier.BrigadierCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 
 import java.util.List;
 
-public class SetupCommand extends CommandBrigadierBase {
+public class Setup extends BrigadierCommand {
 
 	// register
 	public String name() {

@@ -7,7 +7,7 @@ import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.BloodSlot;
 import io.github.aktomik.redclocktower.game.SlotPlace;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
-import io.github.aktomik.redclocktower.utils.brigadier.SubBrigadierBase;
+import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
@@ -20,7 +20,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.stream.IntStream;
 
-public class SetupSubSlot extends SubBrigadierBase {
+public class SetupSubSlot extends BrigadierSub {
 	public String name() {
 		return "slot";
 	}

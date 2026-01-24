@@ -1,17 +1,18 @@
 package io.github.aktomik.redclocktower;
 
 import com.mojang.brigadier.tree.LiteralCommandNode;
-import io.github.aktomik.redclocktower.command.VoteCommand;
-import io.github.aktomik.redclocktower.command.setup.SetupCommand;
+import io.github.aktomik.redclocktower.command.Vote;
+import io.github.aktomik.redclocktower.command.setup.Setup;
 import io.github.aktomik.redclocktower.game.BloodPlayer;
 import io.github.aktomik.redclocktower.game.PlayerListener;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditorListener;
-import io.github.aktomik.redclocktower.utils.brigadier.CommandBrigadierBase;
+import io.github.aktomik.redclocktower.utils.brigadier.BrigadierCommand;
 import io.github.aktomik.redclocktower.command.BroadcastCommand;
-import io.github.aktomik.redclocktower.command.storyteller.StorytellerCommand;
-import io.github.aktomik.redclocktower.command.TagmeCommand;
-import io.github.aktomik.redclocktower.command.WhosendCommand;
+import io.github.aktomik.redclocktower.command.storyteller.Storyteller;
+import io.github.aktomik.redclocktower.command.Tagme;
+import io.github.aktomik.redclocktower.command.Whosend;
+import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.Bukkit;
@@ -43,18 +44,10 @@ public final class RedClocktower extends JavaPlugin {
         // startups
         PlayerNameTagEditor.startUpdateTask(this);
 
-        // list bridge commands
-        List<CommandBrigadierBase> bridgeCommandsSource = List
-        .of(new StorytellerCommand(), new SetupCommand(), new VoteCommand(), new TagmeCommand(), new WhosendCommand(), new BroadcastCommand());
-
-        // load bridge commands
-        this.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
-            for (CommandBrigadierBase brigadier : bridgeCommandsSource)
-            {
-                LiteralCommandNode<CommandSourceStack> build = brigadier.build();
-                commands.registrar().register(build, brigadier.aliases());
-            }
-        });
+        // load brigadier commands
+        BrigadierToolbox.loadCommands(this,
+            List.of(new Storyteller(), new Setup(), new Vote(), new Tagme(), new Whosend(), new BroadcastCommand())
+        );
 
         // message
         getLogger().info("Enabled!");

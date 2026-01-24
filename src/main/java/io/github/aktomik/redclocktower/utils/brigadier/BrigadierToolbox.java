@@ -2,9 +2,14 @@ package io.github.aktomik.redclocktower.utils.brigadier;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
+import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
+import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.Plugin;
+import org.eclipse.sisu.bean.LifecycleManager;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -14,6 +19,17 @@ import java.util.Objects;
 public class BrigadierToolbox {
 
 	private BrigadierToolbox() {}// is a static class
+
+	public static void loadCommands(Plugin plugin, List<BrigadierCommand> brigadierCommands) {
+
+		plugin.getLifecycleManager().registerEventHandler(LifecycleEvents.COMMANDS, commands -> {
+			for (BrigadierCommand brigadier : brigadierCommands)
+			{
+				LiteralCommandNode<CommandSourceStack> build = brigadier.build();
+				commands.registrar().register(build, brigadier.aliases());
+			}
+		});
+	}
 
 	@Nullable
 	public static Player resolvePlayer(String argumentKey, CommandContext<CommandSourceStack> ctx) {

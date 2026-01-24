@@ -5,7 +5,7 @@ import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.GamePlace;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
-import io.github.aktomik.redclocktower.utils.brigadier.SubBrigadierBase;
+import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
@@ -16,7 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
-public class SetupSubPlace extends SubBrigadierBase {
+public class SetupSubPlace extends BrigadierSub {
 	public String name() {
 		return "place";
 	}

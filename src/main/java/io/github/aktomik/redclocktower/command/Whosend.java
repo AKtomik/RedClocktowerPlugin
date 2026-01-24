@@ -2,14 +2,14 @@ package io.github.aktomik.redclocktower.command;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.utils.brigadier.CommandBrigadierBase;
+import io.github.aktomik.redclocktower.utils.brigadier.BrigadierCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
 
 import java.util.List;
 
-public class WhosendCommand extends CommandBrigadierBase {
+public class Whosend extends BrigadierCommand {
 
     // register
     public String name() {

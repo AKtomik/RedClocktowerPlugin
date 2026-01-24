@@ -7,7 +7,7 @@ import com.mojang.brigadier.context.CommandContext;
 import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.GameToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
-import io.github.aktomik.redclocktower.utils.brigadier.SubBrigadierBase;
+import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
@@ -15,7 +15,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class StorytellerSubVote extends SubBrigadierBase {
+public class StorytellerSubVote extends BrigadierSub {
 
 	public String name() {
 		return "vote";

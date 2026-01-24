@@ -6,7 +6,7 @@ import io.papermc.paper.command.brigadier.Commands;
 
 import java.util.List;
 
-public abstract class CommandBrigadierBase extends SubBrigadierBase {
+public abstract class BrigadierCommand extends BrigadierSub {
     public abstract List<String> aliases();
     public abstract String permission();
     public abstract String description();

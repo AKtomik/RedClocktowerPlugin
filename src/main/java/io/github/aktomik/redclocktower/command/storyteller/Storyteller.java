@@ -1,12 +1,11 @@
 package io.github.aktomik.redclocktower.command.storyteller;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.command.setup.SetupSubSettings;
-import io.github.aktomik.redclocktower.utils.brigadier.CommandBrigadierBase;
+import io.github.aktomik.redclocktower.utils.brigadier.BrigadierCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 
 import java.util.List;
 
-public class StorytellerCommand extends CommandBrigadierBase {
+public class Storyteller extends BrigadierCommand {
 
     // register
     public String name() {

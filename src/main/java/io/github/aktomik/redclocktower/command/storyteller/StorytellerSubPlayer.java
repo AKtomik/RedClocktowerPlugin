@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.game.GameToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
-import io.github.aktomik.redclocktower.utils.brigadier.SubBrigadierBase;
+import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.BloodPlayer;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -19,7 +19,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.Objects;
 
-public class StorytellerSubPlayer extends SubBrigadierBase {
+public class StorytellerSubPlayer extends BrigadierSub {
 
 // build
 

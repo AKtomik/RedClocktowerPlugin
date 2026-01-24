@@ -5,7 +5,7 @@ import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 
-public abstract class SubBrigadierBase {
+public abstract class BrigadierSub {
     public abstract String name();
     public abstract LiteralArgumentBuilder<CommandSourceStack> root();
 
