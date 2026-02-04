@@ -1,6 +1,8 @@
 package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.RedClocktower;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -12,7 +14,9 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BellRingEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.Inventory;
 
 import java.util.Objects;
 
@@ -108,7 +112,36 @@ public class PlayerListener implements Listener {
 		if (bloodGame == null) return;
 		if (bloodPlayer.isStoryteller()) return;
 
+		player.sendActionBar(MiniMessage.miniMessage().deserialize("<red>nope!"));
 		event.setCancelled(true);
+	}
+	@EventHandler
+	public void onInventoryOpen(InventoryOpenEvent event) {
+		if (!(event.getPlayer() instanceof Player player)) return;
+
+		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		BloodGame bloodGame = bloodPlayer.getGame();
+		if (bloodGame == null) return;
+		if (bloodPlayer.isStoryteller()) return;
+
+		Inventory inventory = event.getInventory();
+
+		switch (inventory.getType()) {
+			case CHEST,
+			BARREL,
+			SHULKER_BOX,
+			ENDER_CHEST,
+			HOPPER,
+			FURNACE,
+			BLAST_FURNACE,
+			SMOKER,
+			BREWING:
+				event.setCancelled(true);
+				player.sendActionBar(MiniMessage.miniMessage().deserialize("<red>nope!"));
+				break;
+			default:
+				break;
+		}
 	}
 }
 
