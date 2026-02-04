@@ -1,5 +1,5 @@
 name: RedClocktower
-version: '0.5.1'
+version: '0.5.2'
 main: io.github.aktomik.redclocktower.RedClocktower
 api-version: '1.21'
 #commands:
