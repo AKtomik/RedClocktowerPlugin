@@ -106,6 +106,7 @@ public class PlayerListener implements Listener {
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		BloodGame bloodGame = bloodPlayer.getGame();
 		if (bloodGame == null) return;
+		if (bloodPlayer.isStoryteller()) return;
 
 		event.setCancelled(true);
 	}
