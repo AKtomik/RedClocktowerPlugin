@@ -12,10 +12,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BellRingEvent;
-import org.bukkit.event.player.PlayerInteractEvent;
-import org.bukkit.event.player.PlayerJoinEvent;
-import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
+import org.bukkit.event.player.*;
 
 import java.util.Objects;
 
@@ -99,6 +96,18 @@ public class PlayerListener implements Listener {
 		} else {
 			event.setCancelled(true);
 		}
+	}
+
+	@EventHandler
+	public void onPlayerDropItem(PlayerDropItemEvent event)
+	{
+		Player player = event.getPlayer();
+
+		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		BloodGame bloodGame = bloodPlayer.getGame();
+		if (bloodGame == null) return;
+
+		event.setCancelled(true);
 	}
 }
 
