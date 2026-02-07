@@ -1,7 +1,6 @@
 package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.RedClocktower;
-import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
