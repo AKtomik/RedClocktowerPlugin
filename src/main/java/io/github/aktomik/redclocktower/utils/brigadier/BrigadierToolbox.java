@@ -5,12 +5,9 @@ import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.argument.resolvers.selector.PlayerSelectorArgumentResolver;
-import io.papermc.paper.plugin.lifecycle.event.LifecycleEventManager;
 import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
-import org.eclipse.sisu.bean.LifecycleManager;
-import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
 import java.util.List;
@@ -29,6 +26,10 @@ public class BrigadierToolbox {
 				commands.registrar().register(build, brigadier.aliases());
 			}
 		});
+	}
+
+	public static <T> T resolveClass(Class<T> tClass, String argumentKey, CommandContext<CommandSourceStack> ctx) {
+		return ctx.getArgument(argumentKey, tClass);
 	}
 
 	@Nullable
@@ -56,9 +57,9 @@ public class BrigadierToolbox {
 	}
 
 	public static boolean resolveBool(String argumentKey, CommandContext<CommandSourceStack> ctx) {
-		return ctx.getArgument(argumentKey, boolean.class);
+		return resolveClass(boolean.class, argumentKey, ctx);
 	}
-	public static boolean resolveBool(CommandContext<CommandSourceStack> ctx) {
-		return resolveBool("bool", ctx);
+	public static int resolveInt(String argumentKey, CommandContext<CommandSourceStack> ctx) {
+		return resolveClass(int.class, argumentKey, ctx);
 	}
 }

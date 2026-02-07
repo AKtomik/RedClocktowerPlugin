@@ -2,6 +2,7 @@ package io.github.aktomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.github.aktomik.redclocktower.game.BloodGame;
@@ -40,7 +41,9 @@ public class StorytellerSubVote extends BrigadierSub {
 		.then(Commands.literal("pylori")
 			.executes(this::pyloriCheck)
 			.then(Commands.argument("player", ArgumentTypes.player())
-				.executes(ctx -> pyloriChange(ctx, BrigadierToolbox.resolvePlayer(ctx)))))
+				.executes(ctx -> pyloriChange(ctx, BrigadierToolbox.resolvePlayer(ctx)))
+				.then(Commands.argument("votes against", IntegerArgumentType.integer(-1, 1000)))
+					.executes(ctx -> pyloriChange(ctx, BrigadierToolbox.resolvePlayer(ctx), BrigadierToolbox.resolveInt("votes against", ctx)))))
 
 		.then(Commands.literal("mount")
 			.executes(ctx -> playerMount(ctx, null))
@@ -105,7 +108,7 @@ public class StorytellerSubVote extends BrigadierSub {
 			);
 		return Command.SINGLE_SUCCESS;
 	}
-	private int pyloriChange(CommandContext<CommandSourceStack> ctx, Player player) {
+	private int pyloriChange(CommandContext<CommandSourceStack> ctx, Player player, Integer votesAgainst) {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx);
 
@@ -119,11 +122,16 @@ public class StorytellerSubVote extends BrigadierSub {
 		}
 
 		// the action
-		game.changePyloriPlayer(player, game.getPyloriMajority(game.getAliveCitizenCount()));
+		if (votesAgainst == null) votesAgainst = game.getPyloriMajority(game.getAliveCitizenCount());
+		game.changePyloriPlayer(player, votesAgainst);
 		sender.sendRichMessage("<b><target></b> is now <red><b>on the pylori</b></red>.",
 			Placeholder.parsed("target", player.getName())
 		);
 		return Command.SINGLE_SUCCESS;
+	}
+	private int pyloriChange(CommandContext<CommandSourceStack> ctx, Player player)
+	{
+		return pyloriChange(ctx, player, null);
 	}
 
 	private int votingStart(CommandContext<CommandSourceStack> ctx, Player player) {
