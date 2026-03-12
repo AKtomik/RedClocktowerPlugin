@@ -42,8 +42,8 @@ public class StorytellerSubVote extends BrigadierSub {
 			.executes(this::pyloriCheck)
 			.then(Commands.argument("player", ArgumentTypes.player())
 				.executes(ctx -> pyloriChange(ctx, BrigadierToolbox.resolvePlayer(ctx)))
-				.then(Commands.argument("votes against", IntegerArgumentType.integer(-1, 1000)))
-					.executes(ctx -> pyloriChange(ctx, BrigadierToolbox.resolvePlayer(ctx), BrigadierToolbox.resolveInt("votes against", ctx)))))
+				.then(Commands.argument("votes against", IntegerArgumentType.integer(-1, 1000))
+					.executes(ctx -> pyloriChange(ctx, BrigadierToolbox.resolvePlayer(ctx), BrigadierToolbox.resolveInt("votes against", ctx))))))
 
 		.then(Commands.literal("mount")
 			.executes(ctx -> playerMount(ctx, null))
