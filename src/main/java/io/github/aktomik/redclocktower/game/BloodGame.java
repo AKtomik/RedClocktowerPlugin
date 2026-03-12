@@ -27,6 +27,7 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 import java.util.function.Consumer;
+import java.util.stream.Stream;
 
 public class BloodGame {
 
@@ -620,6 +621,10 @@ public class BloodGame {
 	{
 		return getAllBloodPlayers().stream().mapToInt(BloodPlayer::getVote).sum();
 	}
+	public void removeUsedVoken()
+	{
+		getAllBloodPlayers().stream().filter(bp -> !bp.isAlive() && bp.getVote() != 0).forEach(bp -> bp.changeVoteToken(false));
+	}
 
 	public boolean isVoteSystemBusy()
 	{
@@ -717,6 +722,7 @@ public class BloodGame {
 		int count = getAliveCitizenCount();
 		int majority = getPyloriMajority(count);
 		int votes = countVotes();
+		removeUsedVoken();
 		Player nominatedPlayer = getNominatedPlayer();
 		BloodPlayer nominatedBloodPlayer = BloodPlayer.get(nominatedPlayer);
 		Player lastPyloriPlayer = getPyloriPlayer();
