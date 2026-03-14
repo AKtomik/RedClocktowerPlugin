@@ -127,7 +127,7 @@ public class BloodSlot {
 					if (!voken) {
 						lampData = BlockType.NETHERITE_BLOCK.createBlockData();
 					} else {
-						BlockType.WAXED_OXIDIZED_COPPER_BULB.createBlockData();
+						lampData = BlockType.WAXED_OXIDIZED_COPPER_BULB.createBlockData();
 					}
 				}
 
