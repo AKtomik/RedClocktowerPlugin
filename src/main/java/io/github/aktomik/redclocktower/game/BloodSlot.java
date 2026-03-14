@@ -46,7 +46,7 @@ public class BloodSlot {
 	}
 	public boolean getLock()
 	{
-		return pdc.getOrDefault(DataKey.SLOT_LOCK.key(), PersistentDataType.BOOLEAN, true);
+		return pdc.getOrDefault(DataKey.SLOT_LOCK.key(), PersistentDataType.BOOLEAN, false);
 	}
 
 	private void setExclusion(boolean isExclusionVote)
