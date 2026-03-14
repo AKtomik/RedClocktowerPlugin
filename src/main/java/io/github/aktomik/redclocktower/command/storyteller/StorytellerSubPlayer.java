@@ -11,6 +11,7 @@ import io.github.aktomik.redclocktower.game.BloodPlayer;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
+import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
@@ -490,11 +491,12 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			return Command.SINGLE_SUCCESS;
 		}
 
+		heldItem.setAmount(1);
 		game.getAllPlayers().forEach(loopPlayer -> loopPlayer.give(heldItem));
 
 		sender.sendRichMessage(
 		"give <b><item> to all players in game.",
-		Placeholder.parsed("item", ((heldItem.getAmount() > 1) ? (heldItem.getAmount() + " ") : "") +heldItem.displayName().toString())
+		Placeholder.component("item", heldItem.displayName())
 		);
 		return Command.SINGLE_SUCCESS;
 	};
