@@ -155,6 +155,13 @@ public class StorytellerSubPlayer extends BrigadierSub {
 				);
 				continue;
 			}
+			if (game.getStoryteller() == player)
+			{
+				sender.sendRichMessage("<gray><b><target></b> is the storyteller.",
+				Placeholder.parsed("target", player.getName())
+				);
+				continue;
+			}
 			if (game.isFull())
 			{
 				sender.sendRichMessage("<red><b><target></b> can't be added because the game is full.",
