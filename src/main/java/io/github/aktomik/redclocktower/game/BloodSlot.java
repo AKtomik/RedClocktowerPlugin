@@ -59,7 +59,7 @@ public class BloodSlot {
 	}
 	public boolean getExclusion()
 	{
-		return pdc.getOrDefault(DataKey.SLOT_EXCLUSION.key(), PersistentDataType.BOOLEAN, true);
+		return pdc.getOrDefault(DataKey.SLOT_EXCLUSION.key(), PersistentDataType.BOOLEAN, false);
 	}
 
 	// action
