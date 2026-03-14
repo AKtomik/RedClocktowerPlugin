@@ -816,7 +816,7 @@ public class BloodGame {
 
 		Location location = getPosition(GamePlace.PYLORI).toCenterLocation();
 		Location lastLocation = Objects.requireNonNull(pyloriPlayer.getLocation());
-		if (location.distance(lastLocation) > .75)
+		if (location.distance(lastLocation) > .2)
 		{
 			pyloriPlayer.teleport(location.setDirection(lastLocation.getDirection()));
 		}
