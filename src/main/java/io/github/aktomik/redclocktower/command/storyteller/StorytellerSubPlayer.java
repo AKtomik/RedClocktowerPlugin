@@ -493,8 +493,8 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		game.getAllPlayers().forEach(loopPlayer -> loopPlayer.give(heldItem));
 
 		sender.sendRichMessage(
-		"<b>give <item> to all players in game.",
-		Placeholder.parsed("item", heldItem.toString())
+		"give <b><item> to all players in game.",
+		Placeholder.parsed("item", ((heldItem.getAmount() > 1) ? (heldItem.getAmount() + " ") : "") +heldItem.displayName().toString())
 		);
 		return Command.SINGLE_SUCCESS;
 	};
