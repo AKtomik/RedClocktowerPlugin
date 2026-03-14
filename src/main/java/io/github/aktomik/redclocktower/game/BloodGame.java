@@ -983,6 +983,6 @@ public class BloodGame {
 
 	public void broadcast(String richString, final TagResolver... tagResolvers)
 	{
-		Bukkit.getServer().broadcast(mini.deserialize(richString, tagResolvers));
+		Bukkit.getServer().sendMessage(mini.deserialize(richString, tagResolvers));
 	}
 }

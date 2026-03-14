@@ -7,7 +7,7 @@ api-version: '1.21'
 
 permissions:
   redclocktower.player:
-    description: Storyteller permission
+    description: Player permission
     default: op
   redclocktower.storyteller:
     description: Storyteller permission

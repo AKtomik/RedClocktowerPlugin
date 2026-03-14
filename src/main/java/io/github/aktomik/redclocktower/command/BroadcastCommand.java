@@ -41,7 +41,7 @@ public class BroadcastCommand extends BrigadierCommand {
 			if (executor == null) return Command.SINGLE_SUCCESS;
 			String rawMessage = StringArgumentType.getString(ctx, "rich message");
 
-			Bukkit.getServer().broadcast(MiniMessage.miniMessage().deserialize(rawMessage));
+			Bukkit.getServer().sendMessage(MiniMessage.miniMessage().deserialize(rawMessage));
 			for (Player player : Bukkit.getOnlinePlayers()) {
 				Location loc = Objects.requireNonNull(player.getLocation());
 				player.playSound(loc, Sound.ENTITY_ARROW_HIT_PLAYER, SoundCategory.MASTER, .5f, 1f);
