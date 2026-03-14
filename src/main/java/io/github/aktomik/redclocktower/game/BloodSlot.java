@@ -49,8 +49,8 @@ public class BloodSlot {
 		return pdc.getOrDefault(DataKey.SLOT_LOCK.key(), PersistentDataType.BOOLEAN, false);
 	}
 
-	private void setExclusion(boolean isExclusionVote)
-	{
+	public void setExclusion(boolean isExclusionVote)
+	{// is public bcs any way to refresh itself. TO PATCH
 		pdc.set(DataKey.SLOT_EXCLUSION.key(), PersistentDataType.BOOLEAN, isExclusionVote);
 	}
 	private void clearExclusion()
@@ -76,20 +76,6 @@ public class BloodSlot {
 	public void unlock()
 	{
 		changeLock(false);
-	}
-
-	public void changeExclusionMode(boolean isExclusionMode)
-	{
-		setExclusion(isExclusionMode);
-		refreshLock();
-	}
-	public void startExclusionMode()
-	{
-		changeExclusionMode(true);
-	}
-	public void endExclusionMode()
-	{
-		changeExclusionMode(false);
 	}
 
 	// refresh
