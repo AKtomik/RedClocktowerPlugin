@@ -122,7 +122,10 @@ public class BloodSlot {
 //					Lightable lightable = (Lightable)lampData;
 //					lightable.setLit(true);
 //					lightable.copyTo(lampData);
-					lampData = BlockType.OCHRE_FROGLIGHT.createBlockData();
+					if (!alive)
+						lampData = BlockType.PEARLESCENT_FROGLIGHT.createBlockData();
+					else
+						lampData = BlockType.OCHRE_FROGLIGHT.createBlockData();
 				}
 			}
 			else if (traveler)
