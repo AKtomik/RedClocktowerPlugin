@@ -486,7 +486,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 		if (heldItem.getType() == Material.AIR)
 		{
-			sender.sendRichMessage("<r>you dont have anything in hand");
+			sender.sendRichMessage("<red>you dont have anything in hand");
 			return Command.SINGLE_SUCCESS;
 		}
 
