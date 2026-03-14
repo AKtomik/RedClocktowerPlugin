@@ -71,7 +71,7 @@ public class PlayerListener implements Listener {
 		}
 
 		if (bloodPlayer.isSlotVoteLock()) return;
-		if (!bloodPlayer.hasVote()) return;
+		if (!bloodPlayer.hasVote() && !game.getExclusionVote()) return;
 
 		// get state
 		BlockData data = block.getBlockData();

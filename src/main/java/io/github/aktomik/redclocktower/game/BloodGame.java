@@ -164,6 +164,14 @@ public class BloodGame {
 	{
 		return pdc.getOrDefault(DataKey.GAME_VOTE_PYLORI_AGAINST.key(), PersistentDataType.INTEGER, 0);
 	}
+	private void setExclusionVote(boolean is)
+	{
+		pdc.set(DataKey.GAME_ROUND_COUNT.key(), PersistentDataType.BOOLEAN, is);
+	}
+	public boolean getExclusionVote()
+	{
+		return pdc.getOrDefault(DataKey.GAME_ROUND_COUNT.key(), PersistentDataType.BOOLEAN, false);
+	}
 
 	private void setSlotsUuid(List<UUID> uuids)
 	{
@@ -429,9 +437,7 @@ public class BloodGame {
 
 		applyColorGlowingToOne(player, NOMINATE_TEAM_COLOR);
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		broadcast("changing exclusion mode traveller:"+bloodPlayer.isTraveller());
-		mutateSlots(bloodSlot -> bloodSlot.setExclusion(bloodPlayer.isTraveller()));
-		getAllBloodPlayers().forEach(BloodPlayer::refreshSlotLamp);// needed bcs setExclusion does not refresh itself
+		changeExclusionMode(bloodPlayer.isTraveller());
 		mutateSlots(BloodSlot::unlock);
 		setVoteNominatedUuid(uuid);
 	}
@@ -473,6 +479,14 @@ public class BloodGame {
 			loc = loc.add(0, 2.5, 0).toCenterLocation();
 			PlayerNameTagEditor.forcePlace(player, loc);
 		}
+	}
+
+	public void changeExclusionMode(boolean isAnExclusion)
+	{
+		setExclusionVote(isAnExclusion);
+		mutateSlots(bloodSlot -> bloodSlot.setExclusion(isAnExclusion));
+		// needed bcs setExclusion does not refresh itself
+		getAllBloodPlayers().forEach(BloodPlayer::refreshSlotLamp);
 	}
 
 	// slots
@@ -693,8 +707,7 @@ public class BloodGame {
 
 		//step 0
 		setVoteStep(GameVoteStep.VOTE_PROCESS);
-		mutateSlots(bloodSlot -> bloodSlot.setExclusion(nominatedBloodPlayer.isTraveller()));
-		getAllBloodPlayers().forEach(BloodPlayer::refreshSlotLamp);// needed bcs setExclusion does not refresh itself
+		changeExclusionMode(nominatedBloodPlayer.isTraveller());
 		mutateSlots(BloodSlot::unlock);
 		broadcast("<gold>there is <count> players alive", resolvers);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), startVoteProcessStep1, 40L);
@@ -752,8 +765,7 @@ public class BloodGame {
 		Runnable finishRunnableStep2 = () -> {
 			if (isVoteProcessCanceled()) return;
 			setVoteStep(GameVoteStep.NOTHING);
-			mutateSlots(bloodSlot -> bloodSlot.setExclusion(false));
-			getAllBloodPlayers().forEach(BloodPlayer::refreshSlotLamp);// needed bcs setExclusion does not refresh itself
+			changeExclusionMode(false);
 			mutateSlots(BloodSlot::unlock);
 		};
 
@@ -891,8 +903,7 @@ public class BloodGame {
 					removePyloriPlayer();
 					sender.sendRichMessage("<aqua>the pylori was <red>cleared</red>.");
 				} else {
-					mutateSlots(bloodSlot -> bloodSlot.setExclusion(false));
-					getAllBloodPlayers().forEach(BloodPlayer::refreshSlotLamp);// needed bcs setExclusion does not refresh itself
+					changeExclusionMode(false);
 					mutateSlots(BloodSlot::unlock);
 					sender.sendRichMessage("<aqua>reseting votes pistons.<white> there is nothing else to cancel.");
 				}
@@ -901,8 +912,7 @@ public class BloodGame {
 			case GameVoteStep.VOTE_PROCESS:
 			{
 				removeNominatedPlayer();
-				mutateSlots(bloodSlot -> bloodSlot.setExclusion(false));
-				getAllBloodPlayers().forEach(BloodPlayer::refreshSlotLamp);// needed bcs setExclusion does not refresh itself
+				changeExclusionMode(false);
 				mutateSlots(BloodSlot::unlock);
 				setVoteStep(GameVoteStep.CANCEL_VOTE_PROCESS);
 				sender.sendRichMessage("<aqua><red>canceling</red> the vote...");

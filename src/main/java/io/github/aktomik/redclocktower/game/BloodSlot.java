@@ -96,6 +96,7 @@ public class BloodSlot {
 
 		BlockData powerBlock = ((getLock()) ? BlockType.LAPIS_BLOCK : BlockType.REDSTONE_BLOCK).createBlockData();
 		world.setBlockData(lampLocM2, powerBlock);
+		// but if it's a redstone lamp, it will refresh and light off
 	}
 
 	public void refreshLamp(BloodPlayer bloodPlayerAtSlot)
@@ -117,9 +118,11 @@ public class BloodSlot {
 			{
 				lampData = BlockType.REDSTONE_LAMP.createBlockData();
 				if (voting) {
-					Lightable lightable = (Lightable)lampData;
-					lightable.setLit(true);
-					lightable.copyTo(lampData);
+					// lighten redstone lamp is cool, it will refresh and light off when locked
+//					Lightable lightable = (Lightable)lampData;
+//					lightable.setLit(true);
+//					lightable.copyTo(lampData);
+					lampData = BlockType.OCHRE_FROGLIGHT.createBlockData();
 				}
 			}
 			else if (traveler)
