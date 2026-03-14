@@ -36,6 +36,7 @@ public enum DataKey {
 
 	SLOT_NAME("slot_name"),//UNUSED
 	SLOT_LOCK("slot_lock"),
+	SLOT_EXCLUSION("slot_exclusion"),
 	SLOT_LOC_CHAIR("slot_loc_chair"),
 	SLOT_LOC_LEVER("slot_loc_lever"),
 	SLOT_LOC_LAMP("slot_loc_lamp"),

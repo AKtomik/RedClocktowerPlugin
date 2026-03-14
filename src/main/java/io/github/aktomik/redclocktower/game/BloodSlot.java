@@ -49,6 +49,19 @@ public class BloodSlot {
 		return pdc.getOrDefault(DataKey.SLOT_LOCK.key(), PersistentDataType.BOOLEAN, true);
 	}
 
+	private void setExclusion(boolean isExclusionVote)
+	{
+		pdc.set(DataKey.SLOT_EXCLUSION.key(), PersistentDataType.BOOLEAN, isExclusionVote);
+	}
+	private void clearExclusion()
+	{
+		pdc.remove(DataKey.SLOT_EXCLUSION.key());
+	}
+	public boolean getExclusion()
+	{
+		return pdc.getOrDefault(DataKey.SLOT_EXCLUSION.key(), PersistentDataType.BOOLEAN, true);
+	}
+
 	// action
 
 	public void changeLock(boolean isLocked)
@@ -100,7 +113,16 @@ public class BloodSlot {
 			boolean alive = bloodPlayerAtSlot.getAlive();
 			boolean traveler = bloodPlayerAtSlot.isTraveller();
 
-			if (traveler)
+			if (getExclusion())
+			{
+				lampData = BlockType.REDSTONE_LAMP.createBlockData();
+				if (voting) {
+					Lightable lightable = (Lightable)lampData;
+					lightable.setLit(true);
+					lightable.copyTo(lampData);
+				}
+			}
+			else if (traveler)
 			{
 				if (alive)
 				{
@@ -120,7 +142,9 @@ public class BloodSlot {
 						}
 					}
 				}
-			} else {
+			}
+			else
+			{
 				if (alive) {
 					lampData = BlockType.WAXED_COPPER_BULB.createBlockData();
 				} else {
