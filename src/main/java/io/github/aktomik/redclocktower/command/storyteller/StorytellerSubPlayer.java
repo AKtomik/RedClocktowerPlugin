@@ -12,9 +12,12 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 import java.util.Objects;
@@ -71,7 +74,10 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			.then(Commands.argument("players", ArgumentTypes.players())
 				.executes(subVotingCheck)
 				.then(Commands.argument("change", BoolArgumentType.bool())
-					.executes(subVotingChange))));
+					.executes(subVotingChange))))
+
+		.then(Commands.literal("givehand")
+			.executes(subGiveHand));
 	}
 
 	// subs
@@ -468,6 +474,28 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			Placeholder.parsed("target", player.getName())
 			);
 		});
+		return Command.SINGLE_SUCCESS;
+	};
+
+	public final Command<CommandSourceStack> subGiveHand = ctx -> {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx);
+
+		Player executorPlayer = (Player)ctx.getSource().getExecutor();
+		ItemStack heldItem = executorPlayer.getInventory().getItemInMainHand();
+
+		if (heldItem.getType() == Material.AIR)
+		{
+			sender.sendRichMessage("<r>you dont have anything in hand");
+			return Command.SINGLE_SUCCESS;
+		}
+
+		game.getAllPlayers().forEach(loopPlayer -> loopPlayer.give(heldItem));
+
+		sender.sendRichMessage(
+		"<b>give <item> to all players in game.",
+		Placeholder.parsed("item", heldItem.toString())
+		);
 		return Command.SINGLE_SUCCESS;
 	};
 }
