@@ -428,6 +428,8 @@ public class BloodGame {
 		if (Objects.equals(getVotePyloriUuid(), uuid)) removePyloriPlayer();
 
 		applyColorGlowingToOne(player, NOMINATE_TEAM_COLOR);
+		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		mutateSlots(bloodSlot -> bloodSlot.changeExclusionMode(bloodPlayer.isTraveller()));
 		mutateSlots(BloodSlot::unlock);
 		setVoteNominatedUuid(uuid);
 	}
@@ -690,6 +692,7 @@ public class BloodGame {
 		//step 0
 		setVoteStep(GameVoteStep.VOTE_PROCESS);
 		mutateSlots(BloodSlot::unlock);
+		mutateSlots(bloodSlot -> bloodSlot.changeExclusionMode(nominatedBloodPlayer.isTraveller()));
 		broadcast("<gold>there is <count> players alive", resolvers);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), startVoteProcessStep1, 40L);
 	}
@@ -746,6 +749,7 @@ public class BloodGame {
 		Runnable finishRunnableStep2 = () -> {
 			if (isVoteProcessCanceled()) return;
 			setVoteStep(GameVoteStep.NOTHING);
+			mutateSlots(BloodSlot::endExclusionMode);
 			mutateSlots(BloodSlot::unlock);
 		};
 
@@ -883,6 +887,7 @@ public class BloodGame {
 					removePyloriPlayer();
 					sender.sendRichMessage("<aqua>the pylori was <red>cleared</red>.");
 				} else {
+					mutateSlots(BloodSlot::endExclusionMode);
 					mutateSlots(BloodSlot::unlock);
 					sender.sendRichMessage("<aqua>reseting votes pistons.<white> there is nothing else to cancel.");
 				}
@@ -891,6 +896,7 @@ public class BloodGame {
 			case GameVoteStep.VOTE_PROCESS:
 			{
 				removeNominatedPlayer();
+				mutateSlots(BloodSlot::endExclusionMode);
 				mutateSlots(BloodSlot::unlock);
 				setVoteStep(GameVoteStep.CANCEL_VOTE_PROCESS);
 				sender.sendRichMessage("<aqua><red>canceling</red> the vote...");

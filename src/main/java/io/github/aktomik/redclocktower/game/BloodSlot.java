@@ -78,6 +78,20 @@ public class BloodSlot {
 		changeLock(false);
 	}
 
+	public void changeExclusionMode(boolean isExclusionMode)
+	{
+		setExclusion(isExclusionMode);
+		refreshLock();
+	}
+	public void startExclusionMode()
+	{
+		changeExclusionMode(true);
+	}
+	public void endExclusionMode()
+	{
+		changeExclusionMode(false);
+	}
+
 	// refresh
 
 	public void refreshLock()
