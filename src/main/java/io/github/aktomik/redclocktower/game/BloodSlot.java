@@ -100,35 +100,43 @@ public class BloodSlot {
 			boolean alive = bloodPlayerAtSlot.getAlive();
 			boolean traveler = bloodPlayerAtSlot.isTraveller();
 
-			lampData = (alive)
-				? BlockType.WAXED_COPPER_BULB.createBlockData()
-				: BlockType.WAXED_OXIDIZED_COPPER_BULB.createBlockData();
-
-			if (voting)
+			if (traveler)
 			{
-				if (lampData instanceof Lightable lightable) {
+				if (alive)
+				{
+					if (voting) {
+						lampData = BlockType.GLOWSTONE.createBlockData();
+					} else {
+						lampData = BlockType.WAXED_COPPER_GRATE.createBlockData();
+					}
+				} else {
+					if (!voken) {
+						lampData = BlockType.NETHERITE_BLOCK.createBlockData();
+					} else {
+						if (voting) {
+							lampData = BlockType.SEA_LANTERN.createBlockData();
+						} else {
+							lampData = BlockType.WAXED_OXIDIZED_COPPER_GRATE.createBlockData();
+						}
+					}
+				}
+			} else {
+				if (alive) {
+					lampData = BlockType.WAXED_COPPER_BULB.createBlockData();
+				} else {
+					if (!voken) {
+						lampData = BlockType.NETHERITE_BLOCK.createBlockData();
+					} else {
+						BlockType.WAXED_OXIDIZED_COPPER_BULB.createBlockData();
+					}
+				}
+
+				if (voting && lampData instanceof Lightable lightable) {
 					lightable.setLit(true);
 					lightable.copyTo(lampData);
 				}
 			}
 
-			if (!voken)
-			{
-				if (alive)
-				{
-					lampData = BlockType.REDSTONE_LAMP.createBlockData();
-				} else {
-					lampData = BlockType.NETHERITE_BLOCK.createBlockData();
-				}
-			}
-
-			if (traveler)
-			{
-				if (lampData instanceof Powerable powerable) {
-					powerable.setPowered(true);
-					powerable.copyTo(lampData);
-				}
-			}
 
 			if (leverData instanceof Powerable powerable) {
 				powerable.setPowered(voting);
