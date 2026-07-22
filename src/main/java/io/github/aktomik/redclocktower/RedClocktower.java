@@ -1,20 +1,16 @@
 package io.github.aktomik.redclocktower;
 
-import com.mojang.brigadier.tree.LiteralCommandNode;
 import io.github.aktomik.redclocktower.command.Vote;
 import io.github.aktomik.redclocktower.command.setup.Setup;
-import io.github.aktomik.redclocktower.game.BloodPlayer;
-import io.github.aktomik.redclocktower.game.PlayerListener;
+import io.github.aktomik.redclocktower.oldgame.BloodPlayer;
+import io.github.aktomik.redclocktower.oldgame.PlayerListener;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditorListener;
-import io.github.aktomik.redclocktower.utils.brigadier.BrigadierCommand;
 import io.github.aktomik.redclocktower.command.BroadcastCommand;
 import io.github.aktomik.redclocktower.command.storyteller.Storyteller;
 import io.github.aktomik.redclocktower.command.Tagme;
 import io.github.aktomik.redclocktower.command.Whosend;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
-import io.papermc.paper.command.brigadier.CommandSourceStack;
-import io.papermc.paper.plugin.lifecycle.event.types.LifecycleEvents;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;

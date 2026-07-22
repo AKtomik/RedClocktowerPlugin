@@ -1,7 +1,7 @@
 package io.github.aktomik.redclocktower;
 
-import io.github.aktomik.redclocktower.game.GamePlace;
-import io.github.aktomik.redclocktower.game.SlotPlace;
+import io.github.aktomik.redclocktower.oldgame.GamePlace;
+import io.github.aktomik.redclocktower.oldgame.SlotPlace;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 

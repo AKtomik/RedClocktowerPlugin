@@ -3,7 +3,7 @@ package io.github.aktomik.redclocktower.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.game.BloodPlayer;
+import io.github.aktomik.redclocktower.oldgame.BloodPlayer;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;

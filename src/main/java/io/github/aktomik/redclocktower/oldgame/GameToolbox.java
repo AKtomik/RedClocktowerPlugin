@@ -1,4 +1,4 @@
-package io.github.aktomik.redclocktower.game;
+package io.github.aktomik.redclocktower.oldgame;
 
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;

@@ -1,4 +1,4 @@
-package io.github.aktomik.redclocktower.game;
+package io.github.aktomik.redclocktower.oldgame;
 
 import com.mojang.brigadier.context.CommandContext;
 import io.github.aktomik.redclocktower.DataKey;
@@ -27,7 +27,6 @@ import org.bukkit.scoreboard.Team;
 
 import java.util.*;
 import java.util.function.Consumer;
-import java.util.stream.Stream;
 
 public class BloodGame {
 
@@ -601,8 +600,9 @@ public class BloodGame {
 	// teams
 	void generateNewId()
 	{
-		int incrementedRoundCount = getRoundCount() + 1;
-		setRoundCount(incrementedRoundCount);
+//		int incrementedRoundCount = getRoundCount() + 1;
+//		setRoundCount(incrementedRoundCount);
+		int incrementedRoundCount = 1;
 		setRoundId("blood-%s-%s".formatted(world.getName(), Integer.toString(incrementedRoundCount)));
 	}
 
