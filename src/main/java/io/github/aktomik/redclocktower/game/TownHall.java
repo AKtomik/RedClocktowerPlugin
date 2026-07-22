@@ -1,6 +1,8 @@
 package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.DataKey;
+import io.github.aktomik.redclocktower.RedClocktower;
+import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
@@ -9,57 +11,39 @@ import java.util.*;
 
 public class TownHall {
 	private final World world;
-	private final PersistentDataContainer pdc;
+	private final String townName;
+	private PersistentDataContainer pdc;
 
-	// constructor
-	private TownHall(World world, PersistentDataContainer pdc)
-	{
+	// construct
+	private TownHall(World world, String townName, PersistentDataContainer pdc) {
 		this.world = world;
+		this.townName = townName;
 		this.pdc = pdc;
 	}
 
-	// town static
-	private static Map<String, PersistentDataContainer> getTowns(World world)
-	{
+	// static creation/getation
+	private static NamespacedKey townKey(String townName) {
+		return new NamespacedKey(RedClocktower.plugin(), "townhall." + townName);
+	}
+
+	public static TownHall get(World world, String townName) {
 		PersistentDataContainer worldData = world.getPersistentDataContainer();
-		List<PersistentDataContainer> townsData = worldData.getOrDefault(DataKey.WORLD_TOWNS.key(), PersistentDataType.LIST.dataContainers(), List.of());
-		Map<String, PersistentDataContainer> townsMap = new HashMap<>();
-		for (PersistentDataContainer loopPdc : townsData)
-		{
-			String loopName = loopPdc.get(DataKey.TOWN_NAME.key(), PersistentDataType.STRING);
-			townsMap.put(loopName, loopPdc);
-		}
-		return townsMap;
-	}
-
-	public static Set<String> getTownNames(World world) { return getTowns(world).keySet(); }
-
-	private static PersistentDataContainer getTown(World world, String townName)
-	{
-		return getTowns(world).get(townName);
-	}
-
-	// townhall static
-	public static TownHall get(World world, String townName)
-	{
-		PersistentDataContainer pdc = getTown(world, townName);
+		PersistentDataContainer pdc = worldData.get(townKey(townName), PersistentDataType.TAG_CONTAINER);
 		if (pdc == null) return null;
-		return new TownHall(world, pdc);
+		return new TownHall(world, townName, pdc);
 	}
 
-	public static TownHall create(World world, String townName)
-	{
-		// extract
+	public static TownHall create(World world, String townName) {
 		PersistentDataContainer worldData = world.getPersistentDataContainer();
-		List<PersistentDataContainer> townsData = worldData.getOrDefault(DataKey.WORLD_TOWNS.key(), PersistentDataType.LIST.dataContainers(), List.of());
-		townsData = new ArrayList<>(townsData);
-		// create
+		if (worldData.has(townKey(townName))) return null;
 		PersistentDataContainer pdc = worldData.getAdapterContext().newPersistentDataContainer();
-		pdc.set(DataKey.TOWN_NAME.key(), PersistentDataType.STRING, townName);
-		// add
-		townsData.add(pdc);
-		worldData.set(DataKey.WORLD_TOWNS.key(), PersistentDataType.LIST.dataContainers(), townsData);
-		// return
-		return new TownHall(world, pdc);
+		pdc.set(DataKey.TOWN_NAME.key(), PersistentDataType.STRING, townName);// only non defaultable field
+		worldData.set(townKey(townName), PersistentDataType.TAG_CONTAINER, pdc);
+		return new TownHall(world, townName, pdc);
+	}
+
+	// every mutator ends with this
+	private void save() {
+		world.getPersistentDataContainer().set(townKey(townName), PersistentDataType.TAG_CONTAINER, pdc);
 	}
 }
