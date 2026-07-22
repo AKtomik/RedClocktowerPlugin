@@ -31,6 +31,7 @@ public final class RedClocktower extends JavaPlugin {
         plugin = this;
 
         // setup data keys
+        OldDataKey.init(this);
         DataKey.init(this);
 
         // setup events

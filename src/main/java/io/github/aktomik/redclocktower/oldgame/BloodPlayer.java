@@ -1,6 +1,6 @@
 package io.github.aktomik.redclocktower.oldgame;
 
-import io.github.aktomik.redclocktower.DataKey;
+import io.github.aktomik.redclocktower.OldDataKey;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -33,70 +33,70 @@ public class BloodPlayer {
 	// set & get
 	public void setDisplayName(String displayName)
 	{
-		pdc.set(DataKey.PLAYER_DISPLAY_NAME.key(), PersistentDataType.STRING, displayName);
+		pdc.set(OldDataKey.PLAYER_DISPLAY_NAME.key(), PersistentDataType.STRING, displayName);
 	}
 	public void clearDisplayName()
 	{
-		pdc.remove(DataKey.PLAYER_DISPLAY_NAME.key());
+		pdc.remove(OldDataKey.PLAYER_DISPLAY_NAME.key());
 	}
 	public String getDisplayName()
 	{
-		return pdc.get(DataKey.PLAYER_DISPLAY_NAME.key(), PersistentDataType.STRING);
+		return pdc.get(OldDataKey.PLAYER_DISPLAY_NAME.key(), PersistentDataType.STRING);
 	}
 
 	private void setAlive(boolean isAlive)
 	{
-		pdc.set(DataKey.PLAYER_ALIVE.key(), PersistentDataType.BOOLEAN, isAlive);
+		pdc.set(OldDataKey.PLAYER_ALIVE.key(), PersistentDataType.BOOLEAN, isAlive);
 	}
 	private void clearAlive()
 	{
-		pdc.remove(DataKey.PLAYER_ALIVE.key());
+		pdc.remove(OldDataKey.PLAYER_ALIVE.key());
 	}
 	public boolean getAlive()
 	{
-		return pdc.getOrDefault(DataKey.PLAYER_ALIVE.key(), PersistentDataType.BOOLEAN, true);
+		return pdc.getOrDefault(OldDataKey.PLAYER_ALIVE.key(), PersistentDataType.BOOLEAN, true);
 	}
 
 	private void setVoteToken(boolean isVoteToken)
 	{
-		pdc.set(DataKey.PLAYER_VOTE_TOKEN.key(), PersistentDataType.BOOLEAN, isVoteToken);
+		pdc.set(OldDataKey.PLAYER_VOTE_TOKEN.key(), PersistentDataType.BOOLEAN, isVoteToken);
 	}
 	private void clearVoteToken()
 	{
-		pdc.remove(DataKey.PLAYER_VOTE_TOKEN.key());
+		pdc.remove(OldDataKey.PLAYER_VOTE_TOKEN.key());
 	}
 	public boolean getVoteToken()
 	{
-		return pdc.getOrDefault(DataKey.PLAYER_VOTE_TOKEN.key(), PersistentDataType.BOOLEAN, true);
+		return pdc.getOrDefault(OldDataKey.PLAYER_VOTE_TOKEN.key(), PersistentDataType.BOOLEAN, true);
 	}
 
 	private void setVotePull(boolean isVotePull)
 	{
-		pdc.set(DataKey.PLAYER_VOTE_PULL.key(), PersistentDataType.BOOLEAN, isVotePull);
+		pdc.set(OldDataKey.PLAYER_VOTE_PULL.key(), PersistentDataType.BOOLEAN, isVotePull);
 	}
 	private void clearVotePull()
 	{
-		pdc.remove(DataKey.PLAYER_VOTE_PULL.key());
+		pdc.remove(OldDataKey.PLAYER_VOTE_PULL.key());
 	}
 	public boolean getVotePull()
 	{
-		return pdc.getOrDefault(DataKey.PLAYER_VOTE_PULL.key(), PersistentDataType.BOOLEAN, false);
+		return pdc.getOrDefault(OldDataKey.PLAYER_VOTE_PULL.key(), PersistentDataType.BOOLEAN, false);
 	}
 
 	private void setGame(BloodGame game)
 	{
-		pdc.set(DataKey.PLAYER_GAME_WORLD_NAME.key(), PersistentDataType.STRING, game.world.getName());
-		pdc.set(DataKey.PLAYER_GAME_ROUND_ID.key(), PersistentDataType.STRING, game.getRoundId());
+		pdc.set(OldDataKey.PLAYER_GAME_WORLD_NAME.key(), PersistentDataType.STRING, game.world.getName());
+		pdc.set(OldDataKey.PLAYER_GAME_ROUND_ID.key(), PersistentDataType.STRING, game.getRoundId());
 	}
 	private void clearGame()
 	{
-		pdc.remove(DataKey.PLAYER_GAME_WORLD_NAME.key());
-		pdc.remove(DataKey.PLAYER_GAME_ROUND_ID.key());
+		pdc.remove(OldDataKey.PLAYER_GAME_WORLD_NAME.key());
+		pdc.remove(OldDataKey.PLAYER_GAME_ROUND_ID.key());
 	}
 	public BloodGame getGame()
 	{
-		if (!pdc.has(DataKey.PLAYER_GAME_WORLD_NAME.key())) return null;
-		String worldName = pdc.get(DataKey.PLAYER_GAME_WORLD_NAME.key(), PersistentDataType.STRING);
+		if (!pdc.has(OldDataKey.PLAYER_GAME_WORLD_NAME.key())) return null;
+		String worldName = pdc.get(OldDataKey.PLAYER_GAME_WORLD_NAME.key(), PersistentDataType.STRING);
 		if (worldName == null) return null;
 		World world = Bukkit.getWorld(worldName);
 		if (world == null) return null;
@@ -110,54 +110,54 @@ public class BloodPlayer {
 
 	private void setSlotIndex(int index)
 	{
-		pdc.set(DataKey.PLAYER_GAME_SLOT_INDEX.key(), PersistentDataType.INTEGER, index);
+		pdc.set(OldDataKey.PLAYER_GAME_SLOT_INDEX.key(), PersistentDataType.INTEGER, index);
 	}
 	public void clearSlotIndex()
 	{
-		pdc.remove(DataKey.PLAYER_GAME_SLOT_INDEX.key());
+		pdc.remove(OldDataKey.PLAYER_GAME_SLOT_INDEX.key());
 	}
 	public int getSlotIndex()
 	{
-		return pdc.get(DataKey.PLAYER_GAME_SLOT_INDEX.key(), PersistentDataType.INTEGER);
+		return pdc.get(OldDataKey.PLAYER_GAME_SLOT_INDEX.key(), PersistentDataType.INTEGER);
 	}
 
 	private void setTraveller(boolean isTraveller)
 	{
-		pdc.set(DataKey.PLAYER_TRAVELLER.key(), PersistentDataType.BOOLEAN, isTraveller);
+		pdc.set(OldDataKey.PLAYER_TRAVELLER.key(), PersistentDataType.BOOLEAN, isTraveller);
 	}
 	private void clearTraveller()
 	{
-		pdc.remove(DataKey.PLAYER_TRAVELLER.key());
+		pdc.remove(OldDataKey.PLAYER_TRAVELLER.key());
 	}
 	public boolean getTraveller()
 	{
-		return pdc.getOrDefault(DataKey.PLAYER_TRAVELLER.key(), PersistentDataType.BOOLEAN, false);
+		return pdc.getOrDefault(OldDataKey.PLAYER_TRAVELLER.key(), PersistentDataType.BOOLEAN, false);
 	}
 
 	private void setSpectator(boolean isSpectator)
 	{
-		pdc.set(DataKey.PLAYER_GAME_SPECTATOR.key(), PersistentDataType.BOOLEAN, isSpectator);
+		pdc.set(OldDataKey.PLAYER_GAME_SPECTATOR.key(), PersistentDataType.BOOLEAN, isSpectator);
 	}
 	private void clearSpectator()
 	{
-		pdc.remove(DataKey.PLAYER_GAME_SPECTATOR.key());
+		pdc.remove(OldDataKey.PLAYER_GAME_SPECTATOR.key());
 	}
 	public boolean getSpectator()
 	{
-		return pdc.getOrDefault(DataKey.PLAYER_GAME_SPECTATOR.key(), PersistentDataType.BOOLEAN, false);
+		return pdc.getOrDefault(OldDataKey.PLAYER_GAME_SPECTATOR.key(), PersistentDataType.BOOLEAN, false);
 	}
 
 	private void setStoryteller(boolean isStoryteller)
 	{
-		pdc.set(DataKey.PLAYER_GAME_STORYTELLER.key(), PersistentDataType.BOOLEAN, isStoryteller);
+		pdc.set(OldDataKey.PLAYER_GAME_STORYTELLER.key(), PersistentDataType.BOOLEAN, isStoryteller);
 	}
 	private void clearStoryteller()
 	{
-		pdc.remove(DataKey.PLAYER_GAME_STORYTELLER.key());
+		pdc.remove(OldDataKey.PLAYER_GAME_STORYTELLER.key());
 	}
 	public boolean getStoryteller()
 	{
-		return pdc.getOrDefault(DataKey.PLAYER_GAME_STORYTELLER.key(), PersistentDataType.BOOLEAN, false);
+		return pdc.getOrDefault(OldDataKey.PLAYER_GAME_STORYTELLER.key(), PersistentDataType.BOOLEAN, false);
 	}
 
 	// game link

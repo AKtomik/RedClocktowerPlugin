@@ -1,7 +1,7 @@
 package io.github.aktomik.redclocktower.oldgame;
 
 import com.mojang.brigadier.context.CommandContext;
-import io.github.aktomik.redclocktower.DataKey;
+import io.github.aktomik.redclocktower.OldDataKey;
 import io.github.aktomik.redclocktower.RedClocktower;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
 import io.github.aktomik.redclocktower.utils.UUIDDataType;
@@ -62,160 +62,160 @@ public class BloodGame {
 	// get & set
 	public void setState(GameState gameState)
 	{
-		pdc.set(DataKey.GAME_STATE.key(), PersistentDataType.INTEGER, gameState.ordinal());
+		pdc.set(OldDataKey.GAME_STATE.key(), PersistentDataType.INTEGER, gameState.ordinal());
 	}
 	public GameState getState()
 	{
-		int ordinal = pdc.getOrDefault(DataKey.GAME_STATE.key(), PersistentDataType.INTEGER, GameState.NOTHING.ordinal());
+		int ordinal = pdc.getOrDefault(OldDataKey.GAME_STATE.key(), PersistentDataType.INTEGER, GameState.NOTHING.ordinal());
 		return GameState.values()[ordinal];
 	}
 
 	void setTime(GamePeriod gameState)
 	{
-		pdc.set(DataKey.GAME_PERIOD.key(), PersistentDataType.INTEGER, gameState.ordinal());
+		pdc.set(OldDataKey.GAME_PERIOD.key(), PersistentDataType.INTEGER, gameState.ordinal());
 	}
 	public GamePeriod getTime()
 	{
-		int ordinal = pdc.getOrDefault(DataKey.GAME_PERIOD.key(), PersistentDataType.INTEGER, GamePeriod.FREE.ordinal());
+		int ordinal = pdc.getOrDefault(OldDataKey.GAME_PERIOD.key(), PersistentDataType.INTEGER, GamePeriod.FREE.ordinal());
 		return GamePeriod.values()[ordinal];
 	}
 
 	private void setRoundCount(int count)
 	{
-		pdc.set(DataKey.GAME_ROUND_COUNT.key(), PersistentDataType.INTEGER, count);
+		pdc.set(OldDataKey.GAME_ROUND_COUNT.key(), PersistentDataType.INTEGER, count);
 	}
 	public int getRoundCount()
 	{
-		return pdc.getOrDefault(DataKey.GAME_ROUND_COUNT.key(), PersistentDataType.INTEGER, 0);
+		return pdc.getOrDefault(OldDataKey.GAME_ROUND_COUNT.key(), PersistentDataType.INTEGER, 0);
 	}
 
 	private void setRoundId(String strid)
 	{
-		pdc.set(DataKey.GAME_ROUND_ID.key(), PersistentDataType.STRING, strid);
+		pdc.set(OldDataKey.GAME_ROUND_ID.key(), PersistentDataType.STRING, strid);
 	}
 	public String getRoundId()
 	{
-		return pdc.get(DataKey.GAME_ROUND_ID.key(), PersistentDataType.STRING);
+		return pdc.get(OldDataKey.GAME_ROUND_ID.key(), PersistentDataType.STRING);
 	}
 
 	private void setStorytellerUuid(UUID uuid)
 	{
-		pdc.set(DataKey.GAME_STORYTELLER_UUID.key(), UUIDDataType.INSTANCE, uuid);
+		pdc.set(OldDataKey.GAME_STORYTELLER_UUID.key(), UUIDDataType.INSTANCE, uuid);
 	}
 	void clearStorytellerUuid()
 	{
-		pdc.remove(DataKey.GAME_STORYTELLER_UUID.key());
+		pdc.remove(OldDataKey.GAME_STORYTELLER_UUID.key());
 	}
 	public UUID getStorytellerUuid()
 	{
-		return pdc.get(DataKey.GAME_STORYTELLER_UUID.key(), UUIDDataType.INSTANCE);
+		return pdc.get(OldDataKey.GAME_STORYTELLER_UUID.key(), UUIDDataType.INSTANCE);
 	}
 
 	public void setVoteStep(GameVoteStep voteStep)
 	{
-		pdc.set(DataKey.GAME_VOTE_STEP.key(), PersistentDataType.INTEGER, voteStep.ordinal());
+		pdc.set(OldDataKey.GAME_VOTE_STEP.key(), PersistentDataType.INTEGER, voteStep.ordinal());
 	}
 	public void clearVoteStep()
 	{
-		pdc.remove(DataKey.GAME_VOTE_STEP.key());
+		pdc.remove(OldDataKey.GAME_VOTE_STEP.key());
 	}
 	public GameVoteStep getVoteStep()
 	{
-		int ordinal = pdc.getOrDefault(DataKey.GAME_VOTE_STEP.key(), PersistentDataType.INTEGER, GameVoteStep.NOTHING.ordinal());
+		int ordinal = pdc.getOrDefault(OldDataKey.GAME_VOTE_STEP.key(), PersistentDataType.INTEGER, GameVoteStep.NOTHING.ordinal());
 		return GameVoteStep.values()[ordinal];
 	}
 
 	private void setVoteNominatedUuid(UUID uuid)
 	{
-		pdc.set(DataKey.GAME_VOTE_NOMINATED_UUID.key(), UUIDDataType.INSTANCE, uuid);
+		pdc.set(OldDataKey.GAME_VOTE_NOMINATED_UUID.key(), UUIDDataType.INSTANCE, uuid);
 	}
 	private void clearVoteNominatedUuid()
 	{
-		pdc.remove(DataKey.GAME_VOTE_NOMINATED_UUID.key());
+		pdc.remove(OldDataKey.GAME_VOTE_NOMINATED_UUID.key());
 	}
 	public UUID getVoteNominatedUuid()
 	{
-		return pdc.get(DataKey.GAME_VOTE_NOMINATED_UUID.key(), UUIDDataType.INSTANCE);
+		return pdc.get(OldDataKey.GAME_VOTE_NOMINATED_UUID.key(), UUIDDataType.INSTANCE);
 	}
 
 	private void setVotePyloriUuid(UUID uuid)
 	{
-		pdc.set(DataKey.GAME_VOTE_PYLORI_UUID.key(), UUIDDataType.INSTANCE, uuid);
+		pdc.set(OldDataKey.GAME_VOTE_PYLORI_UUID.key(), UUIDDataType.INSTANCE, uuid);
 	}
 	private void clearVotePyloriUuid()
 	{
-		pdc.remove(DataKey.GAME_VOTE_PYLORI_UUID.key());
+		pdc.remove(OldDataKey.GAME_VOTE_PYLORI_UUID.key());
 	}
 	private UUID getVotePyloriUuid()
 	{
-		return pdc.get(DataKey.GAME_VOTE_PYLORI_UUID.key(), UUIDDataType.INSTANCE);
+		return pdc.get(OldDataKey.GAME_VOTE_PYLORI_UUID.key(), UUIDDataType.INSTANCE);
 	}
 
 	private void setVotePyloriAgainst(int count)
 	{
-		pdc.set(DataKey.GAME_VOTE_PYLORI_AGAINST.key(), PersistentDataType.INTEGER, count);
+		pdc.set(OldDataKey.GAME_VOTE_PYLORI_AGAINST.key(), PersistentDataType.INTEGER, count);
 	}
 	private void clearVotePyloriAgainst()
 	{
-		pdc.remove(DataKey.GAME_VOTE_PYLORI_AGAINST.key());
+		pdc.remove(OldDataKey.GAME_VOTE_PYLORI_AGAINST.key());
 	}
 	public int getVotePyloriAgainst()
 	{
-		return pdc.getOrDefault(DataKey.GAME_VOTE_PYLORI_AGAINST.key(), PersistentDataType.INTEGER, 0);
+		return pdc.getOrDefault(OldDataKey.GAME_VOTE_PYLORI_AGAINST.key(), PersistentDataType.INTEGER, 0);
 	}
 	private void setExclusionVote(boolean is)
 	{
-		pdc.set(DataKey.GAME_ROUND_COUNT.key(), PersistentDataType.BOOLEAN, is);
+		pdc.set(OldDataKey.GAME_ROUND_COUNT.key(), PersistentDataType.BOOLEAN, is);
 	}
 	public boolean getExclusionVote()
 	{
-		return pdc.getOrDefault(DataKey.GAME_ROUND_COUNT.key(), PersistentDataType.BOOLEAN, false);
+		return pdc.getOrDefault(OldDataKey.GAME_ROUND_COUNT.key(), PersistentDataType.BOOLEAN, false);
 	}
 
 	private void setSlotsUuid(List<UUID> uuids)
 	{
-		pdc.set(DataKey.GAME_SLOTS_UUID.key(), PersistentDataType.LIST.listTypeFrom(UUIDDataType.INSTANCE), uuids);
+		pdc.set(OldDataKey.GAME_SLOTS_UUID.key(), PersistentDataType.LIST.listTypeFrom(UUIDDataType.INSTANCE), uuids);
 	}
 	void clearSlotsUuid()
 	{
-		pdc.remove(DataKey.GAME_SLOTS_UUID.key());
+		pdc.remove(OldDataKey.GAME_SLOTS_UUID.key());
 	}
 	public List<UUID> getSlotsUuid()
 	{
-		return pdc.getOrDefault(DataKey.GAME_SLOTS_UUID.key(), PersistentDataType.LIST.listTypeFrom(UUIDDataType.INSTANCE), List.of());
+		return pdc.getOrDefault(OldDataKey.GAME_SLOTS_UUID.key(), PersistentDataType.LIST.listTypeFrom(UUIDDataType.INSTANCE), List.of());
 	}
 
 	private void setSlotsPdc(List<PersistentDataContainer> uuids)
 	{
-		pdc.set(DataKey.GAME_SLOTS_PDC.key(), PersistentDataType.LIST.dataContainers(), uuids);
+		pdc.set(OldDataKey.GAME_SLOTS_PDC.key(), PersistentDataType.LIST.dataContainers(), uuids);
 	}
 	void clearSlotsPdc()
 	{
-		pdc.remove(DataKey.GAME_SLOTS_PDC.key());
+		pdc.remove(OldDataKey.GAME_SLOTS_PDC.key());
 	}
 	private List<PersistentDataContainer> getSlotsPdc()
 	{
-		return pdc.getOrDefault(DataKey.GAME_SLOTS_PDC.key(), PersistentDataType.LIST.dataContainers(), List.of());
+		return pdc.getOrDefault(OldDataKey.GAME_SLOTS_PDC.key(), PersistentDataType.LIST.dataContainers(), List.of());
 	}
 
 	public void setPosition(GamePlace place, Location pos)
 	{
-		pdc.set(DataKey.GAME_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
+		pdc.set(OldDataKey.GAME_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
 	}
 	public Location getPosition(GamePlace place)
 	{
-		int[] posArray = pdc.get(DataKey.GAME_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY);
+		int[] posArray = pdc.get(OldDataKey.GAME_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY);
 		if (posArray == null || posArray.length != 3) return null;
 		return new Location(world, posArray[0], posArray[1], posArray[2]);
 	}
 
 	private void setSettingsSlotLimit(int count)
 	{
-		pdc.set(DataKey.GAME_SETTINGS_SLOT_LIMIT.key(), PersistentDataType.INTEGER, count);
+		pdc.set(OldDataKey.GAME_SETTINGS_SLOT_LIMIT.key(), PersistentDataType.INTEGER, count);
 	}
 	public int getSettingsSlotLimit()
 	{
-		return pdc.getOrDefault(DataKey.GAME_SETTINGS_SLOT_LIMIT.key(), PersistentDataType.INTEGER, 15);
+		return pdc.getOrDefault(OldDataKey.GAME_SETTINGS_SLOT_LIMIT.key(), PersistentDataType.INTEGER, 15);
 	}
 
 	// states & time

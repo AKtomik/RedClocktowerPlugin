@@ -1,6 +1,6 @@
 package io.github.aktomik.redclocktower.oldgame;
 
-import io.github.aktomik.redclocktower.DataKey;
+import io.github.aktomik.redclocktower.OldDataKey;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -27,39 +27,39 @@ public class BloodSlot {
 	// get & set
 	public void setPosition(SlotPlace place, Location pos)
 	{
-		pdc.set(DataKey.SLOT_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
+		pdc.set(OldDataKey.SLOT_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
 	}
 	public Location getPosition(SlotPlace place)
 	{
-		int[] posArray = pdc.get(DataKey.SLOT_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY);
+		int[] posArray = pdc.get(OldDataKey.SLOT_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY);
 		if (posArray == null || posArray.length != 3) return null;
 		return new Location(world, posArray[0], posArray[1], posArray[2]);
 	}
 
 	private void setLock(boolean isLocked)
 	{
-		pdc.set(DataKey.SLOT_LOCK.key(), PersistentDataType.BOOLEAN, isLocked);
+		pdc.set(OldDataKey.SLOT_LOCK.key(), PersistentDataType.BOOLEAN, isLocked);
 	}
 	private void clearLock()
 	{
-		pdc.remove(DataKey.SLOT_LOCK.key());
+		pdc.remove(OldDataKey.SLOT_LOCK.key());
 	}
 	public boolean getLock()
 	{
-		return pdc.getOrDefault(DataKey.SLOT_LOCK.key(), PersistentDataType.BOOLEAN, false);
+		return pdc.getOrDefault(OldDataKey.SLOT_LOCK.key(), PersistentDataType.BOOLEAN, false);
 	}
 
 	public void setExclusion(boolean isExclusionVote)
 	{// is public bcs any way to refresh itself. TO PATCH
-		pdc.set(DataKey.SLOT_EXCLUSION.key(), PersistentDataType.BOOLEAN, isExclusionVote);
+		pdc.set(OldDataKey.SLOT_EXCLUSION.key(), PersistentDataType.BOOLEAN, isExclusionVote);
 	}
 	private void clearExclusion()
 	{
-		pdc.remove(DataKey.SLOT_EXCLUSION.key());
+		pdc.remove(OldDataKey.SLOT_EXCLUSION.key());
 	}
 	public boolean getExclusion()
 	{
-		return pdc.getOrDefault(DataKey.SLOT_EXCLUSION.key(), PersistentDataType.BOOLEAN, false);
+		return pdc.getOrDefault(OldDataKey.SLOT_EXCLUSION.key(), PersistentDataType.BOOLEAN, false);
 	}
 
 	// action
