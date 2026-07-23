@@ -1,6 +1,7 @@
 package io.github.aktomik.redclocktower.command.setup;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.ArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.game.TownHall;
@@ -19,30 +20,22 @@ public class SetupSubSelect extends BrigadierSub {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.argument("town name", StringArgumentType.word())
-		.suggests((ctx, builder) -> {
-			TownHall.getTownList(ctx.getSource().getLocation().getWorld()).forEach(builder::suggest);
-			return builder.buildFuture();
-		})
+		.then(Commands.argument("town", new TownArgumentType())
 			.executes(ctx -> {
 				// arguments
 				CommandSender sender = ctx.getSource().getSender();
-				String townName = StringArgumentType.getString(ctx, "town name");
-				World world = ctx.getSource().getLocation().getWorld();
+				TownHall townHall = ctx.getArgument("town", TownHall.class);
 
 				// execute
-				TownHall townHall = TownHall.get(world, townName);
 				if (townHall == null)
 				{
-					sender.sendRichMessage("<red>there is no townhall named <b><name></b>.",
-						Placeholder.parsed("name", townName)
-					);
+					sender.sendRichMessage("<red>wrong townhall.");
 					return Command.SINGLE_SUCCESS;
 				}
 
 				TownHall.setSelection(sender, townHall);
 				sender.sendRichMessage("townhall <b><name></b> <aqua>selected</aqua>!",
-					Placeholder.parsed("name", townName)
+					Placeholder.parsed("name", townHall.getTownName())
 				);
 				return Command.SINGLE_SUCCESS;
 			}
