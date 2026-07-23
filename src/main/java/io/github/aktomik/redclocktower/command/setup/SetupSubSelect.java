@@ -29,7 +29,6 @@ public class SetupSubSelect extends BrigadierSub {
 				CommandSender sender = ctx.getSource().getSender();
 				String townName = StringArgumentType.getString(ctx, "town name");
 				World world = ctx.getSource().getLocation().getWorld();
-				Player player = (Player)ctx.getSource().getExecutor();
 
 				// execute
 				TownHall townHall = TownHall.get(world, townName);
@@ -41,7 +40,7 @@ public class SetupSubSelect extends BrigadierSub {
 					return Command.SINGLE_SUCCESS;
 				}
 
-				if (player != null) TownHall.setPlayerSelection(player, townHall);
+				TownHall.setSelection(sender, townHall);
 				sender.sendRichMessage("townhall <b><name></b> <aqua>selected</aqua>!",
 					Placeholder.parsed("name", townName)
 				);

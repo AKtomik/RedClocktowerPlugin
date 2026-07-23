@@ -5,11 +5,13 @@ import io.github.aktomik.redclocktower.RedClocktower;
 import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
-import org.bukkit.entity.Player;
+import org.bukkit.command.CommandExecutor;
+import org.bukkit.command.CommandSender;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
+import java.util.concurrent.Executor;
 
 public class TownHall {
 	private final World world;
@@ -69,14 +71,14 @@ public class TownHall {
 	}
 
 	// player selection
-	private static Map<Player, TownHall> playerSelection = new HashMap<>();
+	private static Map<CommandSender, TownHall> playerSelection = new HashMap<>();
 
-	public static TownHall getPlayerSelection(Player player) {
-		return playerSelection.get(player);
+	public static TownHall getSelection(CommandSender sender) {
+		return playerSelection.get(sender);
 	}
 
-	public static void setPlayerSelection(Player player, TownHall townHall) {
-		playerSelection.put(player, townHall);
+	public static void setSelection(CommandSender sender, TownHall townHall) {
+		playerSelection.put(sender, townHall);
 	}
 
 	// access

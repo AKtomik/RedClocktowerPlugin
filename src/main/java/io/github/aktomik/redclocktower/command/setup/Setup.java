@@ -9,6 +9,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.concurrent.Executor;
 
 public class Setup extends BrigadierCommand {
 
@@ -43,10 +44,9 @@ public class Setup extends BrigadierCommand {
 		.executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
-			Player player = (Player)ctx.getSource().getExecutor();
 
 			// execute
-			TownHall townHall = TownHall.getPlayerSelection(player);
+			TownHall townHall = TownHall.getSelection(sender);
 
 			if (townHall == null)
 			{
