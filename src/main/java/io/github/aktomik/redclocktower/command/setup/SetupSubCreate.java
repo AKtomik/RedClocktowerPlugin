@@ -36,7 +36,6 @@ public class SetupSubCreate extends BrigadierSub {
 					return Command.SINGLE_SUCCESS;
 				}
 
-				TownHall.setSelection(sender, townHall);
 				sender.sendRichMessage("townhall <b><name></b> <green>created</green>!",
 					Placeholder.parsed("name", townName)
 				);

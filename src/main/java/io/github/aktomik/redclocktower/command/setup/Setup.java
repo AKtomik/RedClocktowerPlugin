@@ -28,32 +28,10 @@ public class Setup extends BrigadierCommand {
 		return base()
 		// manage
 		.then(new SetupSubCreate().root())
-		.then(new SetupSubSelect().root())
 		.then(new SetupSubRemove().root())
 		.then(new SetupSubList().root())
 
 		// modify
-		.then(new SetupSubModify().root())
-
-		// empty
-		.executes(ctx -> {
-			// arguments
-			CommandSender sender = ctx.getSource().getSender();
-
-			// execute
-			TownHall townHall = TownHall.getSelection(sender);
-
-			if (townHall == null)
-			{
-				sender.sendRichMessage("<gray>you don't have any townhall selected.");
-				return Command.SINGLE_SUCCESS;
-			}
-
-			sender.sendRichMessage("<gray>you are editing the townhall <b><name></b>.",
-			Placeholder.parsed("name", townHall.getTownName())
-			);
-			return Command.SINGLE_SUCCESS;
-		}
-		);
+		.then(new SetupSubModify().root());
 	}
 }

@@ -87,11 +87,11 @@ public class TownHall {
 	// player selection
 	private static final Map<CommandSender, TownHall> playerSelection = new HashMap<>();
 
-	public static TownHall getSelection(CommandSender sender) {
+	@Deprecated public static TownHall getSelection(CommandSender sender) {
 		return playerSelection.get(sender);
 	}
 
-	public static void setSelection(CommandSender sender, TownHall townHall) {
+	@Deprecated public static void setSelection(CommandSender sender, TownHall townHall) {
 		playerSelection.put(sender, townHall);
 	}
 
