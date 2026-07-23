@@ -4,6 +4,7 @@ import io.github.aktomik.redclocktower.DataKey;
 import io.github.aktomik.redclocktower.RedClocktower;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
@@ -21,7 +22,7 @@ public class TownHall {
 		this.pdc = pdc;
 	}
 
-	// static creation/getation
+	// town save
 	private static NamespacedKey townKey(String townName) {
 		return new NamespacedKey(RedClocktower.plugin(), "townhall." + townName);
 	}
@@ -45,5 +46,21 @@ public class TownHall {
 	// every mutator ends with this
 	private void save() {
 		world.getPersistentDataContainer().set(townKey(townName), PersistentDataType.TAG_CONTAINER, pdc);
+	}
+
+	// player selection
+	private static Map<Player, TownHall> playerSelection = new HashMap<>();
+
+	public static TownHall getPlayerSelection(Player player) {
+		return playerSelection.get(player);
+	}
+
+	public static void setPlayerSelection(Player player, TownHall townHall) {
+		playerSelection.put(player, townHall);
+	}
+
+	// access
+	public String getTownName() {
+		return this.townName;
 	}
 }

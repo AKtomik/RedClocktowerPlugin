@@ -6,7 +6,6 @@ import org.bukkit.plugin.java.JavaPlugin;
 public enum DataKey {
 
 	// define
-	WORLD_TOWNS("world_towns"),
 	TOWN_NAME("town_name"),
 	TOWN_SETTINGS("town_settings"),
 	TOWN_SEATS("town_seats");
