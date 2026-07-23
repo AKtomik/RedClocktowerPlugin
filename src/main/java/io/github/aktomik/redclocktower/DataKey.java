@@ -1,6 +1,7 @@
 package io.github.aktomik.redclocktower;
 
 import io.github.aktomik.redclocktower.command.setup.TownChairPlace;
+import io.github.aktomik.redclocktower.command.setup.TownGeneralSettings;
 import io.github.aktomik.redclocktower.command.setup.TownHallPlace;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -19,6 +20,10 @@ public enum DataKey {
 	TOWN_HALL_LOC_PYLORI,
 	TOWN_HALL_LOC_BELL,
 
+	TOWN_HALL_SETTINGS_CAN_PLAYER_DROP,
+	TOWN_HALL_SETTINGS_CLOCK_TICK_SPEED,
+	TOWN_HALL_SETTINGS_DO_EXECUTION_REALLY_KILL,
+
 	TOWN_CHAIR_LOC_CHAIR,
 	TOWN_CHAIR_LOC_LEVER,
 	TOWN_CHAIR_LOC_LAMP,
@@ -31,6 +36,11 @@ public enum DataKey {
 		Map.entry(TownHallPlace.SPAWN, DataKey.TOWN_HALL_LOC_SPAWN),
 		Map.entry(TownHallPlace.PYLORI, DataKey.TOWN_HALL_LOC_PYLORI),
 		Map.entry(TownHallPlace.BELL, DataKey.TOWN_HALL_LOC_BELL)
+	);
+	public static final Map<TownGeneralSettings, DataKey> TOWN_HALL_SETTINGS = Map.ofEntries(
+		Map.entry(TownGeneralSettings.CAN_PLAYER_DROP, DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_DROP),
+		Map.entry(TownGeneralSettings.CLOCK_TICK_SPEED, DataKey.TOWN_HALL_SETTINGS_CLOCK_TICK_SPEED),
+		Map.entry(TownGeneralSettings.DO_EXECUTION_REALLY_KILL, DataKey.TOWN_HALL_SETTINGS_DO_EXECUTION_REALLY_KILL)
 	);
 	public static final Map<TownChairPlace, DataKey> TOWN_CHAIR_LOC = Map.ofEntries(
 		Map.entry(TownChairPlace.CHAIR, DataKey.TOWN_CHAIR_LOC_CHAIR),

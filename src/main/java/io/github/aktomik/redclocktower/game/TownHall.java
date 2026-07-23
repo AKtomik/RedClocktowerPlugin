@@ -66,7 +66,7 @@ public class TownHall {
 		return true;
 	}
 
-	// personal data
+	// data/position
 	public void setPosition(TownHallPlace place, Location pos)
 	{
 		pdc.set(DataKey.TOWN_HALL_LOC.get(place).key(), PositionDataType.INSTANCE, new BlockPos(pos));
@@ -77,6 +77,17 @@ public class TownHall {
 		BlockPos blockPos = pdc.get(DataKey.TOWN_HALL_LOC.get(place).key(), PositionDataType.INSTANCE);
 		if (blockPos == null) return null;
 		return blockPos.toLocation(world);
+	}
+
+	// data/settings
+	public void setSettingsCanPlayerDrop(boolean bool)
+	{
+		pdc.set(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_DROP.key(), PersistentDataType.BOOLEAN, bool);
+		save();
+	}
+	public boolean getSettingsCanPlayerDrop()
+	{
+		return pdc.getOrDefault(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_DROP.key(), PersistentDataType.BOOLEAN, false);
 	}
 
 	// every mutator ends with this

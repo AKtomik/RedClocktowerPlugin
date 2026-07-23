@@ -45,6 +45,7 @@ public class SetupSubModifySlot extends BrigadierSub {
 							.executes(subEditPositionChange))
 		))));
 	}
+			//.then(Commands.argument("new value", IntegerArgumentType.integer(0, 20))
 
 
 	Command<CommandSourceStack> subRemove = ctx -> {
