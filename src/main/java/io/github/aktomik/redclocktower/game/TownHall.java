@@ -84,4 +84,7 @@ public class TownHall {
 	public String getTownName() {
 		return this.townName;
 	}
+	public World getWorld() {
+		return this.world;
+	}
 }

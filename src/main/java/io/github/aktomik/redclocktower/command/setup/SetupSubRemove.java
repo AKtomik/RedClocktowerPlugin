@@ -18,29 +18,16 @@ public class SetupSubRemove extends BrigadierSub {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.argument("town name", StringArgumentType.word())
-		.suggests((ctx, builder) -> {
-			TownHall.getTownList(ctx.getSource().getLocation().getWorld()).forEach(builder::suggest);
-			return builder.buildFuture();
-		})
+		.then(Commands.argument("town", new TownArgumentType())
 			.executes(ctx -> {
 				// arguments
 				CommandSender sender = ctx.getSource().getSender();
-				String townName = StringArgumentType.getString(ctx, "town name");
-				World world = ctx.getSource().getLocation().getWorld();
+				TownHall townHall = ctx.getArgument("town", TownHall.class);
 
 				// execute
-				boolean success = TownHall.delete(world, townName);
-				if (!success)
-				{
-					sender.sendRichMessage("<red>there is no townhall named <b><name></b>.",
-						Placeholder.parsed("name", townName)
-					);
-					return Command.SINGLE_SUCCESS;
-				}
-
-				sender.sendRichMessage("townhall <b><name></b> <red>deleted</red>!",
-					Placeholder.parsed("name", townName)
+				TownHall.delete(townHall.getWorld(), townHall.getTownName());
+				sender.sendRichMessage("townhall <b><name></b> <red>deleted</red>.",
+					Placeholder.parsed("name", townHall.getTownName())
 				);
 				return Command.SINGLE_SUCCESS;
 			}

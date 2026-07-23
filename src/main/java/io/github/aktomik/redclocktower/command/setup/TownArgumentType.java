@@ -20,7 +20,7 @@ public class TownArgumentType implements CustomArgumentType<TownHall, String> {
 
 	public static final DynamicCommandExceptionType ERROR_UNKNOWN_TOWN =
 	new DynamicCommandExceptionType(name ->
-		new LiteralMessage("unknown town: " + name)
+		new LiteralMessage("there is no townhall named "+ name+".")
 	);
 
 	@Override
@@ -50,7 +50,9 @@ public class TownArgumentType implements CustomArgumentType<TownHall, String> {
 	CommandContext<S> context, SuggestionsBuilder builder) {
 		if (context.getSource() instanceof CommandSourceStack sourceStack) {
 			World world = sourceStack.getLocation().getWorld();
-			TownHall.getTownList(world).forEach(builder::suggest);
+			TownHall.getTownList(world)
+				.stream().filter(name -> name.toLowerCase().startsWith(builder.getRemainingLowerCase()))
+				.forEach(builder::suggest);
 		}
 		return builder.buildFuture();
 	}

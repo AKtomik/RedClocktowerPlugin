@@ -27,14 +27,8 @@ public class SetupSubSelect extends BrigadierSub {
 				TownHall townHall = ctx.getArgument("town", TownHall.class);
 
 				// execute
-				if (townHall == null)
-				{
-					sender.sendRichMessage("<red>wrong townhall.");
-					return Command.SINGLE_SUCCESS;
-				}
-
 				TownHall.setSelection(sender, townHall);
-				sender.sendRichMessage("townhall <b><name></b> <aqua>selected</aqua>!",
+				sender.sendRichMessage("townhall <b><name></b> <aqua>selected</aqua>.",
 					Placeholder.parsed("name", townHall.getTownName())
 				);
 				return Command.SINGLE_SUCCESS;
