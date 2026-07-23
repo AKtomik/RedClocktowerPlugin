@@ -4,20 +4,16 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.game.TownHall;
-import io.github.aktomik.redclocktower.oldgame.BloodGame;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
-import java.util.stream.IntStream;
-
-public class SetupSubDelete extends BrigadierSub {
+public class SetupSubRemove extends BrigadierSub {
 	public String name() {
-		return "delete";
+		return "remove";
 	}
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
@@ -32,7 +28,6 @@ public class SetupSubDelete extends BrigadierSub {
 				CommandSender sender = ctx.getSource().getSender();
 				String townName = StringArgumentType.getString(ctx, "town name");
 				World world = ctx.getSource().getLocation().getWorld();
-				Player player = (Player)ctx.getSource().getExecutor();
 
 				// execute
 				boolean success = TownHall.delete(world, townName);

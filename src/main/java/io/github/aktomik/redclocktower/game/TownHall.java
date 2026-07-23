@@ -41,7 +41,6 @@ public class TownHall {
 	{
 		PersistentDataContainer worldData = world.getPersistentDataContainer();
 		Set<String> names = new HashSet<>();
-		Bukkit.getLogger().info("size:"+String.valueOf(worldData.getKeys().size()));
 
 		for (NamespacedKey key : worldData.getKeys())
 			if (key.getNamespace().equals(RedClocktower.plugin().namespace()) && key.getKey().startsWith("townhall."))
@@ -60,7 +59,7 @@ public class TownHall {
 
 	public static boolean delete(World world, String townName) {
 		PersistentDataContainer worldData = world.getPersistentDataContainer();
-		if (worldData.has(townKey(townName))) return false;
+		if (!worldData.has(townKey(townName))) return false;
 		worldData.remove(townKey(townName));
 		return true;
 	}

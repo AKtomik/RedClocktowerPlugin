@@ -6,10 +6,8 @@ import io.github.aktomik.redclocktower.utils.brigadier.BrigadierCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 import java.util.List;
-import java.util.concurrent.Executor;
 
 public class Setup extends BrigadierCommand {
 
@@ -31,7 +29,7 @@ public class Setup extends BrigadierCommand {
 		// manage
 		.then(new SetupSubCreate().root())
 		.then(new SetupSubSelect().root())
-		.then(new SetupSubDelete().root())
+		.then(new SetupSubRemove().root())
 		.then(new SetupSubList().root())
 
 		// action
