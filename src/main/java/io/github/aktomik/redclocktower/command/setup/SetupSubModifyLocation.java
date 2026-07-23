@@ -2,8 +2,7 @@ package io.github.aktomik.redclocktower.command.setup;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.oldgame.BloodGame;
-import io.github.aktomik.redclocktower.oldgame.GamePlace;
+import io.github.aktomik.redclocktower.game.TownHall;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -16,30 +15,29 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
-public class SetupSubModifyPlace extends BrigadierSub {
+public class SetupSubModifyLocation extends BrigadierSub {
 	public String name() {
-		return "place";
+		return "location";
 	}
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.argument("place", EnumArgument.simple(GamePlace.class, "invalid game place"))
-			.executes(placeCenterCheck)
+		.then(Commands.argument("place", EnumArgument.simple(TownHallPlace.class, "invalid townhall place"))
+			.executes(positionCheck)
 			.then(Commands.argument("position", ArgumentTypes.blockPosition())
-				.executes(placeCenterChange)
+				.executes(positionChange)
 		));
 	}
 
 
-	Command<CommandSourceStack> placeCenterCheck = ctx -> {
+	Command<CommandSourceStack> positionCheck = ctx -> {
 		// arguments
 		final CommandSender sender = ctx.getSource().getSender();
-		final World world = ctx.getSource().getLocation().getWorld();
-		final BloodGame game = BloodGame.get(world);
-		final GamePlace place = ctx.getArgument("place", GamePlace.class);
+		final TownHall townHall = ctx.getArgument("town", TownHall.class);
+		final TownHallPlace place = ctx.getArgument("place", TownHallPlace.class);
 
 		// execution
-		final Location loc = game.getPosition(place);
+		final Location loc = townHall.getPosition(place);
 		sender.sendRichMessage("position <b><place></b> is at <x> <y> <z> <hover:show_text:\"Click to teleport\"><click:run_command:/tp @s <x> <y> <z>><green>[tp]",
 			Placeholder.parsed("x", Integer.toString(loc.getBlockX())),
 			Placeholder.parsed("y", Integer.toString(loc.getBlockY())),
@@ -49,17 +47,17 @@ public class SetupSubModifyPlace extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	};
 
-	Command<CommandSourceStack> placeCenterChange = ctx -> {
+	Command<CommandSourceStack> positionChange = ctx -> {
 		// arguments
 		final CommandSender sender = ctx.getSource().getSender();
+		final TownHall townHall = ctx.getArgument("town", TownHall.class);
+		final TownHallPlace place = ctx.getArgument("place", TownHallPlace.class);
 		final World world = ctx.getSource().getLocation().getWorld();
-		final BloodGame game = BloodGame.get(world);
-		final GamePlace place = ctx.getArgument("place", GamePlace.class);
 		final BlockPosition pos = ctx.getArgument("position", BlockPositionResolver.class).resolve(ctx.getSource());
 
 		// execution
 		final Location loc = pos.toLocation(world);
-		game.setPosition(place, loc);
+		townHall.setPosition(place, loc);
 		sender.sendRichMessage("set <b><place></b> position at <x> <y> <z>",
 			Placeholder.parsed("x", Integer.toString(loc.getBlockX())),
 			Placeholder.parsed("y", Integer.toString(loc.getBlockY())),

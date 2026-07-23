@@ -2,16 +2,16 @@ package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.DataKey;
 import io.github.aktomik.redclocktower.RedClocktower;
-import org.bukkit.Bukkit;
+import io.github.aktomik.redclocktower.command.setup.TownHallPlace;
+import io.github.aktomik.redclocktower.oldgame.GamePlace;
+import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
-import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
-import java.util.concurrent.Executor;
 
 public class TownHall {
 	private final World world;
@@ -64,13 +64,26 @@ public class TownHall {
 		return true;
 	}
 
+	// personal data
+	public void setPosition(TownHallPlace place, Location pos)
+	{
+		pdc.set(DataKey.TOWN_HALL_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
+		save();
+	}
+	public Location getPosition(TownHallPlace place)
+	{
+		int[] posArray = pdc.get(DataKey.TOWN_HALL_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY);
+		if (posArray == null || posArray.length != 3) return null;
+		return new Location(world, posArray[0], posArray[1], posArray[2]);
+	}
+
 	// every mutator ends with this
 	private void save() {
 		world.getPersistentDataContainer().set(townKey(townName), PersistentDataType.TAG_CONTAINER, pdc);
 	}
 
 	// player selection
-	private static Map<CommandSender, TownHall> playerSelection = new HashMap<>();
+	private static final Map<CommandSender, TownHall> playerSelection = new HashMap<>();
 
 	public static TownHall getSelection(CommandSender sender) {
 		return playerSelection.get(sender);

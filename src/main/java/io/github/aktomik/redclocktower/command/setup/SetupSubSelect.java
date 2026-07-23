@@ -23,8 +23,8 @@ public class SetupSubSelect extends BrigadierSub {
 		.then(Commands.argument("town", new TownArgumentType())
 			.executes(ctx -> {
 				// arguments
-				CommandSender sender = ctx.getSource().getSender();
-				TownHall townHall = ctx.getArgument("town", TownHall.class);
+				final CommandSender sender = ctx.getSource().getSender();
+				final TownHall townHall = ctx.getArgument("town", TownHall.class);
 
 				// execute
 				TownHall.setSelection(sender, townHall);

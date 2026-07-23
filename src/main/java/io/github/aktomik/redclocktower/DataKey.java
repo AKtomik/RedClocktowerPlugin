@@ -1,29 +1,55 @@
 package io.github.aktomik.redclocktower;
 
+import io.github.aktomik.redclocktower.command.setup.TownChairPlace;
+import io.github.aktomik.redclocktower.command.setup.TownHallPlace;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.Map;
 
 public enum DataKey {
 
 	// define
-	TOWN_NAME("town_name"),
-	TOWN_SETTINGS("town_settings"),
-	TOWN_SEATS("town_seats");
+	TOWN_NAME,
+	TOWN_SETTINGS,
+	TOWN_SEATS,
+
+	TOWN_HALL_LOC_CENTER,
+	TOWN_HALL_LOC_SPAWN,
+	TOWN_HALL_LOC_PYLORI,
+	TOWN_HALL_LOC_BELL,
+
+	TOWN_CHAIR_LOC_CHAIR,
+	TOWN_CHAIR_LOC_LEVER,
+	TOWN_CHAIR_LOC_LAMP,
+	TOWN_CHAIR_LOC_HOUSE,
+	;
+
+	// shortcut
+	public static final Map<TownHallPlace, DataKey> TOWN_HALL_LOC = Map.ofEntries(
+		Map.entry(TownHallPlace.CENTER, DataKey.TOWN_HALL_LOC_CENTER),
+		Map.entry(TownHallPlace.SPAWN, DataKey.TOWN_HALL_LOC_SPAWN),
+		Map.entry(TownHallPlace.PYLORI, DataKey.TOWN_HALL_LOC_PYLORI),
+		Map.entry(TownHallPlace.BELL, DataKey.TOWN_HALL_LOC_BELL)
+	);
+	public static final Map<TownChairPlace, DataKey> TOWN_CHAIR_LOC = Map.ofEntries(
+		Map.entry(TownChairPlace.CHAIR, DataKey.TOWN_CHAIR_LOC_CHAIR),
+		Map.entry(TownChairPlace.LEVER, DataKey.TOWN_CHAIR_LOC_LEVER),
+		Map.entry(TownChairPlace.LAMP, DataKey.TOWN_CHAIR_LOC_LAMP),
+		Map.entry(TownChairPlace.HOUSE, DataKey.TOWN_CHAIR_LOC_HOUSE)
+	);
 
 	// system
-	final String path;
 	public NamespacedKey key() {
 		return key;
 	}
 	private NamespacedKey key;
 
-	DataKey(String path) {
-		this.path = path;
-	}
+	DataKey() {}
 
 	public static void init(JavaPlugin plugin) {
 		for (DataKey dk : values()) {
-			dk.key = new NamespacedKey(plugin, dk.path);
+			dk.key = new NamespacedKey(plugin, dk.name().toLowerCase());
 		}
 	}
 }

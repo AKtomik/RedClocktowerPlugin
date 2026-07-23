@@ -10,6 +10,7 @@ import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 
+@Deprecated
 public class SetupSubModifyDebug extends BrigadierSub {
 	public String name() {
 		return "debug";

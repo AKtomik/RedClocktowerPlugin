@@ -1,13 +1,9 @@
 package io.github.aktomik.redclocktower.command.setup;
 
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.game.TownHall;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.command.CommandSender;
 
 public class SetupSubModify extends BrigadierSub {
 	public String name() {
@@ -17,8 +13,7 @@ public class SetupSubModify extends BrigadierSub {
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
 		.then(Commands.argument("town", new TownArgumentType())
-		.then(new SetupSubModifyDebug().root())
-		.then(new SetupSubModifyPlace().root())
+		.then(new SetupSubModifyLocation().root())
 		.then(new SetupSubModifySettings().root())
 		.then(new SetupSubModifySlot().root())
 		);
