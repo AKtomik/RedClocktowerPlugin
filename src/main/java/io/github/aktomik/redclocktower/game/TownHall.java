@@ -43,6 +43,13 @@ public class TownHall {
 		return new TownHall(world, townName, pdc);
 	}
 
+	public static boolean delete(World world, String townName) {
+		PersistentDataContainer worldData = world.getPersistentDataContainer();
+		if (worldData.has(townKey(townName))) return false;
+		worldData.remove(townKey(townName));
+		return true;
+	}
+
 	// every mutator ends with this
 	private void save() {
 		world.getPersistentDataContainer().set(townKey(townName), PersistentDataType.TAG_CONTAINER, pdc);

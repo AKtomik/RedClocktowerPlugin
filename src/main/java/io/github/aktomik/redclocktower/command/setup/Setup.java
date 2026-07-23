@@ -29,6 +29,7 @@ public class Setup extends BrigadierCommand {
 		return base()
 		.then(new SetupSubCreate().root())
 		.then(new SetupSubSelect().root())
+		.then(new SetupSubDelete().root())
 		.then(new SetupSubPlace().root())
 		.then(new SetupSubSettings().root())
 		.then(new SetupSubDebug().root())
