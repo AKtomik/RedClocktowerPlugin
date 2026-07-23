@@ -16,7 +16,7 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
-public class SetupSubPlace extends BrigadierSub {
+public class SetupSubModifyPlace extends BrigadierSub {
 	public String name() {
 		return "place";
 	}

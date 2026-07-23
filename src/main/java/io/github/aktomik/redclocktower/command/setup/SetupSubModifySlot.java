@@ -20,7 +20,7 @@ import org.bukkit.command.CommandSender;
 
 import java.util.stream.IntStream;
 
-public class SetupSubSlot extends BrigadierSub {
+public class SetupSubModifySlot extends BrigadierSub {
 	public String name() {
 		return "slot";
 	}

@@ -10,7 +10,7 @@ import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 
-public class SetupSubSettings extends BrigadierSub {
+public class SetupSubModifySettings extends BrigadierSub {
 
 	public String name() { return "settings"; }
 

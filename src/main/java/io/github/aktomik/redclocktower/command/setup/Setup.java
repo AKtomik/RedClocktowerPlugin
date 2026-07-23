@@ -32,11 +32,8 @@ public class Setup extends BrigadierCommand {
 		.then(new SetupSubRemove().root())
 		.then(new SetupSubList().root())
 
-		// action
-		.then(new SetupSubPlace().root())
-		.then(new SetupSubSettings().root())
-		.then(new SetupSubDebug().root())
-		.then(new SetupSubSlot().root())
+		// modify
+		.then(new SetupSubModify().root())
 
 		// empty
 		.executes(ctx -> {
