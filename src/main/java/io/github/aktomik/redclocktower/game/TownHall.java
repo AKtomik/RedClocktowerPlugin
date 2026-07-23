@@ -4,6 +4,8 @@ import io.github.aktomik.redclocktower.DataKey;
 import io.github.aktomik.redclocktower.RedClocktower;
 import io.github.aktomik.redclocktower.command.setup.TownHallPlace;
 import io.github.aktomik.redclocktower.oldgame.GamePlace;
+import io.github.aktomik.redclocktower.utils.pdc.BlockPos;
+import io.github.aktomik.redclocktower.utils.pdc.PositionDataType;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
@@ -67,14 +69,14 @@ public class TownHall {
 	// personal data
 	public void setPosition(TownHallPlace place, Location pos)
 	{
-		pdc.set(DataKey.TOWN_HALL_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
+		pdc.set(DataKey.TOWN_HALL_LOC.get(place).key(), PositionDataType.INSTANCE, new BlockPos(pos));
 		save();
 	}
 	public Location getPosition(TownHallPlace place)
 	{
-		int[] posArray = pdc.get(DataKey.TOWN_HALL_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY);
-		if (posArray == null || posArray.length != 3) return null;
-		return new Location(world, posArray[0], posArray[1], posArray[2]);
+		BlockPos blockPos = pdc.get(DataKey.TOWN_HALL_LOC.get(place).key(), PositionDataType.INSTANCE);
+		if (blockPos == null) return null;
+		return blockPos.toLocation(world);
 	}
 
 	// every mutator ends with this
