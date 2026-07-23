@@ -34,6 +34,16 @@ public class TownHall {
 		return new TownHall(world, townName, pdc);
 	}
 
+	public static Set<String> getTownList(World world)
+	{
+		PersistentDataContainer worldData = world.getPersistentDataContainer();
+		Set<String> names = new HashSet<>();
+		for (NamespacedKey key : worldData.getKeys())
+			if (key.getNamespace().equals(RedClocktower.plugin().getName()) && key.getKey().startsWith("townhall."))
+				names.add(key.getKey().substring("townhall.".length()));
+		return names;
+	}
+
 	public static TownHall create(World world, String townName) {
 		PersistentDataContainer worldData = world.getPersistentDataContainer();
 		if (worldData.has(townKey(townName))) return null;

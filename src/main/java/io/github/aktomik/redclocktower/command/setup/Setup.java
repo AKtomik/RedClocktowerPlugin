@@ -27,9 +27,11 @@ public class Setup extends BrigadierCommand {
 	// root
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
+		// selection
 		.then(new SetupSubCreate().root())
 		.then(new SetupSubSelect().root())
 		.then(new SetupSubDelete().root())
+		// action
 		.then(new SetupSubPlace().root())
 		.then(new SetupSubSettings().root())
 		.then(new SetupSubDebug().root())

@@ -20,6 +20,10 @@ public class SetupSubSelect extends BrigadierSub {
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
 		.then(Commands.argument("town name", StringArgumentType.word())
+		.suggests((ctx, builder) -> {
+			TownHall.getTownList(ctx.getSource().getLocation().getWorld()).forEach(builder::suggest);
+			return builder.buildFuture();
+		})
 			.executes(ctx -> {
 				// arguments
 				CommandSender sender = ctx.getSource().getSender();
