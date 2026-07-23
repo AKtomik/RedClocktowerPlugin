@@ -2,6 +2,7 @@ package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.DataKey;
 import io.github.aktomik.redclocktower.RedClocktower;
+import org.bukkit.Bukkit;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
 import org.bukkit.entity.Player;
@@ -38,8 +39,10 @@ public class TownHall {
 	{
 		PersistentDataContainer worldData = world.getPersistentDataContainer();
 		Set<String> names = new HashSet<>();
+		Bukkit.getLogger().info("size:"+String.valueOf(worldData.getKeys().size()));
+
 		for (NamespacedKey key : worldData.getKeys())
-			if (key.getNamespace().equals(RedClocktower.plugin().getName()) && key.getKey().startsWith("townhall."))
+			if (key.getNamespace().equals(RedClocktower.plugin().namespace()) && key.getKey().startsWith("townhall."))
 				names.add(key.getKey().substring("townhall.".length()));
 		return names;
 	}

@@ -27,15 +27,19 @@ public class Setup extends BrigadierCommand {
 	// root
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		// selection
+		// manage
 		.then(new SetupSubCreate().root())
 		.then(new SetupSubSelect().root())
 		.then(new SetupSubDelete().root())
+		.then(new SetupSubList().root())
+
 		// action
 		.then(new SetupSubPlace().root())
 		.then(new SetupSubSettings().root())
 		.then(new SetupSubDebug().root())
 		.then(new SetupSubSlot().root())
+
+		// empty
 		.executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
@@ -43,6 +47,7 @@ public class Setup extends BrigadierCommand {
 
 			// execute
 			TownHall townHall = TownHall.getPlayerSelection(player);
+
 			if (townHall == null)
 			{
 				sender.sendRichMessage("<gray>you don't have any townhall selected.");
