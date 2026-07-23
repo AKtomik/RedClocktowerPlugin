@@ -18,7 +18,7 @@ import java.util.*;
 public class TownHall {
 	private final World world;
 	private final String townName;
-	private PersistentDataContainer pdc;
+	private final PersistentDataContainer pdc;
 
 	// construct
 	private TownHall(World world, String townName, PersistentDataContainer pdc) {

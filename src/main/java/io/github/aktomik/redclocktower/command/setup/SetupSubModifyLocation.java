@@ -38,6 +38,13 @@ public class SetupSubModifyLocation extends BrigadierSub {
 
 		// execution
 		final Location loc = townHall.getPosition(place);
+		if (loc == null)
+		{
+			sender.sendRichMessage("<gray>position <b><place></b> is not placed",
+				Placeholder.parsed("place", place.toString())
+			);
+			return Command.SINGLE_SUCCESS;
+		}
 		sender.sendRichMessage("position <b><place></b> is at <x> <y> <z> <hover:show_text:\"Click to teleport\"><click:run_command:/tp @s <x> <y> <z>><green>[tp]",
 			Placeholder.parsed("x", Integer.toString(loc.getBlockX())),
 			Placeholder.parsed("y", Integer.toString(loc.getBlockY())),
