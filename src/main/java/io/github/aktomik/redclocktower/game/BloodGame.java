@@ -5,10 +5,13 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Set;
 
 public class BloodGame {
 
+	// manage
 	private final TownHall townHall;
+	private Map<Integer, BloodSlot> slots = new HashMap<>();
 	private BloodGame(TownHall townHall) {
 		this.townHall = townHall;
 	}
@@ -43,5 +46,37 @@ public class BloodGame {
 	// access
 	public TownHall getTownHall() {
 		return townHall;
+	}
+
+	// slot
+	public Set<Integer> getSlotIndexes()
+	{
+		return slots.keySet();
+	}
+
+	public BloodSlot getSlot(int index)
+	{
+		return slots.get(index);
+	}
+
+	public void assignChair(int index)
+	{
+		TownChair townChair = townHall.getChair(index);
+		if (townChair == null) return;
+		BloodSlot slot = new BloodSlot(townChair);
+		slots.put(index, slot);
+	}
+
+	public void assignChair(int index, BloodPlayer player)
+	{
+		TownChair townChair = townHall.getChair(index);
+		if (townChair == null) return;
+		BloodSlot slot = new BloodSlot(townChair, player);
+		slots.put(index, slot);
+	}
+
+	public void emptyChair(int index)
+	{
+		slots.remove(index);
 	}
 }

@@ -134,6 +134,7 @@ public class TownHall {
 		return getChairsPdc().size();
 	}
 
+	@Nullable
 	public TownChair getChair(int index)
 	{
 		return TownChair.get(this, getChairsPdc().get(index));
