@@ -37,7 +37,7 @@ public class TownHall {
 		return this.pdc;
 	}
 
-	// town save
+	// town
 	private static NamespacedKey townKey(String townName) {
 		return new NamespacedKey(RedClocktower.plugin(), "townhall." + townName);
 	}
