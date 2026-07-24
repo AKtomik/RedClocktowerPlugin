@@ -1,5 +1,6 @@
 package io.github.aktomik.redclocktower.oldgame;
 
+@Deprecated
 public enum OldGameState {
 	NOTHING,
 	WAITING,

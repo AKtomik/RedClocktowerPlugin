@@ -8,6 +8,7 @@ import org.bukkit.command.CommandSender;
 import java.util.Map;
 import java.util.function.BiConsumer;
 
+@Deprecated
 public class OldGameAction {
 
 	private OldGameAction() {}//static method

@@ -7,6 +7,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.Map;
 
+@Deprecated
 public enum OldDataKey {
 
 	// define

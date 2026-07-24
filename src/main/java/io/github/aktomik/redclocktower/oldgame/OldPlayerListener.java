@@ -19,6 +19,7 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.Objects;
 
+@Deprecated
 public class OldPlayerListener implements Listener {
 
 	@EventHandler

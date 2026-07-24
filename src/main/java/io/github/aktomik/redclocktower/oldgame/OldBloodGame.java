@@ -28,6 +28,7 @@ import org.bukkit.scoreboard.Team;
 import java.util.*;
 import java.util.function.Consumer;
 
+@Deprecated
 public class OldBloodGame {
 
 	// class

@@ -7,6 +7,7 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.function.BiConsumer;
 
+@Deprecated
 public class OldGameToolbox {
 
 	private OldGameToolbox() {}// is a static class

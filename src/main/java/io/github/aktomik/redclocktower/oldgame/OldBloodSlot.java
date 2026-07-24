@@ -10,6 +10,7 @@ import org.bukkit.block.data.*;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
+@Deprecated
 public class OldBloodSlot {
 	// class
 	public final World world;

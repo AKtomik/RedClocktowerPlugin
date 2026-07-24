@@ -3,6 +3,7 @@ package io.github.aktomik.redclocktower.oldgame;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
+@Deprecated
 public enum OldGameStepAction {
 	SETUP,
 	START,
