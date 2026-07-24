@@ -13,7 +13,7 @@ public class SetupSubModify extends BrigadierSub {
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
 		.then(Commands.argument("town", new TownArgumentType())
-		.then(new SetupSubModifyLocation().root())
+		.then(new SetupSubModifyPosition().root())
 		.then(new SetupSubModifySettings().root())
 		.then(new SetupSubModifySlot().root())
 		);

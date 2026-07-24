@@ -68,12 +68,12 @@ public class TownHall {
 	// data/position
 	public void setPosition(TownHallPlace place, Location pos)
 	{
-		pdc.set(DataKey.TOWN_HALL_LOC.get(place).key(), PositionDataType.INSTANCE, new BlockPos(pos));
+		pdc.set(DataKey.TOWN_HALL_POS.get(place).key(), PositionDataType.INSTANCE, new BlockPos(pos));
 		save();
 	}
 	public Location getPosition(TownHallPlace place)
 	{
-		BlockPos blockPos = pdc.get(DataKey.TOWN_HALL_LOC.get(place).key(), PositionDataType.INSTANCE);
+		BlockPos blockPos = pdc.get(DataKey.TOWN_HALL_POS.get(place).key(), PositionDataType.INSTANCE);
 		if (blockPos == null) return null;
 		return blockPos.toLocation(world);
 	}

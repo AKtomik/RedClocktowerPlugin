@@ -14,38 +14,38 @@ public enum DataKey {
 	TOWN_NAME,
 	TOWN_CHAIRS,
 
-	TOWN_HALL_LOC_CENTER,
-	TOWN_HALL_LOC_SPAWN,
-	TOWN_HALL_LOC_PYLORI,
-	TOWN_HALL_LOC_BELL,
+	TOWN_HALL_POS_CENTER,
+	TOWN_HALL_POS_SPAWN,
+	TOWN_HALL_POS_PYLORI,
+	TOWN_HALL_POS_BELL,
 
 	TOWN_HALL_SETTINGS_CAN_PLAYER_DROP,
 	TOWN_HALL_SETTINGS_CLOCK_TICK_SPEED,
 	TOWN_HALL_SETTINGS_DO_EXECUTION_REALLY_KILL,
 
-	TOWN_CHAIR_LOC_CHAIR,
-	TOWN_CHAIR_LOC_LEVER,
-	TOWN_CHAIR_LOC_LAMP,
-	TOWN_CHAIR_LOC_HOUSE,
+	TOWN_CHAIR_POS_CHAIR,
+	TOWN_CHAIR_POS_LEVER,
+	TOWN_CHAIR_POS_LAMP,
+	TOWN_CHAIR_POS_HOUSE,
 	;
 
 	// shortcut
-	public static final Map<TownHallPlace, DataKey> TOWN_HALL_LOC = Map.ofEntries(
-		Map.entry(TownHallPlace.CENTER, DataKey.TOWN_HALL_LOC_CENTER),
-		Map.entry(TownHallPlace.SPAWN, DataKey.TOWN_HALL_LOC_SPAWN),
-		Map.entry(TownHallPlace.PYLORI, DataKey.TOWN_HALL_LOC_PYLORI),
-		Map.entry(TownHallPlace.BELL, DataKey.TOWN_HALL_LOC_BELL)
+	public static final Map<TownHallPlace, DataKey> TOWN_HALL_POS = Map.ofEntries(
+		Map.entry(TownHallPlace.CENTER, DataKey.TOWN_HALL_POS_CENTER),
+		Map.entry(TownHallPlace.SPAWN, DataKey.TOWN_HALL_POS_SPAWN),
+		Map.entry(TownHallPlace.PYLORI, DataKey.TOWN_HALL_POS_PYLORI),
+		Map.entry(TownHallPlace.BELL, DataKey.TOWN_HALL_POS_BELL)
 	);
 	public static final Map<TownGeneralSettings, DataKey> TOWN_HALL_SETTINGS = Map.ofEntries(
 		Map.entry(TownGeneralSettings.CAN_PLAYER_DROP, DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_DROP),
 		Map.entry(TownGeneralSettings.CLOCK_TICK_SPEED, DataKey.TOWN_HALL_SETTINGS_CLOCK_TICK_SPEED),
 		Map.entry(TownGeneralSettings.DO_EXECUTION_REALLY_KILL, DataKey.TOWN_HALL_SETTINGS_DO_EXECUTION_REALLY_KILL)
 	);
-	public static final Map<TownChairPlace, DataKey> TOWN_CHAIR_LOC = Map.ofEntries(
-		Map.entry(TownChairPlace.CHAIR, DataKey.TOWN_CHAIR_LOC_CHAIR),
-		Map.entry(TownChairPlace.LEVER, DataKey.TOWN_CHAIR_LOC_LEVER),
-		Map.entry(TownChairPlace.LAMP, DataKey.TOWN_CHAIR_LOC_LAMP),
-		Map.entry(TownChairPlace.HOUSE, DataKey.TOWN_CHAIR_LOC_HOUSE)
+	public static final Map<TownChairPlace, DataKey> TOWN_CHAIR_POS = Map.ofEntries(
+		Map.entry(TownChairPlace.CHAIR, DataKey.TOWN_CHAIR_POS_CHAIR),
+		Map.entry(TownChairPlace.LEVER, DataKey.TOWN_CHAIR_POS_LEVER),
+		Map.entry(TownChairPlace.LAMP, DataKey.TOWN_CHAIR_POS_LAMP),
+		Map.entry(TownChairPlace.HOUSE, DataKey.TOWN_CHAIR_POS_HOUSE)
 	);
 
 	// system

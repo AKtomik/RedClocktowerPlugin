@@ -15,9 +15,9 @@ import org.bukkit.Location;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
-public class SetupSubModifyLocation extends BrigadierSub {
+public class SetupSubModifyPosition extends BrigadierSub {
 	public String name() {
-		return "location";
+		return "position";
 	}
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {

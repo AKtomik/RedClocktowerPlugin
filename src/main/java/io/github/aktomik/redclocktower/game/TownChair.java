@@ -2,7 +2,6 @@ package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.DataKey;
 import io.github.aktomik.redclocktower.command.setup.TownChairPlace;
-import io.github.aktomik.redclocktower.command.setup.TownHallPlace;
 import io.github.aktomik.redclocktower.utils.pdc.BlockPos;
 import io.github.aktomik.redclocktower.utils.pdc.PositionDataType;
 import org.bukkit.Location;
@@ -30,11 +29,11 @@ public class TownChair {
 	// data/position
 	public void setPosition(TownChairPlace place, Location pos)
 	{
-		pdc.set(DataKey.TOWN_CHAIR_LOC.get(place).key(), PositionDataType.INSTANCE, new BlockPos(pos));
+		pdc.set(DataKey.TOWN_CHAIR_POS.get(place).key(), PositionDataType.INSTANCE, new BlockPos(pos));
 	}
 	public Location getPosition(TownChairPlace place)
 	{
-		BlockPos blockPos = pdc.get(DataKey.TOWN_CHAIR_LOC.get(place).key(), PositionDataType.INSTANCE);
+		BlockPos blockPos = pdc.get(DataKey.TOWN_CHAIR_POS.get(place).key(), PositionDataType.INSTANCE);
 		if (blockPos == null) return null;
 		return blockPos.toLocation(townHall.getWorld());
 	}
