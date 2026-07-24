@@ -5,7 +5,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 
 import java.util.List;
 
-public class Setup extends BrigadierCommand {
+public class SetupCommand extends BrigadierCommand {
 
 	// register
 	public String name() {

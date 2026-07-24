@@ -1,13 +1,13 @@
 package io.github.aktomik.redclocktower;
 
 import io.github.aktomik.redclocktower.command.Vote;
-import io.github.aktomik.redclocktower.command.setup.Setup;
+import io.github.aktomik.redclocktower.command.setup.SetupCommand;
 import io.github.aktomik.redclocktower.oldgame.BloodPlayer;
 import io.github.aktomik.redclocktower.oldgame.PlayerListener;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditorListener;
 import io.github.aktomik.redclocktower.command.BroadcastCommand;
-import io.github.aktomik.redclocktower.command.storyteller.Storyteller;
+import io.github.aktomik.redclocktower.command.storyteller.StorytellerCommand;
 import io.github.aktomik.redclocktower.command.Tagme;
 import io.github.aktomik.redclocktower.command.Whosend;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
@@ -43,7 +43,7 @@ public final class RedClocktower extends JavaPlugin {
 
         // load brigadier commands
         BrigadierToolbox.loadCommands(this,
-            List.of(new Storyteller(), new Setup(), new Vote(), new Tagme(), new Whosend(), new BroadcastCommand())
+            List.of(new StorytellerCommand(), new SetupCommand(), new Vote(), new Tagme(), new Whosend(), new BroadcastCommand())
         );
 
         // message

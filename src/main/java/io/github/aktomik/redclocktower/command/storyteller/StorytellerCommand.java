@@ -5,7 +5,7 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 
 import java.util.List;
 
-public class Storyteller extends BrigadierCommand {
+public class StorytellerCommand extends BrigadierCommand {
 
     // register
     public String name() {
