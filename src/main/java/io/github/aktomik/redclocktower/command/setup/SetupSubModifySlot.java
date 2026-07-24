@@ -103,7 +103,8 @@ public class SetupSubModifySlot extends BrigadierSub {
 		if (loc == null)
 		{
 			sender.sendRichMessage("<gray>position <b><place></b> of chair <number> is not placed",
-				Placeholder.parsed("place", place.toString())
+				Placeholder.parsed("place", place.toString()),
+				Placeholder.parsed("number", Integer.toString(chairIndex + 1))
 			);
 			return Command.SINGLE_SUCCESS;
 		}

@@ -26,6 +26,17 @@ public class TownHall {
 		this.pdc = pdc;
 	}
 
+	// access
+	public String getTownName() {
+		return this.townName;
+	}
+	public World getWorld() {
+		return this.world;
+	}
+	public PersistentDataContainer getPdc() {
+		return this.pdc;
+	}
+
 	// town save
 	private static NamespacedKey townKey(String townName) {
 		return new NamespacedKey(RedClocktower.plugin(), "townhall." + townName);
@@ -56,6 +67,16 @@ public class TownHall {
 		pdc.set(DataKey.TOWN_NAME.key(), PersistentDataType.STRING, townName);// only non defaultable field
 		worldData.set(townKey(townName), PersistentDataType.TAG_CONTAINER, pdc);
 		return new TownHall(world, townName, pdc);
+	}
+
+	public static TownHall clone(TownHall townHall, String townName) {
+		PersistentDataContainer worldData = townHall.getWorld().getPersistentDataContainer();
+		if (worldData.has(townKey(townName))) return null;
+		PersistentDataContainer pdc = worldData.getAdapterContext().newPersistentDataContainer();
+		townHall.getPdc().copyTo(pdc, true);
+		pdc.set(DataKey.TOWN_NAME.key(), PersistentDataType.STRING, townName);// only non defaultable field
+		worldData.set(townKey(townName), PersistentDataType.TAG_CONTAINER, pdc);
+		return new TownHall(townHall.getWorld(), townName, pdc);
 	}
 
 	public static boolean delete(World world, String townName) {
@@ -148,13 +169,5 @@ public class TownHall {
 
 	@Deprecated public static void setSelection(CommandSender sender, TownHall townHall) {
 		playerSelection.put(sender, townHall);
-	}
-
-	// access
-	public String getTownName() {
-		return this.townName;
-	}
-	public World getWorld() {
-		return this.world;
 	}
 }
