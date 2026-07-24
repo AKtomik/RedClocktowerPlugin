@@ -3,7 +3,6 @@ package io.github.aktomik.redclocktower.game;
 import io.github.aktomik.redclocktower.DataKey;
 import io.github.aktomik.redclocktower.RedClocktower;
 import io.github.aktomik.redclocktower.command.setup.TownHallPlace;
-import io.github.aktomik.redclocktower.oldgame.GamePlace;
 import io.github.aktomik.redclocktower.utils.pdc.BlockPos;
 import io.github.aktomik.redclocktower.utils.pdc.PositionDataType;
 import org.bukkit.Location;
@@ -88,6 +87,51 @@ public class TownHall {
 	public boolean getSettingsCanPlayerDrop()
 	{
 		return pdc.getOrDefault(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_DROP.key(), PersistentDataType.BOOLEAN, false);
+	}
+
+	// data/chair
+	private void setChairsPdc(List<PersistentDataContainer> uuids)
+	{
+		pdc.set(DataKey.TOWN_CHAIRS.key(), PersistentDataType.LIST.dataContainers(), uuids);
+		save();
+	}
+	private void clearChairsPdc()
+	{
+		pdc.remove(DataKey.TOWN_CHAIRS.key());
+	}
+	private List<PersistentDataContainer> getChairsPdc()
+	{
+		return pdc.getOrDefault(DataKey.TOWN_CHAIRS.key(), PersistentDataType.LIST.dataContainers(), List.of());
+	}
+
+	public int getChairCount()
+	{
+		return getChairsPdc().size();
+	}
+
+	public TownChair getChair(int index)
+	{
+		return TownChair.get(this, getChairsPdc().get(index));
+	}
+
+	public void setChair(int index, TownChair townChair)
+	{
+		List<PersistentDataContainer> slotsPdc = new ArrayList<>(getChairsPdc());
+		slotsPdc.set(index, townChair.getPdc());
+		setChairsPdc(slotsPdc);
+	}
+
+	public void addNewChair()
+	{
+		List<PersistentDataContainer> slotsPdc = new ArrayList<>(getChairsPdc());
+		slotsPdc.add(pdc.getAdapterContext().newPersistentDataContainer());
+		setChairsPdc(slotsPdc);
+	}
+	public void removeLastChair()
+	{
+		List<PersistentDataContainer> slotsPdc = new ArrayList<>(getChairsPdc());
+		slotsPdc.remove(slotsPdc.size() - 1);
+		setChairsPdc(slotsPdc);
 	}
 
 	// every mutator ends with this

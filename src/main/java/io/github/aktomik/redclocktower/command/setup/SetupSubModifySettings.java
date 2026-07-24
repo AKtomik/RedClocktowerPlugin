@@ -27,11 +27,10 @@ public class SetupSubModifySettings extends BrigadierSub {
 	}
 
 	Command<CommandSourceStack> canPlayerDropCheck = ctx -> {
-		// arguments
 		CommandSender sender = ctx.getSource().getSender();
 		TownHall townHall = ctx.getArgument("town", TownHall.class);
-		final boolean value = townHall.getSettingsCanPlayerDrop();
 
+		final boolean value = townHall.getSettingsCanPlayerDrop();
 		sender.sendRichMessage("player drop ability is <b><value></b>.",
 			Placeholder.parsed("value", (value) ? "enabled" : "disabled")
 		);
@@ -39,7 +38,6 @@ public class SetupSubModifySettings extends BrigadierSub {
 	};
 
 	Command<CommandSourceStack> canPlayerDropChange = ctx -> {
-		// arguments
 		CommandSender sender = ctx.getSource().getSender();
 		TownHall townHall = ctx.getArgument("town", TownHall.class);
 		final boolean value = ctx.getArgument("new value", boolean.class);

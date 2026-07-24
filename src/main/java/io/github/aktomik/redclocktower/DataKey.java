@@ -12,8 +12,7 @@ public enum DataKey {
 
 	// define
 	TOWN_NAME,
-	TOWN_SETTINGS,
-	TOWN_SEATS,
+	TOWN_CHAIRS,
 
 	TOWN_HALL_LOC_CENTER,
 	TOWN_HALL_LOC_SPAWN,
