@@ -6,6 +6,7 @@ import io.github.aktomik.redclocktower.utils.pdc.BlockPos;
 import io.github.aktomik.redclocktower.utils.pdc.PositionDataType;
 import org.bukkit.Location;
 import org.bukkit.persistence.PersistentDataContainer;
+import org.jspecify.annotations.NullMarked;
 
 public class TownChair {
 
@@ -18,6 +19,7 @@ public class TownChair {
 		this.pdc = pdc;
 	}
 
+	@NullMarked
 	public static TownChair get(TownHall townHall, PersistentDataContainer pdc) {
 		return new TownChair(townHall, pdc);
 	}

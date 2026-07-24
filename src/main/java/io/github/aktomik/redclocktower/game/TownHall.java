@@ -11,6 +11,7 @@ import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
+import org.jspecify.annotations.Nullable;
 
 import java.util.*;
 
@@ -42,14 +43,7 @@ public class TownHall {
 		return new NamespacedKey(RedClocktower.plugin(), "townhall." + townName);
 	}
 
-	public static TownHall get(World world, String townName) {
-		PersistentDataContainer worldData = world.getPersistentDataContainer();
-		PersistentDataContainer pdc = worldData.get(townKey(townName), PersistentDataType.TAG_CONTAINER);
-		if (pdc == null) return null;
-		return new TownHall(world, townName, pdc);
-	}
-
-	public static Set<String> getTownList(World world)
+	public static Set<String> getWorldTowns(World world)
 	{
 		PersistentDataContainer worldData = world.getPersistentDataContainer();
 		Set<String> names = new HashSet<>();
@@ -60,6 +54,15 @@ public class TownHall {
 		return names;
 	}
 
+	@Nullable
+	public static TownHall find(World world, String townName) {
+		PersistentDataContainer worldData = world.getPersistentDataContainer();
+		PersistentDataContainer pdc = worldData.get(townKey(townName), PersistentDataType.TAG_CONTAINER);
+		if (pdc == null) return null;
+		return new TownHall(world, townName, pdc);
+	}
+
+	@Nullable
 	public static TownHall create(World world, String townName) {
 		PersistentDataContainer worldData = world.getPersistentDataContainer();
 		if (worldData.has(townKey(townName))) return null;
@@ -69,6 +72,7 @@ public class TownHall {
 		return new TownHall(world, townName, pdc);
 	}
 
+	@Nullable
 	public static TownHall clone(TownHall townHall, String townName) {
 		PersistentDataContainer worldData = townHall.getWorld().getPersistentDataContainer();
 		if (worldData.has(townKey(townName))) return null;
@@ -111,9 +115,9 @@ public class TownHall {
 	}
 
 	// data/chair
-	private void setChairsPdc(List<PersistentDataContainer> uuids)
+	private void setChairsPdc(List<PersistentDataContainer> pdcs)
 	{
-		pdc.set(DataKey.TOWN_CHAIRS.key(), PersistentDataType.LIST.dataContainers(), uuids);
+		pdc.set(DataKey.TOWN_CHAIRS.key(), PersistentDataType.LIST.dataContainers(), pdcs);
 		save();
 	}
 	private void clearChairsPdc()

@@ -40,7 +40,7 @@ public class TownArgumentType implements CustomArgumentType<TownHall, String> {
 
 		String name = reader.readUnquotedString();
 		World world = sourceStack.getLocation().getWorld();
-		TownHall town = TownHall.get(world, name);
+		TownHall town = TownHall.find(world, name);
 		if (town == null) throw ERROR_UNKNOWN_TOWN.create(name);
 		return town;
 	}
@@ -50,7 +50,7 @@ public class TownArgumentType implements CustomArgumentType<TownHall, String> {
 	CommandContext<S> context, SuggestionsBuilder builder) {
 		if (context.getSource() instanceof CommandSourceStack sourceStack) {
 			World world = sourceStack.getLocation().getWorld();
-			TownHall.getTownList(world)
+			TownHall.getWorldTowns(world)
 				.stream().filter(name -> name.toLowerCase().startsWith(builder.getRemainingLowerCase()))
 				.forEach(builder::suggest);
 		}

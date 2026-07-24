@@ -1,6 +1,7 @@
 package io.github.aktomik.redclocktower.game;
 
 import org.bukkit.World;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -15,10 +16,12 @@ public class BloodGame {
 	private static final Map<TownHall, BloodGame> townToGameMap = new HashMap<>();
 	private static final Map<World, BloodGame> worldToGameMap = new HashMap<>();
 
+	@Nullable
 	public static BloodGame get(TownHall townHall) {
 		return townToGameMap.get(townHall);
 	}
 
+	@Nullable
 	public static BloodGame get(World world) {
 		return worldToGameMap.get(world);
 	}
