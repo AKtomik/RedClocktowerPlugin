@@ -100,6 +100,13 @@ public class SetupSubModifySlot extends BrigadierSub {
 
 		// execution
 		final Location loc = chair.getPosition(place);
+		if (loc == null)
+		{
+			sender.sendRichMessage("<gray>position <b><place></b> of chair <number> is not placed",
+				Placeholder.parsed("place", place.toString())
+			);
+			return Command.SINGLE_SUCCESS;
+		}
 		sender.sendRichMessage("position <b><place></b> of chair <number> is at <x> <y> <z> <hover:show_text:\"Click to teleport\"><click:run_command:/tp @s <x> <y> <z>><green>[tp]",
 			Placeholder.parsed("number", Integer.toString(chairIndex + 1)),
 			Placeholder.parsed("x", Integer.toString(loc.getBlockX())),
