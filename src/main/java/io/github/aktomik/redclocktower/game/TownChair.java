@@ -24,6 +24,10 @@ public class TownChair {
 		return new TownChair(townHall, pdc);
 	}
 
+	// access
+	public TownHall getTownHall() {
+		return townHall;
+	}
 	public PersistentDataContainer getPdc() {
 		return pdc;
 	}

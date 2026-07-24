@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class BloodPlayer {
 
-	Player player;
+	private final Player player;
 	private BloodPlayer(Player player) {
 		this.player = player;
 	}

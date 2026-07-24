@@ -8,7 +8,7 @@ import java.util.Map;
 
 public class BloodGame {
 
-	TownHall townHall;
+	private final TownHall townHall;
 	private BloodGame(TownHall townHall) {
 		this.townHall = townHall;
 	}
