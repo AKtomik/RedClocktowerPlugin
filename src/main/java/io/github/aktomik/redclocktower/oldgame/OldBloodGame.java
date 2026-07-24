@@ -28,7 +28,7 @@ import org.bukkit.scoreboard.Team;
 import java.util.*;
 import java.util.function.Consumer;
 
-public class BloodGame {
+public class OldBloodGame {
 
 	// class
 	private static MiniMessage mini = MiniMessage.miniMessage();
@@ -36,20 +36,20 @@ public class BloodGame {
 	public final World world;
 	private final PersistentDataContainer pdc;
 
-	private BloodGame(World world)
+	private OldBloodGame(World world)
 	{
 		this.world = world;
 		this.pdc = world.getPersistentDataContainer();
 	}
-	public static BloodGame get(World world)
+	public static OldBloodGame get(World world)
 	{
-		return new BloodGame(world);
+		return new OldBloodGame(world);
 	}
-	public static BloodGame get(CommandSourceStack ctx) {
-		return BloodGame.get(ctx.getLocation().getWorld());
+	public static OldBloodGame get(CommandSourceStack ctx) {
+		return OldBloodGame.get(ctx.getLocation().getWorld());
 	}
-	public static BloodGame get(CommandContext<CommandSourceStack> ctx) {
-		return BloodGame.get(ctx.getSource());
+	public static OldBloodGame get(CommandContext<CommandSourceStack> ctx) {
+		return OldBloodGame.get(ctx.getSource());
 	}
 
 	// sett
@@ -60,24 +60,24 @@ public class BloodGame {
 	static final float EVENT_VOLUME = .5f;
 
 	// get & set
-	public void setState(GameState gameState)
+	public void setState(OldGameState gameState)
 	{
 		pdc.set(OldDataKey.GAME_STATE.key(), PersistentDataType.INTEGER, gameState.ordinal());
 	}
-	public GameState getState()
+	public OldGameState getState()
 	{
-		int ordinal = pdc.getOrDefault(OldDataKey.GAME_STATE.key(), PersistentDataType.INTEGER, GameState.NOTHING.ordinal());
-		return GameState.values()[ordinal];
+		int ordinal = pdc.getOrDefault(OldDataKey.GAME_STATE.key(), PersistentDataType.INTEGER, OldGameState.NOTHING.ordinal());
+		return OldGameState.values()[ordinal];
 	}
 
-	void setTime(GamePeriod gameState)
+	void setTime(OldGamePeriod gameState)
 	{
 		pdc.set(OldDataKey.GAME_PERIOD.key(), PersistentDataType.INTEGER, gameState.ordinal());
 	}
-	public GamePeriod getTime()
+	public OldGamePeriod getTime()
 	{
-		int ordinal = pdc.getOrDefault(OldDataKey.GAME_PERIOD.key(), PersistentDataType.INTEGER, GamePeriod.FREE.ordinal());
-		return GamePeriod.values()[ordinal];
+		int ordinal = pdc.getOrDefault(OldDataKey.GAME_PERIOD.key(), PersistentDataType.INTEGER, OldGamePeriod.FREE.ordinal());
+		return OldGamePeriod.values()[ordinal];
 	}
 
 	private void setRoundCount(int count)
@@ -111,7 +111,7 @@ public class BloodGame {
 		return pdc.get(OldDataKey.GAME_STORYTELLER_UUID.key(), UUIDDataType.INSTANCE);
 	}
 
-	public void setVoteStep(GameVoteStep voteStep)
+	public void setVoteStep(OldGameVoteStep voteStep)
 	{
 		pdc.set(OldDataKey.GAME_VOTE_STEP.key(), PersistentDataType.INTEGER, voteStep.ordinal());
 	}
@@ -119,10 +119,10 @@ public class BloodGame {
 	{
 		pdc.remove(OldDataKey.GAME_VOTE_STEP.key());
 	}
-	public GameVoteStep getVoteStep()
+	public OldGameVoteStep getVoteStep()
 	{
-		int ordinal = pdc.getOrDefault(OldDataKey.GAME_VOTE_STEP.key(), PersistentDataType.INTEGER, GameVoteStep.NOTHING.ordinal());
-		return GameVoteStep.values()[ordinal];
+		int ordinal = pdc.getOrDefault(OldDataKey.GAME_VOTE_STEP.key(), PersistentDataType.INTEGER, OldGameVoteStep.NOTHING.ordinal());
+		return OldGameVoteStep.values()[ordinal];
 	}
 
 	private void setVoteNominatedUuid(UUID uuid)
@@ -198,11 +198,11 @@ public class BloodGame {
 		return pdc.getOrDefault(OldDataKey.GAME_SLOTS_PDC.key(), PersistentDataType.LIST.dataContainers(), List.of());
 	}
 
-	public void setPosition(GamePlace place, Location pos)
+	public void setPosition(OldGamePlace place, Location pos)
 	{
 		pdc.set(OldDataKey.GAME_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
 	}
-	public Location getPosition(GamePlace place)
+	public Location getPosition(OldGamePlace place)
 	{
 		int[] posArray = pdc.get(OldDataKey.GAME_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY);
 		if (posArray == null || posArray.length != 3) return null;
@@ -221,18 +221,18 @@ public class BloodGame {
 	// states & time
 	public boolean isStarted()
 	{
-		return getState() == GameState.INGAME;
+		return getState() == OldGameState.INGAME;
 	}
 	public boolean isEnded()
 	{
-		return getState() == GameState.ENDED;
+		return getState() == OldGameState.ENDED;
 	}
 	public boolean isReady()
 	{
-		GameState state = getState();
-		return (state == GameState.WAITING || state == GameState.INGAME);
+		OldGameState state = getState();
+		return (state == OldGameState.WAITING || state == OldGameState.INGAME);
 	}
-	public boolean isVoteMoment() { return (getTime() == GamePeriod.MEET); }
+	public boolean isVoteMoment() { return (getTime() == OldGamePeriod.MEET); }
 
 	// players
 	private int findPlayerIndex(UUID playerUuid)
@@ -281,9 +281,9 @@ public class BloodGame {
 		return getPlayersUuid().stream().map(Bukkit::getOfflinePlayer).toList();
 	}
 
-	public List<BloodPlayer> getAllBloodPlayers()
+	public List<OldBloodPlayer> getAllBloodPlayers()
 	{
-		return getAllPlayers().stream().map(BloodPlayer::get).toList();
+		return getAllPlayers().stream().map(OldBloodPlayer::get).toList();
 	}
 
 	public int getAliveCitizenCount()
@@ -313,7 +313,7 @@ public class BloodGame {
 		getTeam().addPlayer(player);
 		// blood player object join
 		// must be done after game add player
-		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
 		bloodPlayer.joinGame(this, slotIndex);
 	}
 
@@ -327,7 +327,7 @@ public class BloodGame {
 		// blood player object quit if online
 		Player player = offlinePlayer.getPlayer();
 		if (player != null) {// must be done before game remove player
-			BloodPlayer bloodPlayer = BloodPlayer.get(player);
+			OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
 			boolean wasSpectator = bloodPlayer.isSpectator();
 			bloodPlayer.quitGameFinalStep();
 			// spectators are not in game uuid
@@ -366,7 +366,7 @@ public class BloodGame {
 	public void addSpectator(Player player)
 	{
 		// blood player object spectator join
-		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
 		bloodPlayer.joinGame(this, false);
 	}
 
@@ -375,7 +375,7 @@ public class BloodGame {
 		Player lastStoryteller = getStoryteller();
 		if (lastStoryteller != null)  removePlayer(lastStoryteller);
 
-		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
 		bloodPlayer.joinGame(this, true);
 
 		setStorytellerUuid(player.getUniqueId());
@@ -435,9 +435,9 @@ public class BloodGame {
 		if (Objects.equals(getVotePyloriUuid(), uuid)) removePyloriPlayer();
 
 		applyColorGlowingToOne(player, NOMINATE_TEAM_COLOR);
-		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
 		changeExclusionMode(bloodPlayer.isTraveller());
-		mutateSlots(BloodSlot::unlock);
+		mutateSlots(OldBloodSlot::unlock);
 		setVoteNominatedUuid(uuid);
 	}
 	public void removeNominatedPlayer()
@@ -468,12 +468,12 @@ public class BloodGame {
 
 	public void sitTags()
 	{
-		List<BloodSlot> slots = getSlots();
+		List<OldBloodSlot> slots = getSlots();
 		for (Player player : getAllPlayers())
 		{
-			BloodPlayer bloodPlayer = BloodPlayer.get(player);
+			OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
 			int index = bloodPlayer.getSlotIndex();
-			Location loc = slots.get(index).getPosition(SlotPlace.CHAIR);
+			Location loc = slots.get(index).getPosition(OldSlotPlace.CHAIR);
 			if (loc == null) continue;
 			loc = loc.add(0, 2.5, 0).toCenterLocation();
 			PlayerNameTagEditor.forcePlace(player, loc);
@@ -485,43 +485,43 @@ public class BloodGame {
 		setExclusionVote(isAnExclusion);
 		mutateSlots(bloodSlot -> bloodSlot.setExclusion(isAnExclusion));
 		// needed bcs setExclusion does not refresh itself
-		getAllBloodPlayers().forEach(BloodPlayer::refreshSlotLamp);
+		getAllBloodPlayers().forEach(OldBloodPlayer::refreshSlotLamp);
 	}
 
 	// slots
 
-	public List<BloodSlot> getSlots()
+	public List<OldBloodSlot> getSlots()
 	{
-		return getSlotsPdc().stream().map(slot -> BloodSlot.get(world, slot)).toList();
+		return getSlotsPdc().stream().map(slot -> OldBloodSlot.get(world, slot)).toList();
 	}
-	public BloodSlot getSlot(int index)
+	public OldBloodSlot getSlot(int index)
 	{
-		return BloodSlot.get(world, getSlotsPdc().get(index));
+		return OldBloodSlot.get(world, getSlotsPdc().get(index));
 	}
 	public int getSlotCount()
 	{
 		return getSlotsPdc().size();
 	}
-	public void setSlot(int index, BloodSlot slot)
+	public void setSlot(int index, OldBloodSlot slot)
 	{
 		List<PersistentDataContainer> slotsPdc = new ArrayList<>(getSlotsPdc());
 		slotsPdc.set(index, slot.pdc);
 		setSlotsPdc(slotsPdc);
 	}
-	public void setSlots(List<BloodSlot> slots)
+	public void setSlots(List<OldBloodSlot> slots)
 	{
 		setSlotsPdc(slots.stream().map(slot -> slot.pdc).toList());
 	}
 
-	public void mutateSlots(Consumer<BloodSlot> action)
+	public void mutateSlots(Consumer<OldBloodSlot> action)
 	{
-		List<BloodSlot> slots = getSlots();
+		List<OldBloodSlot> slots = getSlots();
 		slots.forEach(action);
 		setSlots(slots);
 	}
-	public void mutateSlot(int index, Consumer<BloodSlot> action)
+	public void mutateSlot(int index, Consumer<OldBloodSlot> action)
 	{
-		BloodSlot slot = getSlot(index);
+		OldBloodSlot slot = getSlot(index);
 		action.accept(slot);
 		setSlot(index, slot);
 	}
@@ -565,7 +565,7 @@ public class BloodGame {
 
 				Player player = Bukkit.getPlayer(lastUuid);
 				if (player == null || !player.isOnline()) continue;
-				BloodPlayer bloodPlayer = BloodPlayer.get(player);
+				OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
 				bloodPlayer.quitGameFinalStep();
 			}
 			setSlotsUuid(slotsUuid);
@@ -590,9 +590,9 @@ public class BloodGame {
 
 	public boolean isLevelInSlots(Location loc)
 	{
-		for (BloodSlot slot : getSlots())
+		for (OldBloodSlot slot : getSlots())
 		{
-			if (Objects.equals(slot.getPosition(SlotPlace.LEVER), loc)) return true;
+			if (Objects.equals(slot.getPosition(OldSlotPlace.LEVER), loc)) return true;
 		}
 		return false;
 	}
@@ -637,7 +637,7 @@ public class BloodGame {
 
 	public int countVotes()
 	{
-		return getAllBloodPlayers().stream().mapToInt(BloodPlayer::getVote).sum();
+		return getAllBloodPlayers().stream().mapToInt(OldBloodPlayer::getVote).sum();
 	}
 	public void removeUsedVoken()
 	{
@@ -646,26 +646,26 @@ public class BloodGame {
 
 	public boolean isVoteSystemBusy()
 	{
-		return (getVoteStep() != GameVoteStep.NOTHING);
+		return (getVoteStep() != OldGameVoteStep.NOTHING);
 	}
 
 	public boolean isVoteProcessCanceled()
 	{
-		GameVoteStep step = getVoteStep();
-		boolean canceled = step != GameVoteStep.VOTE_PROCESS;
+		OldGameVoteStep step = getVoteStep();
+		boolean canceled = step != OldGameVoteStep.VOTE_PROCESS;
 		if (!canceled) return false;
-		if (step != GameVoteStep.CANCEL_VOTE_PROCESS) return true;
-		setVoteStep(GameVoteStep.NOTHING);
+		if (step != OldGameVoteStep.CANCEL_VOTE_PROCESS) return true;
+		setVoteStep(OldGameVoteStep.NOTHING);
 		return true;
 	}
 
 	public boolean isExecutionProcessCanceled()
 	{
-		GameVoteStep step = getVoteStep();
-		boolean canceled = step != GameVoteStep.EXECUTION_PROCESS;
+		OldGameVoteStep step = getVoteStep();
+		boolean canceled = step != OldGameVoteStep.EXECUTION_PROCESS;
 		if (!canceled) return false;
-		if (step != GameVoteStep.CANCEL_EXECUTION_PROCESS) return true;
-		setVoteStep(GameVoteStep.NOTHING);
+		if (step != OldGameVoteStep.CANCEL_EXECUTION_PROCESS) return true;
+		setVoteStep(OldGameVoteStep.NOTHING);
 		return true;
 	}
 
@@ -674,7 +674,7 @@ public class BloodGame {
 		int count = getAliveCitizenCount();
 		int majority = getPyloriMajority(count);
 		Player nominatedPlayer = getNominatedPlayer();
-		BloodPlayer nominatedBloodPlayer = BloodPlayer.get(nominatedPlayer);
+		OldBloodPlayer nominatedBloodPlayer = OldBloodPlayer.get(nominatedPlayer);
 		int pyloriSlotIndex = nominatedBloodPlayer.getSlotIndex();
 
 		TagResolver[] resolvers = new TagResolver[]{
@@ -706,9 +706,9 @@ public class BloodGame {
 		};
 
 		//step 0
-		setVoteStep(GameVoteStep.VOTE_PROCESS);
+		setVoteStep(OldGameVoteStep.VOTE_PROCESS);
 		changeExclusionMode(nominatedBloodPlayer.isTraveller());
-		mutateSlots(BloodSlot::unlock);
+		mutateSlots(OldBloodSlot::unlock);
 		broadcast("<gold>there is <count> players alive", resolvers);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), startVoteProcessStep1, 40L);
 	}
@@ -718,12 +718,12 @@ public class BloodGame {
 	{
 		return () -> {
 			if (isVoteProcessCanceled()) return;
-			List<BloodSlot> slots = getSlots();
+			List<OldBloodSlot> slots = getSlots();
 
 			int actualIndex = lastIndex + 1;
 			if (actualIndex >= slots.size()) actualIndex = 0;
 
-			BloodSlot slot = slots.get(actualIndex);
+			OldBloodSlot slot = slots.get(actualIndex);
 			slot.lock();
 			setSlot(actualIndex, slot);
 
@@ -743,10 +743,10 @@ public class BloodGame {
 		int votes = countVotes();
 		removeUsedVoken();
 		Player nominatedPlayer = getNominatedPlayer();
-		BloodPlayer nominatedBloodPlayer = BloodPlayer.get(nominatedPlayer);
+		OldBloodPlayer nominatedBloodPlayer = OldBloodPlayer.get(nominatedPlayer);
 		Player lastPyloriPlayer = getPyloriPlayer();
 		boolean hasLastPlayer = (lastPyloriPlayer != null);
-		BloodPlayer lastPyloriBloodPlayer = (hasLastPlayer) ?  BloodPlayer.get(lastPyloriPlayer) : null;
+		OldBloodPlayer lastPyloriBloodPlayer = (hasLastPlayer) ?  OldBloodPlayer.get(lastPyloriPlayer) : null;
 
 		TagResolver[] resolvers = new TagResolver[]{
 			Placeholder.parsed("last", (hasLastPlayer) ? lastPyloriBloodPlayer.getName() : ""),
@@ -764,9 +764,9 @@ public class BloodGame {
 		//step 2
 		Runnable finishRunnableStep2 = () -> {
 			if (isVoteProcessCanceled()) return;
-			setVoteStep(GameVoteStep.NOTHING);
+			setVoteStep(OldGameVoteStep.NOTHING);
 			changeExclusionMode(false);
-			mutateSlots(BloodSlot::unlock);
+			mutateSlots(OldBloodSlot::unlock);
 		};
 
 		//step 1
@@ -816,32 +816,32 @@ public class BloodGame {
 	public void mountBeforeExecution()
 	{
 		Player pyloriPlayer = getPyloriPlayer();
-		Location location = getPosition(GamePlace.PYLORI);
+		Location location = getPosition(OldGamePlace.PYLORI);
 		pyloriPlayer.teleport(location.toCenterLocation());
 	}
 
 	public void startExecuteProcess(boolean reallyDies)
 	{
 		Player pyloriPlayer = getPyloriPlayer();
-		BloodPlayer pyloriBloodPlayer = BloodPlayer.get(pyloriPlayer);
+		OldBloodPlayer pyloriBloodPlayer = OldBloodPlayer.get(pyloriPlayer);
 
 		TagResolver[] resolvers = new TagResolver[]{
 		Placeholder.parsed("target", pyloriBloodPlayer.getName()),
 		};
 
 		// step 0
-		setVoteStep(GameVoteStep.EXECUTION_PROCESS);
+		setVoteStep(OldGameVoteStep.EXECUTION_PROCESS);
 		removePyloriPlayer();
 		broadcast("<red><b><target></b> is executed", resolvers);
 
-		Location location = getPosition(GamePlace.PYLORI).toCenterLocation();
+		Location location = getPosition(OldGamePlace.PYLORI).toCenterLocation();
 		Location lastLocation = Objects.requireNonNull(pyloriPlayer.getLocation());
 		if (location.distance(lastLocation) > .2)
 		{
 			pyloriPlayer.teleport(location.setDirection(lastLocation.getDirection()));
 		}
 
-		Location honeyLocation = getPosition(GamePlace.PYLORI);
+		Location honeyLocation = getPosition(OldGamePlace.PYLORI);
 		honeyLocation.setY(honeyLocation.getY() - 1);
 		BlockData beforeHoney = world.getBlockData(honeyLocation);
 		world.setBlockData(honeyLocation, BlockType.HONEY_BLOCK.createBlockData());
@@ -860,7 +860,7 @@ public class BloodGame {
 		Runnable runnableStep1;
 		Runnable runnableResetStep = () -> {
 			world.setBlockData(honeyLocation, beforeHoney);
-			setVoteStep(GameVoteStep.NOTHING);
+			setVoteStep(OldGameVoteStep.NOTHING);
 		};
 
 		if (reallyDies)
@@ -871,7 +871,7 @@ public class BloodGame {
 				pyloriPlayer.setHealth(0);
 				pyloriBloodPlayer.changeAlive(false);
 				//broadcast("<red><target></red> died", resolvers);
-				setVoteStep(GameVoteStep.NOTHING);
+				setVoteStep(OldGameVoteStep.NOTHING);
 				runnableResetStep.run();
 			};
 		}
@@ -880,7 +880,7 @@ public class BloodGame {
 			// do not die
 			runnableStep1 = () -> {
 				if (isExecutionProcessCanceled()) return;
-				setVoteStep(GameVoteStep.NOTHING);
+				setVoteStep(OldGameVoteStep.NOTHING);
 				runnableResetStep.run();
 			};
 			pyloriPlayer.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 100, 9, false, false, false));
@@ -893,7 +893,7 @@ public class BloodGame {
 	{
 		switch (getVoteStep())
 		{
-			case GameVoteStep.NOTHING:
+			case OldGameVoteStep.NOTHING:
 			{
 				if (getVoteNominatedUuid() != null)
 				{
@@ -904,39 +904,39 @@ public class BloodGame {
 					sender.sendRichMessage("<aqua>the pylori was <red>cleared</red>.");
 				} else {
 					changeExclusionMode(false);
-					mutateSlots(BloodSlot::unlock);
+					mutateSlots(OldBloodSlot::unlock);
 					sender.sendRichMessage("<aqua>reseting votes pistons.<white> there is nothing else to cancel.");
 				}
 			} break;
 
-			case GameVoteStep.VOTE_PROCESS:
+			case OldGameVoteStep.VOTE_PROCESS:
 			{
 				removeNominatedPlayer();
 				changeExclusionMode(false);
-				mutateSlots(BloodSlot::unlock);
-				setVoteStep(GameVoteStep.CANCEL_VOTE_PROCESS);
+				mutateSlots(OldBloodSlot::unlock);
+				setVoteStep(OldGameVoteStep.CANCEL_VOTE_PROCESS);
 				sender.sendRichMessage("<aqua><red>canceling</red> the vote...");
 			} break;
-			case GameVoteStep.CANCEL_VOTE_PROCESS:
+			case OldGameVoteStep.CANCEL_VOTE_PROCESS:
 			{
-				setVoteStep(GameVoteStep.NOTHING);
+				setVoteStep(OldGameVoteStep.NOTHING);
 				sender.sendRichMessage("<aqua><red>force</red> the vote cancel");
 			} break;
 
-			case GameVoteStep.EXECUTION_PROCESS:
+			case OldGameVoteStep.EXECUTION_PROCESS:
 			{
-				setVoteStep(GameVoteStep.CANCEL_EXECUTION_PROCESS);
+				setVoteStep(OldGameVoteStep.CANCEL_EXECUTION_PROCESS);
 				sender.sendRichMessage("<aqua><red>canceling</red> the execution...");
 			} break;
-			case GameVoteStep.CANCEL_EXECUTION_PROCESS:
+			case OldGameVoteStep.CANCEL_EXECUTION_PROCESS:
 			{
-				setVoteStep(GameVoteStep.NOTHING);
+				setVoteStep(OldGameVoteStep.NOTHING);
 				sender.sendRichMessage("<aqua><red>force</red> the execution cancel");
 			} break;
 
-			case GameVoteStep.PYLORI_MOUNT:
+			case OldGameVoteStep.PYLORI_MOUNT:
 			{
-				setVoteStep(GameVoteStep.NOTHING);
+				setVoteStep(OldGameVoteStep.NOTHING);
 				sender.sendRichMessage("<aqua>the mount was <red>canceled</red>.");
 			} break;
 		}
@@ -944,17 +944,17 @@ public class BloodGame {
 
 	// runs
 
-	public void doStep(GameStepAction action, CommandSender sender)
+	public void doStep(OldGameStepAction action, CommandSender sender)
 	{
-		GameAction.step.get(action).accept(this, sender);
+		OldGameAction.step.get(action).accept(this, sender);
 	}
-	public void doDebug(GameDebugAction action, CommandSender sender)
+	public void doDebug(OldGameDebugAction action, CommandSender sender)
 	{
-		GameAction.debug.get(action).accept(this, sender);
+		OldGameAction.debug.get(action).accept(this, sender);
 	}
-	public void switchTime(GamePeriod period, CommandSender sender)
+	public void switchTime(OldGamePeriod period, CommandSender sender)
 	{
-		GameAction.periodEnter.get(period).accept(this, sender);
+		OldGameAction.periodEnter.get(period).accept(this, sender);
 		setTime(period);
 	}
 

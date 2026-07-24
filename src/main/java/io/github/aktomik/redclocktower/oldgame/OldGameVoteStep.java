@@ -1,6 +1,6 @@
 package io.github.aktomik.redclocktower.oldgame;
 
-public enum GameVoteStep
+public enum OldGameVoteStep
 {
 	NOTHING,
 	NOMINATION,//UNUSED

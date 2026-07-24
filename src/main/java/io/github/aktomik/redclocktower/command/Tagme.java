@@ -3,7 +3,7 @@ package io.github.aktomik.redclocktower.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.oldgame.BloodPlayer;
+import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -36,7 +36,7 @@ public class Tagme extends BrigadierCommand {
             Player player = (Player)ctx.getSource().getExecutor();
             assert player != null;
             builder.suggest(player.getName());
-            BloodPlayer bloodPlayer = BloodPlayer.get(player);
+            OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
             String displayName = bloodPlayer.getDisplayName();
             if (displayName != null && !displayName.isEmpty()) builder.suggest(bloodPlayer.getDisplayName());
             return builder.buildFuture();
@@ -45,7 +45,7 @@ public class Tagme extends BrigadierCommand {
         ctx -> {
             Player player = (Player)ctx.getSource().getExecutor();
 			assert player != null;
-            BloodPlayer bloodPlayer = BloodPlayer.get(player);
+            OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
             String displayName = StringArgumentType.getString(ctx, "display name");
 
             if (displayName.equalsIgnoreCase(player.getName()))

@@ -4,8 +4,8 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
-import io.github.aktomik.redclocktower.oldgame.BloodGame;
-import io.github.aktomik.redclocktower.oldgame.GamePeriod;
+import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
+import io.github.aktomik.redclocktower.oldgame.OldGamePeriod;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -19,12 +19,12 @@ public class StorytellerSubTime extends BrigadierSub {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.argument("period", EnumArgument.simple(GamePeriod.class, "Invalid game period"))
+		.then(Commands.argument("period", EnumArgument.simple(OldGamePeriod.class, "Invalid game period"))
 		.executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
-			BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
-			final GamePeriod period = ctx.getArgument("period", GamePeriod.class);
+			OldBloodGame game = OldBloodGame.get(ctx.getSource().getLocation().getWorld());
+			final OldGamePeriod period = ctx.getArgument("period", OldGamePeriod.class);
 
 			//	checks
 			if (!game.isStarted())
@@ -42,10 +42,10 @@ public class StorytellerSubTime extends BrigadierSub {
 		})).executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
-			BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+			OldBloodGame game = OldBloodGame.get(ctx.getSource().getLocation().getWorld());
 
 			// execute
-			GamePeriod gamePeriod = game.getTime();
+			OldGamePeriod gamePeriod = game.getTime();
 			sender.sendRichMessage("game is in <b><period></b> time",
 			Placeholder.parsed("period", gamePeriod.toString())
 			);

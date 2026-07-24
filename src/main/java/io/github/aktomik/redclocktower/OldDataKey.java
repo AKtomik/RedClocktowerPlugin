@@ -1,7 +1,7 @@
 package io.github.aktomik.redclocktower;
 
-import io.github.aktomik.redclocktower.oldgame.GamePlace;
-import io.github.aktomik.redclocktower.oldgame.SlotPlace;
+import io.github.aktomik.redclocktower.oldgame.OldGamePlace;
+import io.github.aktomik.redclocktower.oldgame.OldSlotPlace;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -57,17 +57,17 @@ public enum OldDataKey {
 	PLAYER_DISPLAY_NAME("player_display_name");
 
 	// shortcut
-	public static final Map<GamePlace, OldDataKey> GAME_LOC = Map.ofEntries(
-		Map.entry(GamePlace.CENTER, OldDataKey.GAME_LOC_CENTER),
-		Map.entry(GamePlace.SPAWN, OldDataKey.GAME_LOC_SPAWN),
-		Map.entry(GamePlace.PYLORI, OldDataKey.GAME_LOC_PYLORI),
-		Map.entry(GamePlace.BELL, OldDataKey.GAME_LOC_BELL)
+	public static final Map<OldGamePlace, OldDataKey> GAME_LOC = Map.ofEntries(
+		Map.entry(OldGamePlace.CENTER, OldDataKey.GAME_LOC_CENTER),
+		Map.entry(OldGamePlace.SPAWN, OldDataKey.GAME_LOC_SPAWN),
+		Map.entry(OldGamePlace.PYLORI, OldDataKey.GAME_LOC_PYLORI),
+		Map.entry(OldGamePlace.BELL, OldDataKey.GAME_LOC_BELL)
 	);
-	public static final Map<SlotPlace, OldDataKey> SLOT_LOC = Map.ofEntries(
-		Map.entry(SlotPlace.CHAIR, OldDataKey.SLOT_LOC_CHAIR),
-		Map.entry(SlotPlace.LEVER, OldDataKey.SLOT_LOC_LEVER),
-		Map.entry(SlotPlace.LAMP, OldDataKey.SLOT_LOC_LAMP),
-		Map.entry(SlotPlace.HOUSE, OldDataKey.SLOT_LOC_HOUSE)
+	public static final Map<OldSlotPlace, OldDataKey> SLOT_LOC = Map.ofEntries(
+		Map.entry(OldSlotPlace.CHAIR, OldDataKey.SLOT_LOC_CHAIR),
+		Map.entry(OldSlotPlace.LEVER, OldDataKey.SLOT_LOC_LEVER),
+		Map.entry(OldSlotPlace.LAMP, OldDataKey.SLOT_LOC_LAMP),
+		Map.entry(OldSlotPlace.HOUSE, OldDataKey.SLOT_LOC_HOUSE)
 	);
 
 	// system

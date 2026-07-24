@@ -3,11 +3,13 @@ package io.github.aktomik.redclocktower.oldgame;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public enum GamePeriod {
-	MORNING,
-	FREE,
-	MEET,
-	NIGHT;
+public enum OldGameStepAction {
+	SETUP,
+	START,
+	FINISH,
+	REPLAY,
+	RESET,
+	CLEAR;
 
 	@Override
 	public String toString() {

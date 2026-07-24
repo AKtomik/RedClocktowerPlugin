@@ -10,26 +10,26 @@ import org.bukkit.block.data.*;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 
-public class BloodSlot {
+public class OldBloodSlot {
 	// class
 	public final World world;
 	final PersistentDataContainer pdc;
-	private BloodSlot(World world, PersistentDataContainer pdc)
+	private OldBloodSlot(World world, PersistentDataContainer pdc)
 	{
 		this.world = world;
 		this.pdc = pdc;
 	}
-	public static BloodSlot get(World world, PersistentDataContainer pdc)
+	public static OldBloodSlot get(World world, PersistentDataContainer pdc)
 	{
-		return new BloodSlot(world, pdc);
+		return new OldBloodSlot(world, pdc);
 	}
 
 	// get & set
-	public void setPosition(SlotPlace place, Location pos)
+	public void setPosition(OldSlotPlace place, Location pos)
 	{
 		pdc.set(OldDataKey.SLOT_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY, new int[] {pos.getBlockX(), pos.getBlockY(), pos.getBlockZ()});
 	}
-	public Location getPosition(SlotPlace place)
+	public Location getPosition(OldSlotPlace place)
 	{
 		int[] posArray = pdc.get(OldDataKey.SLOT_LOC.get(place).key(), PersistentDataType.INTEGER_ARRAY);
 		if (posArray == null || posArray.length != 3) return null;
@@ -82,7 +82,7 @@ public class BloodSlot {
 
 	public void refreshLock()
 	{
-		Location lampLoc = getPosition(SlotPlace.LAMP);
+		Location lampLoc = getPosition(OldSlotPlace.LAMP);
 		Location lampLocM1 = lampLoc.clone();
 		lampLocM1.setY(lampLoc.getY() - 1);
 		Location lampLocM2 = lampLoc.clone();
@@ -99,12 +99,12 @@ public class BloodSlot {
 		// but if it's a redstone lamp, it will refresh and light off
 	}
 
-	public void refreshLamp(BloodPlayer bloodPlayerAtSlot)
+	public void refreshLamp(OldBloodPlayer bloodPlayerAtSlot)
 	{
-		Location lampLoc = getPosition(SlotPlace.LAMP);
+		Location lampLoc = getPosition(OldSlotPlace.LAMP);
 		Location lampLocP1 = lampLoc.clone();
 		lampLocP1.setY(lampLoc.getY() + 1);
-		Location leverLoc = getPosition(SlotPlace.LEVER);
+		Location leverLoc = getPosition(OldSlotPlace.LEVER);
 		BlockData leverData = world.getBlockData(leverLoc);
 		BlockData lampData = BlockType.WAXED_COPPER_BLOCK.createBlockData();;
 

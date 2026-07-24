@@ -5,8 +5,8 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import io.github.aktomik.redclocktower.oldgame.BloodGame;
-import io.github.aktomik.redclocktower.oldgame.GameToolbox;
+import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
+import io.github.aktomik.redclocktower.oldgame.OldGameToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -61,7 +61,7 @@ public class StorytellerSubVote extends BrigadierSub {
 
 	private int nominateCheck(CommandContext<CommandSourceStack> ctx) {
 		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// the action
 		Player player = game.getNominatedPlayer();
@@ -75,11 +75,11 @@ public class StorytellerSubVote extends BrigadierSub {
 	}
 	private int nominateChange(CommandContext<CommandSourceStack> ctx, Player player) {
 		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
 		if (!game.isPlayerIn(player))
 		{
 			sender.sendRichMessage("<red><b><target></b> is not in game.",  Placeholder.parsed("target", player.getName()));
@@ -96,7 +96,7 @@ public class StorytellerSubVote extends BrigadierSub {
 
 	private int pyloriCheck(CommandContext<CommandSourceStack> ctx) {
 		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// the action
 		Player player = game.getPyloriPlayer();
@@ -110,11 +110,11 @@ public class StorytellerSubVote extends BrigadierSub {
 	}
 	private int pyloriChange(CommandContext<CommandSourceStack> ctx, Player player, Integer votesAgainst) {
 		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
 		if (!game.isPlayerIn(player))
 		{
 			sender.sendRichMessage("<red><b><target></b> is not in game.",  Placeholder.parsed("target", player.getName()));
@@ -136,16 +136,16 @@ public class StorytellerSubVote extends BrigadierSub {
 
 	private int votingStart(CommandContext<CommandSourceStack> ctx, Player player) {
 		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		if (player != null)  nominateChange(ctx, player);
 		Player nominatedPlayer = game.getNominatedPlayer();
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfVoteBusy(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIf(sender, nominatedPlayer == null, "there is no nominated player!")) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfVoteBusy(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIf(sender, nominatedPlayer == null, "there is no nominated player!")) return Command.SINGLE_SUCCESS;
 		assert (nominatedPlayer != null);
 
 		// the action
@@ -159,11 +159,11 @@ public class StorytellerSubVote extends BrigadierSub {
 	private int votingCancel(CommandContext<CommandSourceStack> ctx) {
 
 		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		sender.sendRichMessage("<dark_gray>canceling the last vote action...");
@@ -173,16 +173,16 @@ public class StorytellerSubVote extends BrigadierSub {
 
 	private int playerMount(CommandContext<CommandSourceStack> ctx, Player player) {
 		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		if (player != null)  pyloriChange(ctx, player);
 		Player pyloriPlayer = game.getPyloriPlayer();
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfVoteBusy(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIf(sender, pyloriPlayer == null, "there is no one on the pylori!")) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfVoteBusy(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIf(sender, pyloriPlayer == null, "there is no one on the pylori!")) return Command.SINGLE_SUCCESS;
 		assert (pyloriPlayer != null);
 
 		// the action
@@ -195,16 +195,16 @@ public class StorytellerSubVote extends BrigadierSub {
 
 	private int playerExecution(CommandContext<CommandSourceStack> ctx, Player player, boolean isReal) {
 		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		if (player != null)  pyloriChange(ctx, player);
 		Player pyloriPlayer = game.getPyloriPlayer();
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfVoteBusy(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIf(sender, pyloriPlayer == null, "there is no one on the pylori!")) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotVotingMoment(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfVoteBusy(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIf(sender, pyloriPlayer == null, "there is no one on the pylori!")) return Command.SINGLE_SUCCESS;
 		assert (pyloriPlayer != null);
 
 		// the action

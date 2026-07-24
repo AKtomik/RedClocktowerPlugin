@@ -7,9 +7,9 @@ import org.bukkit.entity.Player;
 import java.util.List;
 import java.util.function.BiConsumer;
 
-public class GameToolbox {
+public class OldGameToolbox {
 
-	private GameToolbox() {}// is a static class
+	private OldGameToolbox() {}// is a static class
 
 	public static boolean failIf(CommandSender sender, boolean condition, String errorMessage) {
 		if (condition) {
@@ -19,13 +19,13 @@ public class GameToolbox {
 		return false;
 	}
 
-	public static boolean failIfNotVotingMoment(CommandSender sender, BloodGame game) {
+	public static boolean failIfNotVotingMoment(CommandSender sender, OldBloodGame game) {
 		return failIf(sender, (!game.isVoteMoment()), "this is not the time to vote");
 	}
-	public static boolean failIfVoteBusy(CommandSender sender, BloodGame game) {
+	public static boolean failIfVoteBusy(CommandSender sender, OldBloodGame game) {
 		return failIf(sender, game.isVoteSystemBusy(), "vote or execution is running");
 	}
-	public static boolean failIfNotReady(CommandSender sender, BloodGame game) {
+	public static boolean failIfNotReady(CommandSender sender, OldBloodGame game) {
 		return failIf(sender, (!game.isReady()), "the game is not ready!");
 	}
 	public static boolean failIfNoPlayers(CommandSender sender, List<Player> players) {
@@ -37,9 +37,9 @@ public class GameToolbox {
 
 	public static void forEachValidPlayer(
 	CommandSender sender,
-	BloodGame game,
+	OldBloodGame game,
 	List<Player> players,
-	BiConsumer<Player, BloodPlayer> action
+	BiConsumer<Player, OldBloodPlayer> action
 	) {
 		for (Player player : players) {
 			if (!game.isPlayerIn(player)) {
@@ -49,7 +49,7 @@ public class GameToolbox {
 				);
 				continue;
 			}
-			action.accept(player, BloodPlayer.get(player));
+			action.accept(player, OldBloodPlayer.get(player));
 		}
 	}
 }

@@ -4,8 +4,8 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
-import io.github.aktomik.redclocktower.oldgame.BloodGame;
-import io.github.aktomik.redclocktower.oldgame.BloodPlayer;
+import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
+import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -44,10 +44,10 @@ public class Vote extends BrigadierCommand {
 		final CommandSender sender = ctx.getSource().getSender();
 		Player player = (Player)ctx.getSource().getExecutor();
 		assert player != null;
-		final BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		final OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
 
 		// checks
-		final BloodGame game = bloodPlayer.getGame();
+		final OldBloodGame game = bloodPlayer.getGame();
 		if (game == null)
 		{
 			sender.sendRichMessage("<red>you are not in a blood game.");

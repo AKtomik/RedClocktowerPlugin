@@ -15,19 +15,19 @@ import org.bukkit.persistence.PersistentDataType;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 
-public class BloodPlayer {
+public class OldBloodPlayer {
 
 	// class
 	private final Player player;
 	private final PersistentDataContainer pdc;
-	private BloodPlayer(Player player)
+	private OldBloodPlayer(Player player)
 	{
 		this.player = player;
 		this.pdc = player.getPersistentDataContainer();
 	}
-	public static BloodPlayer get(Player player)
+	public static OldBloodPlayer get(Player player)
 	{
-		return new BloodPlayer(player);
+		return new OldBloodPlayer(player);
 	}
 
 	// set & get
@@ -83,7 +83,7 @@ public class BloodPlayer {
 		return pdc.getOrDefault(OldDataKey.PLAYER_VOTE_PULL.key(), PersistentDataType.BOOLEAN, false);
 	}
 
-	private void setGame(BloodGame game)
+	private void setGame(OldBloodGame game)
 	{
 		pdc.set(OldDataKey.PLAYER_GAME_WORLD_NAME.key(), PersistentDataType.STRING, game.world.getName());
 		pdc.set(OldDataKey.PLAYER_GAME_ROUND_ID.key(), PersistentDataType.STRING, game.getRoundId());
@@ -93,14 +93,14 @@ public class BloodPlayer {
 		pdc.remove(OldDataKey.PLAYER_GAME_WORLD_NAME.key());
 		pdc.remove(OldDataKey.PLAYER_GAME_ROUND_ID.key());
 	}
-	public BloodGame getGame()
+	public OldBloodGame getGame()
 	{
 		if (!pdc.has(OldDataKey.PLAYER_GAME_WORLD_NAME.key())) return null;
 		String worldName = pdc.get(OldDataKey.PLAYER_GAME_WORLD_NAME.key(), PersistentDataType.STRING);
 		if (worldName == null) return null;
 		World world = Bukkit.getWorld(worldName);
 		if (world == null) return null;
-		BloodGame bloodGame = BloodGame.get(world);
+		OldBloodGame bloodGame = OldBloodGame.get(world);
 		if (!isSpectator() && !bloodGame.isPlayerIn(player)) {
 			clearGame();
 			return null;
@@ -162,9 +162,9 @@ public class BloodPlayer {
 
 	// game link
 
-	void joinGame(BloodGame game, int slotIndex)
+	void joinGame(OldBloodGame game, int slotIndex)
 	{
-		BloodGame lastGame = getGame();
+		OldBloodGame lastGame = getGame();
 		if (lastGame != null) leaveGame();
 		setGame(game);
 		setSlotIndex(slotIndex);
@@ -176,9 +176,9 @@ public class BloodPlayer {
 	}
 
 	// join without a slot index for spectators and storyteller
-	void joinGame(BloodGame game, boolean storyteller)
+	void joinGame(OldBloodGame game, boolean storyteller)
 	{
-		BloodGame lastGame = getGame();
+		OldBloodGame lastGame = getGame();
 		if (lastGame != null) leaveGame();
 		setGame(game);
 		setSpectator(true);
@@ -210,7 +210,7 @@ public class BloodPlayer {
 	// is publicly call and will call removePlayer on player game (step 1/3)
 	public void leaveGame()
 	{
-		BloodGame game = getGame();
+		OldBloodGame game = getGame();
 		if (game == null) return;
 		game.removePlayer(this.player);
 	}
@@ -308,16 +308,16 @@ public class BloodPlayer {
 	public void quitSlotLamp()
 	{
 		if (isSpectator()) return;
-		BloodGame game = getGame();
-		BloodSlot slot = game.getSlot(getSlotIndex());
+		OldBloodGame game = getGame();
+		OldBloodSlot slot = game.getSlot(getSlotIndex());
 		slot.refreshLamp(null);
 	}
 
 	public void refreshSlotLamp()
 	{
 		if (isSpectator()) return;
-		BloodGame game = getGame();
-		BloodSlot slot = game.getSlot(getSlotIndex());
+		OldBloodGame game = getGame();
+		OldBloodSlot slot = game.getSlot(getSlotIndex());
 		slot.refreshLamp(this);
 	}
 

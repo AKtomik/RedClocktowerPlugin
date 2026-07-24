@@ -19,12 +19,12 @@ public class SetupSubModifyDebug extends BrigadierSub {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.argument("action", EnumArgument.simple(GameDebugAction.class, "Invalid game debug place"))
+		.then(Commands.argument("action", EnumArgument.simple(OldGameDebugAction.class, "Invalid game debug place"))
 			.executes(ctx -> {
 				// arguments
 				CommandSender sender = ctx.getSource().getSender();
-				BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
-				final GameDebugAction gameAction = ctx.getArgument("action", GameDebugAction.class);
+				OldBloodGame game = OldBloodGame.get(ctx.getSource().getLocation().getWorld());
+				final OldGameDebugAction gameAction = ctx.getArgument("action", OldGameDebugAction.class);
 
 				// execute
 				sender.sendRichMessage("<yellow>REMINDER: Using the /setup debug command can lead to unexpected behavior and should only be used as a last resort.");

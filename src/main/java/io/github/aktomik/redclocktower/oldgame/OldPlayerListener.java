@@ -19,30 +19,30 @@ import org.bukkit.inventory.Inventory;
 
 import java.util.Objects;
 
-public class PlayerListener implements Listener {
+public class OldPlayerListener implements Listener {
 
 	@EventHandler
 	public void onJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
-		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
 		bloodPlayer.refreshNameTag();
 	}
 
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
-		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
 		bloodPlayer.disconnect();
 	}
 
 	@EventHandler
 	public void onRespawn(PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
-		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		BloodGame game = bloodPlayer.getGame();
+		OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
+		OldBloodGame game = bloodPlayer.getGame();
 		if (game == null) return;
 
-		event.setRespawnLocation(game.getPosition(GamePlace.SPAWN));
+		event.setRespawnLocation(game.getPosition(OldGamePlace.SPAWN));
 		Bukkit.getScheduler().runTask(RedClocktower.plugin(), () -> {
 			if (!bloodPlayer.isAlive()) bloodPlayer.changeAlive(false);
 		});
@@ -55,13 +55,13 @@ public class PlayerListener implements Listener {
 		if (block == null || block.getType() != Material.LEVER) return;
 
 		Player player = event.getPlayer();
-		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		BloodGame game = bloodPlayer.getGame();
+		OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
+		OldBloodGame game = bloodPlayer.getGame();
 		if (game == null) return;
-		BloodSlot slot = game.getSlot(bloodPlayer.getSlotIndex());
+		OldBloodSlot slot = game.getSlot(bloodPlayer.getSlotIndex());
 		Location loc = block.getLocation();
 		boolean isGameLever = game.isLevelInSlots(loc);
-		boolean isOwnLever = Objects.equals(loc,slot.getPosition(SlotPlace.LEVER));
+		boolean isOwnLever = Objects.equals(loc,slot.getPosition(OldSlotPlace.LEVER));
 
 		if (!isGameLever) return;
 		if (!isOwnLever) {
@@ -86,16 +86,16 @@ public class PlayerListener implements Listener {
 			return; // not a player
 		}
 
-		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		BloodGame bloodGame = bloodPlayer.getGame();
+		OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
+		OldBloodGame bloodGame = bloodPlayer.getGame();
 		if (bloodGame == null) return;
 
 		Block bell = event.getBlock();
-		if (bell.getLocation().distance(bloodGame.getPosition(GamePlace.BELL)) > 1) return;
+		if (bell.getLocation().distance(bloodGame.getPosition(OldGamePlace.BELL)) > 1) return;
 
 		// your condition
 		if (Objects.equals(bloodGame.getStorytellerUuid(), player.getUniqueId())) {
-			GameAction.next.accept(bloodGame, player);
+			OldGameAction.next.accept(bloodGame, player);
 		} else {
 			event.setCancelled(true);
 		}
@@ -106,8 +106,8 @@ public class PlayerListener implements Listener {
 	{
 		Player player = event.getPlayer();
 
-		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		BloodGame bloodGame = bloodPlayer.getGame();
+		OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
+		OldBloodGame bloodGame = bloodPlayer.getGame();
 		if (bloodGame == null) return;
 		if (bloodPlayer.isStoryteller()) return;
 
@@ -118,8 +118,8 @@ public class PlayerListener implements Listener {
 	public void onInventoryOpen(InventoryOpenEvent event) {
 		if (!(event.getPlayer() instanceof Player player)) return;
 
-		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		BloodGame bloodGame = bloodPlayer.getGame();
+		OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
+		OldBloodGame bloodGame = bloodPlayer.getGame();
 		if (bloodGame == null) return;
 		if (bloodPlayer.isStoryteller()) return;
 

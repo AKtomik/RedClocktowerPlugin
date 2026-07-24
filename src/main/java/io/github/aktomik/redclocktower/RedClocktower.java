@@ -2,8 +2,8 @@ package io.github.aktomik.redclocktower;
 
 import io.github.aktomik.redclocktower.command.Vote;
 import io.github.aktomik.redclocktower.command.setup.SetupCommand;
-import io.github.aktomik.redclocktower.oldgame.BloodPlayer;
-import io.github.aktomik.redclocktower.oldgame.PlayerListener;
+import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
+import io.github.aktomik.redclocktower.oldgame.OldPlayerListener;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditorListener;
 import io.github.aktomik.redclocktower.command.BroadcastCommand;
@@ -35,7 +35,7 @@ public final class RedClocktower extends JavaPlugin {
         DataKey.init(this);
 
         // setup events
-        getServer().getPluginManager().registerEvents(new PlayerListener(), this);
+        getServer().getPluginManager().registerEvents(new OldPlayerListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerNameTagEditorListener(), this);
 
         // startups
@@ -57,7 +57,7 @@ public final class RedClocktower extends JavaPlugin {
         // blood disconnect for all players
         for (Player player : Bukkit.getOnlinePlayers())
         {
-            BloodPlayer bloodPlayer = BloodPlayer.get(player);
+            OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
             bloodPlayer.disconnect();
         }
 

@@ -1,10 +1,10 @@
 package io.github.aktomik.redclocktower.oldgame;
 
-public enum GamePlace {
-	CENTER,
-	PYLORI,
-	BELL,
-	SPAWN;
+public enum OldSlotPlace {
+	CHAIR,
+	LEVER,
+	LAMP,
+	HOUSE;
 
 	@Override
 	public String toString() {

@@ -3,7 +3,7 @@ package io.github.aktomik.redclocktower.oldgame;
 import org.jspecify.annotations.NullMarked;
 
 @NullMarked
-public enum GameDebugAction {
+public enum OldGameDebugAction {
 	CLEAN_PLAYERS,
 	CLEAN_SLOTS,
 	CLEAN_TEAM,

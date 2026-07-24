@@ -4,9 +4,9 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
-import io.github.aktomik.redclocktower.oldgame.BloodGame;
-import io.github.aktomik.redclocktower.oldgame.GameStepAction;
-import io.github.aktomik.redclocktower.oldgame.GameState;
+import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
+import io.github.aktomik.redclocktower.oldgame.OldGameStepAction;
+import io.github.aktomik.redclocktower.oldgame.OldGameState;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -19,12 +19,12 @@ public class StorytellerSubGame extends BrigadierSub {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.argument("action", EnumArgument.simple(GameStepAction.class, "Invalid game step action"))
+		.then(Commands.argument("action", EnumArgument.simple(OldGameStepAction.class, "Invalid game step action"))
 		.executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
-			BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
-			final GameStepAction gameAction = ctx.getArgument("action", GameStepAction.class);
+			OldBloodGame game = OldBloodGame.get(ctx.getSource().getLocation().getWorld());
+			final OldGameStepAction gameAction = ctx.getArgument("action", OldGameStepAction.class);
 
 			// execution
 			sender.sendRichMessage("<dark_gray>running step <b><action></b>...",
@@ -35,10 +35,10 @@ public class StorytellerSubGame extends BrigadierSub {
 		})).executes(ctx -> {
 			// arguments
 			CommandSender sender = ctx.getSource().getSender();
-			BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+			OldBloodGame game = OldBloodGame.get(ctx.getSource().getLocation().getWorld());
 
 			// execute
-			GameState gameState = game.getState();
+			OldGameState gameState = game.getState();
 			sender.sendRichMessage("game is in state <b><state></b>",
 			Placeholder.parsed("state", gameState.toString())
 			);

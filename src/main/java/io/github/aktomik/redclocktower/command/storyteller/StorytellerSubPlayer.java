@@ -3,11 +3,11 @@ package io.github.aktomik.redclocktower.command.storyteller;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.oldgame.GameToolbox;
+import io.github.aktomik.redclocktower.oldgame.OldGameToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
-import io.github.aktomik.redclocktower.oldgame.BloodGame;
-import io.github.aktomik.redclocktower.oldgame.BloodPlayer;
+import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
+import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
@@ -83,10 +83,10 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 	Command<CommandSourceStack> subList = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		List<OfflinePlayer> allPlayersAsOffline = game.getAllPlayersAsOffline();
@@ -106,7 +106,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			if (offlinePlayer.isOnline())
 			{
 				Player player = Objects.requireNonNull(offlinePlayer.getPlayer());
-				BloodPlayer bloodPlayer = BloodPlayer.get(player);
+				OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
 				String lifeStringColor = (bloodPlayer.isAlive()) ? "<white>♟ " : "<gray>☠ ";
 				sender.sendRichMessage("<life_color><target>",
 					Placeholder.parsed("life_color", lifeStringColor),
@@ -137,11 +137,11 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	Command<CommandSourceStack> subAdd = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		for (Player player : players)
@@ -180,11 +180,11 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	Command<CommandSourceStack> subSpectate = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		for (Player player : players)
@@ -207,7 +207,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 	Command<CommandSourceStack> subStorytellCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// the action
 		Player player = game.getStoryteller();
@@ -224,11 +224,11 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	Command<CommandSourceStack> subStorytellChange = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final Player player = BrigadierToolbox.resolvePlayer(ctx);
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNoPlayer(sender, player)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNoPlayer(sender, player)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		game.changeStoryteller(player);
@@ -242,16 +242,16 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	public final Command<CommandSourceStack> subRemove = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		for (Player player : players)
 		{
-			BloodPlayer bloodPlayer = BloodPlayer.get(player);
+			OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
 			if (!game.isPlayerIn(player) && !bloodPlayer.isSpectator())
 			{
 				sender.sendRichMessage("<gray><b><target></b> is not in game.",
@@ -270,14 +270,14 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	public final Command<CommandSourceStack> subTravelerCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
-		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
+		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
 			sender.sendRichMessage(
 			bp.isTraveller()
 			? "<b><target></b> is a traveller."
@@ -292,14 +292,14 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
-		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
+		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
 			if (bp.isTraveller() == changeValue) {
 				sender.sendRichMessage(
 				changeValue
@@ -324,14 +324,14 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	public final Command<CommandSourceStack> subAliveCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
-		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
+		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
 			sender.sendRichMessage(
 			bp.getAlive()
 				? "<b><target></b> is alive."
@@ -346,14 +346,14 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
-		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
+		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
 			if (bp.getAlive() == changeValue) {
 				sender.sendRichMessage(
 				changeValue
@@ -378,14 +378,14 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	public final Command<CommandSourceStack> subTokenCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
-		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
+		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
 			sender.sendRichMessage(
 			bp.getVoteToken()
 			? "<b><target></b> still have a vote token."
@@ -400,14 +400,14 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
-		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
+		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
 			if (bp.getVoteToken() == changeValue) {
 				sender.sendRichMessage(
 				changeValue
@@ -432,14 +432,14 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	public final Command<CommandSourceStack> subVotingCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
-		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
+		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
 			sender.sendRichMessage(
 			bp.getVotePull()
 			? "<b><target></b> is voting."
@@ -454,14 +454,14 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		final CommandSender sender = ctx.getSource().getSender();
 		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		// checks
-		if (GameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
-		GameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
+		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
 			if (bp.getVotePull() == changeValue) {
 				sender.sendRichMessage(
 				changeValue
@@ -485,7 +485,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 	public final Command<CommandSourceStack> subGiveHand = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
 
 		Player executorPlayer = (Player)ctx.getSource().getExecutor();
 		ItemStack heldItem = executorPlayer.getInventory().getItemInMainHand();
