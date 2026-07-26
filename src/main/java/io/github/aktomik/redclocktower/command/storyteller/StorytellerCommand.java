@@ -12,7 +12,7 @@ public class StorytellerCommand extends BrigadierCommand {
         return "storyteller";
     }
     public List<String> aliases() {
-        return List.of("blood", "redclocktower");
+        return List.of("blood", "redclocktower", "st");
     }
     public String permission() {
         return "redclocktower.storyteller";
