@@ -1,8 +1,6 @@
 package io.github.aktomik.redclocktower.game;
 
-import io.github.aktomik.redclocktower.game.seated.SeatedBase;
 import org.bukkit.World;
-import org.checkerframework.checker.nullness.qual.RequiresNonNull;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
@@ -50,7 +48,7 @@ public class BloodGame {
 		return townHall;
 	}
 
-	public Stream<SeatedBase> getAllSeated() {
+	public Stream<Seated> getAllSeated() {
 		return Arrays.stream(slots).filter(BloodSlot::isOccupied).map(BloodSlot::getSeated);
 	}
 
@@ -70,7 +68,7 @@ public class BloodGame {
 		return slots[index];
 	}
 
-	public void assignSlot(int index, SeatedBase seated)
+	public void assignSlot(int index, Seated seated)
 	{
 		getSlot(index).assign(seated);
 	}

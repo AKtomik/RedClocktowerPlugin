@@ -5,7 +5,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import io.github.aktomik.redclocktower.game.*;
-import io.github.aktomik.redclocktower.game.seated.SeatedBase;
+import io.github.aktomik.redclocktower.game.Seated;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -147,7 +147,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 			return Command.SINGLE_SUCCESS;
 		}
 
-		final SeatedBase dummy = new SeatedBase();
+		final Seated dummy = new Seated(slot, "-seat"+slotNumber);
 		game.assignSlot(slotIndex, dummy);
 		sender.sendRichMessage("<light_purple>dummy</light_purple> added to the slot <b><number></b>",
 			Placeholder.parsed("number", Integer.toString(slotNumber))
