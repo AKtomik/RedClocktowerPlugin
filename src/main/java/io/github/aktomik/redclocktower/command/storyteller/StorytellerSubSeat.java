@@ -7,12 +7,15 @@ import com.mojang.brigadier.suggestion.SuggestionProvider;
 import io.github.aktomik.redclocktower.game.*;
 import io.github.aktomik.redclocktower.game.Seated;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
+import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
+import java.util.Map;
 import java.util.stream.IntStream;
 
 public class StorytellerSubSeat extends BrigadierSub {
@@ -71,14 +74,21 @@ public class StorytellerSubSeat extends BrigadierSub {
 		final BloodSlot slot = game.getSlot(slotIndex);
 
 		// execute
-		if (slot.isOccupied())
+		final Seated seated = slot.getSeated();
+		if (seated == null)
 		{
-			sender.sendRichMessage("the slot <b><number></b> is <gold>occupied",
+			sender.sendRichMessage("the slot <b><number></b> is <yellow>empty",
 				Placeholder.parsed("number", Integer.toString(slotNumber))
 			);
 		} else {
-			sender.sendRichMessage("the slot <b><number></b> is <yellow>empty",
-				Placeholder.parsed("number", Integer.toString(slotNumber))
+			String seatedTypeString = Map.of(
+				SeatedDummy.class, "dummy",
+				SeatedPlayer.class, "player"
+			).getOrDefault(seated.getClass(), "unknown");
+			sender.sendRichMessage("at slot <b><number></b> there is <type> <name>",
+				Placeholder.parsed("number", Integer.toString(slotNumber)),
+				Placeholder.parsed("name", seated.getDisplayName()),
+				Placeholder.parsed("type", seatedTypeString)
 			);
 		}
 		return Command.SINGLE_SUCCESS;
@@ -118,7 +128,38 @@ public class StorytellerSubSeat extends BrigadierSub {
 
 	Command<CommandSourceStack> subAssignPlayer = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
-		sender.sendRichMessage("TODO");
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+		assert game != null;
+
+		final int slotNumber = ctx.getArgument("slot number", Integer.class);
+		final int slotIndex = slotNumber - 1;
+		if (!game.isValidSlot(slotIndex)) {
+			sender.sendRichMessage("<red>there is no slot <b><number></b>",
+				Placeholder.parsed("number", Integer.toString(slotNumber))
+			);
+			return Command.SINGLE_SUCCESS;
+		}
+		final BloodSlot slot = game.getSlot(slotIndex);
+
+		if (slot.isOccupied())
+		{
+			sender.sendRichMessage("<red>the slot <b><number></b> is occupied",
+				Placeholder.parsed("number", Integer.toString(slotNumber))
+			);
+			return Command.SINGLE_SUCCESS;
+		}
+
+		final Player player = BrigadierToolbox.resolvePlayer(ctx);
+		if (GameToolbox.failIfNoPlayer(sender, player)) return Command.SINGLE_SUCCESS;
+
+		final Seated seated = new SeatedPlayer(slot, player);
+		game.assignSlot(slotIndex, seated);
+		sender.sendRichMessage("player <yellow><name></yellow> added to the slot <b><number></b>",
+			Placeholder.parsed("number", Integer.toString(slotNumber)),
+			Placeholder.parsed("name", seated.getDisplayName())
+		);
 		return Command.SINGLE_SUCCESS;
 	};
 
@@ -147,12 +188,12 @@ public class StorytellerSubSeat extends BrigadierSub {
 			return Command.SINGLE_SUCCESS;
 		}
 
-		final Seated dummy = new Seated(slot, "-seat"+slotNumber);
-		game.assignSlot(slotIndex, dummy);
-		sender.sendRichMessage("<light_purple>dummy</light_purple> added to the slot <b><number></b>",
-			Placeholder.parsed("number", Integer.toString(slotNumber))
+		final Seated seated = new SeatedDummy(slot, slotNumber);
+		game.assignSlot(slotIndex, seated);
+		sender.sendRichMessage("dummy <light_purple><name></light_purple> added to the slot <b><number></b>",
+			Placeholder.parsed("number", Integer.toString(slotNumber)),
+			Placeholder.parsed("name", seated.getDisplayName())
 		);
 		return Command.SINGLE_SUCCESS;
 	};
-
 }

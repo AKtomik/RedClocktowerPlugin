@@ -38,13 +38,11 @@ public class GameToolbox {
 		return failIf(sender, (!game.isReady()), "the game is not ready!");
 	}
 
-	@Deprecated
 	public static boolean failIfNoPlayers(CommandSender sender, List<Player> players) {
-		return failIf(sender, (players.isEmpty()), "there is no player selected!");
+		return failIf(sender, (players.isEmpty()), "there is no player selected");
 	}
-	@Deprecated
 	public static boolean failIfNoPlayer(CommandSender sender, Player player) {
-		return failIf(sender, (player == null), "there is no player selected!");
+		return failIf(sender, (player == null), "there is no player selected");
 	}
 
 	@Deprecated

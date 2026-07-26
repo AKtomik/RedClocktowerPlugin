@@ -1,6 +1,6 @@
 package io.github.aktomik.redclocktower.game;
 
-public class Seated {
+public abstract class Seated {
 
 	private final BloodSlot slot;
 
