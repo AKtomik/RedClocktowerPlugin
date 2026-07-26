@@ -85,7 +85,7 @@ public class StorytellerSubGame extends BrigadierSub {
 		}
 
 		// execute
-		sender.sendRichMessage("starting the game");
+		sender.sendRichMessage("<light_purple>starting the game");
 		game.start();
 		return Command.SINGLE_SUCCESS;
 	};
@@ -102,7 +102,7 @@ public class StorytellerSubGame extends BrigadierSub {
 		if (GameToolbox.failIfNotStarted(sender, game)) return Command.SINGLE_SUCCESS;
 
 		// execute
-		sender.sendRichMessage("finishing the game");
+		sender.sendRichMessage("<light_purple>finishing the game");
 		game.finish(winTeam);
 		return Command.SINGLE_SUCCESS;
 	};
@@ -114,9 +114,10 @@ public class StorytellerSubGame extends BrigadierSub {
 
 		// check
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+		assert game != null;
 
 		// execute
-		sender.sendRichMessage("clearing the game");
+		sender.sendRichMessage("<light_purple>clearing the game");
 		game.kill();
 		return Command.SINGLE_SUCCESS;
 	};

@@ -19,6 +19,9 @@ public class BloodSlot {
 
 	BloodSlot(TownChair townChair) {
 		this.townChair = townChair;
+		this.seated = null;
+		refreshBlock(null);
+		refreshPiston(voteLocked);
 	}
 
 	// seated
@@ -29,17 +32,19 @@ public class BloodSlot {
 		return getSeated() != null;
 	}
 
-	void assign(Seated seated) {
+	public void assign(Seated seated) {
 		this.seated = seated;
+		refreshBlock(seated.getSeatState());
 	}
-	void empty() {
+	public void empty() {
 		this.seated = null;
+		refreshBlock(null);
 	}
 
 	// state
 	void setState(SeatState state) {
-		// seatState = state;
 		// right now seat block state is not stored and that cool
+		// seatState = state;
 		refreshBlock(state);
 	}
 
@@ -63,7 +68,10 @@ public class BloodSlot {
 		BlockData lampData = BlockType.WAXED_COPPER_BLOCK.createBlockData();
 
 		if (seated != null) {
+			assert state != null;
+
 			// exclusion vote case here
+
 			if (state.traveller())
 			{
 				if (state.alive())
@@ -137,5 +145,6 @@ public class BloodSlot {
 		BlockData powerBlock = ((locked) ? BlockType.LAPIS_BLOCK : BlockType.REDSTONE_BLOCK).createBlockData();
 		world.setBlockData(lampPosMinus2, powerBlock);
 		// but if it's a redstone lamp, it will refresh and light off
+		// it is patchable by replacing the block ~5 ticks after piston
 	}
 }

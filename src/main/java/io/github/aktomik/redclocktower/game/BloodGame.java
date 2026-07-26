@@ -71,16 +71,6 @@ public class BloodGame {
 		return slots[index];
 	}
 
-	public void assignSlot(int index, Seated seated)
-	{
-		getSlot(index).assign(seated);
-	}
-
-	public void emptySlot(int index)
-	{
-		getSlot(index).empty();
-	}
-
 	// state
 	public void start() {
 		this.started = true;

@@ -2,7 +2,7 @@ package io.github.aktomik.redclocktower.game;
 
 public abstract class Seated {
 
-	private final BloodSlot slot;
+	private BloodSlot slot;
 
 	private final String unicName;
 	private String customName;
@@ -13,12 +13,12 @@ public abstract class Seated {
 	private boolean votePull = false;
 
 	// construct
-	public Seated(BloodSlot slot, String unicName) {
+	Seated(BloodSlot slot, String unicName) {
 		this.slot = slot;
 		this.unicName = unicName;
 	}
 
-	public Seated(BloodSlot slot, String unicName, String customName) {
+	Seated(BloodSlot slot, String unicName, String customName) {
 		this(slot, unicName);
 		setCustomName(customName);
 	}
@@ -79,8 +79,19 @@ public abstract class Seated {
 		return new SeatState(traveller, alive, voteToken, votePull);
 	}
 
-	// states/apply
+	// slot
 	private void applySeatState() {
 		slot.setState(getSeatState());
+	}
+
+	void detachSlot() {
+		if (slot == null) throw new RuntimeException("seated try to detachSlot but does not have a slot");
+		slot.empty();
+		slot = null;
+	}
+
+	void attachSlot(BloodSlot newSlot) {
+		if (slot != null) throw new RuntimeException("seated try to attachSlot but already have a slot");
+		slot = newSlot;
 	}
 }

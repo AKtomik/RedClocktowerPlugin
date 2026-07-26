@@ -1,5 +1,6 @@
 package io.github.aktomik.redclocktower.game;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.NullMarked;
 
@@ -8,27 +9,49 @@ import java.util.Map;
 
 public class BloodPlayer {
 
-	private final Player player;
-	private BloodPlayer(Player player) {
-		this.player = player;
+	private final OfflinePlayer offPlayer;
+	private SeatedPlayer seated;
+	private BloodPlayer(OfflinePlayer offlinePlayer) {
+		this.offPlayer = offlinePlayer;
 	}
 
-	private static final Map<Player, BloodPlayer> playerToBloodPlayerMap = new HashMap<>();
+	private static final Map<OfflinePlayer, BloodPlayer> playerToBloodPlayerMap = new HashMap<>();
 
 	@NullMarked
-	public static BloodPlayer get(Player player) {
+	public static BloodPlayer get(OfflinePlayer offlinePlayer) {
 		// find
-		BloodPlayer playerFound = playerToBloodPlayerMap.get(player);
+		BloodPlayer playerFound = playerToBloodPlayerMap.get(offlinePlayer);
 		if (playerFound != null) return playerFound;
 
 		// create
-		BloodPlayer playerCreated = new BloodPlayer(player);
-		playerToBloodPlayerMap.put(player, playerCreated);
+		BloodPlayer playerCreated = new BloodPlayer(offlinePlayer);
+		playerToBloodPlayerMap.put(offlinePlayer, playerCreated);
 		return playerCreated;
 	}
 
 	// access
-	public Player getPlayer() {
-		return player;
+	public OfflinePlayer getOffPlayer() {
+		return offPlayer;
+	}
+
+	@NullMarked
+	public SeatedPlayer getSeated() {
+		return seated;
+	}
+
+	// attribution
+
+	// to avoid player being on two seats simultaneously
+	// is used by SeatedPlayer and should not be used elsewhere
+
+	void joinSeat(SeatedPlayer seated) {
+		leaveSeat();
+		this.seated = seated;
+	}
+
+	void leaveSeat() {
+		if (seated == null) return;
+		seated.detachSlot();
+		seated = null;
 	}
 }
