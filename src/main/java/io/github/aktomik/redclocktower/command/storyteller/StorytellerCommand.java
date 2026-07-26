@@ -22,7 +22,6 @@ public class StorytellerCommand extends BrigadierCommand {
     // root
     public LiteralArgumentBuilder<CommandSourceStack> root() {
         return base()
-        .then(new StorytellerSubSetup().root())
         .then(new StorytellerSubGame().root())
         .then(new StorytellerSubTime().root())
         .then(new StorytellerSubSeat().root())
