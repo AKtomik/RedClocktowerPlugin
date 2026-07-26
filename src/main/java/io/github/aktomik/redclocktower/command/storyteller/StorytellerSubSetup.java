@@ -29,20 +29,20 @@ public class StorytellerSubSetup extends BrigadierSub {
 			// check
 			if (BloodGame.get(townHall) != null)
 			{
-				sender.sendRichMessage("<red>the townhall <b><town></b> is already setup!",
+				sender.sendRichMessage("<red>the townhall <b><town></b> is already setup",
 					Placeholder.parsed("town", townHall.getTownName())
 				);
 				return Command.SINGLE_SUCCESS;
 			}
 			if (BloodGame.get(world) != null)
 			{
-				sender.sendRichMessage("<red>there is another a game setup in this world!");
+				sender.sendRichMessage("<red>there is another game setup in this world");
 				return Command.SINGLE_SUCCESS;
 			}
 
 			// execute
 			BloodGame.create(townHall);
-			sender.sendRichMessage("townhall <b><aqua><town></aqua></b> now ready for a game!",
+			sender.sendRichMessage("setup townhall <b><aqua><town></aqua></b> for a game",
 				Placeholder.parsed("town", townHall.getTownName())
 			);
 			return Command.SINGLE_SUCCESS;

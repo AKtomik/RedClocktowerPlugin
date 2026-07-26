@@ -50,6 +50,10 @@ public class BloodGame {
 		return townHall;
 	}
 
+	public Stream<SeatedBase> getAllSeated() {
+		return Arrays.stream(slots).filter(BloodSlot::isOccupied).map(BloodSlot::getSeated);
+	}
+
 	// slot
 	public Integer getSlotCount()
 	{

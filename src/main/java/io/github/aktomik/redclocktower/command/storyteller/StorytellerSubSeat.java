@@ -101,6 +101,14 @@ public class StorytellerSubSeat extends BrigadierSub {
 		}
 		final BloodSlot slot = game.getSlot(slotIndex);
 
+		if (!slot.isOccupied())
+		{
+			sender.sendRichMessage("<gray>the slot <b><number></b> is already empty",
+				Placeholder.parsed("number", Integer.toString(slotNumber))
+			);
+			return Command.SINGLE_SUCCESS;
+		}
+
 		game.emptySlot(slotIndex);
 		sender.sendRichMessage("slot <b><number></b> <red>emptied</red>",
 		Placeholder.parsed("number", Integer.toString(slotNumber))
@@ -131,9 +139,17 @@ public class StorytellerSubSeat extends BrigadierSub {
 		}
 		final BloodSlot slot = game.getSlot(slotIndex);
 
+		if (slot.isOccupied())
+		{
+			sender.sendRichMessage("<red>the slot <b><number></b> is occupied",
+			Placeholder.parsed("number", Integer.toString(slotNumber))
+			);
+			return Command.SINGLE_SUCCESS;
+		}
+
 		final SeatedBase dummy = new SeatedBase();
 		game.assignSlot(slotIndex, dummy);
-		sender.sendRichMessage("<pink>dummy</pink> added to the slot <b><number></b>",
+		sender.sendRichMessage("<light_purple>dummy</light_purple> added to the slot <b><number></b>",
 			Placeholder.parsed("number", Integer.toString(slotNumber))
 		);
 		return Command.SINGLE_SUCCESS;
