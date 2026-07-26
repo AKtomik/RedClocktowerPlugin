@@ -29,22 +29,24 @@ public class StorytellerSubSeat extends BrigadierSub {
 		.then(Commands.argument("slot number", IntegerArgumentType.integer(1, 24))
 		.suggests(slotSuggestion)
 			.executes(subWho)
-
 			.then(Commands.literal("who")
-				.executes(subWho))
-
+				.executes(subWho)
+			)
 			.then(Commands.literal("empty")
-				.executes(subEmpty))
-
+				.executes(subEmpty)
+			)
 			.then(Commands.literal("assign")
 				.then(Commands.literal("player")
 					.then(Commands.argument("player", ArgumentTypes.player())
 						.executes(subAssignPlayer)))
 				.then(Commands.literal("dummy")
-					.executes(subAssignDummy)))
+					.executes(subAssignDummy)
+				)
+			)
 		);
 	}
 
+	// sug
 
 	SuggestionProvider<CommandSourceStack> slotSuggestion = (ctx, builder) -> {
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());

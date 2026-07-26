@@ -2,14 +2,17 @@ package io.github.aktomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
+import io.github.aktomik.redclocktower.command.setup.TownArgumentType;
+import io.github.aktomik.redclocktower.game.BloodGame;
+import io.github.aktomik.redclocktower.game.GameTeam;
+import io.github.aktomik.redclocktower.game.GameToolbox;
+import io.github.aktomik.redclocktower.game.TownHall;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
-import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
-import io.github.aktomik.redclocktower.oldgame.OldGameStepAction;
-import io.github.aktomik.redclocktower.oldgame.OldGameState;
+import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 
 public class StorytellerSubGame extends BrigadierSub {
@@ -19,30 +22,102 @@ public class StorytellerSubGame extends BrigadierSub {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.argument("action", EnumArgument.simple(OldGameStepAction.class, "Invalid game step action"))
-		.executes(ctx -> {
-			// arguments
-			CommandSender sender = ctx.getSource().getSender();
-			OldBloodGame game = OldBloodGame.get(ctx.getSource().getLocation().getWorld());
-			final OldGameStepAction gameAction = ctx.getArgument("action", OldGameStepAction.class);
-
-			// execution
-			sender.sendRichMessage("<dark_gray>running step <b><action></b>...",
-			Placeholder.parsed("action", gameAction.toString())
-			);
-			game.doStep(gameAction, sender);
-			return Command.SINGLE_SUCCESS;
-		})).executes(ctx -> {
-			// arguments
-			CommandSender sender = ctx.getSource().getSender();
-			OldBloodGame game = OldBloodGame.get(ctx.getSource().getLocation().getWorld());
-
-			// execute
-			OldGameState gameState = game.getState();
-			sender.sendRichMessage("game is in state <b><state></b>",
-			Placeholder.parsed("state", gameState.toString())
-			);
-			return Command.SINGLE_SUCCESS;
-		});
+		.then(Commands.literal("setup")
+			.then(Commands.argument("town", new TownArgumentType())
+				.executes(subSetup)
+			)
+		)
+		.then(Commands.literal("start")
+			.executes(subStart)
+		)
+		.then(Commands.literal("finish")
+			.then(Commands.argument("win team", EnumArgument.simple(GameTeam.class, "this is not a team"))
+				.executes(subFinish)
+			)
+		)
+		.then(Commands.literal("clear")
+			.executes(subClear)
+		);
 	}
+
+	// subs
+
+	Command<CommandSourceStack> subSetup = ctx -> {
+		// arguments
+		final CommandSender sender = ctx.getSource().getSender();
+		final World world = ctx.getSource().getLocation().getWorld();
+		final TownHall townHall = ctx.getArgument("town", TownHall.class);
+
+		// check
+		if (BloodGame.get(townHall) != null)
+		{
+			sender.sendRichMessage("<red>the townhall <b><town></b> is already setup",
+			Placeholder.parsed("town", townHall.getTownName())
+			);
+			return Command.SINGLE_SUCCESS;
+		}
+		if (BloodGame.get(world) != null)
+		{
+			sender.sendRichMessage("<red>there is another game setup in this world");
+			return Command.SINGLE_SUCCESS;
+		}
+
+		// execute
+		BloodGame.create(townHall);
+		sender.sendRichMessage("setup townhall <b><aqua><town></aqua></b> for a game",
+		Placeholder.parsed("town", townHall.getTownName())
+		);
+		return Command.SINGLE_SUCCESS;
+	};
+
+	Command<CommandSourceStack> subStart = ctx -> {
+		// arguments
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		// check
+		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+		assert game != null;
+		if (game.isStarted())
+		{
+			sender.sendRichMessage("<gray>the game is already started");
+			return Command.SINGLE_SUCCESS;
+		}
+
+		// execute
+		sender.sendRichMessage("starting the game");
+		game.start();
+		return Command.SINGLE_SUCCESS;
+	};
+
+	Command<CommandSourceStack> subFinish = ctx -> {
+		// arguments
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+		final GameTeam winTeam = ctx.getArgument("win team", GameTeam.class);
+
+		// check
+		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+		assert game != null;
+		if (GameToolbox.failIfNotStarted(sender, game)) return Command.SINGLE_SUCCESS;
+
+		// execute
+		sender.sendRichMessage("finishing the game");
+		game.finish(winTeam);
+		return Command.SINGLE_SUCCESS;
+	};
+
+	Command<CommandSourceStack> subClear = ctx -> {
+		// arguments
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		// check
+		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+
+		// execute
+		sender.sendRichMessage("clearing the game");
+		game.kill();
+		return Command.SINGLE_SUCCESS;
+	};
 }

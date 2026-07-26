@@ -11,6 +11,8 @@ public class BloodGame {
 	// manage
 	private final TownHall townHall;
 	private final BloodSlot[] slots;
+	private boolean started = false;
+	private boolean dead = false;
 	private BloodGame(TownHall townHall) {
 		this.townHall = townHall;
 		slots = townHall.getAllChairs().map(BloodSlot::new).toArray(BloodSlot[]::new);
@@ -36,14 +38,15 @@ public class BloodGame {
 		return game;
 	}
 
-	public void delete() {
+	public void kill() {
 		// this will remove the game from statics references so it is not accessible anymore
 		// remove it from others references too so it can be garbage collected
 		townToGameMap.values().remove(this);
 		worldToGameMap.values().remove(this);
+		dead = true;
 	}
 
-	// access
+	// relations
 	public TownHall getTownHall() {
 		return townHall;
 	}
@@ -76,5 +79,23 @@ public class BloodGame {
 	public void emptySlot(int index)
 	{
 		getSlot(index).empty();
+	}
+
+	// state
+	public void start() {
+		this.started = true;
+		// put back all seated to life
+	}
+
+	public void finish(GameTeam winTeam) {
+		this.started = false;
+	}
+
+	public boolean isStarted() {
+		return started;
+	}
+
+	public boolean isDead() {
+		return dead;
 	}
 }
