@@ -14,6 +14,8 @@ import org.bukkit.persistence.PersistentDataType;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
+import java.util.stream.IntStream;
+import java.util.stream.Stream;
 
 public class TownHall {
 	private final World world;
@@ -38,7 +40,7 @@ public class TownHall {
 		return this.pdc;
 	}
 
-	// town
+	// static town
 	private static NamespacedKey townKey(String townName) {
 		return new NamespacedKey(RedClocktower.plugin(), "townhall." + townName);
 	}
@@ -137,10 +139,18 @@ public class TownHall {
 	@Nullable
 	public TownChair getChair(int index)
 	{
+		// TownChair is not mutable
+		// you need to save it with saveChair
 		return TownChair.get(this, getChairsPdc().get(index));
 	}
 
-	public void setChair(int index, TownChair townChair)
+	public Stream<TownChair> getAllChairs()
+	{
+		return IntStream.range(0, getChairCount())
+		.mapToObj(this::getChair);
+	}
+
+	public void saveChair(int index, TownChair townChair)
 	{
 		List<PersistentDataContainer> slotsPdc = new ArrayList<>(getChairsPdc());
 		slotsPdc.set(index, townChair.getPdc());

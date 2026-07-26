@@ -9,7 +9,6 @@ import java.util.Map;
 public class BloodPlayer {
 
 	private final Player player;
-	private boolean voting;
 	private BloodPlayer(Player player) {
 		this.player = player;
 	}

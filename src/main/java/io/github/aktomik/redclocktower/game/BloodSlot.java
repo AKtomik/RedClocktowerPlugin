@@ -1,35 +1,34 @@
 package io.github.aktomik.redclocktower.game;
 
+import io.github.aktomik.redclocktower.game.seated.SeatedBase;
+
 public class BloodSlot {
 
 	// construct
 	private final TownChair townChair;
-	private BloodPlayer bloodPlayer;
-	private boolean locked;
+	private SeatedBase seated;
+	private boolean voteLocked;
 
-	public BloodSlot(TownChair townChair) {
+	BloodSlot(TownChair townChair) {
 		this.townChair = townChair;
 	}
-	public BloodSlot(TownChair townChair, BloodPlayer bloodPlayer) {
-		this.townChair = townChair;
-		LinkBloodPlayer(bloodPlayer);
-	}
 
-	// link player
-	public void LinkBloodPlayer(BloodPlayer bloodPlayer) {
-		this.bloodPlayer = bloodPlayer;
-	}
-
-	public void UnlinkBloodPlayer() {
-		this.bloodPlayer = null;
-	}
+	// process
 
 	// access
-	public BloodPlayer getBloodPlayer() {
-		return bloodPlayer;
+	public SeatedBase getSeated() {
+		return seated;
+	}
+	public boolean isOccupied() {
+		return getSeated() != null;
 	}
 
-//	public BloodPlayer getName() {
-//		return bloodPlayer;
-//	}
+	// assign
+	void assign(SeatedBase seated) {
+		this.seated = seated;
+	}
+
+	void empty() {
+		this.seated = null;
+	}
 }

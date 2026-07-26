@@ -4,7 +4,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
-import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.TownChair;
 import io.github.aktomik.redclocktower.game.TownHall;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
@@ -146,7 +145,7 @@ public class SetupSubModifyChair extends BrigadierSub {
 		// execution
 		final Location loc = pos.toLocation(townHall.getWorld());
 		chair.setPosition(place, loc);
-		townHall.setChair(chairIndex, chair);// don't forget to set it else no effect
+		townHall.saveChair(chairIndex, chair);// don't forget to set it else no effect
 		sender.sendRichMessage("set <b><place></b> position of chair <number> at <x> <y> <z>",
 			Placeholder.parsed("number", Integer.toString(chairIndex + 1)),
 			Placeholder.parsed("x", Integer.toString(loc.getBlockX())),

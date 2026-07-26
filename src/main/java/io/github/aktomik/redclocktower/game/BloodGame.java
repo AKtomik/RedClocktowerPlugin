@@ -1,19 +1,21 @@
 package io.github.aktomik.redclocktower.game;
 
+import io.github.aktomik.redclocktower.game.seated.SeatedBase;
 import org.bukkit.World;
+import org.checkerframework.checker.nullness.qual.RequiresNonNull;
 import org.jspecify.annotations.Nullable;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import java.util.stream.Stream;
 
 public class BloodGame {
 
 	// manage
 	private final TownHall townHall;
-	private Map<Integer, BloodSlot> slots = new HashMap<>();
+	private final BloodSlot[] slots;
 	private BloodGame(TownHall townHall) {
 		this.townHall = townHall;
+		slots = townHall.getAllChairs().map(BloodSlot::new).toArray(BloodSlot[]::new);
 	}
 
 	private static final Map<TownHall, BloodGame> townToGameMap = new HashMap<>();
@@ -49,39 +51,28 @@ public class BloodGame {
 	}
 
 	// slot
-	public Set<Integer> getSlotIndexes()
+	public Integer getSlotCount()
 	{
-		return slots.keySet();
+		return slots.length;
 	}
 
-	public Integer getSlotLowerIndex()
+	public boolean isValidSlot(int index)
 	{
-		return slots.keySet().stream().sorted().toList().getFirst();
+		return index >= 0 && index < slots.length;
 	}
 
 	public BloodSlot getSlot(int index)
 	{
-		return slots.get(index);
+		return slots[index];
 	}
 
-	public void assignChair(int index)
+	public void assignSlot(int index, SeatedBase seated)
 	{
-		TownChair townChair = townHall.getChair(index);
-		if (townChair == null) return;
-		BloodSlot slot = new BloodSlot(townChair);
-		slots.put(index, slot);
+		getSlot(index).assign(seated);
 	}
 
-	public void assignChair(int index, BloodPlayer player)
+	public void emptySlot(int index)
 	{
-		TownChair townChair = townHall.getChair(index);
-		if (townChair == null) return;
-		BloodSlot slot = new BloodSlot(townChair, player);
-		slots.put(index, slot);
-	}
-
-	public void emptyChair(int index)
-	{
-		slots.remove(index);
+		getSlot(index).empty();
 	}
 }

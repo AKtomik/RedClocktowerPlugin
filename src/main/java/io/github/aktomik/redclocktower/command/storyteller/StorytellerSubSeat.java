@@ -3,25 +3,16 @@ package io.github.aktomik.redclocktower.command.storyteller;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import com.mojang.brigadier.suggestion.Suggestion;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import io.github.aktomik.redclocktower.game.*;
-import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
-import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
-import io.github.aktomik.redclocktower.oldgame.OldGameToolbox;
+import io.github.aktomik.redclocktower.game.seated.SeatedBase;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
-import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.Material;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
 
-import java.util.List;
 import java.util.stream.IntStream;
 
 public class StorytellerSubSeat extends BrigadierSub {
@@ -32,31 +23,30 @@ public class StorytellerSubSeat extends BrigadierSub {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.argument("chair number", IntegerArgumentType.integer(1, 24))
-		.suggests(chairSuggestion)
+		.then(Commands.argument("slot number", IntegerArgumentType.integer(1, 24))
+		.suggests(slotSuggestion)
 			.executes(subWho)
 
 			.then(Commands.literal("who")
 				.executes(subWho))
 
-			.then(Commands.literal("clear")
-				.executes(subClear))
+			.then(Commands.literal("empty")
+				.executes(subEmpty))
 
-			.then(Commands.literal("place")
+			.then(Commands.literal("assign")
 				.then(Commands.literal("player")
 					.then(Commands.argument("player", ArgumentTypes.player())
-						.executes(subPlacePlayer)))
+						.executes(subAssignPlayer)))
 				.then(Commands.literal("dummy")
-					.executes(subPlaceDummy)))
+					.executes(subAssignDummy)))
 		);
 	}
 
 
-	SuggestionProvider<CommandSourceStack> chairSuggestion = (ctx, builder) -> {
+	SuggestionProvider<CommandSourceStack> slotSuggestion = (ctx, builder) -> {
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 		if (game == null) return builder.buildFuture();
-		final TownHall townHall = game.getTownHall();
-		IntStream.range(1, townHall.getChairCount() + 1).forEach(builder::suggest);
+		IntStream.range(1, game.getSlotCount() + 1).forEach(builder::suggest);
 		return builder.buildFuture();
 	};
 
@@ -64,48 +54,88 @@ public class StorytellerSubSeat extends BrigadierSub {
 	// subs
 
 	Command<CommandSourceStack> subWho = ctx -> {
-		// arguments
 		final CommandSender sender = ctx.getSource().getSender();
-		final World world = ctx.getSource().getLocation().getWorld();
-		final BloodGame game = BloodGame.get(world);
-		final int chairNumber = ctx.getArgument("chair number", Integer.class);
-		final int chairIndex = chairNumber - 1;
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
-		// check
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
 		assert game != null;
 
-		// execute
-		final TownChair chair = game.getTownHall().getChair(chairIndex);
-		if (chair == null) {
-			sender.sendRichMessage("<red>there is no chair <b><number></b>",
-				Placeholder.parsed("number", Integer.toString(chairNumber))
-			);
-			return Command.SINGLE_SUCCESS;
-		}
-		final BloodSlot slot = game.getSlot(chairIndex);
-		if (slot == null) {
+		final int slotNumber = ctx.getArgument("slot number", Integer.class);
+		final int slotIndex = slotNumber - 1;
+		if (!game.isValidSlot(slotIndex)) {
 			sender.sendRichMessage("<red>there is no slot <b><number></b>",
-				Placeholder.parsed("number", Integer.toString(chairNumber))
+				Placeholder.parsed("number", Integer.toString(slotNumber))
 			);
 			return Command.SINGLE_SUCCESS;
 		}
-		sender.sendRichMessage("there is a slot <b><number></b> in game",
-			Placeholder.parsed("number", Integer.toString(chairNumber))
+		final BloodSlot slot = game.getSlot(slotIndex);
+
+		// execute
+		if (slot.isOccupied())
+		{
+			sender.sendRichMessage("the slot <b><number></b> is <gold>occupied",
+				Placeholder.parsed("number", Integer.toString(slotNumber))
+			);
+		} else {
+			sender.sendRichMessage("the slot <b><number></b> is <yellow>empty",
+				Placeholder.parsed("number", Integer.toString(slotNumber))
+			);
+		}
+		return Command.SINGLE_SUCCESS;
+	};
+
+	Command<CommandSourceStack> subEmpty = ctx -> {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+		assert game != null;
+
+		final int slotNumber = ctx.getArgument("slot number", Integer.class);
+		final int slotIndex = slotNumber - 1;
+		if (!game.isValidSlot(slotIndex)) {
+			sender.sendRichMessage("<red>there is no slot <b><number></b>",
+			Placeholder.parsed("number", Integer.toString(slotNumber))
+			);
+			return Command.SINGLE_SUCCESS;
+		}
+		final BloodSlot slot = game.getSlot(slotIndex);
+
+		game.emptySlot(slotIndex);
+		sender.sendRichMessage("slot <b><number></b> <red>emptied</red>",
+		Placeholder.parsed("number", Integer.toString(slotNumber))
 		);
-		// implement siter detection
 		return Command.SINGLE_SUCCESS;
 	};
 
-	Command<CommandSourceStack> subClear = ctx -> {
+	Command<CommandSourceStack> subAssignPlayer = ctx -> {
+		final CommandSender sender = ctx.getSource().getSender();
+		sender.sendRichMessage("TODO");
 		return Command.SINGLE_SUCCESS;
 	};
 
-	Command<CommandSourceStack> subPlacePlayer = ctx -> {
-		return Command.SINGLE_SUCCESS;
-	};
+	Command<CommandSourceStack> subAssignDummy = ctx -> {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
-	Command<CommandSourceStack> subPlaceDummy = ctx -> {
+		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+		assert game != null;
+
+		final int slotNumber = ctx.getArgument("slot number", Integer.class);
+		final int slotIndex = slotNumber - 1;
+		if (!game.isValidSlot(slotIndex)) {
+			sender.sendRichMessage("<red>there is no slot <b><number></b>",
+			Placeholder.parsed("number", Integer.toString(slotNumber))
+			);
+			return Command.SINGLE_SUCCESS;
+		}
+		final BloodSlot slot = game.getSlot(slotIndex);
+
+		final SeatedBase dummy = new SeatedBase();
+		game.assignSlot(slotIndex, dummy);
+		sender.sendRichMessage("<pink>dummy</pink> added to the slot <b><number></b>",
+			Placeholder.parsed("number", Integer.toString(slotNumber))
+		);
 		return Command.SINGLE_SUCCESS;
 	};
 

@@ -9,6 +9,11 @@ import org.bukkit.persistence.PersistentDataContainer;
 import org.jspecify.annotations.NullMarked;
 
 public class TownChair {
+	// TownChair is an interface to the chair pdc
+	// it is the role of BloodSlot to store attributes about the slot
+
+	// it is theoretically possible to have multiple TownChair objects referring to the same pdc
+	// you should avoid those cases. but you still have to only use pdc to save or load data about the chair
 
 	private final TownHall townHall;
 	private final PersistentDataContainer pdc;
