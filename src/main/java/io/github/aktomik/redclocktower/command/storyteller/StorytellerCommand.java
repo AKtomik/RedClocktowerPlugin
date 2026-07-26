@@ -25,6 +25,7 @@ public class StorytellerCommand extends BrigadierCommand {
         .then(new StorytellerSubSetup().root())
         .then(new StorytellerSubGame().root())
         .then(new StorytellerSubTime().root())
+        .then(new StorytellerSubSeat().root())
         .then(new StorytellerSubPlayer().root())
         .then(new StorytellerSubVote().root())
         .then(new StorytellerSubNext().root());

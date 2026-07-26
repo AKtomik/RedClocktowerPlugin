@@ -54,6 +54,11 @@ public class BloodGame {
 		return slots.keySet();
 	}
 
+	public Integer getSlotLowerIndex()
+	{
+		return slots.keySet().stream().sorted().toList().getFirst();
+	}
+
 	public BloodSlot getSlot(int index)
 	{
 		return slots.get(index);
