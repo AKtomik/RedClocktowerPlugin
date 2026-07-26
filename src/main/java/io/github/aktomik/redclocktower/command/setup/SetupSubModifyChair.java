@@ -3,6 +3,8 @@ package io.github.aktomik.redclocktower.command.setup;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.TownChair;
 import io.github.aktomik.redclocktower.game.TownHall;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
@@ -18,9 +20,9 @@ import org.bukkit.command.CommandSender;
 
 import java.util.stream.IntStream;
 
-public class SetupSubModifySlot extends BrigadierSub {
+public class SetupSubModifyChair extends BrigadierSub {
 	public String name() {
-		return "slot";
+		return "chair";
 	}
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
@@ -31,11 +33,7 @@ public class SetupSubModifySlot extends BrigadierSub {
 			.executes(subRemove))
 		.then(Commands.literal("edit")
 			.then(Commands.argument("chair number", IntegerArgumentType.integer(1, 24))
-			.suggests((ctx, builder) -> {
-				final TownHall townHall = ctx.getArgument("town", TownHall.class);
-				IntStream.range(1, townHall.getChairCount() + 1).forEach(builder::suggest);
-				return builder.buildFuture();
-			})
+			.suggests(chairSuggestion)
 				.then(Commands.literal("position")
 					.then(Commands.argument("place", EnumArgument.simple(TownChairPlace.class, "invalid chair place"))
 						.executes(subEditPositionCheck)
@@ -43,6 +41,13 @@ public class SetupSubModifySlot extends BrigadierSub {
 							.executes(subEditPositionChange))
 		))));
 	}
+
+
+	SuggestionProvider<CommandSourceStack> chairSuggestion = (ctx, builder) -> {
+		final TownHall townHall = ctx.getArgument("town", TownHall.class);
+		IntStream.range(1, townHall.getChairCount() + 1).forEach(builder::suggest);
+		return builder.buildFuture();
+	};
 
 
 	Command<CommandSourceStack> subRemove = ctx -> {
@@ -90,7 +95,7 @@ public class SetupSubModifySlot extends BrigadierSub {
 		int chairCount = townHall.getChairCount();
 		if (!(0 <= chairIndex && chairIndex < chairCount))
 		{
-			sender.sendRichMessage("<red>there is no slot <number> (actually <count> chairs)",
+			sender.sendRichMessage("<red>there is no chair <number> (actually <count> chairs)",
 				Placeholder.parsed("number", Integer.toString(chairIndex + 1)),
 				Placeholder.parsed("count", Integer.toString(chairCount))
 			);
@@ -130,7 +135,7 @@ public class SetupSubModifySlot extends BrigadierSub {
 		int chairCount = townHall.getChairCount();
 		if (!(0 <= chairIndex && chairIndex < chairCount))
 		{
-			sender.sendRichMessage("<red>there is no slot <number> (actually <count> chairs)",
+			sender.sendRichMessage("<red>there is no chair <number> (actually <count> chairs)",
 				Placeholder.parsed("number", Integer.toString(chairIndex + 1)),
 				Placeholder.parsed("count", Integer.toString(chairCount))
 			);
@@ -142,7 +147,7 @@ public class SetupSubModifySlot extends BrigadierSub {
 		final Location loc = pos.toLocation(townHall.getWorld());
 		chair.setPosition(place, loc);
 		townHall.setChair(chairIndex, chair);// don't forget to set it else no effect
-		sender.sendRichMessage("set <b><place></b> position of slot <number> at <x> <y> <z>",
+		sender.sendRichMessage("set <b><place></b> position of chair <number> at <x> <y> <z>",
 			Placeholder.parsed("number", Integer.toString(chairIndex + 1)),
 			Placeholder.parsed("x", Integer.toString(loc.getBlockX())),
 			Placeholder.parsed("y", Integer.toString(loc.getBlockY())),

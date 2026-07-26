@@ -15,7 +15,7 @@ public class SetupSubModify extends BrigadierSub {
 		.then(Commands.argument("town", new TownArgumentType())
 		.then(new SetupSubModifyPosition().root())
 		.then(new SetupSubModifySettings().root())
-		.then(new SetupSubModifySlot().root())
+		.then(new SetupSubModifyChair().root())
 		);
 	}
 

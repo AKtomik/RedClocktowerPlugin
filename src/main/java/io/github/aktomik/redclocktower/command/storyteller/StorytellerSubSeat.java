@@ -3,10 +3,9 @@ package io.github.aktomik.redclocktower.command.storyteller;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.game.BloodGame;
-import io.github.aktomik.redclocktower.game.BloodSlot;
-import io.github.aktomik.redclocktower.game.GameToolbox;
-import io.github.aktomik.redclocktower.game.TownHall;
+import com.mojang.brigadier.suggestion.Suggestion;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+import io.github.aktomik.redclocktower.game.*;
 import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
 import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
 import io.github.aktomik.redclocktower.oldgame.OldGameToolbox;
@@ -34,18 +33,14 @@ public class StorytellerSubSeat extends BrigadierSub {
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
 		.then(Commands.argument("chair number", IntegerArgumentType.integer(1, 24))
-		.suggests((ctx, builder) -> {
-			final TownHall townHall = BloodGame.get(ctx.getSource().getLocation().getWorld()).getTownHall();
-			IntStream.range(1, townHall.getChairCount() + 1).forEach(builder::suggest);
-			return builder.buildFuture();
-		})
+		.suggests(chairSuggestion)
 			.executes(subWho)
 
 			.then(Commands.literal("who")
 				.executes(subWho))
 
 			.then(Commands.literal("clear")
-				.executes(subWho))
+				.executes(subClear))
 
 			.then(Commands.literal("place")
 				.then(Commands.literal("player")
@@ -55,6 +50,16 @@ public class StorytellerSubSeat extends BrigadierSub {
 					.executes(subPlaceDummy)))
 		);
 	}
+
+
+	SuggestionProvider<CommandSourceStack> chairSuggestion = (ctx, builder) -> {
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+		if (game == null) return builder.buildFuture();
+		final TownHall townHall = game.getTownHall();
+		IntStream.range(1, townHall.getChairCount() + 1).forEach(builder::suggest);
+		return builder.buildFuture();
+	};
+
 
 	// subs
 
@@ -71,17 +76,28 @@ public class StorytellerSubSeat extends BrigadierSub {
 		assert game != null;
 
 		// execute
-		final BloodSlot slot = game.getSlot(chairIndex);
-		if (slot == null) {
-			sender.sendRichMessage("<red>there is no slot <b><slot></b>",
-				Placeholder.parsed("slot", Integer.toString(chairNumber))
+		final TownChair chair = game.getTownHall().getChair(chairIndex);
+		if (chair == null) {
+			sender.sendRichMessage("<red>there is no chair <b><number></b>",
+				Placeholder.parsed("number", Integer.toString(chairNumber))
 			);
 			return Command.SINGLE_SUCCESS;
 		}
-		sender.sendRichMessage("there is a slot <b><slot></b> in game",
-			Placeholder.parsed("slot", Integer.toString(chairNumber))
+		final BloodSlot slot = game.getSlot(chairIndex);
+		if (slot == null) {
+			sender.sendRichMessage("<red>there is no slot <b><number></b>",
+				Placeholder.parsed("number", Integer.toString(chairNumber))
+			);
+			return Command.SINGLE_SUCCESS;
+		}
+		sender.sendRichMessage("there is a slot <b><number></b> in game",
+			Placeholder.parsed("number", Integer.toString(chairNumber))
 		);
 		// implement siter detection
+		return Command.SINGLE_SUCCESS;
+	};
+
+	Command<CommandSourceStack> subClear = ctx -> {
 		return Command.SINGLE_SUCCESS;
 	};
 

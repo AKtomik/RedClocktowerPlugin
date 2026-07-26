@@ -20,7 +20,7 @@ public class TownArgumentType implements CustomArgumentType<TownHall, String> {
 
 	public static final DynamicCommandExceptionType ERROR_UNKNOWN_TOWN =
 	new DynamicCommandExceptionType(name ->
-		new LiteralMessage("there is no townhall named "+ name+" here.")
+		new LiteralMessage("there is no townhall named "+ name+" here")
 	);
 
 	@Override

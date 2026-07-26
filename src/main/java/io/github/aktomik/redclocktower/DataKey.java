@@ -23,7 +23,7 @@ public enum DataKey {
 	TOWN_HALL_SETTINGS_CLOCK_TICK_SPEED,
 	TOWN_HALL_SETTINGS_DO_EXECUTION_REALLY_KILL,
 
-	TOWN_CHAIR_POS_CHAIR,
+	TOWN_CHAIR_POS_BENCH,
 	TOWN_CHAIR_POS_LEVER,
 	TOWN_CHAIR_POS_LAMP,
 	TOWN_CHAIR_POS_HOUSE,
@@ -42,7 +42,7 @@ public enum DataKey {
 		Map.entry(TownGeneralSettings.DO_EXECUTION_REALLY_KILL, DataKey.TOWN_HALL_SETTINGS_DO_EXECUTION_REALLY_KILL)
 	);
 	public static final Map<TownChairPlace, DataKey> TOWN_CHAIR_POS = Map.ofEntries(
-		Map.entry(TownChairPlace.CHAIR, DataKey.TOWN_CHAIR_POS_CHAIR),
+		Map.entry(TownChairPlace.BENCH, DataKey.TOWN_CHAIR_POS_BENCH),
 		Map.entry(TownChairPlace.LEVER, DataKey.TOWN_CHAIR_POS_LEVER),
 		Map.entry(TownChairPlace.LAMP, DataKey.TOWN_CHAIR_POS_LAMP),
 		Map.entry(TownChairPlace.HOUSE, DataKey.TOWN_CHAIR_POS_HOUSE)

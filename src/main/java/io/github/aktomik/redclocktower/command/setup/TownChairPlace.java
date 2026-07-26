@@ -1,7 +1,7 @@
 package io.github.aktomik.redclocktower.command.setup;
 
 public enum TownChairPlace {
-	CHAIR,
+	BENCH,
 	LEVER,
 	LAMP,
 	HOUSE;
