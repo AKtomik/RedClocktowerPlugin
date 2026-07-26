@@ -22,7 +22,7 @@ public class GameToolbox {
 	}
 
 	public static boolean failIfNoGame(CommandSender sender, BloodGame game) {
-		return failIf(sender, (game == null), "the game is not setup");
+		return failIf(sender, (game == null), "no game setup");
 	}
 	public static boolean failIfNotStarted(CommandSender sender, BloodGame game) {
 		return failIf(sender, !game.isStarted(), "the game is not started");

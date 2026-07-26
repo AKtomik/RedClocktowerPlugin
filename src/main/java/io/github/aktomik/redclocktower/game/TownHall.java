@@ -39,6 +39,9 @@ public class TownHall {
 	public PersistentDataContainer getPdc() {
 		return this.pdc;
 	}
+	public int getHash() {
+		return this.pdc.hashCode();
+	}
 
 	// static town
 	private static NamespacedKey townKey(String townName) {

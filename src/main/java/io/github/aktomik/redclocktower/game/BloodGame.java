@@ -18,12 +18,12 @@ public class BloodGame {
 		slots = townHall.getAllChairs().map(BloodSlot::new).toArray(BloodSlot[]::new);
 	}
 
-	private static final Map<TownHall, BloodGame> townToGameMap = new HashMap<>();
+	private static final Map<Integer, BloodGame> townToGameMap = new HashMap<>();
 	private static final Map<World, BloodGame> worldToGameMap = new HashMap<>();
 
 	@Nullable
 	public static BloodGame get(TownHall townHall) {
-		return townToGameMap.get(townHall);
+		return townToGameMap.get(townHall.getHash());
 	}
 
 	@Nullable
@@ -33,7 +33,7 @@ public class BloodGame {
 
 	public static BloodGame create(TownHall townHall) {
 		BloodGame game = new BloodGame(townHall);
-		townToGameMap.put(townHall, game);
+		townToGameMap.put(townHall.getHash(), game);
 		worldToGameMap.put(townHall.getWorld(), game);
 		return game;
 	}
