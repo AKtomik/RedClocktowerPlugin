@@ -1,5 +1,6 @@
 package io.github.aktomik.redclocktower.game;
 
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 
@@ -25,8 +26,8 @@ public class SeatedPlayer extends Seated {
 	}
 
 	@Override
-	public Color getSeatedTypeColor() {
-		return Color.YELLOW;
+	public NamedTextColor getSeatedTypeColor() {
+		return NamedTextColor.YELLOW;
 	}
 
 	// internal link

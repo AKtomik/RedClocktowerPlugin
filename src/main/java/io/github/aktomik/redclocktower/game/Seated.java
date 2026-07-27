@@ -1,5 +1,6 @@
 package io.github.aktomik.redclocktower.game;
 
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Color;
 
 public abstract class Seated {
@@ -38,7 +39,7 @@ public abstract class Seated {
 	// family override
 	public abstract String getSeatedTypeString();
 
-	public abstract Color getSeatedTypeColor();
+	public abstract NamedTextColor getSeatedTypeColor();
 
 	// access
 	public void setCustomName(String customName) {

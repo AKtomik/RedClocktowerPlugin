@@ -225,4 +225,8 @@ public class BloodGame {
 	public boolean isDead() {
 		return dead;
 	}
+
+	public MiniMessage getMini() {
+		return mini;
+	}
 }
