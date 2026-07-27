@@ -72,7 +72,11 @@ public abstract class Seated {
 	}
 
 	public boolean canVote() {
-		return (!slot.isVoteLocked() && (alive || voteToken));
+		return (!slot.isVoteLocked() && haveVote());
+	}
+
+	public boolean haveVote() {
+		return (alive || voteToken);
 	}
 
 	public SeatState getSeatState() {

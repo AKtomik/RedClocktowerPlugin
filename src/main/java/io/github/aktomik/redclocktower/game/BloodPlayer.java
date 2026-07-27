@@ -2,6 +2,7 @@ package io.github.aktomik.redclocktower.game;
 
 import org.bukkit.OfflinePlayer;
 import org.jspecify.annotations.NullMarked;
+import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -34,7 +35,7 @@ public class BloodPlayer {
 		return offPlayer;
 	}
 
-	@NullMarked
+	@Nullable
 	public SeatedPlayer getSeated() {
 		return seated;
 	}

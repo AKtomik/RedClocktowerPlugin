@@ -1,6 +1,6 @@
 package io.github.aktomik.redclocktower;
 
-import io.github.aktomik.redclocktower.command.Vote;
+import io.github.aktomik.redclocktower.command.VoteCommand;
 import io.github.aktomik.redclocktower.command.setup.SetupCommand;
 import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
 import io.github.aktomik.redclocktower.oldgame.OldPlayerListener;
@@ -43,7 +43,7 @@ public final class RedClocktower extends JavaPlugin {
 
         // load brigadier commands
         BrigadierToolbox.loadCommands(this,
-            List.of(new StorytellerCommand(), new SetupCommand(), new Vote(), new Tagme(), new Whosend(), new BroadcastCommand())
+            List.of(new StorytellerCommand(), new SetupCommand(), new VoteCommand(), new Tagme(), new Whosend(), new BroadcastCommand())
         );
 
         // message

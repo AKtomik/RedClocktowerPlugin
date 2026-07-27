@@ -4,6 +4,8 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
+import io.github.aktomik.redclocktower.game.BloodPlayer;
+import io.github.aktomik.redclocktower.game.SeatedPlayer;
 import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
 import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierCommand;
@@ -14,7 +16,7 @@ import org.bukkit.entity.Player;
 
 import java.util.List;
 
-public class Vote extends BrigadierCommand {
+public class VoteCommand extends BrigadierCommand {
 
 	// register
 	public String name() {
@@ -27,7 +29,7 @@ public class Vote extends BrigadierCommand {
 		return "redclocktower.player";
 	}
 	public String description() {
-		return "trigger your vote";
+		return "change your vote";
 	}
 
 	// root
@@ -44,32 +46,32 @@ public class Vote extends BrigadierCommand {
 		final CommandSender sender = ctx.getSource().getSender();
 		Player player = (Player)ctx.getSource().getExecutor();
 		assert player != null;
-		final OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
+		final BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		final SeatedPlayer seatedPlayer = bloodPlayer.getSeated();
 
 		// checks
-		final OldBloodGame game = bloodPlayer.getGame();
-		if (game == null)
+		if (seatedPlayer == null)
 		{
-			sender.sendRichMessage("<red>you are not in a blood game.");
+			sender.sendRichMessage("<red>you are not in a blood game");
 			return Command.SINGLE_SUCCESS;
 		}
-		if (bloodPlayer.isSlotVoteLock())
+		if (!seatedPlayer.canVote())
 		{
-			sender.sendRichMessage("<red>you can't vote right now.");
-			return Command.SINGLE_SUCCESS;
-		}
-		if (!bloodPlayer.hasVote())
-		{
-			sender.sendRichMessage("<red>you don't have any vote.");
+			if (!seatedPlayer.haveVote())
+				sender.sendRichMessage("<red>you don't have a vote");
+			else if (seatedPlayer.getSlot().isVoteLocked())
+				sender.sendRichMessage("<red>too late");
+			else
+				sender.sendRichMessage("<red>you can't vote");
 			return Command.SINGLE_SUCCESS;
 		}
 
 		// actions
-		if (trigger == null) trigger = !bloodPlayer.getVotePull();
-		bloodPlayer.changeVotePull(trigger);
+		if (trigger == null) trigger = !seatedPlayer.getVotePull();
+		seatedPlayer.setVotePull(trigger);
 		sender.sendRichMessage(trigger
-		? "you are now <yellow><b>voting</b></yellow>."
-		: "you are <red>not voting</red> anymore."
+			? "you are now <yellow><b>voting</b></yellow>."
+			: "you are <red>not voting</red> anymore."
 		);
 
 		return Command.SINGLE_SUCCESS;
