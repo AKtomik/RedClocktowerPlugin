@@ -39,32 +39,32 @@ public class BloodPlayer {
 		return seated;
 	}
 
-	// attribution
+	// internal link
 
 	// to avoid player being on two seats simultaneously
 	// is used by SeatedPlayer and should not be used elsewhere
 
-	void attachSeat(SeatedPlayer seated) {
-		detachSeat();
+	void attachSeat(SeatedPlayer seated) {// only one call at SeatedPlayer
+		// do not call detachSeat here to avoid circular call
+		if (this.seated != null) this.seated.getSlot().empty();
 		this.seated = seated;
 	}
 
-	void detachSeat() {
+	void detachSeat() {// only one call at SeatedPlayer
 		if (seated == null) return;
-		seated.detached();
 		seated = null;
 	}
 
 	// to avoid player being on two storytelling simultaneously
 	// is used by BloodGame and should not be used elsewhere
 
-	void attachStorytelling(BloodGame game) {
+	void attachStorytelling(BloodGame game) {// only one call at BloodGame
 		// do not call detachStorytelling here to avoid circular call
 		if (storytelling != null) storytelling.removeStoryteller(this);
 		this.storytelling = game;
 	}
 
-	void detachStorytelling() {
+	void detachStorytelling() {// only one call at BloodGame
 		if (storytelling == null) return;
 		storytelling = null;
 	}

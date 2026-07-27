@@ -22,6 +22,17 @@ public abstract class Seated {
 		setCustomName(customName);
 	}
 
+	// internal link
+	// this will avoid same seat having two attached slots
+	void attached(BloodSlot newSlot) {
+		if (slot != null) slot.empty();
+		slot = newSlot;
+	}
+
+	void detached() {
+		slot = null;
+	}
+
 	// access
 	public void setCustomName(String customName) {
 		this.customName = customName;
@@ -31,6 +42,9 @@ public abstract class Seated {
 		return (customName == null) ? unicName : customName;
 	}
 
+	public BloodSlot getSlot() {
+		return slot;
+	}
 
 	// states/set
 	public void setTraveller(boolean traveller) {
@@ -82,14 +96,5 @@ public abstract class Seated {
 	// slot
 	private void applySeatState() {
 		slot.setState(getSeatState());
-	}
-
-	void detached() {
-		slot = null;
-	}
-
-	void attached(BloodSlot newSlot) {
-		if (slot != null) slot.empty();
-		slot = newSlot;
 	}
 }
