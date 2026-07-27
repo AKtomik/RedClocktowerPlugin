@@ -40,6 +40,7 @@ public abstract class Seated {
 	}
 
 	public void setAlive(boolean alive) {
+		if (alive) voteToken = true;
 		this.alive = alive;
 		applySeatState();
 	}
