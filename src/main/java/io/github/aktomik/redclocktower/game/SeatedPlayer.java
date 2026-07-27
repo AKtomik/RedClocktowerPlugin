@@ -7,13 +7,13 @@ public class SeatedPlayer extends Seated {
 	public SeatedPlayer(BloodSlot slot, OfflinePlayer player) {
 		super(slot, player.getName());
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		bloodPlayer.joinSeat(this);
+		bloodPlayer.attachSeat(this);
 	}
 
 	public SeatedPlayer(BloodSlot slot, OfflinePlayer player, String customName) {
 		super(slot, player.getName(), customName);
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		bloodPlayer.joinSeat(this);
+		bloodPlayer.attachSeat(this);
 	}
 
 	@Override

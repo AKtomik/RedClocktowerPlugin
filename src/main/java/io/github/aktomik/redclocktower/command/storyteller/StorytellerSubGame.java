@@ -3,10 +3,7 @@ package io.github.aktomik.redclocktower.command.storyteller;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.command.setup.TownArgumentType;
-import io.github.aktomik.redclocktower.game.BloodGame;
-import io.github.aktomik.redclocktower.game.GameTeam;
-import io.github.aktomik.redclocktower.game.GameToolbox;
-import io.github.aktomik.redclocktower.game.TownHall;
+import io.github.aktomik.redclocktower.game.*;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -14,6 +11,7 @@ import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Player;
 
 public class StorytellerSubGame extends BrigadierSub {
 	public String name() {
@@ -63,10 +61,15 @@ public class StorytellerSubGame extends BrigadierSub {
 		}
 
 		// execute
-		BloodGame.create(townHall);
-		sender.sendRichMessage("setup townhall <b><aqua><town></aqua></b> for a game",
-		Placeholder.parsed("town", townHall.getTownName())
+		sender.sendRichMessage("<light_purple>setup townhall <b><aqua><town></aqua></b> for a game",
+			Placeholder.parsed("town", townHall.getTownName())
 		);
+		BloodGame game = BloodGame.create(townHall);
+		if (sender instanceof Player player)
+		{
+			game.addStoryteller(BloodPlayer.get(player));
+			sender.sendRichMessage("you were added as a storyteller");
+		}
 		return Command.SINGLE_SUCCESS;
 	};
 

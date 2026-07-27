@@ -1,6 +1,8 @@
 package io.github.aktomik.redclocktower.game;
 
+import org.bukkit.OfflinePlayer;
 import org.bukkit.World;
+import org.bukkit.entity.Player;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
@@ -11,6 +13,7 @@ public class BloodGame {
 	// manage
 	private final TownHall townHall;
 	private final BloodSlot[] slots;
+	private final ArrayList<BloodPlayer> storytellers = new ArrayList<>();
 	private boolean started = false;
 	private boolean dead = false;
 	private BloodGame(TownHall townHall) {
@@ -69,6 +72,21 @@ public class BloodGame {
 	public BloodSlot getSlot(int index)
 	{
 		return slots[index];
+	}
+
+	// storyteller
+	public void addStoryteller(BloodPlayer bloodPlayer) {
+		bloodPlayer.attachStorytelling(this);
+		storytellers.add(bloodPlayer);
+	}
+
+	public void removeStoryteller(BloodPlayer bloodPlayer) {
+		bloodPlayer.detachStorytelling();
+		storytellers.remove(bloodPlayer);
+	}
+
+	public Player[] getOnlineStorytellers() {
+		return storytellers.stream().map(BloodPlayer::getOffPlayer).filter(OfflinePlayer::isOnline).map(Player.class::cast).toArray(Player[]::new);
 	}
 
 	// state
