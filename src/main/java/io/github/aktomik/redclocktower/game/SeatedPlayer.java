@@ -1,5 +1,6 @@
 package io.github.aktomik.redclocktower.game;
 
+import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 
 public class SeatedPlayer extends Seated {
@@ -15,6 +16,17 @@ public class SeatedPlayer extends Seated {
 	public SeatedPlayer(OfflinePlayer offPlayer, String customName) {
 		super(offPlayer.getName(), customName);
 		this.offPlayer = offPlayer;
+	}
+
+	// family override
+	@Override
+	public String getSeatedTypeString() {
+		return "player";
+	}
+
+	@Override
+	public Color getSeatedTypeColor() {
+		return Color.YELLOW;
 	}
 
 	// internal link

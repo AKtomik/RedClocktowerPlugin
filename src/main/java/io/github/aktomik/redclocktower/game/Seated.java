@@ -1,5 +1,7 @@
 package io.github.aktomik.redclocktower.game;
 
+import org.bukkit.Color;
+
 public abstract class Seated {
 
 	private BloodSlot slot;
@@ -33,6 +35,11 @@ public abstract class Seated {
 		slot = null;
 	}
 
+	// family override
+	public abstract String getSeatedTypeString();
+
+	public abstract Color getSeatedTypeColor();
+
 	// access
 	public void setCustomName(String customName) {
 		this.customName = customName;
@@ -46,29 +53,7 @@ public abstract class Seated {
 		return slot;
 	}
 
-	// states/set
-	public void setTraveller(boolean traveller) {
-		this.traveller = traveller;
-		applySeatState();
-	}
-
-	public void setAlive(boolean alive) {
-		if (alive) voteToken = true;
-		this.alive = alive;
-		applySeatState();
-	}
-
-	public void setVoteToken(boolean voteToken) {
-		this.voteToken = voteToken;
-		applySeatState();
-	}
-
-	public void setVotePull(boolean votePull) {
-		this.votePull = votePull;
-		applySeatState();
-	}
-
-	// states/get
+	// get states
 	public boolean getTraveller() {
 		return traveller;
 	}
@@ -93,8 +78,30 @@ public abstract class Seated {
 		return new SeatState(traveller, alive, voteToken, votePull);
 	}
 
+	// set states (overridable)
+	public void setTraveller(boolean traveller) {
+		this.traveller = traveller;
+		applySeatState();
+	}
+
+	public void setAlive(boolean alive) {
+		if (alive) voteToken = true;
+		this.alive = alive;
+		applySeatState();
+	}
+
+	public void setVoteToken(boolean voteToken) {
+		this.voteToken = voteToken;
+		applySeatState();
+	}
+
+	public void setVotePull(boolean votePull) {
+		this.votePull = votePull;
+		applySeatState();
+	}
+
 	// slot
 	private void applySeatState() {
-		slot.setState(getSeatState());
+		slot.refreshState(getSeatState());
 	}
 }
