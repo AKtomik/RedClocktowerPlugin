@@ -32,19 +32,30 @@ public class BloodSlot {
 		return getSeated() != null;
 	}
 
+	// top level link
+	// you can call it everywhere
 	public void assign(Seated seated) {
+		if (seated == null) {
+			empty();
+			return;
+		}
+		if (this.seated != null) empty();
+
 		seated.attached(this);
 		this.seated = seated;
 		refreshBlock(seated.getSeatState());
 	}
+
 	public void empty() {
+		if (this.seated == null) return;
+
 		seated.detached();
 		this.seated = null;
 		refreshBlock(null);
 	}
 
 	// state
-	void setState(SeatState state) {
+	void refreshState(SeatState state) {
 		// right now seat block state is not stored and that cool
 		// seatState = state;
 		refreshBlock(state);
