@@ -13,13 +13,12 @@ public abstract class Seated {
 	private boolean votePull = false;
 
 	// construct
-	Seated(BloodSlot slot, String unicName) {
-		this.slot = slot;
+	Seated(String unicName) {
 		this.unicName = unicName;
 	}
 
-	Seated(BloodSlot slot, String unicName, String customName) {
-		this(slot, unicName);
+	Seated(String unicName, String customName) {
+		this(unicName);
 		setCustomName(customName);
 	}
 
@@ -85,14 +84,12 @@ public abstract class Seated {
 		slot.setState(getSeatState());
 	}
 
-	void detachSlot() {
-		if (slot == null) throw new RuntimeException("seated try to detachSlot but does not have a slot");
-		slot.empty();
+	void detached() {
 		slot = null;
 	}
 
-	void attachSlot(BloodSlot newSlot) {
-		if (slot != null) throw new RuntimeException("seated try to attachSlot but already have a slot");
+	void attached(BloodSlot newSlot) {
+		if (slot != null) slot.empty();
 		slot = newSlot;
 	}
 }

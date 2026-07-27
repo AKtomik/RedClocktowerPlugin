@@ -4,16 +4,14 @@ import org.bukkit.OfflinePlayer;
 
 public class SeatedPlayer extends Seated {
 	OfflinePlayer offPlayer;
-	public SeatedPlayer(BloodSlot slot, OfflinePlayer offPlayer) {
-		super(slot, offPlayer.getName());
+	public SeatedPlayer(OfflinePlayer offPlayer) {
+		super(offPlayer.getName());
 		BloodPlayer bloodPlayer = BloodPlayer.get(offPlayer);
-		bloodPlayer.attachSeat(this);
 	}
 
-	public SeatedPlayer(BloodSlot slot, OfflinePlayer offPlayer, String customName) {
-		super(slot, offPlayer.getName(), customName);
+	public SeatedPlayer(OfflinePlayer offPlayer, String customName) {
+		super(offPlayer.getName(), customName);
 		BloodPlayer bloodPlayer = BloodPlayer.get(offPlayer);
-		bloodPlayer.attachSeat(this);
 	}
 
 	public OfflinePlayer getOffPlayer() {

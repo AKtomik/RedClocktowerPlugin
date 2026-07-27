@@ -33,10 +33,12 @@ public class BloodSlot {
 	}
 
 	public void assign(Seated seated) {
+		seated.attached(this);
 		this.seated = seated;
 		refreshBlock(seated.getSeatState());
 	}
 	public void empty() {
+		seated.detached();
 		this.seated = null;
 		refreshBlock(null);
 	}

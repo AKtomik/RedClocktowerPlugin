@@ -68,7 +68,7 @@ public class StorytellerSubGame extends BrigadierSub {
 		if (sender instanceof Player player)
 		{
 			game.addStoryteller(BloodPlayer.get(player));
-			sender.sendRichMessage("you were added as a storyteller");
+			sender.sendRichMessage("<dark_purple>you are storytelling this game");
 		}
 		return Command.SINGLE_SUCCESS;
 	};

@@ -54,9 +54,14 @@ public class BloodGame {
 		return game;
 	}
 
+	// this will remove the game from statics references so it is not accessible anymore
+	// remove it from others references too so it can be garbage collected
 	public void kill() {
-		// this will remove the game from statics references so it is not accessible anymore
-		// remove it from others references too so it can be garbage collected
+		// reset
+		for (BloodSlot slot : slots) slot.empty();
+		removeAllStorytellers();
+		removeAllSpectators();
+		// static
 		townToGameMap.values().remove(this);
 		worldToGameMap.values().remove(this);
 		dead = true;
@@ -88,8 +93,12 @@ public class BloodGame {
 		return Arrays.stream(slots).filter(BloodSlot::isOccupied).map(BloodSlot::getSeated);
 	}
 
+	public Stream<SeatedPlayer> getAllSeatedPlayers() {
+		return getAllSeated().filter(SeatedPlayer.class::isInstance).map(SeatedPlayer.class::cast);
+	}
+
 	public Stream<OfflinePlayer> getOfflinePlayers() {
-		return getAllSeated().filter(SeatedPlayer.class::isInstance).map(SeatedPlayer.class::cast).map(SeatedPlayer::getOffPlayer);
+		return getAllSeatedPlayers().map(SeatedPlayer::getOffPlayer);
 	}
 
 	public Stream<Player> getOnlinePlayers() {
@@ -107,6 +116,11 @@ public class BloodGame {
 		storytellers.remove(bloodPlayer);
 	}
 
+	public void removeAllStorytellers() {
+		for (BloodPlayer bloodPlayer : storytellers) bloodPlayer.detachStorytelling();
+		storytellers.clear();
+	}
+
 	public Stream<Player> getOnlineStorytellers() {
 		return storytellers.stream().map(BloodPlayer::getOffPlayer).map(OfflinePlayer::getPlayer).filter(Objects::nonNull);
 	}
@@ -120,8 +134,18 @@ public class BloodGame {
 		spectators.remove(bloodPlayer);
 	}
 
+	public void removeAllSpectators() {
+		// for (BloodPlayer bloodPlayer : spectators) bloodPlayer.();
+		spectators.clear();
+	}
+
 	public Stream<Player> getOnlineSpectators() {
 		return spectators.stream().map(BloodPlayer::getOffPlayer).map(OfflinePlayer::getPlayer).filter(Objects::nonNull);
+	}
+
+	// all participants
+	public Stream<Player> getAllOnline() {
+		return Stream.concat(Stream.concat(getOnlinePlayers(), getOnlineStorytellers()), getOnlineSpectators());
 	}
 
 	// text utils
@@ -130,24 +154,17 @@ public class BloodGame {
 			player.sendMessage(message);
 	}
 
-	void sendPlayers(Component message, boolean includeSpectators, boolean includeStorytellers) {
-		Stream<Player> playerStream = getOnlinePlayers();
-		if (includeSpectators) playerStream = Stream.concat(playerStream, getOnlineStorytellers());
-		if (includeStorytellers) playerStream = Stream.concat(playerStream, getOnlineSpectators());
-		for (Player player : playerStream.toList())
+	void sendAll(Component message) {
+		for (Player player : getAllOnline().toList())
 			player.sendMessage(message);
 	}
 
-	void sendPlayers(Component message) {
-		sendPlayers(message, true, true);
-	}
-
 	public void broadcast(String richString) {
-		sendPlayers(mini.deserialize(richString));
+		sendAll(mini.deserialize(richString));
 	}
 
 	public void broadcast(String richString, final TagResolver... tagResolvers) {
-		sendPlayers(mini.deserialize(richString, tagResolvers));
+		sendAll(mini.deserialize(richString, tagResolvers));
 	}
 
 	// sound utils

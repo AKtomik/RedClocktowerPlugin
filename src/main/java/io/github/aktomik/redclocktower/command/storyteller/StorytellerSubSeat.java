@@ -156,7 +156,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 		final Player player = BrigadierToolbox.resolvePlayer(ctx);
 		if (GameToolbox.failIfNoPlayer(sender, player)) return Command.SINGLE_SUCCESS;
 
-		final Seated seated = new SeatedPlayer(slot, player);
+		final Seated seated = new SeatedPlayer(player);
 		game.getSlot(slotIndex).assign(seated);
 		sender.sendRichMessage("player <yellow><name></yellow> added to the slot <b><number></b>",
 			Placeholder.parsed("number", Integer.toString(slotNumber)),
@@ -190,7 +190,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 			return Command.SINGLE_SUCCESS;
 		}
 
-		final Seated seated = new SeatedDummy(slot, slotNumber);
+		final Seated seated = new SeatedDummy(slotNumber);
 		game.getSlot(slotIndex).assign(seated);
 		sender.sendRichMessage("dummy <light_purple><name></light_purple> added to the slot <b><number></b>",
 			Placeholder.parsed("number", Integer.toString(slotNumber)),

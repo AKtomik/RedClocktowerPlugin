@@ -51,7 +51,7 @@ public class BloodPlayer {
 
 	void detachSeat() {
 		if (seated == null) return;
-		seated.detachSlot();
+		seated.detached();
 		seated = null;
 	}
 
