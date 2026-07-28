@@ -1,12 +1,14 @@
 package io.github.aktomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
-import com.mojang.brigadier.Message;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import io.github.aktomik.redclocktower.game.*;
-import io.github.aktomik.redclocktower.game.Seated;
+import io.github.aktomik.redclocktower.game.member.BloodSlot;
+import io.github.aktomik.redclocktower.game.member.Seated;
+import io.github.aktomik.redclocktower.game.member.SeatedDummy;
+import io.github.aktomik.redclocktower.game.member.SeatedPlayer;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import io.papermc.paper.command.brigadier.CommandSourceStack;

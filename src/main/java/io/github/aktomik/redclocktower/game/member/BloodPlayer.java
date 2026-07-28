@@ -1,5 +1,6 @@
-package io.github.aktomik.redclocktower.game;
+package io.github.aktomik.redclocktower.game.member;
 
+import io.github.aktomik.redclocktower.game.BloodGame;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;

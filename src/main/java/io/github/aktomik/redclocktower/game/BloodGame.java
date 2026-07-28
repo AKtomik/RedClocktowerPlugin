@@ -1,5 +1,10 @@
 package io.github.aktomik.redclocktower.game;
 
+import io.github.aktomik.redclocktower.game.member.BloodPlayer;
+import io.github.aktomik.redclocktower.game.member.BloodSlot;
+import io.github.aktomik.redclocktower.game.member.Seated;
+import io.github.aktomik.redclocktower.game.member.SeatedPlayer;
+import io.github.aktomik.redclocktower.game.town.TownHall;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;

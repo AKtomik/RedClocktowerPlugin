@@ -1,4 +1,4 @@
-package io.github.aktomik.redclocktower.game;
+package io.github.aktomik.redclocktower.game.member;
 
 public record SeatState(
 	boolean traveller,
