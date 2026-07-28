@@ -25,7 +25,7 @@ public class TownChair {
 	}
 
 	@NullMarked
-	public static TownChair get(TownHall townHall, PersistentDataContainer pdc) {
+	static TownChair get(TownHall townHall, PersistentDataContainer pdc) {
 		return new TownChair(townHall, pdc);
 	}
 

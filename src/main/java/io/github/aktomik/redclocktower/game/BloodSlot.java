@@ -1,4 +1,4 @@
-package io.github.aktomik.redclocktower.game.member;
+package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.command.setup.TownChairPlace;
 import io.github.aktomik.redclocktower.game.town.TownChair;

@@ -1,4 +1,4 @@
-package io.github.aktomik.redclocktower.game.member;
+package io.github.aktomik.redclocktower.game;
 
 import net.kyori.adventure.text.format.NamedTextColor;
 
