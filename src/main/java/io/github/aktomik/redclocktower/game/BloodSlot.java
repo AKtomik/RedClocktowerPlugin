@@ -15,10 +15,12 @@ public class BloodSlot {
 
 	// construct
 	private final TownChair townChair;
+	private final BloodGame game;
 	private Seated seated;
 	private boolean voteLocked;
 
-	BloodSlot(TownChair townChair) {
+	BloodSlot(BloodGame game, TownChair townChair) {
+		this.game = game;
 		this.townChair = townChair;
 		this.seated = null;
 		refreshBlock(null);
@@ -29,6 +31,11 @@ public class BloodSlot {
 	public Seated getSeated() {
 		return seated;
 	}
+
+	public BloodGame getGame() {
+		return game;
+	}
+
 	public boolean isOccupied() {
 		return getSeated() != null;
 	}

@@ -24,7 +24,7 @@ public class BloodGame {
 	private boolean dead = false;
 	private BloodGame(TownHall townHall) {
 		this.townHall = townHall;
-		slots = townHall.getAllChairs().map(BloodSlot::new).toArray(BloodSlot[]::new);
+		slots = townHall.getAllChairs().map(townChair -> new BloodSlot(this, townChair)).toArray(BloodSlot[]::new);
 	}
 
 	private static final Map<Integer, BloodGame> townToGameMap = new HashMap<>();

@@ -1,5 +1,6 @@
 package io.github.aktomik.redclocktower.game;
 
+import io.github.aktomik.redclocktower.game.town.TownHall;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -41,6 +42,19 @@ public class BloodPlayer {
 	@Nullable
 	public SeatedPlayer getSeated() {
 		return seated;
+	}
+
+	// shortcut
+	@Nullable
+	public BloodGame getGameShortcut() {
+		if (getSeated() == null) return null;
+		return getSeated().getSlot().getGame();
+	}
+
+	@Nullable
+	public TownHall getTownHallShortcut() {
+		if (getSeated() == null) return null;
+		return getSeated().getSlot().getGame().getTownHall();
 	}
 
 	// internal link
@@ -92,12 +106,13 @@ public class BloodPlayer {
 	}
 
 	// global effect
-	private void joinedSeatEffect() {
+	void joinedSeatEffect() {
 		// either attachSeat or player join
+		if (seated == null) return;
 		refreshAliveEffect(seated.getAlive());
 	}
 
-	private void leavedSeatEffect() {
+	void leavedSeatEffect() {
 		// either detachSeat or player leave
 		clearAliveEffect();
 	}
