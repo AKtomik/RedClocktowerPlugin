@@ -1,4 +1,4 @@
-package io.github.aktomik.redclocktower.command.setup;
+package io.github.aktomik.redclocktower.game.town;
 
 public enum TownChairPlace {
 	BENCH,

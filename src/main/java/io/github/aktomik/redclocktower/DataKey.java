@@ -1,8 +1,8 @@
 package io.github.aktomik.redclocktower;
 
-import io.github.aktomik.redclocktower.command.setup.TownChairPlace;
-import io.github.aktomik.redclocktower.command.setup.TownGeneralSettings;
-import io.github.aktomik.redclocktower.command.setup.TownHallPlace;
+import io.github.aktomik.redclocktower.game.town.TownChairPlace;
+import io.github.aktomik.redclocktower.game.town.TownGeneralSettings;
+import io.github.aktomik.redclocktower.game.town.TownHallPlace;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
 

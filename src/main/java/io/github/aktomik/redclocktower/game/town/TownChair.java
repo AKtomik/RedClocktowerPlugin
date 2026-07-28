@@ -1,7 +1,6 @@
 package io.github.aktomik.redclocktower.game.town;
 
 import io.github.aktomik.redclocktower.DataKey;
-import io.github.aktomik.redclocktower.command.setup.TownChairPlace;
 import io.github.aktomik.redclocktower.utils.pdc.BlockPos;
 import io.github.aktomik.redclocktower.utils.pdc.PositionDataType;
 import org.bukkit.Location;

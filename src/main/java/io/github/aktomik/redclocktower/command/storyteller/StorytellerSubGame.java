@@ -2,7 +2,7 @@ package io.github.aktomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.command.setup.TownArgumentType;
+import io.github.aktomik.redclocktower.game.town.TownArgumentType;
 import io.github.aktomik.redclocktower.game.*;
 import io.github.aktomik.redclocktower.game.BloodPlayer;
 import io.github.aktomik.redclocktower.game.town.TownHall;
