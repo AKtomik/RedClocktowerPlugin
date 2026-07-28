@@ -1,12 +1,11 @@
 package io.github.aktomik.redclocktower.game;
 
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 
 public class SeatedPlayer extends Seated {
 
-	OfflinePlayer offPlayer;
+	private final OfflinePlayer offPlayer;
 
 	// construct
 	public SeatedPlayer(OfflinePlayer offPlayer) {

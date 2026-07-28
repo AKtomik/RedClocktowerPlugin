@@ -1,6 +1,9 @@
 package io.github.aktomik.redclocktower.game;
 
 import org.bukkit.OfflinePlayer;
+import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -49,11 +52,13 @@ public class BloodPlayer {
 		// do not call detachSeat here to avoid circular call
 		if (this.seated != null) this.seated.getSlot().empty();
 		this.seated = seated;
+		joinedSeatEffect();
 	}
 
 	void detachSeat() {// only one call at SeatedPlayer
 		if (seated == null) return;
 		seated = null;
+		leavedSeatEffect();
 	}
 
 	// to avoid player being on two storytelling simultaneously
@@ -68,5 +73,32 @@ public class BloodPlayer {
 	void detachStorytelling() {// only one call at BloodGame
 		if (storytelling == null) return;
 		storytelling = null;
+	}
+
+	// state effect
+	protected void clearAliveEffect() {
+		if (!(offPlayer instanceof Player player)) return;
+		player.removePotionEffect(PotionEffectType.INVISIBILITY);
+	}
+
+	protected void refreshAliveEffect(boolean alive) {
+		if (!(offPlayer instanceof Player player)) return;
+		if (alive)
+		{
+			player.removePotionEffect(PotionEffectType.INVISIBILITY);
+		} else {
+			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 9, true, false, false));
+		}
+	}
+
+	// global effect
+	private void joinedSeatEffect() {
+		// either attachSeat or player join
+		refreshAliveEffect(seated.getAlive());
+	}
+
+	private void leavedSeatEffect() {
+		// either detachSeat or player leave
+		clearAliveEffect();
 	}
 }

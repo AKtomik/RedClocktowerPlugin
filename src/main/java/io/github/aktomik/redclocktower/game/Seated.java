@@ -15,6 +15,8 @@ public abstract class Seated {
 	private boolean voteToken = true;
 	private boolean votePull = false;
 
+	private final int votePower = 1;// we will be able to change vote power here
+
 	// construct
 	Seated(String unicName) {
 		this.unicName = unicName;
@@ -81,6 +83,10 @@ public abstract class Seated {
 
 	public SeatState getSeatState() {
 		return new SeatState(traveller, alive, voteToken, votePull);
+	}
+
+	public int getVotePower() {
+		return votePower;
 	}
 
 	// set states (overridable)

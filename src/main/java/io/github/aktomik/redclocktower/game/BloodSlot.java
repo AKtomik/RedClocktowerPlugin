@@ -59,11 +59,13 @@ public class BloodSlot {
 		// right now seat block state is not stored and that cool
 		// seatState = state;
 		refreshBlock(state);
+		refreshLever(state.votePull());
 	}
 
 	public void setVoteLocked(boolean locked) {
 		voteLocked = locked;
 		refreshPiston(locked);
+		refreshLever(false);
 	}
 
 	public boolean isVoteLocked() {
@@ -75,9 +77,7 @@ public class BloodSlot {
 		Location lampPosDown = townChair.getPosition(TownChairPlace.LAMP);
 		Location lampPosUp = lampPosDown.clone();
 		lampPosUp.setY(lampPosDown.getY() + 1);
-		Location leverLoc = townChair.getPosition(TownChairPlace.LEVER);
 
-		BlockData leverData = world.getBlockData(leverLoc);
 		BlockData lampData = BlockType.WAXED_COPPER_BLOCK.createBlockData();
 
 		if (seated != null) {
@@ -123,15 +123,8 @@ public class BloodSlot {
 					lightable.copyTo(lampData);
 				}
 			}
-
-
-			if (leverData instanceof Powerable powerable) {
-				powerable.setPowered(state.votePull());
-				powerable.copyTo(leverData);
-			}
 		}
 
-		world.setBlockData(leverLoc, leverData);
 		if (voteLocked)
 		{
 			world.setBlockData(lampPosDown, lampData);
@@ -139,6 +132,18 @@ public class BloodSlot {
 		} else {
 			world.setBlockData(lampPosUp, lampData);
 		}
+	}
+
+	private void refreshLever(boolean voting) {
+		World world = townChair.getTownHall().getWorld();
+		Location leverLoc = townChair.getPosition(TownChairPlace.LEVER);
+		BlockData leverData = world.getBlockData(leverLoc);
+
+		if (leverData instanceof Powerable powerable) {
+			powerable.setPowered(voting);
+			powerable.copyTo(leverData);
+		}
+		world.setBlockData(leverLoc, leverData);
 	}
 
 	private void refreshPiston(boolean locked) {

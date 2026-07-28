@@ -1,4 +1,5 @@
 package io.github.aktomik.redclocktower.command.storyteller;
+
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
