@@ -11,7 +11,8 @@ import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 
-public class StorytellerSubTime extends BrigadierSub {
+@Deprecated
+public class OldStorytellerSubTime extends BrigadierSub {
 
 	public String name() {
 		return "time";

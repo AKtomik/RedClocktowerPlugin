@@ -16,7 +16,8 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class StorytellerSubVote extends BrigadierSub {
+@Deprecated
+public class OldStorytellerSubVote extends BrigadierSub {
 
 	public String name() {
 		return "vote";

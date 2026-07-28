@@ -8,7 +8,8 @@ import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import org.bukkit.command.CommandSender;
 
-public class StorytellerSubNext extends BrigadierSub {
+@Deprecated
+public class OldStorytellerSubNext extends BrigadierSub {
 	public String name() {
 		return "next";
 	}

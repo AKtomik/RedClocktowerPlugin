@@ -21,7 +21,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.Objects;
 
-public class StorytellerSubPlayer extends BrigadierSub {
+@Deprecated
+public class OldStorytellerSubPlayer extends BrigadierSub {
 
 // build
 
