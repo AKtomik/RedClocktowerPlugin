@@ -51,19 +51,20 @@ public class GameToolbox {
 	@Deprecated
 	public static void forEachValidPlayer(
 	CommandSender sender,
-	OldBloodGame game,
+	BloodGame game,
 	List<Player> players,
-	BiConsumer<Player, OldBloodPlayer> action
+	BiConsumer<Player, Seated> action
 	) {
 		for (Player player : players) {
-			if (!game.isPlayerIn(player)) {
+			BloodPlayer bloodPlayer = BloodPlayer.get(player);
+			if (bloodPlayer.getSeatedGame() != game) {
 				sender.sendRichMessage(
 				"<red><b><target></b> is not in game.",
 				Placeholder.parsed("target", player.getName())
 				);
 				continue;
 			}
-			action.accept(player, OldBloodPlayer.get(player));
+			action.accept(player, bloodPlayer.getSeated());
 		}
 	}
 }

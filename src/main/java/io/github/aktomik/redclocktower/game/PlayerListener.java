@@ -28,7 +28,7 @@ public class PlayerListener implements Listener {
 	public void onRespawn(PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		TownHall townHall = bloodPlayer.getTownHallShortcut();
+		TownHall townHall = bloodPlayer.getSeatedTownHall();
 		if (townHall == null) return;
 		event.setRespawnLocation(townHall.getPosition(TownHallPlace.SPAWN));
 	}
@@ -38,7 +38,7 @@ public class PlayerListener implements Listener {
 	{
 		Player player = event.getPlayer();
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		TownHall townHall = bloodPlayer.getTownHallShortcut();
+		TownHall townHall = bloodPlayer.getSeatedTownHall();
 		if (townHall == null) return;
 		if (townHall.getSettingsCanPlayerDrop()) return;
 		player.sendActionBar(MiniMessage.miniMessage().deserialize("<red>nope!"));

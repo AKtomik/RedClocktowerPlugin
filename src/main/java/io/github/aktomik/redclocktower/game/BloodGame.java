@@ -89,6 +89,21 @@ public class BloodGame {
 		return slots[index];
 	}
 
+	public boolean isFull()
+	{
+		for (BloodSlot slot : slots)
+			if (!slot.isOccupied())
+				return false;
+		return true;
+	}
+
+	public int getFirstEmptySlotIndex() throws RuntimeException {
+		for (int i = 0; i < slots.length; i++)
+			if (!slots[i].isOccupied())
+				return i;
+		throw new RuntimeException("getFirstEmptySlotIndex() but the game is full: there is no empty slot");
+	}
+
 	// players participants
 	public Stream<Seated> getAllSeated() {
 		return Arrays.stream(slots).filter(BloodSlot::isOccupied).map(BloodSlot::getSeated);

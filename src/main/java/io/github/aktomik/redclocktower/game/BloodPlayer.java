@@ -44,17 +44,21 @@ public class BloodPlayer {
 		return seated;
 	}
 
-	// shortcut
 	@Nullable
-	public BloodGame getGameShortcut() {
-		if (getSeated() == null) return null;
-		return getSeated().getSlot().getGame();
+	public BloodGame getSeatedGame() {
+		if (seated == null) return null;
+		return seated.getSlot().getGame();
 	}
 
 	@Nullable
-	public TownHall getTownHallShortcut() {
-		if (getSeated() == null) return null;
-		return getSeated().getSlot().getGame().getTownHall();
+	public TownHall getSeatedTownHall() {
+		if (seated == null) return null;
+		return seated.getSlot().getGame().getTownHall();
+	}
+
+	@Nullable
+	public BloodGame getStorytellingGame() {
+		return storytelling;
 	}
 
 	// internal link
