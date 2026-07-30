@@ -6,8 +6,8 @@ public abstract class Seated {
 
 	private BloodSlot slot;
 
-	private final String unicName;
-	private String customName;
+	private final String id;
+	private String name;
 
 	private boolean traveller = false;
 	private boolean alive = true;
@@ -17,13 +17,13 @@ public abstract class Seated {
 	private final int votePower = 1;// we will be able to change vote power here
 
 	// construct
-	Seated(String unicName) {
-		this.unicName = unicName;
+	Seated(String id, String name) {
+		this.id = id;
+		this.name = name;
 	}
 
-	Seated(String unicName, String customName) {
-		this(unicName);
-		setCustomName(customName);
+	Seated(String id) {
+		this(id, id);
 	}
 
 	// internal link
@@ -43,12 +43,16 @@ public abstract class Seated {
 	public abstract NamedTextColor getSeatedTypeColor();
 
 	// access
-	public void setCustomName(String customName) {
-		this.customName = customName;
+	public String getId() {
+		return id;
 	}
 
-	public String getDisplayName() {
-		return (customName == null) ? unicName : customName;
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
 	}
 
 	public BloodSlot getSlot() {

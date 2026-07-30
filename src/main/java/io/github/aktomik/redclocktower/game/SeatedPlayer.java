@@ -13,11 +13,6 @@ public class SeatedPlayer extends Seated {
 		this.offPlayer = offPlayer;
 	}
 
-	public SeatedPlayer(OfflinePlayer offPlayer, String customName) {
-		super(offPlayer.getName(), customName);
-		this.offPlayer = offPlayer;
-	}
-
 	// family override
 	@Override
 	public String getSeatedTypeString() {

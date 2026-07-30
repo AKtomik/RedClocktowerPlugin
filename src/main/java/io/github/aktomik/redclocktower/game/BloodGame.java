@@ -18,8 +18,8 @@ public class BloodGame {
 	// definition
 	private final TownHall townHall;
 	private final BloodSlot[] slots;
-	private final ArrayList<BloodPlayer> storytellers = new ArrayList<>();
-	private final ArrayList<BloodPlayer> spectators = new ArrayList<>();
+	private final List<BloodPlayer> storytellers = new ArrayList<>();
+	private final List<BloodPlayer> spectators = new ArrayList<>();
 	private boolean started = false;
 	private boolean dead = false;
 	private BloodGame(TownHall townHall) {

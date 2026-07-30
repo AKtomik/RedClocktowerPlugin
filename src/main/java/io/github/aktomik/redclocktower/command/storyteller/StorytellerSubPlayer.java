@@ -5,7 +5,6 @@ import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.game.*;
 import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
-import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
 import io.github.aktomik.redclocktower.oldgame.OldGameToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
@@ -61,7 +60,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 		// modify
 		.then(Commands.literal("set")
-			.then(Commands.argument("players", ArgumentTypes.players())
+			.then(Commands.argument("seated", new SeatedArgumentType())
 //				.then(Commands.literal("traveller")
 //					.executes(subTravelerCheck)
 //					.then(Commands.argument("change", BoolArgumentType.bool())
@@ -124,7 +123,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 				"<logo> <type> <name>",
 				Placeholder.parsed("logo", logo),
 				Placeholder.parsed("type", seated.getSeatedTypeString()),
-				Placeholder.component("name", Component.text(seated.getDisplayName()).color(seated.getSeatedTypeColor()))
+				Placeholder.component("name", Component.text(seated.getName()).color(seated.getSeatedTypeColor()))
 			);
 		}
 
@@ -337,46 +336,46 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	public final Command<CommandSourceStack> subAliveCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
-		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
+		final List<Seated> seatedList = List.of(ctx.getArgument("seated", Seated.class));
 
 		// checks
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
 		assert game != null;
-		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNoSeateds(sender, seatedList)) return Command.SINGLE_SUCCESS;
 
 		// the action
-		GameToolbox.forEachValidPlayer(sender, game, players, (player, seated) -> {
+		for (Seated seated : seatedList) {
 			sender.sendRichMessage(
 			seated.getAlive()
 			? "<b><target></b> is alive."
 			: "<b><target></b> is dead.",
-			Placeholder.parsed("target", player.getName())
+			Placeholder.parsed("target", seated.getName())
 			);
-		});
+		}
 		return Command.SINGLE_SUCCESS;
 	};
 
 	public final Command<CommandSourceStack> subAliveChange = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
-		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
+		final List<Seated> seatedList = List.of(ctx.getArgument("seated", Seated.class));
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
 
 		// checks
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
 		assert game != null;
-		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		if (GameToolbox.failIfNoSeateds(sender, seatedList)) return Command.SINGLE_SUCCESS;
 
 		// the action
-		GameToolbox.forEachValidPlayer(sender, game, players, (player, seated) -> {
+		for (Seated seated : seatedList) {
 			if (seated.getAlive() == changeValue) {
 				sender.sendRichMessage(
 				changeValue
 				? "<gray><b><target></b> is already alive."
 				: "<gray><b><target></b> is already dead.",
-				Placeholder.parsed("target", player.getName())
+				Placeholder.parsed("target", seated.getName())
 				);
-				return;
+				continue;
 			}
 
 			seated.setAlive(changeValue);
@@ -384,9 +383,9 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			changeValue
 			? "<b><target></b> is now <yellow>alive</yellow>."
 			: "<b><target></b> is now <red>dead</red>.",
-			Placeholder.parsed("target", player.getName())
+			Placeholder.parsed("target", seated.getName())
 			);
-		});
+		}
 		return Command.SINGLE_SUCCESS;
 	};
 

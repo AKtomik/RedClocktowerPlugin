@@ -1,7 +1,6 @@
 package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
-import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -46,6 +45,10 @@ public class GameToolbox {
 	}
 	public static boolean failIfNoPlayer(CommandSender sender, Player player) {
 		return failIf(sender, (player == null), "there is no player selected");
+	}
+
+	public static boolean failIfNoSeateds(CommandSender sender, List<Seated> seatedList) {
+		return failIf(sender, (seatedList.isEmpty()), "there is no seated selected");
 	}
 
 	@Deprecated

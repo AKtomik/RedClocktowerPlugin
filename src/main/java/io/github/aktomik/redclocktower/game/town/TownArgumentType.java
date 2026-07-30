@@ -24,7 +24,7 @@ public class TownArgumentType implements CustomArgumentType<TownHall, String> {
 
 	@Override
 	public TownHall parse(StringReader reader) throws CommandSyntaxException {
-		throw new IllegalStateException("TownArgumentType requires a CommandSourceStack");
+		throw new UnsupportedOperationException("TownArgumentType requires a CommandSourceStack");
 	}
 
 	@Override
@@ -37,10 +37,10 @@ public class TownArgumentType implements CustomArgumentType<TownHall, String> {
 		if (!(source instanceof CommandSourceStack sourceStack))
 			throw new IllegalStateException("Unexpected source type: " + source);
 
-		String name = reader.readUnquotedString();
+		String input = reader.readUnquotedString();
 		World world = sourceStack.getLocation().getWorld();
-		TownHall town = TownHall.find(world, name);
-		if (town == null) throw ERROR_UNKNOWN_TOWN.create(name);
+		TownHall town = TownHall.find(world, input);
+		if (town == null) throw ERROR_UNKNOWN_TOWN.create(input);
 		return town;
 	}
 

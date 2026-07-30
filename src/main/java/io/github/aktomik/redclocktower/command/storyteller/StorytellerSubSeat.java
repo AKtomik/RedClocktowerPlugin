@@ -99,7 +99,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 			).getOrDefault(seated.getClass(), "unknown");
 			sender.sendRichMessage("at slot <b><number></b> there is <type> <name>",
 				Placeholder.parsed("number", Integer.toString(slotNumber)),
-				Placeholder.parsed("name", seated.getDisplayName()),
+				Placeholder.parsed("name", seated.getName()),
 				Placeholder.parsed("type", seatedTypeString)
 			);
 		}
@@ -170,7 +170,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 		game.getSlot(slotIndex).assign(seated);
 		sender.sendRichMessage("player <yellow><name></yellow> added to the slot <b><number></b>",
 			Placeholder.parsed("number", Integer.toString(slotNumber)),
-			Placeholder.parsed("name", seated.getDisplayName())
+			Placeholder.parsed("name", seated.getName())
 		);
 		return Command.SINGLE_SUCCESS;
 	};
@@ -204,7 +204,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 		game.getSlot(slotIndex).assign(seated);
 		sender.sendRichMessage("dummy <light_purple><name></light_purple> added to the slot <b><number></b>",
 			Placeholder.parsed("number", Integer.toString(slotNumber)),
-			Placeholder.parsed("name", seated.getDisplayName())
+			Placeholder.parsed("name", seated.getName())
 		);
 		return Command.SINGLE_SUCCESS;
 	};
@@ -258,7 +258,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 			Component firstText = game.getMini().deserialize(
 				"<type> <name> to slot <number>",
 				Placeholder.parsed("type", firstSeated.getSeatedTypeString()),
-				Placeholder.component("name", Component.text(firstSeated.getDisplayName()).color(firstSeated.getSeatedTypeColor())),
+				Placeholder.component("name", Component.text(firstSeated.getName()).color(firstSeated.getSeatedTypeColor())),
 				Placeholder.parsed("number", Integer.toString(secondSlotNumber))
 			);
 			switchedText = switchedText.append(firstText);
@@ -269,7 +269,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 			Component secondText = game.getMini().deserialize(
 			"<type> <name> to slot <number>",
 				Placeholder.parsed("type", secondSeated.getSeatedTypeString()),
-				Placeholder.component("name", Component.text(secondSeated.getDisplayName()).color(secondSeated.getSeatedTypeColor())),
+				Placeholder.component("name", Component.text(secondSeated.getName()).color(secondSeated.getSeatedTypeColor())),
 				Placeholder.parsed("number", Integer.toString(firstSlotNumber))
 			);
 			switchedText = switchedText.append(secondText);
