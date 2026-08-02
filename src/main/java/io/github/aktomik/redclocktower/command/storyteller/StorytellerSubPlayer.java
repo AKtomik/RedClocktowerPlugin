@@ -2,6 +2,8 @@ package io.github.aktomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.game.*;
 import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
@@ -60,7 +62,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 		// modify
 		.then(Commands.literal("set")
-			.then(Commands.argument("seated", new SeatedArgumentType())
+			.then(Commands.argument("member", new SeatedListArgumentType())
 //				.then(Commands.literal("traveller")
 //					.executes(subTravelerCheck)
 //					.then(Commands.argument("change", BoolArgumentType.bool())
@@ -336,7 +338,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	public final Command<CommandSourceStack> subAliveCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
-		final List<Seated> seatedList = List.of(ctx.getArgument("seated", Seated.class));
+		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "member");
 
 		// checks
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
@@ -358,13 +360,12 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	public final Command<CommandSourceStack> subAliveChange = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
-		final List<Seated> seatedList = List.of(ctx.getArgument("seated", Seated.class));
+		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "member");
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
 
 		// checks
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
 		assert game != null;
-		if (GameToolbox.failIfNoSeateds(sender, seatedList)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		for (Seated seated : seatedList) {

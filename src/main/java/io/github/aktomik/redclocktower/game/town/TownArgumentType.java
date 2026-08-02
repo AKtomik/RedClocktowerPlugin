@@ -12,30 +12,30 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.argument.CustomArgumentType;
 import org.bukkit.World;
+import org.jspecify.annotations.NonNull;
 
 import java.util.concurrent.CompletableFuture;
 
 public class TownArgumentType implements CustomArgumentType<TownHall, String> {
 
-	public static final DynamicCommandExceptionType ERROR_UNKNOWN_TOWN =
-	new DynamicCommandExceptionType(name ->
+	public static final DynamicCommandExceptionType ERROR_UNKNOWN_TOWN = new DynamicCommandExceptionType(name ->
 		new LiteralMessage("there is no townhall named "+ name+" here")
 	);
 
 	@Override
-	public TownHall parse(StringReader reader) throws CommandSyntaxException {
-		throw new UnsupportedOperationException("TownArgumentType requires a CommandSourceStack");
+	public TownHall parse(@NonNull StringReader reader) {
+		throw new UnsupportedOperationException("requiring a CommandSourceStack source");
 	}
 
 	@Override
-	public ArgumentType<String> getNativeType() {
+	public @NonNull ArgumentType<String> getNativeType() {
 		return StringArgumentType.word();
 	}
 
 	@Override
-	public <S> TownHall parse(StringReader reader, S source) throws CommandSyntaxException {
+	public <S> TownHall parse(@NonNull StringReader reader, S source) throws CommandSyntaxException {
 		if (!(source instanceof CommandSourceStack sourceStack))
-			throw new IllegalStateException("Unexpected source type: " + source);
+			throw new UnsupportedOperationException("the source is not a CommandSourceStack");
 
 		String input = reader.readUnquotedString();
 		World world = sourceStack.getLocation().getWorld();
@@ -45,8 +45,8 @@ public class TownArgumentType implements CustomArgumentType<TownHall, String> {
 	}
 
 	@Override
-	public <S> CompletableFuture<Suggestions> listSuggestions(
-	CommandContext<S> context, SuggestionsBuilder builder) {
+	public @NonNull <S> CompletableFuture<Suggestions> listSuggestions(
+	CommandContext<S> context, @NonNull SuggestionsBuilder builder) {
 		if (context.getSource() instanceof CommandSourceStack sourceStack) {
 			World world = sourceStack.getLocation().getWorld();
 			TownHall.getWorldTowns(world)
@@ -54,5 +54,9 @@ public class TownArgumentType implements CustomArgumentType<TownHall, String> {
 				.forEach(builder::suggest);
 		}
 		return builder.buildFuture();
+	}
+
+	public static TownHall getTownHall(CommandContext<?> ctx, String name) {
+		return ctx.getArgument(name, TownHall.class);
 	}
 }
