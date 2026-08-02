@@ -147,15 +147,16 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			BloodPlayer bloodPlayer = BloodPlayer.get(player);
 			if (bloodPlayer.getSeatedGame() == game) return "<b><target></b> is already in game";
 			if (bloodPlayer.getStorytellingGame() != null) return "<b><target></b> is a storyteller";
-			if (game.isFull()) return "<b><target></b> can't be added because the game is full";
+			if (game.isFull()) return "the game is full";
 
 			game.getSlot(game.getFirstEmptySlotIndex()).assign(new SeatedPlayer(player));
 			return null; // success
 		},
-		"you added <b><target></b>",
-		"you added <b><count></b> <word>",
-		"player", "players"
-		);
+		new GameCommandStringRecord(
+			"you added <b><target></b>",
+			"you added <b><count></b> <word>",
+			"player", "players"
+		));
 		return Command.SINGLE_SUCCESS;
 	});
 

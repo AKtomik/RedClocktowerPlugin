@@ -64,10 +64,7 @@ public class GameToolbox {
 		List<T> targets,
 		Function<T, String> nameOf,
 		TargetAction<T> action,
-		String successSingular,   // "you added <b><target></b>"
-		String successPlural,     // "you added <b><count></b> <word>"
-		String wordSingular,      // "player"
-		String wordPlural         // "players"
+		GameCommandStringRecord stringRecord
 	) {
 		boolean single = targets.size() == 1;
 		int successCount = 0;
@@ -78,16 +75,16 @@ public class GameToolbox {
 
 			if (failReason == null) {
 				successCount++;
-				if (single) sender.sendRichMessage(successSingular, Placeholder.parsed("target", name));
+				if (single) sender.sendRichMessage(stringRecord.successSingular(), Placeholder.parsed("target", name));
 			} else if (single) {
 				sender.sendRichMessage("<gray>" + failReason, Placeholder.parsed("target", name));
 			}
 		}
 
 		if (!single) {
-			sender.sendRichMessage(successPlural,
+			sender.sendRichMessage(stringRecord.successPlural(),
 			Placeholder.parsed("count", Integer.toString(successCount)),
-			Placeholder.parsed("word", successCount == 1 ? wordSingular : wordPlural)
+			Placeholder.parsed("word", successCount > 1 ? stringRecord.wordPlural() : stringRecord.wordSingular())
 			);
 		}
 	}
