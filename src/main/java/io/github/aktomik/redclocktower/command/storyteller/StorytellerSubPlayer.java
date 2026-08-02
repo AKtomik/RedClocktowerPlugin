@@ -138,62 +138,26 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	};
 
-
-	Command<CommandSourceStack> subAdd = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
-		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-
-		// checks
-		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+	Command<CommandSourceStack> subAdd = GameCommand.wrap((ctx, sender, game) -> {
+		List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
 		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
-		// the action
-		int successCount = 0;
-		for (Player player : players)
-		{
+		GameToolbox.processEach(sender, players, Player::getName,
+		player -> {
 			BloodPlayer bloodPlayer = BloodPlayer.get(player);
-			if (bloodPlayer.getSeatedGame() == game)
-			{
-				if (players.size() == 1)
-					sender.sendRichMessage("<gray><b><target></b> is already in game",
-						Placeholder.parsed("target", player.getName())
-					);
-				continue;
-			}
-			if (bloodPlayer.getStorytellingGame() != null)
-			{
-				if (players.size() == 1)
-					sender.sendRichMessage("<gray><b><target></b> is a storyteller",
-						Placeholder.parsed("target", player.getName())
-					);
-				continue;
-			}
-			if (game.isFull())
-			{
-				if (players.size() == 1)
-					sender.sendRichMessage("<red><b><target></b> can't be added because the game is full",
-						Placeholder.parsed("target", player.getName())
-					);
-				continue;
-			}
+			if (bloodPlayer.getSeatedGame() == game) return "<b><target></b> is already in game";
+			if (bloodPlayer.getStorytellingGame() != null) return "<b><target></b> is a storyteller";
+			if (game.isFull()) return "<b><target></b> can't be added because the game is full";
 
-			final Seated seated = new SeatedPlayer(player);
-			game.getSlot(game.getFirstEmptySlotIndex()).assign(seated);
-			if (players.size() == 1)
-				sender.sendRichMessage("you added <b><target></b>",
-				Placeholder.parsed("target", player.getName())
-				);
-			else
-				successCount += 1;
-		}
-		if (players.size() > 1)
-			sender.sendRichMessage("you added <b><count></b> <word>",
-			Placeholder.parsed("count", Integer.toString(successCount)),
-			Placeholder.parsed("word", successCount > 1 ? "players" : "player")
-			);
+			game.getSlot(game.getFirstEmptySlotIndex()).assign(new SeatedPlayer(player));
+			return null; // success
+		},
+		"you added <b><target></b>",
+		"you added <b><count></b> <word>",
+		"player", "players"
+		);
 		return Command.SINGLE_SUCCESS;
-	};
+	});
 
 
 
