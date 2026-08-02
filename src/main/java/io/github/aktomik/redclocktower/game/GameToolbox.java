@@ -4,6 +4,7 @@ import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.jetbrains.annotations.Contract;
 
 import java.util.List;
 import java.util.function.BiConsumer;
@@ -20,6 +21,7 @@ public class GameToolbox {
 		return false;
 	}
 
+	@Contract("_, null -> true; _, !null -> false")
 	public static boolean failIfNoGame(CommandSender sender, BloodGame game) {
 		return failIf(sender, (game == null), "no game setup");
 	}

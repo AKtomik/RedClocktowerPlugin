@@ -73,7 +73,6 @@ public class StorytellerSubSeat extends BrigadierSub {
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-		assert game != null;
 
 		final int slotNumber = ctx.getArgument("slot number", Integer.class);
 		final int slotIndex = slotNumber - 1;
@@ -111,7 +110,6 @@ public class StorytellerSubSeat extends BrigadierSub {
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-		assert game != null;
 
 		final int slotNumber = ctx.getArgument("slot number", Integer.class);
 		final int slotIndex = slotNumber - 1;
@@ -143,7 +141,6 @@ public class StorytellerSubSeat extends BrigadierSub {
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-		assert game != null;
 
 		final int slotNumber = ctx.getArgument("slot number", Integer.class);
 		final int slotIndex = slotNumber - 1;
@@ -180,7 +177,6 @@ public class StorytellerSubSeat extends BrigadierSub {
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-		assert game != null;
 
 		final int slotNumber = ctx.getArgument("slot number", Integer.class);
 		final int slotIndex = slotNumber - 1;
@@ -214,7 +210,6 @@ public class StorytellerSubSeat extends BrigadierSub {
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-		assert game != null;
 
 		final int firstSlotNumber = ctx.getArgument("slot number", Integer.class);
 		final int firstSlotIndex = firstSlotNumber - 1;

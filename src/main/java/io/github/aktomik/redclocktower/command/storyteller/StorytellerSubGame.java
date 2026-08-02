@@ -82,7 +82,6 @@ public class StorytellerSubGame extends BrigadierSub {
 
 		// check
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-		assert game != null;
 		if (game.isStarted())
 		{
 			sender.sendRichMessage("<gray>the game is already started");
@@ -103,7 +102,6 @@ public class StorytellerSubGame extends BrigadierSub {
 
 		// check
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-		assert game != null;
 		if (GameToolbox.failIfNotStarted(sender, game)) return Command.SINGLE_SUCCESS;
 
 		// execute
@@ -119,7 +117,6 @@ public class StorytellerSubGame extends BrigadierSub {
 
 		// check
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-		assert game != null;
 
 		// execute
 		sender.sendRichMessage("<light_purple>clearing the game");
