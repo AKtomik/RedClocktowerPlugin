@@ -41,7 +41,7 @@ public class SeatedListArgumentType implements CustomArgumentType<List<Seated>, 
 
 	@Override
 	public @NonNull ArgumentType<String> getNativeType() {
-		return StringArgumentType.word();
+		return StringArgumentType.string();
 	}
 
 	@Override
