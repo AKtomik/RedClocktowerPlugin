@@ -49,10 +49,6 @@ public class GameToolbox {
 		return failIf(sender, (player == null), "there is no player selected");
 	}
 
-	public static boolean failIfNoSeateds(CommandSender sender, List<Seated> seatedList) {
-		return failIf(sender, (seatedList.isEmpty()), "there is no seated selected");
-	}
-
 	@Deprecated
 	public static void forEachValidPlayer(
 	CommandSender sender,

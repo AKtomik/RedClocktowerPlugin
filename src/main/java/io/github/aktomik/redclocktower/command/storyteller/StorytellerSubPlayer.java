@@ -2,8 +2,6 @@ package io.github.aktomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
-import com.mojang.brigadier.arguments.IntegerArgumentType;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.game.*;
 import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
@@ -103,7 +101,6 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 		// checks
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-		assert game != null;
 
 		// the action
 		List<Seated> seatedList = game.getAllSeated().toList();
@@ -149,41 +146,52 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 		// checks
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-		assert game != null;
 		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
+		int successCount = 0;
 		for (Player player : players)
 		{
 			BloodPlayer bloodPlayer = BloodPlayer.get(player);
 			if (bloodPlayer.getSeatedGame() == game)
 			{
-				sender.sendRichMessage("<gray><b><target></b> is already in game",
-					Placeholder.parsed("target", player.getName())
-				);
+				if (players.size() == 1)
+					sender.sendRichMessage("<gray><b><target></b> is already in game",
+						Placeholder.parsed("target", player.getName())
+					);
 				continue;
 			}
 			if (bloodPlayer.getStorytellingGame() != null)
 			{
-				sender.sendRichMessage("<gray><b><target></b> is a storyteller",
-					Placeholder.parsed("target", player.getName())
-				);
+				if (players.size() == 1)
+					sender.sendRichMessage("<gray><b><target></b> is a storyteller",
+						Placeholder.parsed("target", player.getName())
+					);
 				continue;
 			}
 			if (game.isFull())
 			{
-				sender.sendRichMessage("<red><b><target></b> can't be added because the game is full",
-					Placeholder.parsed("target", player.getName())
-				);
+				if (players.size() == 1)
+					sender.sendRichMessage("<red><b><target></b> can't be added because the game is full",
+						Placeholder.parsed("target", player.getName())
+					);
 				continue;
 			}
 
 			final Seated seated = new SeatedPlayer(player);
 			game.getSlot(game.getFirstEmptySlotIndex()).assign(seated);
-			sender.sendRichMessage("you added <b><target></b>",
-			Placeholder.parsed("target", player.getName())
-			);
+			if (players.size() == 1)
+				sender.sendRichMessage("you added <b><target></b>",
+				Placeholder.parsed("target", player.getName())
+				);
+			else
+				successCount += 1;
 		}
+		if (players.size() > 1)
+			sender.sendRichMessage("you added <b><count></b> <word>",
+			Placeholder.parsed("count", Integer.toString(successCount)),
+			Placeholder.parsed("word", successCount > 1 ? "players" : "player")
+			);
 		return Command.SINGLE_SUCCESS;
 	};
 
@@ -258,7 +266,6 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 		// checks
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-		assert game != null;
 		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
 		// the action
@@ -342,8 +349,6 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 		// checks
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-		assert game != null;
-		if (GameToolbox.failIfNoSeateds(sender, seatedList)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		for (Seated seated : seatedList) {
@@ -365,7 +370,6 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 		// checks
 		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-		assert game != null;
 
 		// the action
 		for (Seated seated : seatedList) {
