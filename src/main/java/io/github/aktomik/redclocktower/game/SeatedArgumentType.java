@@ -29,13 +29,13 @@ public class SeatedArgumentType implements CustomArgumentType<Seated, String> {
 	);
 
 	@Override
-	public Seated parse(@NonNull StringReader reader) throws CommandSyntaxException {
-		throw new UnsupportedOperationException("SeatedArgumentType requires a CommandSourceStack");
+	public @NonNull ArgumentType<String> getNativeType() {
+		throw new UnsupportedOperationException("requiring a CommandSourceStack source");
 	}
 
 	@Override
-	public @NonNull ArgumentType<String> getNativeType() {
-		throw new UnsupportedOperationException("requiring a CommandSourceStack source");
+	public Seated parse(@NonNull StringReader reader) throws CommandSyntaxException {
+		throw new UnsupportedOperationException("SeatedArgumentType requires a CommandSourceStack");
 	}
 
 	@Override

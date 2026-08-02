@@ -34,14 +34,20 @@ public class SeatedListArgumentType implements CustomArgumentType<List<Seated>, 
 	MessageComponentSerializer.message().serialize(Component.text("no member found"))
 	);
 
-	@Override
-	public List<Seated> parse(@NonNull StringReader reader) throws CommandSyntaxException {
-		throw new UnsupportedOperationException("requiring a CommandSourceStack source");
-	}
+	private static final String SELECTOR_ALL = "*";// "\"*\""
 
 	@Override
 	public @NonNull ArgumentType<String> getNativeType() {
-		return StarWordArgumentType.starWord();
+		// this is the only way of having [*] accepted
+		// here greedyString is weirdly not eat it all when valid
+		// so that cool for us
+		return StringArgumentType.greedyString();
+		// the other solution is to use StringArgumentType.string() and then ["*"]
+	}
+
+	@Override
+	public List<Seated> parse(@NonNull StringReader reader) throws CommandSyntaxException {
+		throw new UnsupportedOperationException("requiring a CommandSourceStack source");
 	}
 
 	@Override
@@ -53,10 +59,10 @@ public class SeatedListArgumentType implements CustomArgumentType<List<Seated>, 
 		BloodGame game = BloodGame.get(world);
 		if (game == null) throw ERROR_NO_GAME.create();
 
-		String input = reader.readUnquotedString();
+		String input = readWord(reader);
 		Stream<Seated> seatedStream = game.getAllSeated();
 
-		if (Objects.equals(input, "*")) {
+		if (Objects.equals(input, SELECTOR_ALL)) {
 			List<Seated> foundSeated = seatedStream.toList();
 			if (foundSeated.isEmpty()) throw ERROR_EMPTY.create();
 			return foundSeated;// size of >=1
@@ -68,15 +74,23 @@ public class SeatedListArgumentType implements CustomArgumentType<List<Seated>, 
 		return foundSeated;// size of 1
 	}
 
+	private static String readWord(StringReader reader) {
+		int start = reader.getCursor();
+		while (reader.canRead() && (StringReader.isAllowedInUnquotedString(reader.peek()) || reader.peek() == '*')) {
+			reader.skip();
+		}
+		return reader.getString().substring(start, reader.getCursor());
+	}
+
 	@Override
 	public <S> @NonNull CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, @NonNull SuggestionsBuilder builder) {
 		if (context.getSource() instanceof CommandSourceStack sourceStack) {
 			World world = sourceStack.getLocation().getWorld();
 			BloodGame game = BloodGame.get(world);
 			if (game == null) return builder.buildFuture();
-			game.getAllSeated().map(Seated::getName)
-				.forEach(builder::suggest);
-			builder.suggest("*");
+			Stream.concat(game.getAllSeated().map(Seated::getName), Stream.of(SELECTOR_ALL))
+			.filter(str -> str.toLowerCase().startsWith(builder.getRemaining().toLowerCase()))
+			.forEach(builder::suggest);
 		}
 		return builder.buildFuture();
 	}
