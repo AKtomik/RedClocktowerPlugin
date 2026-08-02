@@ -5,10 +5,8 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jetbrains.annotations.Contract;
-import org.jspecify.annotations.Nullable;
 
 import java.util.List;
-import java.util.function.BiConsumer;
 import java.util.function.Function;
 
 public class GameToolbox {
@@ -52,37 +50,28 @@ public class GameToolbox {
 		return failIf(sender, (player == null), "there is no player selected");
 	}
 
-	// process
-	@FunctionalInterface
-	public interface TargetAction<T> {
-		/** @return null on success, or a failure reason message (no color/prefix) on failure */
-		@Nullable String apply(T target);
-	}
-
 	public static <T> void processEach(
 		CommandSender sender,
 		List<T> targets,
 		Function<T, String> nameOf,
-		TargetAction<T> action,
-		GameCommandStringRecord stringRecord
+		Function<T, CommandLoopResult> loopAction,
+		GameCommandLoopStringRecord stringRecord
 	) {
-		boolean single = targets.size() == 1;
+		boolean single = targets.size() <= 1;
 		int successCount = 0;
 
 		for (T target : targets) {
-			String failReason = action.apply(target);
+			CommandLoopResult result = loopAction.apply(target);
 			String name = nameOf.apply(target);
 
-			if (failReason == null) {
+			if (result.success()) {
 				successCount++;
-				if (single) sender.sendRichMessage(stringRecord.successSingular(), Placeholder.parsed("target", name));
-			} else if (single) {
-				sender.sendRichMessage(failReason, Placeholder.parsed("target", name));
 			}
+			if (single) sender.sendRichMessage(result.message(), Placeholder.parsed("target", name));
 		}
 
 		if (!single) {
-			sender.sendRichMessage(stringRecord.successPlural(),
+			sender.sendRichMessage(stringRecord.multipleSuccess(),
 			Placeholder.parsed("count", Integer.toString(successCount)),
 			Placeholder.parsed("word", successCount > 1 ? stringRecord.wordPlural() : stringRecord.wordSingular())
 			);

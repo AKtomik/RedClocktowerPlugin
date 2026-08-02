@@ -1,8 +1,7 @@
 package io.github.aktomik.redclocktower.game;
 
-public record GameCommandStringRecord(
-	String successSingular,
-	String successPlural,
+public record GameCommandLoopStringRecord(
+	String multipleSuccess,
 	String wordSingular,
 	String wordPlural
 ) {}

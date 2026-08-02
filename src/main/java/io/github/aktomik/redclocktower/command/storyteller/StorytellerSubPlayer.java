@@ -147,15 +147,14 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		GameToolbox.processEach(sender, players, Player::getName,
 		player -> {
 			BloodPlayer bloodPlayer = BloodPlayer.get(player);
-			if (bloodPlayer.getSeatedGame() == game) return "<gray><b><target></b> is already in game";
-			if (bloodPlayer.getStorytellingGame() != null) return "<gray><b><target></b> is a storyteller";
-			if (game.isFull()) return "the game is full";
+			if (bloodPlayer.getSeatedGame() == game) return new CommandLoopResult(false, "<gray><b><target></b> is already in game");
+			if (bloodPlayer.getStorytellingGame() != null) return new CommandLoopResult(false, "<gray><b><target></b> is a storyteller");
+			if (game.isFull()) return new CommandLoopResult(false, "the game is full");
 
 			game.getSlot(game.getFirstEmptySlotIndex()).assign(new SeatedPlayer(player));
-			return null;// success
+			return new CommandLoopResult(true, "you added <b><target></b>");
 		},
-		new GameCommandStringRecord(
-			"you added <b><target></b>",
+		new GameCommandLoopStringRecord(
 			"you added <b><count></b> <word>",
 			"player", "players"
 		));
@@ -239,7 +238,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			Objects.requireNonNull(bloodPlayer.getSeated()).getSlot().empty();
 			return null;// success
 		},
-		new GameCommandStringRecord(
+		new GameCommandLoopStringRecord(
 		"you removed <b><target></b>",
 		"you removed <b><count></b> <word>",
 		"player", "players"
@@ -311,7 +310,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			if (!seated.getAlive()) return "<b><target></b> is dead";// check
 			return null;// success
 		},
-		new GameCommandStringRecord(
+		new GameCommandLoopStringRecord(
 		"<b><target></b> is alive",
 		"<b><count></b> <word> alive",
 		"member is", "members are"
@@ -330,7 +329,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			seated.setAlive(changeValue);
 			return null;// success
 		},
-		new GameCommandStringRecord(
+		new GameCommandLoopStringRecord(
 		"<b><target></b> is now "+changeString,
 		"<b><count></b> <word> set "+changeString,
 		"member", "members"
