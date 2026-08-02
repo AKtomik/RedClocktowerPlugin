@@ -50,31 +50,35 @@ public class GameToolbox {
 		return failIf(sender, (player == null), "there is no player selected");
 	}
 
-	public static <T> void processEach(
-		CommandSender sender,
+	public static <T> List<CommandLoopResult<T>> processEach(
 		List<T> targets,
-		Function<T, String> nameOf,
-		Function<T, CommandLoopResult> loopAction,
-		GameCommandLoopStringRecord stringRecord
+		Function<T, CommandLoopResult<T>> action
 	) {
-		boolean single = targets.size() <= 1;
-		int successCount = 0;
+		return targets.stream()
+		.map(action)
+		.toList();
+	}
 
-		for (T target : targets) {
-			CommandLoopResult result = loopAction.apply(target);
-			String name = nameOf.apply(target);
-
-			if (result.success()) {
-				successCount++;
-			}
-			if (single) sender.sendRichMessage(result.message(), Placeholder.parsed("target", name));
-		}
-
-		if (!single) {
-			sender.sendRichMessage(stringRecord.multipleSuccess(),
-			Placeholder.parsed("count", Integer.toString(successCount)),
-			Placeholder.parsed("word", successCount > 1 ? stringRecord.wordPlural() : stringRecord.wordSingular())
+	public static <T> void sendProcessResult(
+		CommandSender sender,
+		List<CommandLoopResult<T>> results,
+		Function<T, String> nameOf,
+		String successSummary,
+		String singularWord,
+		String pluralWord
+	) {
+		if (results.size() == 1) {
+			CommandLoopResult<T> result = results.getFirst();
+			sender.sendRichMessage(result.message(),
+				Placeholder.parsed("target", nameOf.apply(result.target()))
 			);
+			return;
 		}
+
+		long successCount = results.stream().filter(CommandLoopResult::success).count();
+		sender.sendRichMessage(successSummary,
+			Placeholder.parsed("count", String.valueOf(successCount)),
+			Placeholder.parsed("word", successCount > 1 ? pluralWord : singularWord)
+		);
 	}
 }
