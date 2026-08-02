@@ -77,7 +77,7 @@ public class GameToolbox {
 				successCount++;
 				if (single) sender.sendRichMessage(stringRecord.successSingular(), Placeholder.parsed("target", name));
 			} else if (single) {
-				sender.sendRichMessage("<gray>" + failReason, Placeholder.parsed("target", name));
+				sender.sendRichMessage(failReason, Placeholder.parsed("target", name));
 			}
 		}
 

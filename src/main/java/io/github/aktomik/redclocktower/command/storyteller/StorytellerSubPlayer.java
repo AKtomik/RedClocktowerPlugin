@@ -19,6 +19,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Objects;
 
 public class StorytellerSubPlayer extends BrigadierSub {
 
@@ -86,11 +87,11 @@ public class StorytellerSubPlayer extends BrigadierSub {
 //					)
 //				)
 			)
-		)
+		);
 
 		// misc
-		.then(Commands.literal("givehand")
-			.executes(subGiveHand));
+//		.then(Commands.literal("givehand")
+//			.executes(subGiveHand))
 	}
 
 	// subs
@@ -138,6 +139,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	};
 
+
 	Command<CommandSourceStack> subAdd = GameCommand.wrap((ctx, sender, game) -> {
 		List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
 		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
@@ -145,12 +147,12 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		GameToolbox.processEach(sender, players, Player::getName,
 		player -> {
 			BloodPlayer bloodPlayer = BloodPlayer.get(player);
-			if (bloodPlayer.getSeatedGame() == game) return "<b><target></b> is already in game";
-			if (bloodPlayer.getStorytellingGame() != null) return "<b><target></b> is a storyteller";
+			if (bloodPlayer.getSeatedGame() == game) return "<gray><b><target></b> is already in game";
+			if (bloodPlayer.getStorytellingGame() != null) return "<gray><b><target></b> is a storyteller";
 			if (game.isFull()) return "the game is full";
 
 			game.getSlot(game.getFirstEmptySlotIndex()).assign(new SeatedPlayer(player));
-			return null; // success
+			return null;// success
 		},
 		new GameCommandStringRecord(
 			"you added <b><target></b>",
@@ -224,34 +226,27 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	};
 
 
-	public final Command<CommandSourceStack> subRemove = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
-		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-
-		// checks
-		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+	Command<CommandSourceStack> subRemove = GameCommand.wrap((ctx, sender, game) -> {
+		List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
 		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
-		// the action
-		for (Player player : players)
-		{
+		GameToolbox.processEach(sender, players, Player::getName,
+		player -> {
 			BloodPlayer bloodPlayer = BloodPlayer.get(player);
-			if (bloodPlayer.getSeatedGame() == game)
-			{
-				// todo
-				sender.sendRichMessage("you removed player <b><target></b>.",
-					Placeholder.parsed("target", player.getName())
-				);
-				continue;
-			}
+			if (bloodPlayer.getSeatedGame() != game) return "<red><b><target></b> is not in game";
+			// if (bloodPlayer.getStorytellingGame() != null) return "<b><target></b> is a storyteller";
 
-			sender.sendRichMessage("<gray><b><target></b> is not in game.",
-			Placeholder.parsed("target", player.getName())
-			);
-		}
+			Objects.requireNonNull(bloodPlayer.getSeated()).getSlot().empty();
+			return null;// success
+		},
+		new GameCommandStringRecord(
+		"you removed <b><target></b>",
+		"you removed <b><count></b> <word>",
+		"player", "players"
+		));
 		return Command.SINGLE_SUCCESS;
-	};
+	});
+
 
 	public final Command<CommandSourceStack> subTravelerCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
@@ -307,57 +302,41 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	};
 
-	public final Command<CommandSourceStack> subAliveCheck = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+	Command<CommandSourceStack> subAliveCheck = GameCommand.wrap((ctx, sender, game) -> {
 		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "member");
 
-		// checks
-		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-
-		// the action
-		for (Seated seated : seatedList) {
-			sender.sendRichMessage(
-			seated.getAlive()
-			? "<b><target></b> is alive."
-			: "<b><target></b> is dead.",
-			Placeholder.parsed("target", seated.getName())
-			);
-		}
+		GameToolbox.processEach(sender, seatedList, Seated::getName,
+		seated -> {
+			if (!seated.getAlive()) return "<b><target></b> is dead";// check
+			return null;// success
+		},
+		new GameCommandStringRecord(
+		"<b><target></b> is alive",
+		"<b><count></b> <word> alive",
+		"member is", "members are"
+		));
 		return Command.SINGLE_SUCCESS;
-	};
+	});
 
-	public final Command<CommandSourceStack> subAliveChange = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+	Command<CommandSourceStack> subAliveChange = GameCommand.wrap((ctx, sender, game) -> {
 		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "member");
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
+		final String changeString = changeValue ? "alive" : "dead";
 
-		// checks
-		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-
-		// the action
-		for (Seated seated : seatedList) {
-			if (seated.getAlive() == changeValue) {
-				sender.sendRichMessage(
-				changeValue
-				? "<gray><b><target></b> is already alive."
-				: "<gray><b><target></b> is already dead.",
-				Placeholder.parsed("target", seated.getName())
-				);
-				continue;
-			}
-
+		GameToolbox.processEach(sender, seatedList, Seated::getName,
+		seated -> {
+			if (seated.getAlive() == changeValue) return "<gray><b><target></b> is already "+changeString;
 			seated.setAlive(changeValue);
-			sender.sendRichMessage(
-			changeValue
-			? "<b><target></b> is now <yellow>alive</yellow>."
-			: "<b><target></b> is now <red>dead</red>.",
-			Placeholder.parsed("target", seated.getName())
-			);
-		}
+			return null;// success
+		},
+		new GameCommandStringRecord(
+		"<b><target></b> is now "+changeString,
+		"<b><count></b> <word> set "+changeString,
+		"member", "members"
+		));
 		return Command.SINGLE_SUCCESS;
-	};
+	});
 
 	public final Command<CommandSourceStack> subTokenCheck = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
