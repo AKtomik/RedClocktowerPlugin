@@ -52,7 +52,7 @@ public class StorytellerSubGame extends BrigadierSub {
 		if (BloodGame.get(townHall) != null)
 		{
 			sender.sendRichMessage("<red>the townhall <b><town></b> is already setup",
-			Placeholder.parsed("town", townHall.getTownName())
+				Placeholder.parsed("town", townHall.getTownName())
 			);
 			return Command.SINGLE_SUCCESS;
 		}

@@ -22,9 +22,12 @@ public class BloodGame {
 	private final List<BloodPlayer> spectators = new ArrayList<>();
 	private boolean started = false;
 	private boolean dead = false;
+	private final World world;
 	private BloodGame(TownHall townHall) {
 		this.townHall = townHall;
+		this.world = townHall.getWorld();
 		slots = townHall.getAllChairs().map(townChair -> new BloodSlot(this, townChair)).toArray(BloodSlot[]::new);
+		setup();
 	}
 
 	private static final Map<Integer, BloodGame> townToGameMap = new HashMap<>();
@@ -58,6 +61,8 @@ public class BloodGame {
 	// this will remove the game from statics references so it is not accessible anymore
 	// remove it from others references too so it can be garbage collected
 	public void kill() {
+		// world
+		unsetup();
 		// reset
 		for (BloodSlot slot : slots) slot.empty();
 		removeAllStorytellers();
@@ -204,9 +209,32 @@ public class BloodGame {
 
 
 	// state
+	private void setup() {
+		// game
+		Arrays.stream(slots).toList().forEach(slot -> slot.setVoteLocked(true));
+		// world
+		world.setTime(10000);
+		world.setGameRule(GameRules.ADVANCE_TIME, false);
+		world.setGameRule(GameRules.KEEP_INVENTORY, true);
+		world.setDifficulty(Difficulty.PEACEFUL);
+	}
+
+	public void resetup() {
+		setup();
+	}
+
+	private void unsetup() {
+		world.setGameRule(GameRules.ADVANCE_TIME, true);
+		// we could saved the old world rules to set back but can be confusing
+	}
+
 	public void start() {
-		// action
+		// game
 		getAllSeated().forEach(seated -> seated.setAlive(true));
+		getAllSeated().forEach(seated -> seated.setVotePull(false));
+		Arrays.stream(slots).toList().forEach(slot -> slot.setVoteLocked(false));
+		// world
+		world.setTime(12000);
 		// message
 		broadcast("<red><b>are you ready to bleed?");
 		pingSound(Sound.ENTITY_ARROW_HIT_PLAYER, 2f);
