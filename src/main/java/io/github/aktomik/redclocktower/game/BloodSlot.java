@@ -76,6 +76,14 @@ public class BloodSlot {
 		refreshLever(false);
 	}
 
+	public void lock() {
+		setVoteLocked(true);
+	}
+
+	public void unlock() {
+		setVoteLocked(false);
+	}
+
 	public boolean isVoteLocked() {
 		return voteLocked;
 	}

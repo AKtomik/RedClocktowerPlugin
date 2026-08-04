@@ -6,10 +6,12 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.*;
+import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
+import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class BloodGame {
@@ -20,9 +22,13 @@ public class BloodGame {
 	private final BloodSlot[] slots;
 	private final List<BloodPlayer> storytellers = new ArrayList<>();
 	private final List<BloodPlayer> spectators = new ArrayList<>();
+
 	private boolean started = false;
 	private boolean dead = false;
-	private final World world;
+	private GamePeriod period = GamePeriod.FREE;
+
+	private final World world;// equal to townhall world
+
 	private BloodGame(TownHall townHall) {
 		this.townHall = townHall;
 		this.world = townHall.getWorld();
@@ -78,6 +84,10 @@ public class BloodGame {
 		return townHall;
 	}
 
+	public World getWorld() {
+		return world;
+	}
+
 	// slot
 	public Integer getSlotCount()
 	{
@@ -92,6 +102,16 @@ public class BloodGame {
 	public BloodSlot getSlot(int index)
 	{
 		return slots[index];
+	}
+
+	public List<BloodSlot> getSlots()
+	{
+		return Arrays.stream(slots).toList();
+	}
+
+	public void forEachSlots(Consumer<BloodSlot> consumer)
+	{
+		getSlots().forEach(consumer);
 	}
 
 	public boolean isFull()
@@ -207,7 +227,6 @@ public class BloodGame {
 		pingSound(sound,1f);
 	}
 
-
 	// state
 	private void setup() {
 		// game
@@ -233,6 +252,7 @@ public class BloodGame {
 		getAllSeated().forEach(seated -> seated.setAlive(true));
 		getAllSeated().forEach(seated -> seated.setVotePull(false));
 		Arrays.stream(slots).toList().forEach(slot -> slot.setVoteLocked(false));
+		period = GamePeriod.MEET;
 		// world
 		world.setTime(12000);
 		// message
@@ -270,6 +290,17 @@ public class BloodGame {
 		return dead;
 	}
 
+	// time
+	public void switchPeriod(GamePeriod period, CommandSender sender) {
+		GameAction.periodEnter.get(period).accept(this, sender);
+		this.period = period;
+	}
+
+	public GamePeriod getPeriod() {
+		return period;
+	}
+
+	// misc
 	public MiniMessage getMini() {
 		return mini;
 	}
