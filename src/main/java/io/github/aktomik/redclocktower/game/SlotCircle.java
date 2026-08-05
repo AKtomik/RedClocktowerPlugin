@@ -17,7 +17,7 @@ public class SlotCircle {
 		// game is not aved here and that cool
 	}
 
-	// global interfaces
+	// global simple interfaces
 	public List<BloodSlot> getSlotsList()
 	{
 		return Arrays.stream(slots).toList();
@@ -28,9 +28,9 @@ public class SlotCircle {
 		return Arrays.stream(slots);
 	}
 
-	public void forEachSlots(Consumer<BloodSlot> consumer)
+	public Integer getSlotCount()
 	{
-		getSlotsStream().forEach(consumer);
+		return slots.length;
 	}
 
 	public boolean isFull()
@@ -41,9 +41,20 @@ public class SlotCircle {
 		return true;
 	}
 
-	public Integer getSlotCount()
+	public void forEachSlots(Consumer<BloodSlot> consumer)
 	{
-		return slots.length;
+		getSlotsStream().forEach(consumer);
+	}
+
+	// global specific interfaces
+	public void lockAll()
+	{
+		forEachSlots(slot -> slot.setVoteLocked(true));
+	}
+
+	public void unlockAll()
+	{
+		forEachSlots(slot -> slot.setVoteLocked(false));
 	}
 
 	// individual interfaces

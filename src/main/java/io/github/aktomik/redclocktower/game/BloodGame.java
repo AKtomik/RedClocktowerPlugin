@@ -196,7 +196,7 @@ public class BloodGame {
 	// state
 	private void setup() {
 		// game
-		circle.forEachSlots(BloodSlot::lock);
+		circle.lockAll();
 		// world
 		world.setTime(10000);
 		world.setGameRule(GameRules.ADVANCE_TIME, false);
@@ -217,7 +217,7 @@ public class BloodGame {
 		// game
 		getAllSeated().forEach(seated -> seated.setAlive(true));
 		getAllSeated().forEach(seated -> seated.setVotePull(false));
-		circle.forEachSlots(BloodSlot::unlock);
+		circle.unlockAll();
 		period = GamePeriod.MEET;
 		// world
 		world.setTime(12000);
