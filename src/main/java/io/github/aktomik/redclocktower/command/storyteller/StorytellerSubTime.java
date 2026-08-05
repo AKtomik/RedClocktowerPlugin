@@ -2,7 +2,7 @@ package io.github.aktomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.game.GameCommand;
+import io.github.aktomik.redclocktower.commandbuild.tools.GameCommand;
 import io.github.aktomik.redclocktower.game.GamePeriod;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;

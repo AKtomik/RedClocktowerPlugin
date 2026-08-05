@@ -9,6 +9,7 @@ import io.github.aktomik.redclocktower.game.BloodSlot;
 import io.github.aktomik.redclocktower.game.Seated;
 import io.github.aktomik.redclocktower.game.SeatedDummy;
 import io.github.aktomik.redclocktower.game.SeatedPlayer;
+import io.github.aktomik.redclocktower.commandbuild.tools.CommandToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -72,7 +73,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
-		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+		if (CommandToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
 
 		final int slotNumber = ctx.getArgument("slot number", Integer.class);
 		final int slotIndex = slotNumber - 1;
@@ -109,7 +110,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
-		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+		if (CommandToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
 
 		final int slotNumber = ctx.getArgument("slot number", Integer.class);
 		final int slotIndex = slotNumber - 1;
@@ -140,7 +141,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
-		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+		if (CommandToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
 
 		final int slotNumber = ctx.getArgument("slot number", Integer.class);
 		final int slotIndex = slotNumber - 1;
@@ -161,7 +162,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 		}
 
 		final Player player = BrigadierToolbox.resolvePlayer(ctx);
-		if (GameToolbox.failIfNoPlayer(sender, player)) return Command.SINGLE_SUCCESS;
+		if (CommandToolbox.failIfNoPlayer(sender, player)) return Command.SINGLE_SUCCESS;
 
 		final Seated seated = new SeatedPlayer(player);
 		game.getCircle().getSlot(slotIndex).assign(seated);
@@ -176,7 +177,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
-		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+		if (CommandToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
 
 		final int slotNumber = ctx.getArgument("slot number", Integer.class);
 		final int slotIndex = slotNumber - 1;
@@ -209,7 +210,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
-		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+		if (CommandToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
 
 		final int firstSlotNumber = ctx.getArgument("slot number", Integer.class);
 		final int firstSlotIndex = firstSlotNumber - 1;

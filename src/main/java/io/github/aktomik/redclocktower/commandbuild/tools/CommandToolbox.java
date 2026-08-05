@@ -1,5 +1,6 @@
-package io.github.aktomik.redclocktower.game;
+package io.github.aktomik.redclocktower.commandbuild.tools;
 
+import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
@@ -9,9 +10,9 @@ import org.jetbrains.annotations.Contract;
 import java.util.List;
 import java.util.function.Function;
 
-public class GameToolbox {
+public class CommandToolbox {
 
-	private GameToolbox() {}// is a static class
+	private CommandToolbox() {}// is a static class
 
 	// fails
 	public static boolean failIf(CommandSender sender, boolean condition, String errorMessage) {

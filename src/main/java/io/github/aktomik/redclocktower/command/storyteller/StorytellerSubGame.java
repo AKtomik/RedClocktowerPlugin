@@ -2,6 +2,7 @@ package io.github.aktomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.github.aktomik.redclocktower.commandbuild.tools.CommandToolbox;
 import io.github.aktomik.redclocktower.game.town.TownArgumentType;
 import io.github.aktomik.redclocktower.game.*;
 import io.github.aktomik.redclocktower.game.BloodPlayer;
@@ -81,7 +82,7 @@ public class StorytellerSubGame extends BrigadierSub {
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
 		// check
-		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+		if (CommandToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
 		if (game.isStarted())
 		{
 			sender.sendRichMessage("<gray>the game is already started");
@@ -101,8 +102,8 @@ public class StorytellerSubGame extends BrigadierSub {
 		final GameTeam winTeam = ctx.getArgument("win team", GameTeam.class);
 
 		// check
-		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-		if (GameToolbox.failIfNotStarted(sender, game)) return Command.SINGLE_SUCCESS;
+		if (CommandToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+		if (CommandToolbox.failIfNotStarted(sender, game)) return Command.SINGLE_SUCCESS;
 
 		// execute
 		sender.sendRichMessage("<light_purple>finishing the game");
@@ -116,7 +117,7 @@ public class StorytellerSubGame extends BrigadierSub {
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
 		// check
-		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+		if (CommandToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
 
 		// execute
 		sender.sendRichMessage("<light_purple>clearing the game");

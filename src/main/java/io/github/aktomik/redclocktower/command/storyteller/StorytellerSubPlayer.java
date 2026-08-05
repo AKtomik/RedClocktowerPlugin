@@ -3,7 +3,11 @@ package io.github.aktomik.redclocktower.command.storyteller;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.github.aktomik.redclocktower.commandbuild.tools.GameCommand;
 import io.github.aktomik.redclocktower.game.*;
+import io.github.aktomik.redclocktower.commandbuild.tools.CommandLoopResult;
+import io.github.aktomik.redclocktower.commandbuild.tools.CommandToolbox;
+import io.github.aktomik.redclocktower.commandbuild.arguments.SeatedListArgumentType;
 import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
 import io.github.aktomik.redclocktower.oldgame.OldGameToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
@@ -19,7 +23,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
-import java.util.Objects;
 
 public class StorytellerSubPlayer extends BrigadierSub {
 
@@ -101,7 +104,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
 		// checks
-		if (GameToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
+		if (CommandToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
 
 		// the action
 		List<Seated> seatedList = game.getAllSeated().toList();
@@ -142,9 +145,9 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 	Command<CommandSourceStack> subAdd = GameCommand.wrap((ctx, sender, game) -> {
 		List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		if (CommandToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
-		List<CommandLoopResult<Player>> results = GameToolbox.processEach(players, player -> {
+		List<CommandLoopResult<Player>> results = CommandToolbox.processEach(players, player -> {
 			BloodPlayer bloodPlayer = BloodPlayer.get(player);
 
 			if (bloodPlayer.getSeatedGame() == game)
@@ -160,7 +163,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			return new CommandLoopResult<>(player, true, "<b><target></b> added");
 		});
 
-		GameToolbox.sendProcessResult(sender, results, Player::getName,
+		CommandToolbox.sendProcessResult(sender, results, Player::getName,
 			"you added <b><count></b> <word>",
 			"player", "players"
 		);
@@ -232,9 +235,9 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 	Command<CommandSourceStack> subRemove = GameCommand.wrap((ctx, sender, game) -> {
 		List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-		if (GameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		if (CommandToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
-		List<CommandLoopResult<Player>> results = GameToolbox.processEach(players, player -> {
+		List<CommandLoopResult<Player>> results = CommandToolbox.processEach(players, player -> {
 			BloodPlayer bloodPlayer = BloodPlayer.get(player);
 
 			if (bloodPlayer.getSeatedGame() != game)
@@ -248,7 +251,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			return new CommandLoopResult<>(player, true, "<b><target></b> added");
 		});
 
-		GameToolbox.sendProcessResult(sender, results, Player::getName,
+		CommandToolbox.sendProcessResult(sender, results, Player::getName,
 		"you added <b><count></b> <word>",
 		"player", "players"
 		);
@@ -313,11 +316,11 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	Command<CommandSourceStack> subAliveCheck = GameCommand.wrap((ctx, sender, game) -> {
 		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "member");
 
-		List<CommandLoopResult<Seated>> results = GameToolbox.processEach(seatedList, seated ->
+		List<CommandLoopResult<Seated>> results = CommandToolbox.processEach(seatedList, seated ->
 			new CommandLoopResult<>(seated, seated.getAlive(), "<b><target></b> is "+ (seated.getAlive() ? "alive" : "dead"))
 		);
 
-		GameToolbox.sendProcessResult(sender, results, Seated::getName,
+		CommandToolbox.sendProcessResult(sender, results, Seated::getName,
 		"<b><count></b> <word> alive",
 		"member is", "members are"
 		);
@@ -329,7 +332,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
 		final String changeString = changeValue ? "alive" : "dead";
 
-		List<CommandLoopResult<Seated>> results = GameToolbox.processEach(seatedList, seated -> {
+		List<CommandLoopResult<Seated>> results = CommandToolbox.processEach(seatedList, seated -> {
 			if (seated.getAlive() == changeValue)
 				return new CommandLoopResult<>(seated, false, "<gray><b><target></b> is already "+changeString);
 
@@ -338,7 +341,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		}
 		);
 
-		GameToolbox.sendProcessResult(sender, results, Seated::getName,
+		CommandToolbox.sendProcessResult(sender, results, Seated::getName,
 		"<b><count></b> <word> set "+changeString,
 		"member", "members"
 		);
