@@ -48,7 +48,7 @@ public class GameAction {
 		// game.sitTags();
 		game.getWorld().setTime(12500);
 		// game.clearVoteStep();
-		game.forEachSlots(BloodSlot::unlock);
+		game.getCircle().forEachSlots(BloodSlot::unlock);
 		game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
 			game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .4f);
@@ -66,7 +66,7 @@ public class GameAction {
 		//game.removeNominatedPlayer();
 		//game.removePyloriPlayer();
 		//game.clearVoteStep();
-		game.forEachSlots(BloodSlot::lock);
+		game.getCircle().forEachSlots(BloodSlot::lock);
 		game.pingSound(Sound.ENTITY_ALLAY_HURT, BloodGame.EVENT_VOLUME, .0f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
 			game.pingSound(Sound.BLOCK_WOODEN_DOOR_OPEN, BloodGame.EVENT_VOLUME, .9f);

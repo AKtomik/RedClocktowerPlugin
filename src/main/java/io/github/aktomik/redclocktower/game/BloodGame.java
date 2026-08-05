@@ -11,7 +11,6 @@ import org.bukkit.entity.Player;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
-import java.util.function.Consumer;
 import java.util.stream.Stream;
 
 public class BloodGame {
@@ -19,7 +18,7 @@ public class BloodGame {
 
 	// definition
 	private final TownHall townHall;
-	private final BloodSlot[] slots;
+	private final SlotCircle circle;
 	private final List<BloodPlayer> storytellers = new ArrayList<>();
 	private final List<BloodPlayer> spectators = new ArrayList<>();
 
@@ -32,7 +31,7 @@ public class BloodGame {
 	private BloodGame(TownHall townHall) {
 		this.townHall = townHall;
 		this.world = townHall.getWorld();
-		slots = townHall.getAllChairs().map(townChair -> new BloodSlot(this, townChair)).toArray(BloodSlot[]::new);
+		this.circle = new SlotCircle(this, townHall);
 		setup();
 	}
 
@@ -70,7 +69,7 @@ public class BloodGame {
 		// world
 		unsetup();
 		// reset
-		for (BloodSlot slot : slots) slot.empty();
+		circle.forEachSlots(BloodSlot::empty);
 		removeAllStorytellers();
 		removeAllSpectators();
 		// static
@@ -79,7 +78,7 @@ public class BloodGame {
 		dead = true;
 	}
 
-	// townhall
+	// getters
 	public TownHall getTownHall() {
 		return townHall;
 	}
@@ -88,50 +87,17 @@ public class BloodGame {
 		return world;
 	}
 
-	// slot
-	public Integer getSlotCount()
-	{
-		return slots.length;
+	public SlotCircle getCircle() {
+		return circle;
 	}
 
-	public boolean isValidSlot(int index)
-	{
-		return index >= 0 && index < slots.length;
-	}
-
-	public BloodSlot getSlot(int index)
-	{
-		return slots[index];
-	}
-
-	public List<BloodSlot> getSlots()
-	{
-		return Arrays.stream(slots).toList();
-	}
-
-	public void forEachSlots(Consumer<BloodSlot> consumer)
-	{
-		getSlots().forEach(consumer);
-	}
-
-	public boolean isFull()
-	{
-		for (BloodSlot slot : slots)
-			if (!slot.isOccupied())
-				return false;
-		return true;
-	}
-
-	public int getFirstEmptySlotIndex() throws RuntimeException {
-		for (int i = 0; i < slots.length; i++)
-			if (!slots[i].isOccupied())
-				return i;
-		throw new RuntimeException("getFirstEmptySlotIndex() but the game is full: there is no empty slot");
+	public MiniMessage getMini() {
+		return mini;
 	}
 
 	// players participants
 	public Stream<Seated> getAllSeated() {
-		return Arrays.stream(slots).filter(BloodSlot::isOccupied).map(BloodSlot::getSeated);
+		return circle.getSlotsStream().filter(BloodSlot::isOccupied).map(BloodSlot::getSeated);
 	}
 
 	public Stream<SeatedPlayer> getAllSeatedPlayers() {
@@ -230,7 +196,7 @@ public class BloodGame {
 	// state
 	private void setup() {
 		// game
-		Arrays.stream(slots).toList().forEach(slot -> slot.setVoteLocked(true));
+		circle.forEachSlots(BloodSlot::lock);
 		// world
 		world.setTime(10000);
 		world.setGameRule(GameRules.ADVANCE_TIME, false);
@@ -251,7 +217,7 @@ public class BloodGame {
 		// game
 		getAllSeated().forEach(seated -> seated.setAlive(true));
 		getAllSeated().forEach(seated -> seated.setVotePull(false));
-		Arrays.stream(slots).toList().forEach(slot -> slot.setVoteLocked(false));
+		circle.forEachSlots(BloodSlot::unlock);
 		period = GamePeriod.MEET;
 		// world
 		world.setTime(12000);
@@ -298,10 +264,5 @@ public class BloodGame {
 
 	public GamePeriod getPeriod() {
 		return period;
-	}
-
-	// misc
-	public MiniMessage getMini() {
-		return mini;
 	}
 }

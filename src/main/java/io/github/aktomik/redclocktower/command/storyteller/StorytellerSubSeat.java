@@ -61,7 +61,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 	SuggestionProvider<CommandSourceStack> slotSuggestion = (ctx, builder) -> {
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 		if (game == null) return builder.buildFuture();
-		IntStream.range(1, game.getSlotCount() + 1).forEach(builder::suggest);
+		IntStream.range(1, game.getCircle().getSlotCount() + 1).forEach(builder::suggest);
 		return builder.buildFuture();
 	};
 
@@ -76,13 +76,13 @@ public class StorytellerSubSeat extends BrigadierSub {
 
 		final int slotNumber = ctx.getArgument("slot number", Integer.class);
 		final int slotIndex = slotNumber - 1;
-		if (!game.isValidSlot(slotIndex)) {
+		if (!game.getCircle().isValidSlot(slotIndex)) {
 			sender.sendRichMessage("<red>there is no slot <b><number></b>",
 				Placeholder.parsed("number", Integer.toString(slotNumber))
 			);
 			return Command.SINGLE_SUCCESS;
 		}
-		final BloodSlot slot = game.getSlot(slotIndex);
+		final BloodSlot slot = game.getCircle().getSlot(slotIndex);
 
 		// execute
 		final Seated seated = slot.getSeated();
@@ -113,13 +113,13 @@ public class StorytellerSubSeat extends BrigadierSub {
 
 		final int slotNumber = ctx.getArgument("slot number", Integer.class);
 		final int slotIndex = slotNumber - 1;
-		if (!game.isValidSlot(slotIndex)) {
+		if (!game.getCircle().isValidSlot(slotIndex)) {
 			sender.sendRichMessage("<red>there is no slot <b><number></b>",
 			Placeholder.parsed("number", Integer.toString(slotNumber))
 			);
 			return Command.SINGLE_SUCCESS;
 		}
-		final BloodSlot slot = game.getSlot(slotIndex);
+		final BloodSlot slot = game.getCircle().getSlot(slotIndex);
 
 		if (!slot.isOccupied())
 		{
@@ -129,7 +129,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 			return Command.SINGLE_SUCCESS;
 		}
 
-		game.getSlot(slotIndex).empty();
+		game.getCircle().getSlot(slotIndex).empty();
 		sender.sendRichMessage("slot <b><number></b> <red>emptied</red>",
 		Placeholder.parsed("number", Integer.toString(slotNumber))
 		);
@@ -144,13 +144,13 @@ public class StorytellerSubSeat extends BrigadierSub {
 
 		final int slotNumber = ctx.getArgument("slot number", Integer.class);
 		final int slotIndex = slotNumber - 1;
-		if (!game.isValidSlot(slotIndex)) {
+		if (!game.getCircle().isValidSlot(slotIndex)) {
 			sender.sendRichMessage("<red>there is no slot <b><number></b>",
 				Placeholder.parsed("number", Integer.toString(slotNumber))
 			);
 			return Command.SINGLE_SUCCESS;
 		}
-		final BloodSlot slot = game.getSlot(slotIndex);
+		final BloodSlot slot = game.getCircle().getSlot(slotIndex);
 
 		if (slot.isOccupied())
 		{
@@ -164,7 +164,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 		if (GameToolbox.failIfNoPlayer(sender, player)) return Command.SINGLE_SUCCESS;
 
 		final Seated seated = new SeatedPlayer(player);
-		game.getSlot(slotIndex).assign(seated);
+		game.getCircle().getSlot(slotIndex).assign(seated);
 		sender.sendRichMessage("player <yellow><name></yellow> added to the slot <b><number></b>",
 			Placeholder.parsed("number", Integer.toString(slotNumber)),
 			Placeholder.parsed("name", seated.getName())
@@ -180,13 +180,13 @@ public class StorytellerSubSeat extends BrigadierSub {
 
 		final int slotNumber = ctx.getArgument("slot number", Integer.class);
 		final int slotIndex = slotNumber - 1;
-		if (!game.isValidSlot(slotIndex)) {
+		if (!game.getCircle().isValidSlot(slotIndex)) {
 			sender.sendRichMessage("<red>there is no slot <b><number></b>",
 			Placeholder.parsed("number", Integer.toString(slotNumber))
 			);
 			return Command.SINGLE_SUCCESS;
 		}
-		final BloodSlot slot = game.getSlot(slotIndex);
+		final BloodSlot slot = game.getCircle().getSlot(slotIndex);
 
 		if (slot.isOccupied())
 		{
@@ -197,7 +197,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 		}
 
 		final Seated seated = new SeatedDummy(slotNumber);
-		game.getSlot(slotIndex).assign(seated);
+		game.getCircle().getSlot(slotIndex).assign(seated);
 		sender.sendRichMessage("dummy <light_purple><name></light_purple> added to the slot <b><number></b>",
 			Placeholder.parsed("number", Integer.toString(slotNumber)),
 			Placeholder.parsed("name", seated.getName())
@@ -213,23 +213,23 @@ public class StorytellerSubSeat extends BrigadierSub {
 
 		final int firstSlotNumber = ctx.getArgument("slot number", Integer.class);
 		final int firstSlotIndex = firstSlotNumber - 1;
-		if (!game.isValidSlot(firstSlotIndex)) {
+		if (!game.getCircle().isValidSlot(firstSlotIndex)) {
 			sender.sendRichMessage("<red>there is no slot <b><number></b>",
 			Placeholder.parsed("number", Integer.toString(firstSlotNumber))
 			);
 			return Command.SINGLE_SUCCESS;
 		}
-		final BloodSlot firstSlot = game.getSlot(firstSlotIndex);
+		final BloodSlot firstSlot = game.getCircle().getSlot(firstSlotIndex);
 
 		final int secondSlotNumber = ctx.getArgument("second slot number", Integer.class);
 		final int secondSlotIndex = secondSlotNumber - 1;
-		if (!game.isValidSlot(secondSlotIndex)) {
+		if (!game.getCircle().isValidSlot(secondSlotIndex)) {
 			sender.sendRichMessage("<red>there is no slot <b><number></b>",
 			Placeholder.parsed("number", Integer.toString(secondSlotNumber))
 			);
 			return Command.SINGLE_SUCCESS;
 		}
-		final BloodSlot secondSlot = game.getSlot(secondSlotIndex);
+		final BloodSlot secondSlot = game.getCircle().getSlot(secondSlotIndex);
 
 		final boolean firstOccupied = firstSlot.isOccupied();
 		final boolean secondOccupied = secondSlot.isOccupied();

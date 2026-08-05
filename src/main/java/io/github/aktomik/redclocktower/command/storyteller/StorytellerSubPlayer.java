@@ -105,7 +105,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 		// the action
 		List<Seated> seatedList = game.getAllSeated().toList();
-		int emptySlotsAmount = game.getSlotCount() - seatedList.size();
+		int emptySlotsAmount = game.getCircle().getSlotCount() - seatedList.size();
 		if (seatedList.isEmpty())
 		{
 			sender.sendRichMessage("<white>there is not player in game");
@@ -151,10 +151,10 @@ public class StorytellerSubPlayer extends BrigadierSub {
 				return new CommandLoopResult<>(player, false, "<red><b><target></b> is already in game");
 			if (bloodPlayer.getStorytellingGame() != null)
 				return new CommandLoopResult<>(player, false, "<gray><b><target></b> is a storyteller");
-			if (game.isFull())
+			if (game.getCircle().isFull())
 				return new CommandLoopResult<>(player, false, "the game is full");
 
-			game.getSlot(game.getFirstEmptySlotIndex())
+			game.getCircle().getSlot(game.getCircle().getFirstEmptySlotIndex())
 			.assign(new SeatedPlayer(player));
 
 			return new CommandLoopResult<>(player, true, "<b><target></b> added");
@@ -242,7 +242,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			// todo: storyteller remove
 			// todo: spectator remove
 
-			game.getSlot(game.getFirstEmptySlotIndex())
+			game.getCircle().getSlot(game.getCircle().getFirstEmptySlotIndex())
 			.assign(new SeatedPlayer(player));
 
 			return new CommandLoopResult<>(player, true, "<b><target></b> added");
