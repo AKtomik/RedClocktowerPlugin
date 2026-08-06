@@ -3,11 +3,13 @@ package io.github.aktomik.redclocktower.command.storyteller;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.commandbuild.tools.GameCommand;
-import io.github.aktomik.redclocktower.game.*;
+import io.github.aktomik.redclocktower.commandbuild.arguments.SeatedListArgumentType;
 import io.github.aktomik.redclocktower.commandbuild.tools.CommandLoopResult;
 import io.github.aktomik.redclocktower.commandbuild.tools.CommandToolbox;
-import io.github.aktomik.redclocktower.commandbuild.arguments.SeatedListArgumentType;
+import io.github.aktomik.redclocktower.commandbuild.tools.GameCommand;
+import io.github.aktomik.redclocktower.game.BloodPlayer;
+import io.github.aktomik.redclocktower.game.Seated;
+import io.github.aktomik.redclocktower.game.SeatedPlayer;
 import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
 import io.github.aktomik.redclocktower.oldgame.OldGameToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
@@ -16,13 +18,17 @@ import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
+import java.util.Objects;
 
 public class StorytellerSubPlayer extends BrigadierSub {
 
@@ -45,32 +51,27 @@ public class StorytellerSubPlayer extends BrigadierSub {
 				.executes(subAdd)
 			)
 		)
-//		.then(Commands.literal("spectator")
-//			.then(Commands.argument("players", ArgumentTypes.players())
-//				.executes(subSpectate)
-//			)
-//		)
-//		.then(Commands.literal("storyteller")
-//			.executes(subStorytellCheck)
-//			.then(Commands.argument("player", ArgumentTypes.player())
-//				.executes(subStorytellChange)
-//			)
-//		)
 		.then(Commands.literal("remove")
 			.then(Commands.argument("players", ArgumentTypes.players())
 				.executes(subRemove)
+			)
+		)
+		.then(Commands.literal("spectator")
+			.executes(subSpectatorList)
+			.then(Commands.argument("players", ArgumentTypes.players())
+				.executes(subSpectatorAdd)
+			)
+		)
+		.then(Commands.literal("storyteller")
+			.executes(subStorytellerList)
+			.then(Commands.argument("players", ArgumentTypes.players())
+				.executes(subStorytellerAdd)
 			)
 		)
 
 		// modify
 		.then(Commands.literal("set")
 			.then(Commands.argument("member", new SeatedListArgumentType())
-//				.then(Commands.literal("traveller")
-//					.executes(subTravelerCheck)
-//					.then(Commands.argument("change", BoolArgumentType.bool())
-//						.executes(subTravelerChange)
-//					)
-//				)
 				.then(Commands.literal("alive")
 					.executes(subAliveCheck)
 					.then(Commands.argument("change", BoolArgumentType.bool())
@@ -89,6 +90,12 @@ public class StorytellerSubPlayer extends BrigadierSub {
 //						.executes(subVotingChange)
 //					)
 //				)
+//				.then(Commands.literal("traveller")
+//					.executes(subTravelerCheck)
+//					.then(Commands.argument("change", BoolArgumentType.bool())
+//						.executes(subTravelerChange)
+//					)
+//				)
 			)
 		);
 
@@ -99,14 +106,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 	// subs
 
-	Command<CommandSourceStack> subList = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
-
-		// checks
-		if (CommandToolbox.failIfNoGame(sender, game)) return Command.SINGLE_SUCCESS;
-
-		// the action
+	Command<CommandSourceStack> subList = GameCommand.wrap((ctx, sender, game) -> {
 		List<Seated> seatedList = game.getAllSeated().toList();
 		int emptySlotsAmount = game.getCircle().getSlotCount() - seatedList.size();
 		if (seatedList.isEmpty())
@@ -140,7 +140,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		}
 
 		return Command.SINGLE_SUCCESS;
-	};
+	});
 
 
 	Command<CommandSourceStack> subAdd = GameCommand.wrap((ctx, sender, game) -> {
@@ -155,7 +155,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			if (bloodPlayer.getStorytellingGame() != null)
 				return new CommandLoopResult<>(player, false, "<gray><b><target></b> is a storyteller");
 			if (game.getCircle().isFull())
-				return new CommandLoopResult<>(player, false, "the game is full");
+				return new CommandLoopResult<>(player, false, "<red>the game is full");
 
 			game.getCircle().getSlot(game.getCircle().getFirstEmptySlotIndex())
 			.assign(new SeatedPlayer(player));
@@ -170,69 +170,6 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	});
 
-
-	Command<CommandSourceStack> subSpectate = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-		final OldBloodGame game = OldBloodGame.get(ctx);
-
-		// checks
-		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
-
-		// the action
-		for (Player player : players)
-		{
-			if (game.isPlayerIn(player))
-			{
-				sender.sendRichMessage("<red><b><target></b> is already in the game as a player.",
-				Placeholder.parsed("target", player.getName())
-				);
-				continue;
-			}
-			game.addSpectator(player);
-			sender.sendRichMessage("you added <b><target></b> as a spectator.",
-			Placeholder.parsed("target", player.getName())
-			);
-		}
-		return Command.SINGLE_SUCCESS;
-	};
-
-
-	Command<CommandSourceStack> subStorytellCheck = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final OldBloodGame game = OldBloodGame.get(ctx);
-
-		// the action
-		Player player = game.getStoryteller();
-		if (player == null)
-			sender.sendRichMessage("this game does not have a storyteller.");
-		else
-			sender.sendRichMessage("<b><target></b> is the storyteller.",
-			Placeholder.parsed("target", player.getName())
-			);
-		return Command.SINGLE_SUCCESS;
-	};
-
-
-	Command<CommandSourceStack> subStorytellChange = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final Player player = BrigadierToolbox.resolvePlayer(ctx);
-		final OldBloodGame game = OldBloodGame.get(ctx);
-
-		// checks
-		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (OldGameToolbox.failIfNoPlayer(sender, player)) return Command.SINGLE_SUCCESS;
-
-		// the action
-		game.changeStoryteller(player);
-		sender.sendRichMessage("<b><target></b> is now the storyteller.",
-		Placeholder.parsed("target", player.getName())
-		);
-		return Command.SINGLE_SUCCESS;
-	};
-
-
 	Command<CommandSourceStack> subRemove = GameCommand.wrap((ctx, sender, game) -> {
 		List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
 		if (CommandToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
@@ -240,78 +177,132 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		List<CommandLoopResult<Player>> results = CommandToolbox.processEach(players, player -> {
 			BloodPlayer bloodPlayer = BloodPlayer.get(player);
 
-			if (bloodPlayer.getSeatedGame() != game)
-				return new CommandLoopResult<>(player, false, "<red><b><target></b> is not in game");
-			// todo: storyteller remove
-			// todo: spectator remove
-
-			game.getCircle().getSlot(game.getCircle().getFirstEmptySlotIndex())
-			.assign(new SeatedPlayer(player));
-
-			return new CommandLoopResult<>(player, true, "<b><target></b> added");
+			if (bloodPlayer.getStorytellingGame() == game)
+			{
+				game.removeStoryteller(bloodPlayer);
+				return new CommandLoopResult<>(player, true, "<b><target></b> is not storytelling this game anymore");
+			}
+			if (bloodPlayer.getSpectatingGame() == game)
+			{
+				game.removeSpectator(bloodPlayer);
+				return new CommandLoopResult<>(player, true, "<b><target></b> is not spectating this game anymore");
+			}
+			if (bloodPlayer.getSeatedGame() == game)
+			{
+				Seated seated = bloodPlayer.getSeated();
+				Objects.requireNonNull(seated).getSlot().empty();
+				return new CommandLoopResult<>(player, true, "player <b><target></b> removed from the game");
+			}
+			return new CommandLoopResult<>(player, false, "<red><b><target></b> is not in game");
 		});
 
 		CommandToolbox.sendProcessResult(sender, results, Player::getName,
-		"you added <b><count></b> <word>",
+		"you removed <b><count></b> <word>",
 		"player", "players"
 		);
 		return Command.SINGLE_SUCCESS;
 	});
 
 
-	public final Command<CommandSourceStack> subTravelerCheck = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-		final OldBloodGame game = OldBloodGame.get(ctx);
-
-		// checks
-		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
-
-		// the action
-		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
-			sender.sendRichMessage(
-			bp.isTraveller()
-			? "<b><target></b> is a traveller."
-			: "<b><target></b> is not a traveller.",
-			Placeholder.parsed("target", player.getName())
-			);
-		});
-		return Command.SINGLE_SUCCESS;
-	};
-
-	public final Command<CommandSourceStack> subTravelerChange = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
-		final OldBloodGame game = OldBloodGame.get(ctx);
-
-		// checks
-		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
-
-		// the action
-		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
-			if (bp.isTraveller() == changeValue) {
-				sender.sendRichMessage(
-				changeValue
-				? "<gray><b><target></b> is already a traveller."
-				: "<gray><b><target></b> is already not a traveller.",
-				Placeholder.parsed("target", player.getName())
+	Command<CommandSourceStack> subSpectatorList = GameCommand.wrap((ctx, sender, game) -> {
+		List<OfflinePlayer> spectators = game.getAllSpectators().toList();
+		if (spectators.isEmpty())
+			sender.sendRichMessage("this game does not have any spectator");
+		else {
+			List<TextComponent> spectatorsComponent = spectators.stream().map(
+			offlinePlayer -> Component.text(Objects.requireNonNull(offlinePlayer.getName()))).toList();
+			if (spectators.size() == 1)
+				sender.sendRichMessage("<b><target></b> is spectating this game",
+					Placeholder.component("target", spectatorsComponent.getFirst())
 				);
-				return;
+			else {
+				JoinConfiguration joinConfig = JoinConfiguration.builder()
+					.separator(Component.text(", "))
+					.lastSeparator(Component.text(" and "))
+					.lastSeparatorIfSerial(Component.text(","))
+					.build();
+				sender.sendRichMessage("<targets> are spectating this game",
+					Placeholder.component("targets", Component.join(joinConfig, spectatorsComponent))
+				);
 			}
-
-			bp.changeTraveller(changeValue);
-			sender.sendRichMessage(
-			changeValue
-			? "<b><target></b> is now <yellow>a traveller</yellow>."
-			: "<b><target></b> is <red>not a traveller</red> anymore.",
-			Placeholder.parsed("target", player.getName())
-			);
-		});
+		}
 		return Command.SINGLE_SUCCESS;
-	};
+	});
+
+	Command<CommandSourceStack> subSpectatorAdd = GameCommand.wrap((ctx, sender, game) -> {
+		List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
+		if (CommandToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+
+		List<CommandLoopResult<Player>> results = CommandToolbox.processEach(players, player -> {
+			BloodPlayer bloodPlayer = BloodPlayer.get(player);
+
+			if (bloodPlayer.getSpectatingGame() != null)
+				return new CommandLoopResult<>(player, false, "<red><b><target></b> is already spectating");
+			if (bloodPlayer.getSeatedGame() != null)
+				return new CommandLoopResult<>(player, false, "<red><b><target></b> is playing");
+
+			game.addSpectator(bloodPlayer);
+
+			return new CommandLoopResult<>(player, true, "<b><target></b> is now spectating this game");
+		});
+
+		CommandToolbox.sendProcessResult(sender, results, Player::getName,
+		"you added <b><count></b> <word>",
+		"spectator", "spectators"
+		);
+		return Command.SINGLE_SUCCESS;
+	});
+
+
+	Command<CommandSourceStack> subStorytellerList = GameCommand.wrap((ctx, sender, game) -> {
+		List<OfflinePlayer> storytellers = game.getAllStorytellers().toList();
+		if (storytellers.isEmpty())
+			sender.sendRichMessage("this game does not have a storyteller");
+		else {
+			List<TextComponent> storytellersComponent = storytellers.stream().map(
+				offlinePlayer -> Component.text(Objects.requireNonNull(offlinePlayer.getName()))).toList();
+			if (storytellers.size() == 1)
+				sender.sendRichMessage("<b><target></b> is storytelling this game",
+					Placeholder.component("target", storytellersComponent.getFirst())
+				);
+			else {
+				JoinConfiguration joinConfig = JoinConfiguration.builder()
+					.separator(Component.text(", "))
+					.lastSeparator(Component.text(" and "))
+					.lastSeparatorIfSerial(Component.text(","))
+					.build();
+				sender.sendRichMessage("<targets> are storytelling this game",
+					Placeholder.component("targets", Component.join(joinConfig, storytellersComponent))
+				);
+			}
+		}
+		return Command.SINGLE_SUCCESS;
+	});
+
+	Command<CommandSourceStack> subStorytellerAdd = GameCommand.wrap((ctx, sender, game) -> {
+		List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
+		if (CommandToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+
+		List<CommandLoopResult<Player>> results = CommandToolbox.processEach(players, player -> {
+			BloodPlayer bloodPlayer = BloodPlayer.get(player);
+
+			if (bloodPlayer.getStorytellingGame() != null)
+				return new CommandLoopResult<>(player, false, "<gray><b><target></b> is already storytelling");
+			if (bloodPlayer.getSeatedGame() != null)
+				return new CommandLoopResult<>(player, false, "<gray><b><target></b> is playing");
+
+			game.addStoryteller(bloodPlayer);
+
+			return new CommandLoopResult<>(player, true, "<b><target></b> is now storytelling this game");
+		});
+
+		CommandToolbox.sendProcessResult(sender, results, Player::getName,
+		"you added <b><count></b> <word>",
+		"storyteller", "storytellers"
+		);
+		return Command.SINGLE_SUCCESS;
+	});
+
 
 	Command<CommandSourceStack> subAliveCheck = GameCommand.wrap((ctx, sender, game) -> {
 		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "member");
@@ -450,6 +441,61 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			changeValue
 			? "<b><target></b> is now <gold>voting</gold>."
 			: "<b><target></b> is <yellow>not voting</yellow> anymore.",
+			Placeholder.parsed("target", player.getName())
+			);
+		});
+		return Command.SINGLE_SUCCESS;
+	};
+
+
+	public final Command<CommandSourceStack> subTravelerCheck = ctx -> {
+		final CommandSender sender = ctx.getSource().getSender();
+		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
+
+		// checks
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+
+		// the action
+		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
+			sender.sendRichMessage(
+			bp.isTraveller()
+			? "<b><target></b> is a traveller."
+			: "<b><target></b> is not a traveller.",
+			Placeholder.parsed("target", player.getName())
+			);
+		});
+		return Command.SINGLE_SUCCESS;
+	};
+
+	public final Command<CommandSourceStack> subTravelerChange = ctx -> {
+		final CommandSender sender = ctx.getSource().getSender();
+		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
+		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
+		final OldBloodGame game = OldBloodGame.get(ctx);
+
+		// checks
+		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
+		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+
+		// the action
+		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
+			if (bp.isTraveller() == changeValue) {
+				sender.sendRichMessage(
+				changeValue
+				? "<gray><b><target></b> is already a traveller."
+				: "<gray><b><target></b> is already not a traveller.",
+				Placeholder.parsed("target", player.getName())
+				);
+				return;
+			}
+
+			bp.changeTraveller(changeValue);
+			sender.sendRichMessage(
+			changeValue
+			? "<b><target></b> is now <yellow>a traveller</yellow>."
+			: "<b><target></b> is <red>not a traveller</red> anymore.",
 			Placeholder.parsed("target", player.getName())
 			);
 		});

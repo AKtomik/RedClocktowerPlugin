@@ -128,8 +128,12 @@ public class BloodGame {
 		storytellers.clear();
 	}
 
+	public Stream<OfflinePlayer> getAllStorytellers() {
+		return storytellers.stream().map(BloodPlayer::getOffPlayer);
+	}
+
 	public Stream<Player> getOnlineStorytellers() {
-		return storytellers.stream().map(BloodPlayer::getOffPlayer).map(OfflinePlayer::getPlayer).filter(Objects::nonNull);
+		return getAllStorytellers().map(OfflinePlayer::getPlayer).filter(Objects::nonNull);
 	}
 
 	// spectators participants
@@ -146,8 +150,12 @@ public class BloodGame {
 		spectators.clear();
 	}
 
+	public Stream<OfflinePlayer> getAllSpectators() {
+		return spectators.stream().map(BloodPlayer::getOffPlayer);
+	}
+
 	public Stream<Player> getOnlineSpectators() {
-		return spectators.stream().map(BloodPlayer::getOffPlayer).map(OfflinePlayer::getPlayer).filter(Objects::nonNull);
+		return getAllSpectators().map(OfflinePlayer::getPlayer).filter(Objects::nonNull);
 	}
 
 	// all participants

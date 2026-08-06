@@ -16,6 +16,7 @@ public class BloodPlayer {
 	private final OfflinePlayer offPlayer;
 	private SeatedPlayer seated;
 	private BloodGame storytelling;
+	private BloodGame spectating;
 	private BloodPlayer(OfflinePlayer offlinePlayer) {
 		this.offPlayer = offlinePlayer;
 	}
@@ -61,6 +62,11 @@ public class BloodPlayer {
 		return storytelling;
 	}
 
+	@Nullable
+	public BloodGame getSpectatingGame() {
+		return spectating;
+	}
+
 	// internal link
 
 	// to avoid player being on two seats simultaneously
@@ -81,16 +87,33 @@ public class BloodPlayer {
 
 	// to avoid player being on two storytelling simultaneously
 	// is used by BloodGame and should not be used elsewhere
+	// it is technically tolerated to be storytelling and playing a game
 
 	void attachStorytelling(BloodGame game) {// only one call at BloodGame
 		// do not call detachStorytelling here to avoid circular call
 		if (storytelling != null) storytelling.removeStoryteller(this);
+		if (spectating != null) spectating.removeSpectator(this);
 		this.storytelling = game;
 	}
 
 	void detachStorytelling() {// only one call at BloodGame
 		if (storytelling == null) return;
 		storytelling = null;
+	}
+
+	// to avoid player being on two spectating simultaneously
+	// is used by BloodGame and should not be used elsewhere
+
+	void attachSpectating(BloodGame game) {// only one call at BloodGame
+		// do not call detachStorytelling here to avoid circular call
+		if (spectating != null) spectating.removeSpectator(this);
+		if (storytelling != null) storytelling.removeStoryteller(this);
+		this.spectating = game;
+	}
+
+	void detachSpectating() {// only one call at BloodGame
+		if (spectating == null) return;
+		spectating = null;
 	}
 
 	// state effect
