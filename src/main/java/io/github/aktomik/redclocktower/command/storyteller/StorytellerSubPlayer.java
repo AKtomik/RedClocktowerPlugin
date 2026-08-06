@@ -382,8 +382,8 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		);
 
 		CommandToolbox.sendProcessResult(sender, results, Seated::getName,
-		"<b><count></b> <word> set to "+changeString,
-		"member", "members"
+		"<b><count></b> <word> now "+changeString,
+		"member is", "members are"
 		);
 		return Command.SINGLE_SUCCESS;
 	});
@@ -393,12 +393,12 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 
 		List<CommandLoopResult<Seated>> results = CommandToolbox.processEach(seatedList, seated ->
-		new CommandLoopResult<>(seated, seated.getVoteToken(), "<b><target></b> "+ (seated.getVoteToken() ? "has" : "hasn't")+" their vote token")
+		new CommandLoopResult<>(seated, seated.getVoteToken(), "<b><target></b> "+ (seated.getVoteToken() ? "still" : "don't")+" have their vote token")
 		);
 
 		CommandToolbox.sendProcessResult(sender, results, Seated::getName,
-		"<b><count></b> <word> their vote token",
-		"member have", "members have"
+		"<b><count></b> <word> have their vote token",
+		"member still", "members don't"
 		);
 		return Command.SINGLE_SUCCESS;
 	});
@@ -406,20 +406,21 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	Command<CommandSourceStack> subTokenChange = GameCommand.wrap((ctx, sender, game) -> {
 		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
-		final String changeString = changeValue ? "have" : "does not have";
+		final String changeString = changeValue ? "taking back" : "giving back";
 
 		List<CommandLoopResult<Seated>> results = CommandToolbox.processEach(seatedList, seated -> {
 			if (seated.getVotePull() == changeValue)
-				return new CommandLoopResult<>(seated, false, "<gray><b><target></b> already "+changeString+" their vote token");
+				return new CommandLoopResult<>(seated, false,
+				"<gray><b><target></b> already "+ ((changeValue) ? "have" : "don't have") +" their vote token");
 
 			seated.setVotePull(changeValue);
-			return new CommandLoopResult<>(seated, true, "<b><target></b> "+changeString+" their vote token now");
+			return new CommandLoopResult<>(seated, true, changeString + " the vote token of <b><target></b>");
 		}
 		);
 
 		CommandToolbox.sendProcessResult(sender, results, Seated::getName,
-		"<b><count></b> <word> "+changeString+" their vote token now",
-		"member", "members"
+		changeString+" <b><count></b> <word>",
+		"vote token", "vote tokens"
 		);
 		return Command.SINGLE_SUCCESS;
 	});
@@ -454,7 +455,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		);
 
 		CommandToolbox.sendProcessResult(sender, results, Seated::getName,
-		(changeValue) ? "<b><count></b> <word> now travelling" : "<b><count></b> <word> now not travelling anymore",
+		(changeValue) ? "<b><count></b> <word> now travelling" : "<b><count></b> <word> not travelling anymore",
 		"member is", "members are"
 		);
 		return Command.SINGLE_SUCCESS;
