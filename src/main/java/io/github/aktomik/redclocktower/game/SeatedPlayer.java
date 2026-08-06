@@ -49,5 +49,7 @@ public class SeatedPlayer extends Seated {
 	@Override
 	public void setAlive(boolean alive) {
 		super.setAlive(alive);
+		BloodPlayer bloodPlayer = BloodPlayer.get(offPlayer);
+		bloodPlayer.refreshAliveEffect(alive);
 	}
 }
