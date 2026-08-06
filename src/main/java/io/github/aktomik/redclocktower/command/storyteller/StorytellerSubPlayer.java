@@ -69,33 +69,45 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			)
 		)
 
+		// name
+//		.then(Commands.literal("rename")
+//			.then(Commands.argument("member", ArgumentTypes.players())
+//				.executes(subNameChange)
+//			)
+//		)
+//		.then(Commands.literal("unname")
+//			.then(Commands.argument("member", ArgumentTypes.players())
+//				.executes(subNameClear)
+//			)
+//		)
+
 		// modify
 		.then(Commands.literal("set")
-			.then(Commands.argument("member", new SeatedListArgumentType())
+			.then(Commands.argument("members", new SeatedListArgumentType())
 				.then(Commands.literal("alive")
 					.executes(subAliveCheck)
 					.then(Commands.argument("change", BoolArgumentType.bool())
 						.executes(subAliveChange)
 					)
 				)
-//				.then(Commands.literal("voken")
-//					.executes(subTokenCheck)
-//					.then(Commands.argument("change", BoolArgumentType.bool())
-//						.executes(subTokenChange)
-//					)
-//				)
-//				.then(Commands.literal("voting")
-//					.executes(subVotingCheck)
-//					.then(Commands.argument("change", BoolArgumentType.bool())
-//						.executes(subVotingChange)
-//					)
-//				)
-//				.then(Commands.literal("traveller")
-//					.executes(subTravelerCheck)
-//					.then(Commands.argument("change", BoolArgumentType.bool())
-//						.executes(subTravelerChange)
-//					)
-//				)
+				.then(Commands.literal("voken")
+					.executes(subTokenCheck)
+					.then(Commands.argument("change", BoolArgumentType.bool())
+						.executes(subTokenChange)
+					)
+				)
+				.then(Commands.literal("voting")
+					.executes(subVotingCheck)
+					.then(Commands.argument("change", BoolArgumentType.bool())
+						.executes(subVotingChange)
+					)
+				)
+				.then(Commands.literal("traveller")
+					.executes(subTravellerCheck)
+					.then(Commands.argument("change", BoolArgumentType.bool())
+						.executes(subTravellerChange)
+					)
+				)
 			)
 		);
 
@@ -160,7 +172,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			game.getCircle().getSlot(game.getCircle().getFirstEmptySlotIndex())
 			.assign(new SeatedPlayer(player));
 
-			return new CommandLoopResult<>(player, true, "<b><target></b> added");
+			return new CommandLoopResult<>(player, true, "added <b><target></b>");
 		});
 
 		CommandToolbox.sendProcessResult(sender, results, Player::getName,
@@ -191,7 +203,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			{
 				Seated seated = bloodPlayer.getSeated();
 				Objects.requireNonNull(seated).getSlot().empty();
-				return new CommandLoopResult<>(player, true, "player <b><target></b> removed from the game");
+				return new CommandLoopResult<>(player, true, "removed player <b><target></b> from the game");
 			}
 			return new CommandLoopResult<>(player, false, "<red><b><target></b> is not in game");
 		});
@@ -304,8 +316,9 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	});
 
 
+	// set
 	Command<CommandSourceStack> subAliveCheck = GameCommand.wrap((ctx, sender, game) -> {
-		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "member");
+		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 
 		List<CommandLoopResult<Seated>> results = CommandToolbox.processEach(seatedList, seated ->
 			new CommandLoopResult<>(seated, seated.getAlive(), "<b><target></b> is "+ (seated.getAlive() ? "alive" : "dead"))
@@ -319,7 +332,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	});
 
 	Command<CommandSourceStack> subAliveChange = GameCommand.wrap((ctx, sender, game) -> {
-		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "member");
+		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
 		final String changeString = changeValue ? "alive" : "dead";
 
@@ -339,169 +352,116 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	});
 
-	public final Command<CommandSourceStack> subTokenCheck = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-		final OldBloodGame game = OldBloodGame.get(ctx);
 
-		// checks
-		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+	Command<CommandSourceStack> subVotingCheck = GameCommand.wrap((ctx, sender, game) -> {
+		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 
-		// the action
-		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
-			sender.sendRichMessage(
-			bp.getVoteToken()
-			? "<b><target></b> still have a vote token."
-			: "<b><target></b> don't have a vote token.",
-			Placeholder.parsed("target", player.getName())
-			);
-		});
+		List<CommandLoopResult<Seated>> results = CommandToolbox.processEach(seatedList, seated ->
+		new CommandLoopResult<>(seated, seated.getVotePull(), "<b><target></b> is "+ (seated.getVotePull() ? "voting" : "not voting"))
+		);
+
+		CommandToolbox.sendProcessResult(sender, results, Seated::getName,
+		"<b><count></b> <word> voting",
+		"member is", "members are"
+		);
 		return Command.SINGLE_SUCCESS;
-	};
+	});
 
-	public final Command<CommandSourceStack> subTokenChange = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
+	Command<CommandSourceStack> subVotingChange = GameCommand.wrap((ctx, sender, game) -> {
+		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
-		final OldBloodGame game = OldBloodGame.get(ctx);
+		final String changeString = changeValue ? "voting" : "not voting";
 
-		// checks
-		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		List<CommandLoopResult<Seated>> results = CommandToolbox.processEach(seatedList, seated -> {
+			if (seated.getVotePull() == changeValue)
+				return new CommandLoopResult<>(seated, false, "<gray><b><target></b> is already "+changeString);
 
-		// the action
-		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
-			if (bp.getVoteToken() == changeValue) {
-				sender.sendRichMessage(
-				changeValue
-				? "<gray><b><target></b> already have a vote token."
-				: "<gray><b><target></b> already don't have a vote token.",
-				Placeholder.parsed("target", player.getName())
-				);
-				return;
-			}
+			seated.setVotePull(changeValue);
+			return new CommandLoopResult<>(seated, true, "<b><target></b> is now "+changeString);
+		}
+		);
 
-			bp.changeVoteToken(changeValue);
-			sender.sendRichMessage(
-			changeValue
-			? "<green>giving back</green> the vote token of <b><target></b>."
-			: "<red>taking back</red> the vote token of <b><target></b>.",
-			Placeholder.parsed("target", player.getName())
-			);
-		});
+		CommandToolbox.sendProcessResult(sender, results, Seated::getName,
+		"<b><count></b> <word> set to "+changeString,
+		"member", "members"
+		);
 		return Command.SINGLE_SUCCESS;
-	};
+	});
 
-	public final Command<CommandSourceStack> subVotingCheck = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-		final OldBloodGame game = OldBloodGame.get(ctx);
 
-		// checks
-		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+	Command<CommandSourceStack> subTokenCheck = GameCommand.wrap((ctx, sender, game) -> {
+		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 
-		// the action
-		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
-			sender.sendRichMessage(
-			bp.getVotePull()
-			? "<b><target></b> is voting."
-			: "<b><target></b> is not voting.",
-			Placeholder.parsed("target", player.getName())
-			);
-		});
+		List<CommandLoopResult<Seated>> results = CommandToolbox.processEach(seatedList, seated ->
+		new CommandLoopResult<>(seated, seated.getVoteToken(), "<b><target></b> "+ (seated.getVoteToken() ? "has" : "hasn't")+" their vote token")
+		);
+
+		CommandToolbox.sendProcessResult(sender, results, Seated::getName,
+		"<b><count></b> <word> their vote token",
+		"member have", "members have"
+		);
 		return Command.SINGLE_SUCCESS;
-	};
+	});
 
-	public final Command<CommandSourceStack> subVotingChange = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
+	Command<CommandSourceStack> subTokenChange = GameCommand.wrap((ctx, sender, game) -> {
+		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
-		final OldBloodGame game = OldBloodGame.get(ctx);
+		final String changeString = changeValue ? "have" : "does not have";
 
-		// checks
-		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		List<CommandLoopResult<Seated>> results = CommandToolbox.processEach(seatedList, seated -> {
+			if (seated.getVotePull() == changeValue)
+				return new CommandLoopResult<>(seated, false, "<gray><b><target></b> already "+changeString+" their vote token");
 
-		// the action
-		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
-			if (bp.getVotePull() == changeValue) {
-				sender.sendRichMessage(
-				changeValue
-				? "<gray><b><target></b> is already voting."
-				: "<gray><b><target></b> is already not voting.",
-				Placeholder.parsed("target", player.getName())
-				);
-				return;
-			}
+			seated.setVotePull(changeValue);
+			return new CommandLoopResult<>(seated, true, "<b><target></b> "+changeString+" their vote token now");
+		}
+		);
 
-			bp.changeVotePull(changeValue);
-			sender.sendRichMessage(
-			changeValue
-			? "<b><target></b> is now <gold>voting</gold>."
-			: "<b><target></b> is <yellow>not voting</yellow> anymore.",
-			Placeholder.parsed("target", player.getName())
-			);
-		});
+		CommandToolbox.sendProcessResult(sender, results, Seated::getName,
+		"<b><count></b> <word> "+changeString+" their vote token now",
+		"member", "members"
+		);
 		return Command.SINGLE_SUCCESS;
-	};
+	});
 
 
-	public final Command<CommandSourceStack> subTravelerCheck = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
-		final OldBloodGame game = OldBloodGame.get(ctx);
+	Command<CommandSourceStack> subTravellerCheck = GameCommand.wrap((ctx, sender, game) -> {
+		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 
-		// checks
-		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		List<CommandLoopResult<Seated>> results = CommandToolbox.processEach(seatedList, seated ->
+		new CommandLoopResult<>(seated, seated.getTraveller(), "<b><target></b> " + (seated.getTraveller() ? "is" : "isn't") + " a traveller")
+		);
 
-		// the action
-		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
-			sender.sendRichMessage(
-			bp.isTraveller()
-			? "<b><target></b> is a traveller."
-			: "<b><target></b> is not a traveller.",
-			Placeholder.parsed("target", player.getName())
-			);
-		});
+		CommandToolbox.sendProcessResult(sender, results, Seated::getName,
+		"<b><count></b> <word>",
+		"member is a traveller", "members are travellers"
+		);
 		return Command.SINGLE_SUCCESS;
-	};
+	});
 
-	public final Command<CommandSourceStack> subTravelerChange = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
+	Command<CommandSourceStack> subTravellerChange = GameCommand.wrap((ctx, sender, game) -> {
+		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
-		final OldBloodGame game = OldBloodGame.get(ctx);
+		final String changeString = changeValue ? "a traveller" : "not a traveller";
 
-		// checks
-		if (OldGameToolbox.failIfNotReady(sender, game)) return Command.SINGLE_SUCCESS;
-		if (OldGameToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
+		List<CommandLoopResult<Seated>> results = CommandToolbox.processEach(seatedList, seated -> {
+			if (seated.getTraveller() == changeValue)
+				return new CommandLoopResult<>(seated, false, "<gray><b><target></b> is already "+changeString);
 
-		// the action
-		OldGameToolbox.forEachValidPlayer(sender, game, players, (player, bp) -> {
-			if (bp.isTraveller() == changeValue) {
-				sender.sendRichMessage(
-				changeValue
-				? "<gray><b><target></b> is already a traveller."
-				: "<gray><b><target></b> is already not a traveller.",
-				Placeholder.parsed("target", player.getName())
-				);
-				return;
-			}
+			seated.setTraveller(changeValue);
+			return new CommandLoopResult<>(seated, true, "<b><target></b> is now "+changeString);
+		}
+		);
 
-			bp.changeTraveller(changeValue);
-			sender.sendRichMessage(
-			changeValue
-			? "<b><target></b> is now <yellow>a traveller</yellow>."
-			: "<b><target></b> is <red>not a traveller</red> anymore.",
-			Placeholder.parsed("target", player.getName())
-			);
-		});
+		CommandToolbox.sendProcessResult(sender, results, Seated::getName,
+		(changeValue) ? "<b><count></b> <word> now travelling" : "<b><count></b> <word> now not travelling anymore",
+		"member is", "members are"
+		);
 		return Command.SINGLE_SUCCESS;
-	};
+	});
 
+
+	// misc
 	public final Command<CommandSourceStack> subGiveHand = ctx -> {
 		final CommandSender sender = ctx.getSource().getSender();
 		final OldBloodGame game = OldBloodGame.get(ctx);
