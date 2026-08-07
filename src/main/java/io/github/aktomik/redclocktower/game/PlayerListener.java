@@ -125,13 +125,10 @@ public class PlayerListener implements Listener {
 
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		TownHall townHall = bloodPlayer.getSeatedTownHall();
-		player.sendMessage("item trans townhall:"+townHall);
 		if (townHall == null) return false;
 
 		boolean isSensitive = BloodGame.SENSITIVE_INFO_ITEM.contains(item.getType());
-		player.sendMessage("so allowed:"+isSensitive+" ? "+townHall.getSettingsCanPlayerDropInfo()+" : "+townHall.getSettingsCanPlayerDropMisc());
 		boolean allowed = isSensitive ? townHall.getSettingsCanPlayerDropInfo() : townHall.getSettingsCanPlayerDropMisc();
-		player.sendMessage("return:"+!allowed);
 		return !allowed;
 	}
 
@@ -193,16 +190,11 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onInventoryOpen(InventoryOpenEvent event) {
 		if (!(event.getPlayer() instanceof Player player)) return;
-		player.sendMessage("hi player this is debug");
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		TownHall townHall = bloodPlayer.getSeatedTownHall();
-		player.sendMessage("are you in town seated:"+bloodPlayer.getSeated());
 		if (townHall == null) return;
-		player.sendMessage("townhall named:"+townHall.getTownName());
 
-		player.sendMessage("townhall chest thing:"+townHall.getSettingsCanPlayerOpenChest());
 		if (townHall.getSettingsCanPlayerOpenChest()) return;
-		player.sendMessage("switch");
 
 		switch (event.getInventory().getType()) {
 			case CHEST,
