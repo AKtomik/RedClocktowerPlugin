@@ -17,9 +17,13 @@ import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class TownHall {
+	// fields
 	private final World world;
 	private final String townName;
 	private final PersistentDataContainer pdc;
+
+	// avoid creating more than one townhall by pdc
+	private static final Map<PersistentDataContainer, TownHall> townCreatedObjects = new HashMap<>();
 
 	// construct
 	private TownHall(World world, String townName, PersistentDataContainer pdc) {
@@ -63,7 +67,11 @@ public class TownHall {
 		PersistentDataContainer worldData = world.getPersistentDataContainer();
 		PersistentDataContainer pdc = worldData.get(townKey(townName), PersistentDataType.TAG_CONTAINER);
 		if (pdc == null) return null;
-		return new TownHall(world, townName, pdc);
+		if (townCreatedObjects.containsKey(pdc))
+			return townCreatedObjects.get(pdc);
+		TownHall townHall = new TownHall(world, townName, pdc);
+		townCreatedObjects.put(pdc, townHall);
+		return townHall;
 	}
 
 	@Nullable
@@ -71,27 +79,32 @@ public class TownHall {
 		PersistentDataContainer worldData = world.getPersistentDataContainer();
 		if (worldData.has(townKey(townName))) return null;
 		PersistentDataContainer pdc = worldData.getAdapterContext().newPersistentDataContainer();
-		pdc.set(DataKey.TOWN_NAME.key(), PersistentDataType.STRING, townName);// only non defaultable field
+		pdc.set(DataKey.TOWN_NAME.key(), PersistentDataType.STRING, townName);// the single non defaultable field
 		worldData.set(townKey(townName), PersistentDataType.TAG_CONTAINER, pdc);
-		return new TownHall(world, townName, pdc);
+		TownHall townHall = new TownHall(world, townName, pdc);
+		townCreatedObjects.put(pdc, townHall);
+		return townHall;
 	}
 
 	@Nullable
-	public static TownHall clone(TownHall townHall, String townName) {
-		PersistentDataContainer worldData = townHall.getWorld().getPersistentDataContainer();
+	public static TownHall clone(TownHall originalTownHall, String townName) {
+		PersistentDataContainer worldData = originalTownHall.getWorld().getPersistentDataContainer();
 		if (worldData.has(townKey(townName))) return null;
 		PersistentDataContainer pdc = worldData.getAdapterContext().newPersistentDataContainer();
-		townHall.getPdc().copyTo(pdc, true);
-		pdc.set(DataKey.TOWN_NAME.key(), PersistentDataType.STRING, townName);// only non defaultable field
+		originalTownHall.getPdc().copyTo(pdc, true);
+		pdc.set(DataKey.TOWN_NAME.key(), PersistentDataType.STRING, townName);// the single non defaultable field
 		worldData.set(townKey(townName), PersistentDataType.TAG_CONTAINER, pdc);
-		return new TownHall(townHall.getWorld(), townName, pdc);
+		TownHall townHall = new TownHall(originalTownHall.getWorld(), townName, pdc);
+		townCreatedObjects.put(pdc, townHall);
+		return townHall;
 	}
 
-	public static boolean delete(World world, String townName) {
+	public static void delete(World world, String townName) {
+		TownHall townHall = find(world, townName);
+		if (townHall == null) return;
 		PersistentDataContainer worldData = world.getPersistentDataContainer();
-		if (!worldData.has(townKey(townName))) return false;
 		worldData.remove(townKey(townName));
-		return true;
+		townCreatedObjects.remove(townHall.pdc);
 	}
 
 	// data/position
