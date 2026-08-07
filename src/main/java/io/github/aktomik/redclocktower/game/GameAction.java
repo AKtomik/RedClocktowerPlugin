@@ -13,7 +13,7 @@ public class GameAction {
 	private GameAction() {}//static class
 
 	// code/period
-	static Map<GamePeriod, BiConsumer<BloodGame, CommandSender>> periodEnter = Map.ofEntries(
+	static final Map<GamePeriod, BiConsumer<BloodGame, CommandSender>> periodEnter = Map.ofEntries(
 
 	Map.entry(GamePeriod.MORNING, (game, sender) -> {
 		// game.sitTags();
@@ -78,38 +78,29 @@ public class GameAction {
 	})
 	);
 
-//	public static BiConsumer<BloodGame, CommandSender> next = (game, sender) -> {
-//
-//		sender.sendRichMessage("<gray>doing the next logic step...");
-//
-//		switch (game.getState()) {
-//			case NOTHING -> {
-//				game.doStep(OldGameStepAction.SETUP, sender);
-//			}
-//			case WAITING -> {
-//				game.doStep(OldGameStepAction.START, sender);
-//				game.setTime(GamePeriod.MEET);
-//			}
-//			case INGAME -> {
-//				switch (game.getTime()) {
-//					case MEET -> {
-//						game.switchTime(GamePeriod.NIGHT, sender);
-//					}
-//					case NIGHT -> {
-//						game.switchTime(GamePeriod.MORNING, sender);
-//					}
-//					case MORNING -> {
-//						game.switchTime(GamePeriod.FREE, sender);
-//					}
-//					case FREE -> {
-//						game.switchTime(GamePeriod.MEET, sender);
-//					}
-//				}
-//			}
-//			case ENDED -> {
-//				game.doStep(OldGameStepAction.RESET, sender);
-//			}
-//		}
-//	};
+	public static final BiConsumer<BloodGame, CommandSender> next = (game, sender) -> {
+
+		if (!game.isStarted())
+		{
+			sender.sendRichMessage("<red>the game is not started!");
+			return;
+		}
+
+		sender.sendRichMessage("<dark_purple>doing the next logic step...");
+		switch (game.getPeriod()) {
+			case MEET -> {
+				game.switchPeriod(GamePeriod.NIGHT, sender);
+			}
+			case NIGHT -> {
+				game.switchPeriod(GamePeriod.MORNING, sender);
+			}
+			case MORNING -> {
+				game.switchPeriod(GamePeriod.FREE, sender);
+			}
+			case FREE -> {
+				game.switchPeriod(GamePeriod.MEET, sender);
+			}
+		}
+	};
 
 }
