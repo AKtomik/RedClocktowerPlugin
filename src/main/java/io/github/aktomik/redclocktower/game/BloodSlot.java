@@ -36,6 +36,10 @@ public class BloodSlot {
 		return game;
 	}
 
+	public TownChair getChair() {
+		return townChair;
+	}
+
 	public boolean isOccupied() {
 		return getSeated() != null;
 	}

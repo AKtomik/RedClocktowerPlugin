@@ -13,6 +13,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Objects;
 
 public class VoteCommand extends BrigadierCommand {
 
@@ -43,15 +44,14 @@ public class VoteCommand extends BrigadierCommand {
 	private int exe(CommandContext<CommandSourceStack> ctx, Boolean trigger) {
 		final CommandSender sender = ctx.getSource().getSender();
 		Player player = (Player)ctx.getSource().getExecutor();
-		assert player != null;
-		final BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		final BloodPlayer bloodPlayer = BloodPlayer.get(Objects.requireNonNull(player));
 		final SeatedPlayer seatedPlayer = bloodPlayer.getSeated();
 
 		// checks
 		if (seatedPlayer == null)
 		{
 			sender.sendRichMessage("<red>you are not in a blood game");
-			return Command.SINGLE_SUCCESS;
+			return 0;
 		}
 		if (!seatedPlayer.canVote())
 		{
@@ -61,7 +61,7 @@ public class VoteCommand extends BrigadierCommand {
 				sender.sendRichMessage("<red>too late");
 			else
 				sender.sendRichMessage("<red>you can't vote");
-			return Command.SINGLE_SUCCESS;
+			return 0;
 		}
 
 		// actions
@@ -73,5 +73,5 @@ public class VoteCommand extends BrigadierCommand {
 		);
 
 		return Command.SINGLE_SUCCESS;
-	};
+	}
 }

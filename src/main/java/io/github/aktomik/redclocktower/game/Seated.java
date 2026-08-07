@@ -77,7 +77,7 @@ public abstract class Seated {
 	}
 
 	public boolean canVote() {
-		return (!slot.isVoteLocked() && haveVote());
+		return (!slot.isVoteLocked() && (haveVote() && !getSlot().getGame().getCircle().isExclusionVote()));
 	}
 
 	public boolean haveVote() {

@@ -74,4 +74,9 @@ public class SlotCircle {
 				return i;
 		throw new RuntimeException("getFirstEmptySlotIndex() but the game is full: there is no empty slot");
 	}
+
+	// vote interfaces
+	public boolean isExclusionVote() {
+		return false;
+	}
 }

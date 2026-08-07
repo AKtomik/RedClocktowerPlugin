@@ -118,6 +118,16 @@ public class TownHall {
 		return pdc.getOrDefault(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_DROP.key(), PersistentDataType.BOOLEAN, false);
 	}
 
+	public void setSettingsCanPlayerPullOthersLever(boolean bool)
+	{
+		pdc.set(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_PULL_OTHERS_LEVER.key(), PersistentDataType.BOOLEAN, bool);
+		save();
+	}
+	public boolean getSettingsCanPlayerPullOthersLever()
+	{
+		return pdc.getOrDefault(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_PULL_OTHERS_LEVER.key(), PersistentDataType.BOOLEAN, false);
+	}
+
 	// data/chair
 	private void setChairsPdc(List<PersistentDataContainer> pdcs)
 	{
