@@ -135,7 +135,7 @@ public class TownHall {
 	}
 	public boolean getSettingsCanPlayerOpenChest()
 	{
-		return pdc.getOrDefault(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_OPEN_CHEST.key(), PersistentDataType.BOOLEAN, false);
+		return pdc.getOrDefault(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_OPEN_CHEST.key(), PersistentDataType.BOOLEAN, true);
 	}
 
 	public void setSettingsCanPlayerPullOthersLever(boolean bool)

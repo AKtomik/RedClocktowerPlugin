@@ -1,8 +1,8 @@
 package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.game.town.TownChairPlace;
-import io.github.aktomik.redclocktower.game.town.TownHallPlace;
 import io.github.aktomik.redclocktower.game.town.TownHall;
+import io.github.aktomik.redclocktower.game.town.TownHallPlace;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,13 +10,26 @@ import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Powerable;
 import org.bukkit.entity.Player;
+import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BellRingEvent;
+import org.bukkit.event.inventory.InventoryAction;
+import org.bukkit.event.inventory.InventoryClickEvent;
+import org.bukkit.event.inventory.InventoryDragEvent;
+import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.ItemStack;
+import org.jspecify.annotations.Nullable;
 
 public class PlayerListener implements Listener {
+
+	private static void cancelAndNotify(Player player, Cancellable event) {
+		player.sendActionBar(MiniMessage.miniMessage().deserialize("<red>nope!"));
+		event.setCancelled(true);
+	}
 
 	// management
 	@EventHandler
@@ -107,16 +120,102 @@ public class PlayerListener implements Listener {
 	}
 
 	// items
+	private static boolean isItemTransferBlocked(Player player, ItemStack item) {
+		if (item == null || item.getType() == Material.AIR) return false;
+
+		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		TownHall townHall = bloodPlayer.getSeatedTownHall();
+		if (townHall == null) return false;
+
+		boolean isSensitive = BloodGame.SENSITIVE_INFO_ITEM.contains(item.getType());
+		boolean allowed = isSensitive ? townHall.getSettingsCanPlayerDropInfo() : townHall.getSettingsCanPlayerDropMisc();
+		return !allowed;
+	}
+
 	@EventHandler
 	public void onPlayerDropItem(PlayerDropItemEvent event)
 	{
-		Player player = event.getPlayer();
+		if (isItemTransferBlocked(event.getPlayer(), event.getItemDrop().getItemStack()))
+			cancelAndNotify(event.getPlayer(), event);
+	}
+
+	private static @Nullable ItemStack getMovedItem(InventoryClickEvent event) {
+		Inventory topInv = event.getView().getTopInventory();
+		ItemStack movedItem = null;
+
+		if (event.getAction() == InventoryAction.MOVE_TO_OTHER_INVENTORY
+		&& event.getClickedInventory() != null
+		&& !event.getClickedInventory().equals(topInv))
+		{
+			// shift-click from player inv into the chest
+			movedItem = event.getCurrentItem();
+		}
+		else {
+			if (event.getClickedInventory() != null
+			&& event.getClickedInventory().equals(topInv)) {
+				event.getCursor();
+				if (event.getCursor().getType() != Material.AIR) {
+					// manual place: cursor holds an item, clicking a slot in the top (chest) inventory
+					movedItem = event.getCursor();
+				}
+			}
+		}
+		return movedItem;
+	}
+
+	@EventHandler
+	public void onInventoryClick(InventoryClickEvent event)
+	{
+		if (!(event.getWhoClicked() instanceof Player player)) return;
+		ItemStack item = getMovedItem(event);
+
+		if (isItemTransferBlocked(player, item))
+			cancelAndNotify(player, event);
+	}
+	@EventHandler
+	public void onInventoryDrag(InventoryDragEvent event)
+	{
+		if (!(event.getWhoClicked() instanceof Player player)) return;
+
+		Inventory topInv = event.getView().getTopInventory();
+		boolean touchesTop = event.getRawSlots().stream()
+		.anyMatch(rawSlot -> rawSlot < topInv.getSize());
+		if (!touchesTop) return;
+
+		ItemStack item = event.getOldCursor();
+		if (isItemTransferBlocked(player, item))
+			cancelAndNotify(player, event);
+	}
+
+	@EventHandler
+	public void onInventoryOpen(InventoryOpenEvent event) {
+		if (!(event.getPlayer() instanceof Player player)) return;
+		player.sendMessage("hi player this is debug");
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		TownHall townHall = bloodPlayer.getSeatedTownHall();
+		player.sendMessage("are you in town seated:"+bloodPlayer.getSeated());
 		if (townHall == null) return;
-		if (townHall.getSettingsCanPlayerDropMisc()) return;
-		player.sendActionBar(MiniMessage.miniMessage().deserialize("<red>nope!"));
-		event.setCancelled(true);
+		player.sendMessage("townhall named:"+townHall.getTownName());
+
+		player.sendMessage("townhall chest thing:"+townHall.getSettingsCanPlayerOpenChest());
+		if (townHall.getSettingsCanPlayerOpenChest()) return;
+		player.sendMessage("switch");
+
+		switch (event.getInventory().getType()) {
+			case CHEST,
+				 BARREL,
+				 SHULKER_BOX,
+				 ENDER_CHEST,
+				 HOPPER,
+				 FURNACE,
+				 BLAST_FURNACE,
+				 SMOKER,
+				 BREWING:
+				cancelAndNotify(player, event);
+				break;
+			default:
+				break;
+		}
 	}
 }
 

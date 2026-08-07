@@ -55,6 +55,7 @@ public class BloodGame {
 	static final float DEFAULT_VOLUME = .25f;
 	static final float VOTE_VOLUME = .25f;
 	static final float EVENT_VOLUME = .5f;
+	static final Set<Material> SENSITIVE_INFO_ITEM = Set.of(Material.PAPER, Material.WRITABLE_BOOK, Material.WRITTEN_BOOK);
 
 	// manage
 	@Nullable

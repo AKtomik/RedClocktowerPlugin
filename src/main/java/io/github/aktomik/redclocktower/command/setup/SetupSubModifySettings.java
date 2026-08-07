@@ -86,7 +86,7 @@ public class SetupSubModifySettings extends BrigadierSub {
 		CommandSender sender = ctx.getSource().getSender();
 		TownHall townHall = ctx.getArgument("town", TownHall.class);
 
-		final boolean value = townHall.getSettingsCanPlayerDropMisc();
+		final boolean value = townHall.getSettingsCanPlayerOpenChest();
 		sender.sendRichMessage("player open chest ability is <b><value></b>.",
 		Placeholder.parsed("value", (value) ? "enabled" : "disabled")
 		);
@@ -98,7 +98,7 @@ public class SetupSubModifySettings extends BrigadierSub {
 		TownHall townHall = ctx.getArgument("town", TownHall.class);
 		final boolean value = ctx.getArgument("new value", boolean.class);
 
-		townHall.setSettingsCanPlayerDropMisc(value);
+		townHall.setSettingsCanPlayerOpenChest(value);
 		sender.sendRichMessage("set player open chest ability to <b><aqua><value></aqua></b>.",
 		Placeholder.parsed("value", (value) ? "enabled" : "disabled")
 		);
