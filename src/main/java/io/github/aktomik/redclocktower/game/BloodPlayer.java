@@ -68,6 +68,14 @@ public class BloodPlayer {
 		return spectating;
 	}
 
+	@Nullable
+	public BloodGame getRelatedGame() {
+		if (seated != null) return getSeatedGame();
+		if (storytelling != null) return storytelling;
+		if (spectating != null) return spectating;
+		return null;
+	}
+
 	// LINKS
 
 	// to avoid player being on two seats simultaneously

@@ -3,10 +3,7 @@ package io.github.aktomik.redclocktower.game;
 import io.github.aktomik.redclocktower.game.town.TownChairPlace;
 import io.github.aktomik.redclocktower.game.town.TownHallPlace;
 import io.github.aktomik.redclocktower.game.town.TownHall;
-import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
-import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
-import io.github.aktomik.redclocktower.oldgame.OldBloodSlot;
-import io.github.aktomik.redclocktower.oldgame.OldSlotPlace;
+import io.github.aktomik.redclocktower.oldgame.*;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -17,6 +14,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
+import org.bukkit.event.block.BellRingEvent;
 import org.bukkit.event.player.*;
 
 import java.util.Objects;
@@ -58,11 +56,10 @@ public class PlayerListener implements Listener {
 		Player player = event.getPlayer();
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		SeatedPlayer seatedPlayer = bloodPlayer.getSeated();
-		if (seatedPlayer == null) return;
+		if (seatedPlayer == null) return;// not in game
+
 		BloodSlot playerSlot = seatedPlayer.getSlot();
-		if (playerSlot == null) return;
-		BloodGame game = bloodPlayer.getSeatedGame();
-		if (game == null) return;
+		BloodGame game = playerSlot.getGame();
 		SlotCircle circle = game.getCircle();
 		Location loc = block.getLocation();
 
@@ -92,6 +89,24 @@ public class PlayerListener implements Listener {
 
 		// change vote
 		seatedPlayer.setVotePull(powered);
+	}
+
+	@EventHandler(ignoreCancelled = true)
+	public void onBellRing(BellRingEvent event) {
+		if (!(event.getEntity() instanceof Player player)) return; // not a player
+
+		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		BloodGame game = bloodPlayer.getRelatedGame();
+		if (game == null) return;
+
+		Block bellBlock = event.getBlock();
+		if (!bellBlock.getLocation().equals(game.getTownHall().getPosition(TownHallPlace.BELL))) return;
+
+		if (bloodPlayer.getStorytellingGame() == game) {
+			GameAction.next.accept(game, player);
+		} else {
+			event.setCancelled(true);
+		}
 	}
 
 	// items
