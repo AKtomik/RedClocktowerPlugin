@@ -38,7 +38,7 @@ public class BloodGame {
 		this.circle = new SlotCircle(this, townHall);
 
 		Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
-		String teamId = "bloodteam-"+townHall.getTownName();
+		String teamId = "bloodteam-"+world+"-"+townHall.getTownName();
 		Team oldTeam = board.getTeam(teamId);
 		if (oldTeam != null) oldTeam.unregister();
 		team = board.registerNewTeam(teamId);
