@@ -108,14 +108,34 @@ public class TownHall {
 	}
 
 	// data/settings
-	public void setSettingsCanPlayerDrop(boolean bool)
+	public void setSettingsCanPlayerDropMisc(boolean bool)
 	{
-		pdc.set(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_DROP.key(), PersistentDataType.BOOLEAN, bool);
+		pdc.set(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_DROP_MISC.key(), PersistentDataType.BOOLEAN, bool);
 		save();
 	}
-	public boolean getSettingsCanPlayerDrop()
+	public boolean getSettingsCanPlayerDropMisc()
 	{
-		return pdc.getOrDefault(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_DROP.key(), PersistentDataType.BOOLEAN, false);
+		return pdc.getOrDefault(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_DROP_MISC.key(), PersistentDataType.BOOLEAN, true);
+	}
+
+	public void setSettingsCanPlayerDropInfo(boolean bool)
+	{
+		pdc.set(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_DROP_INFO.key(), PersistentDataType.BOOLEAN, bool);
+		save();
+	}
+	public boolean getSettingsCanPlayerDropInfo()
+	{
+		return pdc.getOrDefault(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_DROP_INFO.key(), PersistentDataType.BOOLEAN, false);
+	}
+
+	public void setSettingsCanPlayerOpenChest(boolean bool)
+	{
+		pdc.set(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_OPEN_CHEST.key(), PersistentDataType.BOOLEAN, bool);
+		save();
+	}
+	public boolean getSettingsCanPlayerOpenChest()
+	{
+		return pdc.getOrDefault(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_OPEN_CHEST.key(), PersistentDataType.BOOLEAN, false);
 	}
 
 	public void setSettingsCanPlayerPullOthersLever(boolean bool)

@@ -3,7 +3,6 @@ package io.github.aktomik.redclocktower.game;
 import io.github.aktomik.redclocktower.game.town.TownChairPlace;
 import io.github.aktomik.redclocktower.game.town.TownHallPlace;
 import io.github.aktomik.redclocktower.game.town.TownHall;
-import io.github.aktomik.redclocktower.oldgame.*;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,8 +15,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BellRingEvent;
 import org.bukkit.event.player.*;
-
-import java.util.Objects;
 
 public class PlayerListener implements Listener {
 
@@ -117,7 +114,7 @@ public class PlayerListener implements Listener {
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		TownHall townHall = bloodPlayer.getSeatedTownHall();
 		if (townHall == null) return;
-		if (townHall.getSettingsCanPlayerDrop()) return;
+		if (townHall.getSettingsCanPlayerDropMisc()) return;
 		player.sendActionBar(MiniMessage.miniMessage().deserialize("<red>nope!"));
 		event.setCancelled(true);
 	}

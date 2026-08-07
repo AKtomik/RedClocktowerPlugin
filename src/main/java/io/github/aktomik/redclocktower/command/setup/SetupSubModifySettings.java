@@ -16,31 +16,90 @@ public class SetupSubModifySettings extends BrigadierSub {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.literal("can_player_drop")
-			.executes(canPlayerDropCheck)
+		.then(Commands.literal("can_player_drop_misc")
+			.executes(canPlayerDropMiscCheck)
 			.then(Commands.argument("new value", BoolArgumentType.bool())
-				.executes(canPlayerDropChange)
-		));
+				.executes(canPlayerDropMiscChange)
+			)
+		)
+		.then(Commands.literal("can_player_drop_info")
+			.executes(canPlayerDropInfoCheck)
+			.then(Commands.argument("new value", BoolArgumentType.bool())
+				.executes(canPlayerDropInfoChange)
+			)
+		)
+		.then(Commands.literal("can_player_open_chest")
+			.executes(canPlayerOpenChestCheck)
+			.then(Commands.argument("new value", BoolArgumentType.bool())
+				.executes(canPlayerOpenChestChange)
+			)
+		);
 	}
 
-	Command<CommandSourceStack> canPlayerDropCheck = ctx -> {
+	Command<CommandSourceStack> canPlayerDropMiscCheck = ctx -> {
 		CommandSender sender = ctx.getSource().getSender();
 		TownHall townHall = ctx.getArgument("town", TownHall.class);
 
-		final boolean value = townHall.getSettingsCanPlayerDrop();
-		sender.sendRichMessage("player drop ability is <b><value></b>.",
+		final boolean value = townHall.getSettingsCanPlayerDropMisc();
+		sender.sendRichMessage("player drop ability for misc items is <b><value></b>.",
 			Placeholder.parsed("value", (value) ? "enabled" : "disabled")
 		);
 		return Command.SINGLE_SUCCESS;
 	};
 
-	Command<CommandSourceStack> canPlayerDropChange = ctx -> {
+	Command<CommandSourceStack> canPlayerDropMiscChange = ctx -> {
 		CommandSender sender = ctx.getSource().getSender();
 		TownHall townHall = ctx.getArgument("town", TownHall.class);
 		final boolean value = ctx.getArgument("new value", boolean.class);
 
-		townHall.setSettingsCanPlayerDrop(value);
-		sender.sendRichMessage("set player drop ability to <b><aqua><value></aqua></b>.",
+		townHall.setSettingsCanPlayerDropMisc(value);
+		sender.sendRichMessage("set player drop ability for misc items to <b><aqua><value></aqua></b>.",
+		Placeholder.parsed("value", (value) ? "enabled" : "disabled")
+		);
+		return Command.SINGLE_SUCCESS;
+	};
+
+	Command<CommandSourceStack> canPlayerDropInfoCheck = ctx -> {
+		CommandSender sender = ctx.getSource().getSender();
+		TownHall townHall = ctx.getArgument("town", TownHall.class);
+
+		final boolean value = townHall.getSettingsCanPlayerDropInfo();
+		sender.sendRichMessage("player drop ability for info items is <b><value></b>.",
+		Placeholder.parsed("value", (value) ? "enabled" : "disabled")
+		);
+		return Command.SINGLE_SUCCESS;
+	};
+
+	Command<CommandSourceStack> canPlayerDropInfoChange = ctx -> {
+		CommandSender sender = ctx.getSource().getSender();
+		TownHall townHall = ctx.getArgument("town", TownHall.class);
+		final boolean value = ctx.getArgument("new value", boolean.class);
+
+		townHall.setSettingsCanPlayerDropInfo(value);
+		sender.sendRichMessage("set player drop ability for info items to <b><aqua><value></aqua></b>.",
+		Placeholder.parsed("value", (value) ? "enabled" : "disabled")
+		);
+		return Command.SINGLE_SUCCESS;
+	};
+
+	Command<CommandSourceStack> canPlayerOpenChestCheck = ctx -> {
+		CommandSender sender = ctx.getSource().getSender();
+		TownHall townHall = ctx.getArgument("town", TownHall.class);
+
+		final boolean value = townHall.getSettingsCanPlayerDropMisc();
+		sender.sendRichMessage("player open chest ability is <b><value></b>.",
+		Placeholder.parsed("value", (value) ? "enabled" : "disabled")
+		);
+		return Command.SINGLE_SUCCESS;
+	};
+
+	Command<CommandSourceStack> canPlayerOpenChestChange = ctx -> {
+		CommandSender sender = ctx.getSource().getSender();
+		TownHall townHall = ctx.getArgument("town", TownHall.class);
+		final boolean value = ctx.getArgument("new value", boolean.class);
+
+		townHall.setSettingsCanPlayerDropMisc(value);
+		sender.sendRichMessage("set player open chest ability to <b><aqua><value></aqua></b>.",
 		Placeholder.parsed("value", (value) ? "enabled" : "disabled")
 		);
 		return Command.SINGLE_SUCCESS;
