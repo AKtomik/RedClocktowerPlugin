@@ -46,7 +46,7 @@ public class BloodGame {
 		setup();
 	}
 
-	private static final Map<Integer, BloodGame> townToGameMap = new HashMap<>();
+	private static final Map<TownHall.TownKey, BloodGame> townToGameMap = new HashMap<>();
 	private static final Map<World, BloodGame> worldToGameMap = new HashMap<>();
 
 	// sett
@@ -60,7 +60,7 @@ public class BloodGame {
 	// manage
 	@Nullable
 	public static BloodGame get(TownHall townHall) {
-		return townToGameMap.get(townHall.getHash());
+		return townToGameMap.get(townHall.getKey());
 	}
 
 	@Nullable
@@ -70,7 +70,7 @@ public class BloodGame {
 
 	public static BloodGame create(TownHall townHall) {
 		BloodGame game = new BloodGame(townHall);
-		townToGameMap.put(townHall.getHash(), game);
+		townToGameMap.put(townHall.getKey(), game);
 		worldToGameMap.put(townHall.getWorld(), game);
 		return game;
 	}

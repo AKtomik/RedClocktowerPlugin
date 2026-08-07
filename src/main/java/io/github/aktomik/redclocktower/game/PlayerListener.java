@@ -125,10 +125,13 @@ public class PlayerListener implements Listener {
 
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		TownHall townHall = bloodPlayer.getSeatedTownHall();
+		player.sendMessage("item trans townhall:"+townHall);
 		if (townHall == null) return false;
 
 		boolean isSensitive = BloodGame.SENSITIVE_INFO_ITEM.contains(item.getType());
+		player.sendMessage("so allowed:"+isSensitive+" ? "+townHall.getSettingsCanPlayerDropInfo()+" : "+townHall.getSettingsCanPlayerDropMisc());
 		boolean allowed = isSensitive ? townHall.getSettingsCanPlayerDropInfo() : townHall.getSettingsCanPlayerDropMisc();
+		player.sendMessage("return:"+!allowed);
 		return !allowed;
 	}
 

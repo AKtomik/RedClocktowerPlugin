@@ -21,12 +21,17 @@ public class TownHall {
 	private final World world;
 	private final String townName;
 	private final PersistentDataContainer pdc;
+	public record TownKey(UUID worldId, String townName) {}
+	private final TownKey key;
 
 	// avoid creating more than one townhall by pdc
-	private static final Map<PersistentDataContainer, TownHall> townCreatedObjects = new HashMap<>();
+	private static final Map<TownKey, TownHall> townCreatedObjects = new HashMap<>();
 
 	// construct
 	private TownHall(World world, String townName, PersistentDataContainer pdc) {
+		this.key = townKey(world, townName);
+		if (townCreatedObjects.containsKey(key)) throw new RuntimeException("already a constructed TownHall object in townCreatedObjects");
+		townCreatedObjects.put(key, this);
 		this.world = world;
 		this.townName = townName;
 		this.pdc = pdc;
@@ -42,13 +47,17 @@ public class TownHall {
 	public PersistentDataContainer getPdc() {
 		return this.pdc;
 	}
-	public int getHash() {
-		return this.pdc.hashCode();
+	public TownKey getKey() {
+		return key;
 	}
 
 	// static town
-	private static NamespacedKey townKey(String townName) {
+	private static NamespacedKey namespaceKey(String townName) {
 		return new NamespacedKey(RedClocktower.plugin(), "townhall." + townName);
+	}
+
+	private static TownKey townKey(World world, String townName) {
+		return new TownKey(world.getUID(), townName);
 	}
 
 	public static Set<String> getWorldTowns(World world)
@@ -64,47 +73,45 @@ public class TownHall {
 
 	@Nullable
 	public static TownHall find(World world, String townName) {
+		// find in objects
+		TownKey key = townKey(world, townName);
+		if (townCreatedObjects.containsKey(key))
+			return townCreatedObjects.get(key);
+		// find in pdc
 		PersistentDataContainer worldData = world.getPersistentDataContainer();
-		PersistentDataContainer pdc = worldData.get(townKey(townName), PersistentDataType.TAG_CONTAINER);
-		if (pdc == null) return null;
-		if (townCreatedObjects.containsKey(pdc))
-			return townCreatedObjects.get(pdc);
-		TownHall townHall = new TownHall(world, townName, pdc);
-		townCreatedObjects.put(pdc, townHall);
-		return townHall;
+		PersistentDataContainer pdc = worldData.get(namespaceKey(townName), PersistentDataType.TAG_CONTAINER);
+		if (pdc != null) return new TownHall(world, townName, pdc);
+		// not found
+		return null;
 	}
 
 	@Nullable
 	public static TownHall create(World world, String townName) {
 		PersistentDataContainer worldData = world.getPersistentDataContainer();
-		if (worldData.has(townKey(townName))) return null;
+		if (worldData.has(namespaceKey(townName))) return null;
 		PersistentDataContainer pdc = worldData.getAdapterContext().newPersistentDataContainer();
 		pdc.set(DataKey.TOWN_NAME.key(), PersistentDataType.STRING, townName);// the single non defaultable field
-		worldData.set(townKey(townName), PersistentDataType.TAG_CONTAINER, pdc);
-		TownHall townHall = new TownHall(world, townName, pdc);
-		townCreatedObjects.put(pdc, townHall);
-		return townHall;
+		worldData.set(namespaceKey(townName), PersistentDataType.TAG_CONTAINER, pdc);
+		return new TownHall(world, townName, pdc);
 	}
 
 	@Nullable
 	public static TownHall clone(TownHall originalTownHall, String townName) {
 		PersistentDataContainer worldData = originalTownHall.getWorld().getPersistentDataContainer();
-		if (worldData.has(townKey(townName))) return null;
+		if (worldData.has(namespaceKey(townName))) return null;
 		PersistentDataContainer pdc = worldData.getAdapterContext().newPersistentDataContainer();
 		originalTownHall.getPdc().copyTo(pdc, true);
 		pdc.set(DataKey.TOWN_NAME.key(), PersistentDataType.STRING, townName);// the single non defaultable field
-		worldData.set(townKey(townName), PersistentDataType.TAG_CONTAINER, pdc);
-		TownHall townHall = new TownHall(originalTownHall.getWorld(), townName, pdc);
-		townCreatedObjects.put(pdc, townHall);
-		return townHall;
+		worldData.set(namespaceKey(townName), PersistentDataType.TAG_CONTAINER, pdc);
+		return new TownHall(originalTownHall.getWorld(), townName, pdc);
 	}
 
 	public static void delete(World world, String townName) {
 		TownHall townHall = find(world, townName);
 		if (townHall == null) return;
+		townCreatedObjects.remove(townHall.key);
 		PersistentDataContainer worldData = world.getPersistentDataContainer();
-		worldData.remove(townKey(townName));
-		townCreatedObjects.remove(townHall.pdc);
+		worldData.remove(namespaceKey(townName));
 	}
 
 	// data/position
@@ -217,7 +224,7 @@ public class TownHall {
 
 	// every mutator ends with this
 	private void save() {
-		world.getPersistentDataContainer().set(townKey(townName), PersistentDataType.TAG_CONTAINER, pdc);
+		world.getPersistentDataContainer().set(namespaceKey(townName), PersistentDataType.TAG_CONTAINER, pdc);
 	}
 
 	// player selection
