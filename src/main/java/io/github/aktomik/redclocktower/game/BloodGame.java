@@ -8,6 +8,8 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.*;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 import org.jspecify.annotations.Nullable;
 
 import java.util.*;
@@ -27,11 +29,20 @@ public class BloodGame {
 	private GamePeriod period = GamePeriod.FREE;
 
 	private final World world;// equal to townhall world
+	private final Team team;
 
 	private BloodGame(TownHall townHall) {
 		this.townHall = townHall;
 		this.world = townHall.getWorld();
+
 		this.circle = new SlotCircle(this, townHall);
+
+		Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
+		String teamId = "bloodteam-"+townHall.getTownName();
+		Team oldTeam = board.getTeam(teamId);
+		if (oldTeam != null) oldTeam.unregister();
+		team = board.registerNewTeam(teamId);
+
 		setup();
 	}
 
@@ -68,7 +79,8 @@ public class BloodGame {
 	public void kill() {
 		// world
 		unsetup();
-		// reset
+		team.unregister();
+		// players
 		circle.forEachSlots(BloodSlot::empty);
 		removeAllStorytellers();
 		removeAllSpectators();
@@ -85,6 +97,10 @@ public class BloodGame {
 
 	public World getWorld() {
 		return world;
+	}
+
+	public Team getTeam() {
+		return team;
 	}
 
 	public SlotCircle getCircle() {
@@ -138,15 +154,17 @@ public class BloodGame {
 
 	// spectators participants
 	public void addSpectator(BloodPlayer bloodPlayer) {
+		bloodPlayer.attachSpectating(this);
 		spectators.add(bloodPlayer);
 	}
 
 	public void removeSpectator(BloodPlayer bloodPlayer) {
+		bloodPlayer.detachSpectating();
 		spectators.remove(bloodPlayer);
 	}
 
 	public void removeAllSpectators() {
-		// for (BloodPlayer bloodPlayer : spectators) bloodPlayer.();
+		 for (BloodPlayer bloodPlayer : spectators) bloodPlayer.detachSpectating();
 		spectators.clear();
 	}
 
@@ -210,6 +228,10 @@ public class BloodGame {
 		world.setGameRule(GameRules.ADVANCE_TIME, false);
 		world.setGameRule(GameRules.KEEP_INVENTORY, true);
 		world.setDifficulty(Difficulty.PEACEFUL);
+		// team
+		team.color(NamedTextColor.AQUA);
+		team.setOption(Team.Option.NAME_TAG_VISIBILITY, Team.OptionStatus.NEVER);
+		team.setCanSeeFriendlyInvisibles(true);
 	}
 
 	public void resetup() {

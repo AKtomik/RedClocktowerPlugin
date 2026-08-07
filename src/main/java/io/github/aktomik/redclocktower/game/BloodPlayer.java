@@ -35,7 +35,8 @@ public class BloodPlayer {
 		return playerCreated;
 	}
 
-	// access
+	// ACCESS
+
 	public OfflinePlayer getOffPlayer() {
 		return offPlayer;
 	}
@@ -67,7 +68,7 @@ public class BloodPlayer {
 		return spectating;
 	}
 
-	// internal link
+	// LINKS
 
 	// to avoid player being on two seats simultaneously
 	// is used by SeatedPlayer and should not be used elsewhere
@@ -81,8 +82,8 @@ public class BloodPlayer {
 
 	void detachSeat() {// only one call at SeatedPlayer
 		if (seated == null) return;
-		seated = null;
 		leavedSeatEffect();
+		seated = null;
 	}
 
 	// to avoid player being on two storytelling simultaneously
@@ -94,10 +95,15 @@ public class BloodPlayer {
 		if (storytelling != null) storytelling.removeStoryteller(this);
 		if (spectating != null) spectating.removeSpectator(this);
 		this.storytelling = game;
+		// needed for invisibility view
+		storytelling.getTeam().addPlayer(offPlayer);
 	}
 
 	void detachStorytelling() {// only one call at BloodGame
 		if (storytelling == null) return;
+		// needed for invisibility view
+		storytelling.getTeam().removePlayer(offPlayer);
+		// then clear the pointer
 		storytelling = null;
 	}
 
@@ -109,11 +115,32 @@ public class BloodPlayer {
 		if (spectating != null) spectating.removeSpectator(this);
 		if (storytelling != null) storytelling.removeStoryteller(this);
 		this.spectating = game;
+		// needed for invisibility view
+		spectating.getTeam().addPlayer(offPlayer);
 	}
 
 	void detachSpectating() {// only one call at BloodGame
 		if (spectating == null) return;
+		// needed for invisibility view
+		spectating.getTeam().removePlayer(offPlayer);
+		// then clear the pointer
 		spectating = null;
+	}
+
+	// STATE & EFFECTS
+
+	// global effect
+	void joinedSeatEffect() {
+		// either attachSeat or player join
+		if (seated == null) return;
+		refreshAliveEffect(seated.getAlive());
+		seated.getSlot().getGame().getTeam().addPlayer(offPlayer);
+	}
+
+	void leavedSeatEffect() {
+		// either detachSeat or player leave
+		clearAliveEffect();
+		seated.getSlot().getGame().getTeam().removePlayer(offPlayer);
 	}
 
 	// state effect
@@ -130,17 +157,5 @@ public class BloodPlayer {
 		} else {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 9, true, false, false));
 		}
-	}
-
-	// global effect
-	void joinedSeatEffect() {
-		// either attachSeat or player join
-		if (seated == null) return;
-		refreshAliveEffect(seated.getAlive());
-	}
-
-	void leavedSeatEffect() {
-		// either detachSeat or player leave
-		clearAliveEffect();
 	}
 }

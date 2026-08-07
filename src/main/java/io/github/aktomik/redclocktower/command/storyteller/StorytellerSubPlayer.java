@@ -11,7 +11,6 @@ import io.github.aktomik.redclocktower.game.BloodPlayer;
 import io.github.aktomik.redclocktower.game.Seated;
 import io.github.aktomik.redclocktower.game.SeatedPlayer;
 import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
-import io.github.aktomik.redclocktower.oldgame.OldGameToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import io.papermc.paper.command.brigadier.CommandSourceStack;

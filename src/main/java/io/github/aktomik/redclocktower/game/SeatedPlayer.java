@@ -28,16 +28,16 @@ public class SeatedPlayer extends Seated {
 	// this will avoid same player having two attached seats
 	@Override
 	void attached(BloodSlot newSlot) {
+		super.attached(newSlot);
 		BloodPlayer bloodPlayer = BloodPlayer.get(offPlayer);
 		bloodPlayer.attachSeat(this);
-		super.attached(newSlot);
 	}
 
 	@Override
 	void detached() {
+		super.detached();
 		BloodPlayer bloodPlayer = BloodPlayer.get(offPlayer);
 		bloodPlayer.detachSeat();
-		super.detached();
 	}
 
 	// access
