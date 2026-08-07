@@ -35,9 +35,9 @@ public class SeatedPlayer extends Seated {
 
 	@Override
 	void detached() {
-		super.detached();
 		BloodPlayer bloodPlayer = BloodPlayer.get(offPlayer);
 		bloodPlayer.detachSeat();
+		super.detached();
 	}
 
 	// access
