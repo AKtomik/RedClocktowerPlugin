@@ -139,6 +139,7 @@ public class BloodPlayer {
 
 	void leavedSeatEffect() {
 		// either detachSeat or player leave
+		if (seated == null) return;
 		clearAliveEffect();
 		seated.getSlot().getGame().getTeam().removePlayer(offPlayer);
 	}
