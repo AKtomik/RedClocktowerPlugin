@@ -40,9 +40,6 @@ public final class RedClocktower extends JavaPlugin {
         getServer().getPluginManager().registerEvents(new PlayerListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerNameTagEditorListener(), this);
 
-        // startups
-        PlayerNameTagEditor.startUpdateTask(this);
-
         // load brigadier commands
         BrigadierToolbox.loadCommands(this,
             List.of(new StorytellerCommand(), new SetupCommand(), new VoteCommand(), new TagmeCommand(), new Whosend(), new BroadcastCommand())

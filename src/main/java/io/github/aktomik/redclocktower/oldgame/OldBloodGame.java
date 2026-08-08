@@ -463,7 +463,7 @@ public class OldBloodGame {
 	{
 		for (Player player : getAllPlayers())
 		{
-			PlayerNameTagEditor.forceUnplace(player);
+			//PlayerNameTagEditor.forceUnplace(player);
 		}
 	}
 
@@ -477,7 +477,7 @@ public class OldBloodGame {
 			Location loc = slots.get(index).getPosition(OldSlotPlace.CHAIR);
 			if (loc == null) continue;
 			loc = loc.add(0, 2.5, 0).toCenterLocation();
-			PlayerNameTagEditor.forcePlace(player, loc);
+			//PlayerNameTagEditor.forcePlace(player, loc);
 		}
 	}
 

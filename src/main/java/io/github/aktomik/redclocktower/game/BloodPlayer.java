@@ -178,6 +178,7 @@ public class BloodPlayer {
 	void clearNameTag() {
 		if (!(offPlayer instanceof Player player)) return;
 		PlayerNameTagEditor.clearDisplay(player);
+		player.playerListName(Component.text(player.getName()));
 	}
 
 	// STATE & EFFECTS
@@ -201,14 +202,15 @@ public class BloodPlayer {
 
 	void onServerJoined() {
 		// called by onJoin
-		refreshAllEffects();
 		refreshNameTag();
+		if (seated == null) return;
+		refreshAllEffects();
 	}
 
 	void onServerLeaved() {
 		// called by onQuit
-		clearAllEffects();
 		clearNameTag();
+		clearAllEffects();
 	}
 
 	// global effects
