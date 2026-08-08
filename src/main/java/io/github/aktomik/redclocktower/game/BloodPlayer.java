@@ -175,18 +175,19 @@ public class BloodPlayer {
 
 		Player player = getOnlinePlayer();
 		if (player == null) return;
-		player.playerListName(Component.text(displayName()));
 		if (seated == null)
 			PlayerNameTagEditor.clearDisplay(player);
 		else
 			PlayerNameTagEditor.changeDisplay(player, Component.text(displayName()));
+
+		player.playerListName(Component.text(displayName()));
 	}
 
 	void clearNameTag() {
-		Player player = getOnlinePlayer();
-		if (player == null) return;
-		PlayerNameTagEditor.clearDisplay(player);
-		player.playerListName(Component.text(player.getName()));
+		PlayerNameTagEditor.clearDisplay(getOfflinePlayer());
+//		Player player = getOnlinePlayer();
+//		if (player == null) return;
+//		player.playerListName(Component.text(player.getName()));
 	}
 
 	// STATE & EFFECTS
@@ -204,7 +205,7 @@ public class BloodPlayer {
 		// called by detachSeat
 		if (seated == null) return;
 		clearAllEffects();
-		refreshNameTag();
+		clearNameTag();
 		seated.getSlot().getGame().getTeam().removePlayer(getOfflinePlayer());
 	}
 
@@ -217,8 +218,8 @@ public class BloodPlayer {
 
 	void onServerLeaved() {
 		// called by onQuit
-		clearNameTag();// already in PlayerNameTagEditorListener
 		clearAllEffects();
+		//clearNameTag();// already in PlayerNameTagEditorListener
 	}
 
 	// global effects

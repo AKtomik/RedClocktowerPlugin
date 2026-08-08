@@ -21,7 +21,7 @@ public class PlayerNameTagEditor {
 	private static void createDisplay(Player player, Component displayName) {
 		clearDisplay(player);
 
-		TextDisplay textDisplay = player.getWorld().spawn(Objects.requireNonNull(player.getLocation()), TextDisplay.class, text -> {
+		TextDisplay display = player.getWorld().spawn(Objects.requireNonNull(player.getLocation()), TextDisplay.class, text -> {
 			text.text(displayName);
 			text.setBillboard(Display.Billboard.CENTER);
 			text.setAlignment(TextDisplay.TextAlignment.CENTER);
@@ -29,13 +29,28 @@ public class PlayerNameTagEditor {
 			text.setDefaultBackground(false);
 			text.setPersistent(false);
 
-			Transformation t = text.getTransformation();
-			t.getTranslation().set(0f, .3f, 0f);
-			text.setTransformation(t);
+			Transformation trans = text.getTransformation();
+			trans.getTranslation().set(0f, .3f, 0f);
+			text.setTransformation(trans);
 		});
 
- 		player.addPassenger(textDisplay);
-		displays.put(player.getUniqueId(), textDisplay);
+ 		player.addPassenger(display);
+		displays.put(player.getUniqueId(), display);
+	}
+
+	static void syncDisplay(Player player) {
+		TextDisplay display = displays.get(player.getUniqueId());
+		if (display != null && display.isValid()) {
+			display.teleport(player);
+			player.addPassenger(display);
+		}
+	}
+
+	static void setVisibleDisplay(Player player, boolean visible) {
+		TextDisplay display = displays.get(player.getUniqueId());
+		if (display != null && display.isValid()) {
+			display.setVisibleByDefault(visible);
+		}
 	}
 
 	public static void changeDisplay(Player player, Component newName) {
