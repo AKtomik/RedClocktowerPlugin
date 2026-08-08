@@ -9,7 +9,7 @@ import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditorListener;
 import io.github.aktomik.redclocktower.command.BroadcastCommand;
 import io.github.aktomik.redclocktower.command.storyteller.StorytellerCommand;
-import io.github.aktomik.redclocktower.command.Tagme;
+import io.github.aktomik.redclocktower.command.TagmeCommand;
 import io.github.aktomik.redclocktower.command.Whosend;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import org.bukkit.Bukkit;
@@ -45,7 +45,7 @@ public final class RedClocktower extends JavaPlugin {
 
         // load brigadier commands
         BrigadierToolbox.loadCommands(this,
-            List.of(new StorytellerCommand(), new SetupCommand(), new VoteCommand(), new Tagme(), new Whosend(), new BroadcastCommand())
+            List.of(new StorytellerCommand(), new SetupCommand(), new VoteCommand(), new TagmeCommand(), new Whosend(), new BroadcastCommand())
         );
 
         // message

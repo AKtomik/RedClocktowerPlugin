@@ -3,7 +3,7 @@ package io.github.aktomik.redclocktower.command;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
+import io.github.aktomik.redclocktower.game.BloodPlayer;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierCommand;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -11,15 +11,16 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.entity.Player;
 
 import java.util.List;
+import java.util.Objects;
 
-public class Tagme extends BrigadierCommand {
+public class TagmeCommand extends BrigadierCommand {
 
     // register
     public String name() {
         return "tagme";
     }
     public List<String> aliases() {
-        return List.of("iam");
+        return List.of("nameme", "iam");
     }
     public String permission() {
         return "redclocktower.player";
@@ -33,33 +34,29 @@ public class Tagme extends BrigadierCommand {
         .then(
         Commands.argument("display name", StringArgumentType.word())
         .suggests((ctx, builder) -> {
-            Player player = (Player)ctx.getSource().getExecutor();
-            assert player != null;
+            Player player = Objects.requireNonNull((Player)ctx.getSource().getExecutor());
             builder.suggest(player.getName());
-            OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
-            String displayName = bloodPlayer.getDisplayName();
-            if (displayName != null && !displayName.isEmpty()) builder.suggest(bloodPlayer.getDisplayName());
+            BloodPlayer bloodPlayer = BloodPlayer.get(player);
+            if (bloodPlayer.getCustomName() != null) builder.suggest(bloodPlayer.getCustomName());
             return builder.buildFuture();
         })
         .executes(
         ctx -> {
-            Player player = (Player)ctx.getSource().getExecutor();
-			assert player != null;
-            OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
-            String displayName = StringArgumentType.getString(ctx, "display name");
+            Player player = Objects.requireNonNull((Player)ctx.getSource().getExecutor());
+            BloodPlayer bloodPlayer = BloodPlayer.get(player);
+            String input = StringArgumentType.getString(ctx, "display name");
 
-            if (displayName.equalsIgnoreCase(player.getName()))
+            if (input.equalsIgnoreCase(player.getName()))
             {
-                bloodPlayer.clearDisplayName();
-                bloodPlayer.refreshNameTag();
+                bloodPlayer.setCustomName(null);
+//                bloodPlayer.refreshNameTag();
                 player.sendRichMessage("<white>changing your display name back to default.");
                 return Command.SINGLE_SUCCESS;
             }
 
-            bloodPlayer.setDisplayName(displayName);
-            bloodPlayer.refreshNameTag();
-
-			player.sendRichMessage("<white>changing your display name to <b><name></b>.", Placeholder.parsed("name", displayName));
+            bloodPlayer.setCustomName(input);
+//            bloodPlayer.refreshNameTag();
+			player.sendRichMessage("<white>changing your display name to <b><name></b>.", Placeholder.parsed("name", input));
             return Command.SINGLE_SUCCESS;
         })
         );

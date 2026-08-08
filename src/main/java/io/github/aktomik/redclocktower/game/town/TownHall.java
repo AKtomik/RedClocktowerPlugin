@@ -24,7 +24,7 @@ public class TownHall {
 	public record TownKey(UUID worldId, String townName) {}
 	private final TownKey key;
 
-	// avoid creating more than one townhall by pdc
+	// avoid creating more than one townhall object by townhall (fixes)
 	private static final Map<TownKey, TownHall> townCreatedObjects = new HashMap<>();
 
 	// construct

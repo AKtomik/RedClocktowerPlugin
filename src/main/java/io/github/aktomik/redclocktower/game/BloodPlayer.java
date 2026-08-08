@@ -1,6 +1,8 @@
 package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.game.town.TownHall;
+import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
+import net.kyori.adventure.text.Component;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -17,21 +19,24 @@ public class BloodPlayer {
 	private SeatedPlayer seated;
 	private BloodGame storytelling;
 	private BloodGame spectating;
+	@Nullable private String customName;
 	private BloodPlayer(OfflinePlayer offlinePlayer) {
 		this.offPlayer = offlinePlayer;
+		refreshNameTag();
 	}
 
-	private static final Map<OfflinePlayer, BloodPlayer> playerToBloodPlayerMap = new HashMap<>();
+	// avoid creating more than one BloodPlayer object by player (fixes)
+	private static final Map<OfflinePlayer, BloodPlayer> bloodPlayerCreatedObjects = new HashMap<>();
 
 	@NullMarked
 	public static BloodPlayer get(OfflinePlayer offlinePlayer) {
 		// find
-		BloodPlayer playerFound = playerToBloodPlayerMap.get(offlinePlayer);
+		BloodPlayer playerFound = bloodPlayerCreatedObjects.get(offlinePlayer);
 		if (playerFound != null) return playerFound;
 
 		// create
 		BloodPlayer playerCreated = new BloodPlayer(offlinePlayer);
-		playerToBloodPlayerMap.put(offlinePlayer, playerCreated);
+		bloodPlayerCreatedObjects.put(offlinePlayer, playerCreated);
 		return playerCreated;
 	}
 
@@ -135,6 +140,40 @@ public class BloodPlayer {
 		spectating = null;
 	}
 
+	// NAME
+
+	public String displayName() {
+		return (customName != null) ? customName : offPlayer.getName();
+	}
+
+	public void setCustomName(String newName) {
+		customName = newName;
+		refreshNameTag();
+	}
+
+	@Nullable
+	public String getCustomName() {
+		return customName;
+	}
+
+//	void loadDisplayName() {
+//		return;
+//	}
+//
+//	void saveDisplayName() {
+//		return;
+//	}
+
+	void refreshNameTag() {
+		if (seated != null) seated.setName(displayName());
+		if (!(offPlayer instanceof Player player)) return;
+		player.playerListName(Component.text(displayName()));
+		if (seated == null)
+			PlayerNameTagEditor.clearDisplay(player);
+		else
+			PlayerNameTagEditor.changeDisplay(player, Component.text(displayName()));
+	}
+
 	// STATE & EFFECTS
 
 	// global effect
@@ -142,6 +181,7 @@ public class BloodPlayer {
 		// either attachSeat or player join
 		if (seated == null) return;
 		refreshAliveEffect(seated.getAlive());
+		refreshNameTag();
 		seated.getSlot().getGame().getTeam().addPlayer(offPlayer);
 	}
 
