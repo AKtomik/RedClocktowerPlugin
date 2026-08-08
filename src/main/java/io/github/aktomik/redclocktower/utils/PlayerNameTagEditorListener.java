@@ -9,11 +9,8 @@ import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
-import org.bukkit.event.player.PlayerRespawnEvent;
 
-import static io.github.aktomik.redclocktower.utils.PlayerNameTagEditor.clearDisplay;
-import static io.github.aktomik.redclocktower.utils.PlayerNameTagEditor.syncDisplay;
-import static io.github.aktomik.redclocktower.utils.PlayerNameTagEditor.setVisibleDisplay;
+import static io.github.aktomik.redclocktower.utils.PlayerNameTagEditor.*;
 
 public class PlayerNameTagEditorListener implements Listener {
 	@EventHandler

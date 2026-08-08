@@ -20,11 +20,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.event.world.WorldUnloadEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.Nullable;
 
-public class PlayerListener implements Listener {
+public class GameListener implements Listener {
 
 	private static void cancelAndNotify(Player player, Cancellable event) {
 		player.sendActionBar(MiniMessage.miniMessage().deserialize("<red>nope!"));
@@ -211,6 +212,13 @@ public class PlayerListener implements Listener {
 			default:
 				break;
 		}
+	}
+
+	// world
+	public void OnWorldUnload(WorldUnloadEvent event) {
+		BloodGame game = BloodGame.get(event.getWorld());
+		if (game == null) return;
+		game.kill();
 	}
 }
 
