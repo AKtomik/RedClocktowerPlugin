@@ -172,14 +172,9 @@ public class BloodPlayer {
 
 	void refreshNameTag() {
 		if (seated != null) seated.setName(displayName());
-
 		Player player = getOnlinePlayer();
 		if (player == null) return;
-		if (seated == null)
-			PlayerNameTagEditor.clearDisplay(player);
-		else
-			PlayerNameTagEditor.changeDisplay(player, Component.text(displayName()));
-
+		PlayerNameTagEditor.changeDisplay(player, Component.text(displayName()));
 		player.playerListName(Component.text(displayName()));
 	}
 

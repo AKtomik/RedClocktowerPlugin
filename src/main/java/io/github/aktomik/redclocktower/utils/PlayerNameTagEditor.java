@@ -33,8 +33,7 @@ public class PlayerNameTagEditor {
 			trans.getTranslation().set(0f, .3f, 0f);
 			text.setTransformation(trans);
 		});
-
- 		player.addPassenger(display);
+ 		player.addPassenger(display);// will hide the name tag too
 		displays.put(player.getUniqueId(), display);
 	}
 
