@@ -14,7 +14,7 @@ public class SlotCircle {
 	SlotCircle(BloodGame game, TownHall townHall) {
 		this.townHall = townHall;
 		this.slots = townHall.getAllChairs().map(townChair -> new BloodSlot(game, townChair)).toArray(BloodSlot[]::new);
-		// game is not aved here and that cool
+		// game is not saved here and that cool
 	}
 
 	// global simple interfaces

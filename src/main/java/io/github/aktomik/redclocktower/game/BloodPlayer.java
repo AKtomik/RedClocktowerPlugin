@@ -3,6 +3,8 @@ package io.github.aktomik.redclocktower.game;
 import io.github.aktomik.redclocktower.game.town.TownHall;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -97,12 +99,14 @@ public class BloodPlayer {
 		if (this.seated != null) this.seated.getSlot().empty();
 		this.seated = seated;
 		onSeatJoined();
+		refreshNameTag();
 	}
 
 	void detachSeat() {// only one call at SeatedPlayer
 		if (seated == null) return;
 		onSeatLeaved();
 		seated = null;
+		refreshNameTag();
 	}
 
 	// to avoid player being on two storytelling simultaneously
@@ -116,6 +120,7 @@ public class BloodPlayer {
 		this.storytelling = game;
 		// needed for invisibility view
 		storytelling.getTeam().addPlayer(getOfflinePlayer());
+		refreshNameTag();
 	}
 
 	void detachStorytelling() {// only one call at BloodGame
@@ -124,6 +129,7 @@ public class BloodPlayer {
 		storytelling.getTeam().removePlayer(getOfflinePlayer());
 		// then clear the pointer
 		storytelling = null;
+		refreshNameTag();
 	}
 
 	// to avoid player being on two spectating simultaneously
@@ -136,6 +142,7 @@ public class BloodPlayer {
 		this.spectating = game;
 		// needed for invisibility view
 		spectating.getTeam().addPlayer(getOfflinePlayer());
+		refreshNameTag();
 	}
 
 	void detachSpectating() {// only one call at BloodGame
@@ -144,6 +151,7 @@ public class BloodPlayer {
 		spectating.getTeam().removePlayer(getOfflinePlayer());
 		// then clear the pointer
 		spectating = null;
+		refreshNameTag();
 	}
 
 	// NAME
@@ -172,10 +180,40 @@ public class BloodPlayer {
 
 	void refreshNameTag() {
 		if (seated != null) seated.setName(displayName());
+
 		Player player = getOnlinePlayer();
 		if (player == null) return;
-		PlayerNameTagEditor.changeDisplay(player, Component.text(displayName()));
-		player.playerListName(Component.text(displayName()));
+
+		Component headName = Component.text(displayName()).color(NamedTextColor.WHITE);
+		Component tabName = Component.text(displayName()).color(NamedTextColor.WHITE);
+		int sortNumber = 0;
+
+		// playing
+		if (seated != null)
+		{
+			sortNumber = 10;
+			tabName = Component.text("✳").color(NamedTextColor.RED).append(Component.text(" ")).append(tabName);
+		}
+
+		// looking
+		if (spectating != null)
+		{
+			sortNumber = 1;
+			tabName = Component.text("♟").color(NamedTextColor.GRAY).append(Component.text(" ")).append(tabName);
+		}
+		if (storytelling != null)
+		{
+			sortNumber = 999;
+			tabName = Component.text("❇").color(NamedTextColor.LIGHT_PURPLE).append(Component.text(" ")).append(tabName);
+		}
+
+		// build
+		if (getCustomName() != null) tabName = tabName.append(Component.text(" ")).append(Component.text(player.getName()).color(NamedTextColor.DARK_GRAY));
+		player.setPlayerListOrder(sortNumber);
+
+		// edit
+		PlayerNameTagEditor.changeDisplay(player, headName);
+		player.playerListName(tabName);
 	}
 
 	// STATE & EFFECTS
@@ -185,7 +223,6 @@ public class BloodPlayer {
 		// called by attachSeat
 		if (seated == null) return;
 		refreshAllEffects();
-		refreshNameTag();
 		seated.getSlot().getGame().getTeam().addPlayer(getOfflinePlayer());
 	}
 
@@ -193,7 +230,6 @@ public class BloodPlayer {
 		// called by detachSeat
 		if (seated == null) return;
 		clearAllEffects();
-		refreshNameTag();
 		seated.getSlot().getGame().getTeam().removePlayer(getOfflinePlayer());
 	}
 

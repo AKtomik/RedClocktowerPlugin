@@ -52,4 +52,6 @@ public class SeatedPlayer extends Seated {
 		BloodPlayer bloodPlayer = BloodPlayer.get(offPlayer);
 		bloodPlayer.refreshAliveEffect(alive);
 	}
+
+	// name
 }
