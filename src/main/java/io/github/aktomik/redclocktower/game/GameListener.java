@@ -4,6 +4,7 @@ import io.github.aktomik.redclocktower.game.town.TownChairPlace;
 import io.github.aktomik.redclocktower.game.town.TownHall;
 import io.github.aktomik.redclocktower.game.town.TownHallPlace;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -215,6 +216,7 @@ public class GameListener implements Listener {
 	}
 
 	// world
+	@EventHandler
 	public void OnWorldUnload(WorldUnloadEvent event) {
 		BloodGame game = BloodGame.get(event.getWorld());
 		if (game == null) return;
