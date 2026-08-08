@@ -78,17 +78,21 @@ public class BloodGame {
 	// this will remove the game from statics references so it is not accessible anymore
 	// remove it from others references too so it can be garbage collected
 	public void kill() {
-		// world
-		unsetup();
-		team.unregister();
 		// players
 		circle.forEachSlots(BloodSlot::empty);
 		removeAllStorytellers();
 		removeAllSpectators();
+		// world
+		unsetup();
+		team.unregister();
 		// static
 		townToGameMap.values().remove(this);
 		worldToGameMap.values().remove(this);
 		dead = true;
+	}
+
+	public static void killAll() {
+		worldToGameMap.values().stream().toList().forEach(BloodGame::kill);
 	}
 
 	// getters

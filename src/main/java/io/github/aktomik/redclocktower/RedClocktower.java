@@ -2,6 +2,7 @@ package io.github.aktomik.redclocktower;
 
 import io.github.aktomik.redclocktower.command.VoteCommand;
 import io.github.aktomik.redclocktower.command.setup.SetupCommand;
+import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.GameListener;
 import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
 import io.github.aktomik.redclocktower.oldgame.OldPlayerListener;
@@ -51,6 +52,9 @@ public final class RedClocktower extends JavaPlugin {
     @Override
     public void onDisable() {
         // Plugin shutdown logic
+
+        // game cleanup
+        BloodGame.killAll();
 
         // blood disconnect for all players
         for (Player player : Bukkit.getOnlinePlayers())

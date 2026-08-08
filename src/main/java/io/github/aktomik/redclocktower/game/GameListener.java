@@ -214,13 +214,5 @@ public class GameListener implements Listener {
 				break;
 		}
 	}
-
-	// world
-	@EventHandler
-	public void OnWorldUnload(WorldUnloadEvent event) {
-		BloodGame game = BloodGame.get(event.getWorld());
-		if (game == null) return;
-		game.kill();
-	}
 }
 
