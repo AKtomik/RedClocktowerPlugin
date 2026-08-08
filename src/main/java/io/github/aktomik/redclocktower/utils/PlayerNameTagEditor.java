@@ -1,6 +1,7 @@
 package io.github.aktomik.redclocktower.utils;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Player;
@@ -33,7 +34,7 @@ public class PlayerNameTagEditor {
 			trans.getTranslation().set(0f, .3f, 0f);
 			text.setTransformation(trans);
 		});
- 		player.addPassenger(display);// will hide the name tag too
+ 		player.addPassenger(display);// will also hide the name tag
 		displays.put(player.getUniqueId(), display);
 	}
 
@@ -45,10 +46,10 @@ public class PlayerNameTagEditor {
 		}
 	}
 
-	static void setVisibleDisplay(Player player, boolean visible) {
+	static void refreshVisible(Player player) {
 		TextDisplay display = displays.get(player.getUniqueId());
 		if (display != null && display.isValid()) {
-			display.setVisibleByDefault(visible);
+			display.setVisibleByDefault(!player.isDead() && display.text() != Component.empty() && player.getGameMode() != GameMode.SPECTATOR);
 		}
 	}
 
@@ -59,6 +60,8 @@ public class PlayerNameTagEditor {
 		} else {
 			createDisplay(player, newName);
 		}
+		refreshVisible(player);
+		syncDisplay(player);// not necessary
 	}
 
 	public static void clearDisplay(OfflinePlayer player) {

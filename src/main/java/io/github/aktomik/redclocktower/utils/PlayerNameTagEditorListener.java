@@ -1,7 +1,8 @@
 package io.github.aktomik.redclocktower.utils;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
-import org.bukkit.GameMode;
+import io.github.aktomik.redclocktower.RedClocktower;
+import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -25,18 +26,20 @@ public class PlayerNameTagEditorListener implements Listener {
 
 	@EventHandler
 	public void onGameModeChange(PlayerGameModeChangeEvent event) {
-		setVisibleDisplay(event.getPlayer(), event.getNewGameMode() != GameMode.SPECTATOR);
+		Bukkit.getScheduler().runTask(RedClocktower.plugin(), () -> {
+			if (event.getPlayer().isOnline()) refreshVisible(event.getPlayer());
+		});
 	}
 
 	@EventHandler
 	public void onDeath(PlayerDeathEvent event) {
-		setVisibleDisplay(event.getPlayer(), false);
+		refreshVisible(event.getPlayer());
 	}
 
 	@EventHandler
 	public void onRespawn(PlayerPostRespawnEvent event) {
 		Player player = event.getPlayer();
 		syncDisplay(player);
-		setVisibleDisplay(player, player.getGameMode() != GameMode.SPECTATOR);
+		refreshVisible(player);
 	}
 }

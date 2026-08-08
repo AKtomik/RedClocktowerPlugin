@@ -178,13 +178,6 @@ public class BloodPlayer {
 		player.playerListName(Component.text(displayName()));
 	}
 
-	void clearNameTag() {
-		PlayerNameTagEditor.clearDisplay(getOfflinePlayer());
-//		Player player = getOnlinePlayer();
-//		if (player == null) return;
-//		player.playerListName(Component.text(player.getName()));
-	}
-
 	// STATE & EFFECTS
 
 	// events
@@ -200,7 +193,7 @@ public class BloodPlayer {
 		// called by detachSeat
 		if (seated == null) return;
 		clearAllEffects();
-		clearNameTag();
+		refreshNameTag();
 		seated.getSlot().getGame().getTeam().removePlayer(getOfflinePlayer());
 	}
 
