@@ -4,6 +4,7 @@ import io.github.aktomik.redclocktower.game.town.TownChairPlace;
 import io.github.aktomik.redclocktower.game.town.TownHall;
 import io.github.aktomik.redclocktower.game.town.TownHallPlace;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -42,7 +43,9 @@ public class PlayerListener implements Listener {
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
+		Bukkit.getLogger().info("on quit, player:"+player);
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		Bukkit.getLogger().info("on quit, blood:"+bloodPlayer);
 		bloodPlayer.onServerLeaved();
 	}
 

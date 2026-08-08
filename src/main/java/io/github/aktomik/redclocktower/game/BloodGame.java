@@ -146,7 +146,7 @@ public class BloodGame {
 	}
 
 	public Stream<OfflinePlayer> getAllStorytellers() {
-		return storytellers.stream().map(BloodPlayer::getOffPlayer);
+		return storytellers.stream().map(BloodPlayer::getOfflinePlayer);
 	}
 
 	public Stream<Player> getOnlineStorytellers() {
@@ -170,7 +170,7 @@ public class BloodGame {
 	}
 
 	public Stream<OfflinePlayer> getAllSpectators() {
-		return spectators.stream().map(BloodPlayer::getOffPlayer);
+		return spectators.stream().map(BloodPlayer::getOfflinePlayer);
 	}
 
 	public Stream<Player> getOnlineSpectators() {

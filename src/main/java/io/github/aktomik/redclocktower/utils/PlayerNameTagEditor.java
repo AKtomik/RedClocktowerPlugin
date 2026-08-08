@@ -1,6 +1,8 @@
 package io.github.aktomik.redclocktower.utils;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
@@ -18,6 +20,7 @@ public class PlayerNameTagEditor {
 	private PlayerNameTagEditor() {}
 
 	private static void createDisplay(Player player, Component displayName) {
+		Bukkit.getLogger().info("create display:"+player+" count:"+displays.size());
 		clearDisplay(player);
 
 		TextDisplay textDisplay = player.getWorld().spawn(Objects.requireNonNull(player.getLocation()), TextDisplay.class, text -> {
@@ -26,18 +29,20 @@ public class PlayerNameTagEditor {
 			text.setAlignment(TextDisplay.TextAlignment.CENTER);
 			text.setSeeThrough(false);
 			text.setDefaultBackground(false);
+			text.setPersistent(false);
 
 			Transformation t = text.getTransformation();
-			t.getTranslation().set(0f, .2f, 0f);
+			t.getTranslation().set(0f, .3f, 0f);
 			text.setTransformation(t);
 		});
 
-
-		player.addPassenger(textDisplay);
+ 		player.addPassenger(textDisplay);
 		displays.put(player.getUniqueId(), textDisplay);
+		Bukkit.getLogger().info("puted count:"+displays.size());
 	}
 
 	public static void changeDisplay(Player player, Component newName) {
+		Bukkit.getLogger().info("change display:"+player+" count:"+displays.size());
 		TextDisplay display = displays.get(player.getUniqueId());
 		if (display != null && display.isValid()) {
 			display.text(newName);
@@ -46,10 +51,13 @@ public class PlayerNameTagEditor {
 		}
 	}
 
-	public static void clearDisplay(Player player) {
+	public static void clearDisplay(OfflinePlayer player) {
 		TextDisplay display = displays.remove(player.getUniqueId());
-		if (display != null && display.isValid()) {
+		Bukkit.getLogger().info("cleardisplay player:"+player+" display:"+display+" count:"+displays.size());
+		if (display != null) {
+			Bukkit.getLogger().info("clearing display:"+display+" count:"+displays.size());
 			display.remove();
+			Bukkit.getLogger().info("cleared display:"+display+" count:"+displays.size());
 		}
 	}
 }

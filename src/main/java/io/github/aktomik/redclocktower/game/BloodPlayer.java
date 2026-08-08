@@ -3,6 +3,7 @@ package io.github.aktomik.redclocktower.game;
 import io.github.aktomik.redclocktower.game.town.TownHall;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
 import net.kyori.adventure.text.Component;
+import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -12,16 +13,17 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.UUID;
 
 public class BloodPlayer {
 
-	private final OfflinePlayer offPlayer;
+	private final UUID uuid;
 	private SeatedPlayer seated;
 	private BloodGame storytelling;
 	private BloodGame spectating;
 	@Nullable private String customName;
 	private BloodPlayer(OfflinePlayer offlinePlayer) {
-		this.offPlayer = offlinePlayer;
+		this.uuid = offlinePlayer.getUniqueId();
 		refreshNameTag();
 	}
 
@@ -42,8 +44,12 @@ public class BloodPlayer {
 
 	// ACCESS
 
-	public OfflinePlayer getOffPlayer() {
-		return offPlayer;
+	public @Nullable Player getOnlinePlayer() {
+		return Bukkit.getPlayer(uuid);
+	}
+
+	public OfflinePlayer getOfflinePlayer() {
+		return Bukkit.getOfflinePlayer(uuid);
 	}
 
 	@Nullable
@@ -109,13 +115,13 @@ public class BloodPlayer {
 		if (spectating != null) spectating.removeSpectator(this);
 		this.storytelling = game;
 		// needed for invisibility view
-		storytelling.getTeam().addPlayer(offPlayer);
+		storytelling.getTeam().addPlayer(getOfflinePlayer());
 	}
 
 	void detachStorytelling() {// only one call at BloodGame
 		if (storytelling == null) return;
 		// needed for invisibility view
-		storytelling.getTeam().removePlayer(offPlayer);
+		storytelling.getTeam().removePlayer(getOfflinePlayer());
 		// then clear the pointer
 		storytelling = null;
 	}
@@ -129,13 +135,13 @@ public class BloodPlayer {
 		if (storytelling != null) storytelling.removeStoryteller(this);
 		this.spectating = game;
 		// needed for invisibility view
-		spectating.getTeam().addPlayer(offPlayer);
+		spectating.getTeam().addPlayer(getOfflinePlayer());
 	}
 
 	void detachSpectating() {// only one call at BloodGame
 		if (spectating == null) return;
 		// needed for invisibility view
-		spectating.getTeam().removePlayer(offPlayer);
+		spectating.getTeam().removePlayer(getOfflinePlayer());
 		// then clear the pointer
 		spectating = null;
 	}
@@ -143,7 +149,7 @@ public class BloodPlayer {
 	// NAME
 
 	public String displayName() {
-		return (customName != null) ? customName : offPlayer.getName();
+		return (customName != null) ? customName : getOfflinePlayer().getName();
 	}
 
 	public void setCustomName(String newName) {
@@ -167,7 +173,8 @@ public class BloodPlayer {
 	void refreshNameTag() {
 		if (seated != null) seated.setName(displayName());
 
-		if (!(offPlayer instanceof Player player)) return;
+		Player player = getOnlinePlayer();
+		if (player == null) return;
 		player.playerListName(Component.text(displayName()));
 		if (seated == null)
 			PlayerNameTagEditor.clearDisplay(player);
@@ -176,7 +183,10 @@ public class BloodPlayer {
 	}
 
 	void clearNameTag() {
-		if (!(offPlayer instanceof Player player)) return;
+		Bukkit.getLogger().info("clearNameTag, off:"+getOfflinePlayer());
+		Player player = getOnlinePlayer();
+		if (player == null) return;
+		Bukkit.getLogger().info("clearNameTag, player:"+player);
 		PlayerNameTagEditor.clearDisplay(player);
 		player.playerListName(Component.text(player.getName()));
 	}
@@ -189,7 +199,7 @@ public class BloodPlayer {
 		if (seated == null) return;
 		refreshAllEffects();
 		refreshNameTag();
-		seated.getSlot().getGame().getTeam().addPlayer(offPlayer);
+		seated.getSlot().getGame().getTeam().addPlayer(getOfflinePlayer());
 	}
 
 	void onSeatLeaved() {
@@ -197,7 +207,7 @@ public class BloodPlayer {
 		if (seated == null) return;
 		clearAllEffects();
 		refreshNameTag();
-		seated.getSlot().getGame().getTeam().removePlayer(offPlayer);
+		seated.getSlot().getGame().getTeam().removePlayer(getOfflinePlayer());
 	}
 
 	void onServerJoined() {
@@ -209,7 +219,8 @@ public class BloodPlayer {
 
 	void onServerLeaved() {
 		// called by onQuit
-		clearNameTag();
+		Bukkit.getLogger().info("server leaved, this:"+this);
+		clearNameTag();// already in PlayerNameTagEditorListener
 		clearAllEffects();
 	}
 
@@ -224,12 +235,14 @@ public class BloodPlayer {
 
 	// state effects
 	protected void clearAliveEffect() {
-		if (!(offPlayer instanceof Player player)) return;
+		Player player = getOnlinePlayer();
+		if (player == null) return;
 		player.removePotionEffect(PotionEffectType.INVISIBILITY);
 	}
 
 	protected void refreshAliveEffect(boolean alive) {
-		if (!(offPlayer instanceof Player player)) return;
+		Player player = getOnlinePlayer();
+		if (player == null) return;
 		if (alive)
 		{
 			player.removePotionEffect(PotionEffectType.INVISIBILITY);
