@@ -36,14 +36,14 @@ public class PlayerListener implements Listener {
 	public void onJoin(PlayerJoinEvent event) {
 		Player player = event.getPlayer();
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		bloodPlayer.joinedSeatEffect();
+		bloodPlayer.onServerJoined();
 	}
 
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
 		Player player = event.getPlayer();
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		bloodPlayer.leavedSeatEffect();
+		bloodPlayer.onServerLeaved();
 	}
 
 	// spawn

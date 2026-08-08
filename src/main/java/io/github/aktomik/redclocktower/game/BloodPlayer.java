@@ -90,12 +90,12 @@ public class BloodPlayer {
 		// do not call detachSeat here to avoid circular call
 		if (this.seated != null) this.seated.getSlot().empty();
 		this.seated = seated;
-		joinedSeatEffect();
+		onSeatJoined();
 	}
 
 	void detachSeat() {// only one call at SeatedPlayer
 		if (seated == null) return;
-		leavedSeatEffect();
+		onSeatLeaved();
 		seated = null;
 	}
 
@@ -166,6 +166,7 @@ public class BloodPlayer {
 
 	void refreshNameTag() {
 		if (seated != null) seated.setName(displayName());
+
 		if (!(offPlayer instanceof Player player)) return;
 		player.playerListName(Component.text(displayName()));
 		if (seated == null)
@@ -174,25 +175,52 @@ public class BloodPlayer {
 			PlayerNameTagEditor.changeDisplay(player, Component.text(displayName()));
 	}
 
+	void clearNameTag() {
+		if (!(offPlayer instanceof Player player)) return;
+		PlayerNameTagEditor.clearDisplay(player);
+	}
+
 	// STATE & EFFECTS
 
-	// global effect
-	void joinedSeatEffect() {
-		// either attachSeat or player join
+	// events
+	void onSeatJoined() {
+		// called by attachSeat
 		if (seated == null) return;
-		refreshAliveEffect(seated.getAlive());
+		refreshAllEffects();
 		refreshNameTag();
 		seated.getSlot().getGame().getTeam().addPlayer(offPlayer);
 	}
 
-	void leavedSeatEffect() {
-		// either detachSeat or player leave
+	void onSeatLeaved() {
+		// called by detachSeat
 		if (seated == null) return;
-		clearAliveEffect();
+		clearAllEffects();
+		refreshNameTag();
 		seated.getSlot().getGame().getTeam().removePlayer(offPlayer);
 	}
 
-	// state effect
+	void onServerJoined() {
+		// called by onJoin
+		refreshAllEffects();
+		refreshNameTag();
+	}
+
+	void onServerLeaved() {
+		// called by onQuit
+		clearAllEffects();
+		clearNameTag();
+	}
+
+	// global effects
+	void refreshAllEffects() {
+		refreshAliveEffect(seated.getAlive());
+	}
+
+	void clearAllEffects() {
+		clearAliveEffect();
+	}
+
+	// state effects
 	protected void clearAliveEffect() {
 		if (!(offPlayer instanceof Player player)) return;
 		player.removePotionEffect(PotionEffectType.INVISIBILITY);
