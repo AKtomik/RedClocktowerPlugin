@@ -16,12 +16,14 @@ public class BloodSlot {
 	// construct
 	private final TownChair townChair;
 	private final BloodGame game;
+	private final int index;
 	private Seated seated;
 	private boolean voteLocked;
 
-	BloodSlot(BloodGame game, TownChair townChair) {
+	BloodSlot(BloodGame game, TownChair townChair, int index) {
 		this.game = game;
 		this.townChair = townChair;
+		this.index = index;
 		this.seated = null;
 		refreshBlock(null);
 		refreshPiston(voteLocked);
@@ -38,6 +40,10 @@ public class BloodSlot {
 
 	public TownChair getChair() {
 		return townChair;
+	}
+
+	public int getIndex() {
+		return index;
 	}
 
 	public boolean isOccupied() {

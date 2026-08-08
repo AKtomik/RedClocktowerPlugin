@@ -186,29 +186,35 @@ public class BloodPlayer {
 
 		Component headName = Component.text(displayName()).color(NamedTextColor.WHITE);
 		Component tabName = Component.text(displayName()).color(NamedTextColor.WHITE);
+
+		Component prefixToken = Component.empty();
 		int sortNumber = 0;
 
 		// playing
 		if (seated != null)
 		{
-			sortNumber = 10;
-			tabName = Component.text("✳").color(NamedTextColor.RED).append(Component.text(" ")).append(tabName);
+			int slotIndex = seated.getSlot().getIndex();
+			prefixToken = prefixToken
+				.append(Component.text("✳").color(NamedTextColor.RED))
+				.append(Component.text(slotIndex + 1).color(NamedTextColor.GRAY));
+			sortNumber = 990 - slotIndex;// I don't think we will ever have 990 players in a game
 		}
 
 		// looking
-		if (spectating != null)
-		{
-			sortNumber = 1;
-			tabName = Component.text("♟").color(NamedTextColor.GRAY).append(Component.text(" ")).append(tabName);
-		}
 		if (storytelling != null)
 		{
+			prefixToken = prefixToken.append(Component.text("❇").color(NamedTextColor.LIGHT_PURPLE));
 			sortNumber = 999;
-			tabName = Component.text("❇").color(NamedTextColor.LIGHT_PURPLE).append(Component.text(" ")).append(tabName);
+		}
+		if (spectating != null)
+		{
+			prefixToken = prefixToken.append(Component.text("♟").color(NamedTextColor.GRAY));
+			sortNumber = 1;
 		}
 
 		// build
 		if (getCustomName() != null) tabName = tabName.append(Component.text(" ")).append(Component.text(player.getName()).color(NamedTextColor.DARK_GRAY));
+		if (prefixToken != Component.empty()) tabName = prefixToken.append(Component.text(" ")).append(tabName);
 		player.setPlayerListOrder(sortNumber);
 
 		// edit

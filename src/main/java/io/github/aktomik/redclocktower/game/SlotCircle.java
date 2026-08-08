@@ -1,10 +1,12 @@
 package io.github.aktomik.redclocktower.game;
 
+import io.github.aktomik.redclocktower.game.town.TownChair;
 import io.github.aktomik.redclocktower.game.town.TownHall;
 
 import java.util.Arrays;
 import java.util.List;
 import java.util.function.Consumer;
+import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
 public class SlotCircle {
@@ -13,7 +15,10 @@ public class SlotCircle {
 	private final BloodSlot[] slots;
 	SlotCircle(BloodGame game, TownHall townHall) {
 		this.townHall = townHall;
-		this.slots = townHall.getAllChairs().map(townChair -> new BloodSlot(game, townChair)).toArray(BloodSlot[]::new);
+		List<TownChair> chairs = townHall.getAllChairs().toList();
+		this.slots = IntStream.range(0, chairs.size())
+			.mapToObj(i -> new BloodSlot(game, chairs.get(i), i))
+			.toArray(BloodSlot[]::new);
 		// game is not saved here and that cool
 	}
 
