@@ -183,10 +183,8 @@ public class BloodPlayer {
 	}
 
 	void clearNameTag() {
-		Bukkit.getLogger().info("clearNameTag, off:"+getOfflinePlayer());
 		Player player = getOnlinePlayer();
 		if (player == null) return;
-		Bukkit.getLogger().info("clearNameTag, player:"+player);
 		PlayerNameTagEditor.clearDisplay(player);
 		player.playerListName(Component.text(player.getName()));
 	}
@@ -219,7 +217,6 @@ public class BloodPlayer {
 
 	void onServerLeaved() {
 		// called by onQuit
-		Bukkit.getLogger().info("server leaved, this:"+this);
 		clearNameTag();// already in PlayerNameTagEditorListener
 		clearAllEffects();
 	}
