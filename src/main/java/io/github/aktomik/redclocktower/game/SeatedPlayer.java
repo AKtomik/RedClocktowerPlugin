@@ -53,6 +53,6 @@ public class SeatedPlayer extends Seated {
 	@Override
 	protected void onSlotLabelRefresh() {
 		super.onSlotLabelRefresh();
-		bloodPlayer.refreshNameTag(false);
+		bloodPlayer.onSeatLabelRefresh();
 	}
 }

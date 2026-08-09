@@ -22,7 +22,7 @@ public class BloodPlayer {
 	private SeatedPlayer seated;
 	private BloodGame storytelling;
 	private BloodGame spectating;
-	@Nullable private String customName;
+	@Nullable String customName;
 	private BloodPlayer(OfflinePlayer offlinePlayer) {
 		this.uuid = offlinePlayer.getUniqueId();
 		refreshNameTag();
@@ -164,6 +164,11 @@ public class BloodPlayer {
 		refreshNameTag();
 	}
 
+	void onSeatLabelRefresh() {
+		customName = seated.getName();// sync name from seat to blood
+		refreshNameTag(false);
+	}
+
 	@Nullable
 	public String getCustomName() {
 		return customName;
@@ -181,8 +186,9 @@ public class BloodPlayer {
 		refreshNameTag(true);
 	}
 
-	void refreshNameTag(boolean satedCascadeCall) {
-		if (satedCascadeCall && seated != null) {
+	private void refreshNameTag(boolean seatedCascadeCall) {
+		if (seatedCascadeCall && seated != null) {
+			// sync name from blood to seat (and refresh seat)
 			seated.setName(displayName());
 		}
 
