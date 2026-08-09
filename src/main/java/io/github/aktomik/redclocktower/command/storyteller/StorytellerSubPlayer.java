@@ -511,7 +511,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		game.getOnlinePlayers().forEach(loopPlayer -> loopPlayer.give(item));
 
 		sender.sendRichMessage(
-			"gave <amount> <item> to <count> players",
+			"gave <amount> <item> to <count> <word>",
 			Placeholder.component("item", item.displayName()),
 			Placeholder.parsed("amount", Integer.toString(itemAmount)),
 			Placeholder.parsed("count", Long.toString(playerCount)),
@@ -528,7 +528,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		game.getOnlinePlayers().forEach(loopPlayer -> loopPlayer.give(item));
 
 		sender.sendRichMessage(
-			"gave <amount> <item> to <count> players",
+			"gave <amount> <item> to <count> <word>",
 			Placeholder.component("item", item.displayName()),
 			Placeholder.parsed("amount", Integer.toString(itemAmount)),
 			Placeholder.parsed("count", Long.toString(playerCount)),
