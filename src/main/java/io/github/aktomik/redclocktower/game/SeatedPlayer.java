@@ -51,8 +51,8 @@ public class SeatedPlayer extends Seated {
 
 	// name
 	@Override
-	protected void applySeatState() {
-		super.applySeatState();
-		bloodPlayer.refreshNameTag();
+	protected void onSlotLabelRefresh() {
+		super.onSlotLabelRefresh();
+		bloodPlayer.refreshNameTag(false);
 	}
 }

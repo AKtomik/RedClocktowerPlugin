@@ -56,6 +56,7 @@ public abstract class Seated {
 
 	public void setName(String name) {
 		this.name = name;
+		slot.refreshLabel();
 	}
 
 	public BloodSlot getSlot() {
@@ -123,6 +124,7 @@ public abstract class Seated {
 		slot.refreshLabel();
 	}
 
+	protected void onSlotLabelRefresh() {}
 
 	// name content
 	public TextColor getTextStateColor() {
@@ -136,7 +138,7 @@ public abstract class Seated {
 		}
 	}
 
-	public Component getTextLabel() {
+	public Component getInGameName() {
 		if (alive) return Component.text(name);
 		else return Component.text("☠ " + name).color(NamedTextColor.GRAY);
 	}

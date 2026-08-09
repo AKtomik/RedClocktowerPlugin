@@ -177,9 +177,14 @@ public class BloodPlayer {
 //		return;
 //	}
 
-
 	void refreshNameTag() {
-		if (seated != null) seated.setName(displayName());
+		refreshNameTag(true);
+	}
+
+	void refreshNameTag(boolean satedCascadeCall) {
+		if (satedCascadeCall && seated != null) {
+			seated.setName(displayName());
+		}
 
 		Player player = getOnlinePlayer();
 		if (player == null) return;
@@ -187,7 +192,6 @@ public class BloodPlayer {
 		Component headName = Component.text(displayName()).color(NamedTextColor.WHITE);
 		Component tabName = Component.text(displayName()).color(NamedTextColor.WHITE);
 
-		Component headPrefixToken = Component.empty();
 		Component tabPrefixToken = Component.empty();
 		int sortNumber = 0;
 
@@ -195,10 +199,9 @@ public class BloodPlayer {
 		if (seated != null)
 		{
 			int slotIndex = seated.getSlot().getIndex();
-			if (!seated.getAlive()) {
-				headPrefixToken = headPrefixToken.append(Component.text("☠").color(NamedTextColor.GRAY));
-				headName = headName.color(NamedTextColor.GRAY);
-			}
+			//hide the name tag when chair label is on
+			if (seated.getSlot().getLabelVisibility()) headName = Component.empty();
+			else headName = seated.getInGameName();
 			tabPrefixToken = tabPrefixToken.append(seated.getTextDigit());
 			sortNumber = 990 - slotIndex;// I don't think we will ever have 990 players in a game
 		}
@@ -217,7 +220,6 @@ public class BloodPlayer {
 
 		// build
 		if (getCustomName() != null) tabName = tabName.append(Component.text(" ")).append(Component.text(player.getName()).color(NamedTextColor.DARK_GRAY));
-		if (headPrefixToken != Component.empty()) headName = headPrefixToken.append(Component.text(" ")).append(headName);
 		if (tabPrefixToken != Component.empty()) tabName = tabPrefixToken.append(Component.text(" ")).append(tabName);
 
 		// edit

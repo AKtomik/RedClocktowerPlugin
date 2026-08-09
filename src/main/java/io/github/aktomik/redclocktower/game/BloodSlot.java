@@ -2,8 +2,6 @@ package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.game.town.TownChairPlace;
 import io.github.aktomik.redclocktower.game.town.TownChair;
-import net.kyori.adventure.text.Component;
-import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -14,10 +12,8 @@ import org.bukkit.block.data.Lightable;
 import org.bukkit.block.data.Powerable;
 import org.bukkit.entity.Display;
 import org.bukkit.entity.TextDisplay;
-import org.bukkit.util.Transformation;
 import org.bukkit.util.Vector;
-
-import java.awt.*;
+import org.jspecify.annotations.Nullable;
 
 public class BloodSlot {
 
@@ -25,6 +21,7 @@ public class BloodSlot {
 	private final TownChair townChair;
 	private final BloodGame game;
 	private final int index;
+	@Nullable
 	private Seated seated;
 	private boolean voteLocked;
 	private final TextDisplay label;
@@ -42,6 +39,7 @@ public class BloodSlot {
 	}
 
 	// seated
+	@Nullable
 	public Seated getSeated() {
 		return seated;
 	}
@@ -223,16 +221,23 @@ public class BloodSlot {
 	public void refreshLabel() {
 		if (label == null || !label.isValid()) return;
 
-		boolean visible = (labelVisible && seated != null);
+		boolean visible = getLabelVisibility();
 		label.setVisibleByDefault(visible);
-		if (!visible) return;
+		if (visible) {
+			assert seated != null;
+			label.teleport(getChair().getPosition(TownChairPlace.BENCH).add(new Vector(0, 3, 0)));
+			label.text(seated.getInGameName());
+		}
 
-		label.teleport(getChair().getPosition(TownChairPlace.BENCH).add(new Vector(0, 3, 0)));
-		label.text(seated.getTextLabel());
+		if (seated != null) seated.onSlotLabelRefresh();
 	}
 
 	public void setLabelVisibility(boolean visible) {
 		this.labelVisible = visible;
 		refreshLabel();
+	}
+
+	public boolean getLabelVisibility() {
+		return (labelVisible && seated != null);
 	}
 }

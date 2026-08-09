@@ -49,13 +49,11 @@ public class TagmeCommand extends BrigadierCommand {
             if (input.equalsIgnoreCase(player.getName()))
             {
                 bloodPlayer.setCustomName(null);
-//                bloodPlayer.refreshNameTag();
                 player.sendRichMessage("<white>changing your display name back to default.");
                 return Command.SINGLE_SUCCESS;
             }
 
             bloodPlayer.setCustomName(input);
-//            bloodPlayer.refreshNameTag();
 			player.sendRichMessage("<white>changing your display name to <b><name></b>.", Placeholder.parsed("name", input));
             return Command.SINGLE_SUCCESS;
         })
