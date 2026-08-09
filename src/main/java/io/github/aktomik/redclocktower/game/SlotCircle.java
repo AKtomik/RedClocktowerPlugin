@@ -5,7 +5,6 @@ import io.github.aktomik.redclocktower.game.town.TownChair;
 import io.github.aktomik.redclocktower.utils.TickSequence;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
@@ -23,6 +22,12 @@ public class SlotCircle {
 
 	private final BloodGame game;
 	private final BloodSlot[] slots;
+
+	VoteStep voteStep = VoteStep.NOTHING;
+	Integer precedentMajority = null;
+	Seated nominated = null;
+	Seated sentenced = null;
+
 	SlotCircle(BloodGame game) {
 		this.game = game;
 		List<TownChair> chairs = game.getTownHall().getAllChairs().toList();
@@ -116,24 +121,24 @@ public class SlotCircle {
 		return getOfflinePlayers().map(OfflinePlayer::getPlayer).filter(Objects::nonNull);
 	}
 
-	// vote process
+	// vote session
+	private void setVoteStep(VoteStep step) {
+		voteStep = step;
+	}
+
+	public boolean isVoteSystemBusy() {
+		return voteStep != VoteStep.NOTHING;
+	}
+
 	public boolean isExclusionVote() {
 		return false;
 	}
 
-	private boolean isVoteProcessCanceled() {
-		return false;
-	}
-
-	// vote session
-	Integer precedentMajority = null;
-	Seated nominated = null;
-	Seated sentenced = null;
-
 	public void cleanVoteSession() {
+		setVoteStep(VoteStep.NOTHING);
+		removeNominated();
+		removeSentenced();
 		precedentMajority = null;
-		nominated = null;
-		sentenced = null;
 	}
 
 	public void setNominated(Seated seated) {
@@ -161,6 +166,15 @@ public class SlotCircle {
 		return sentenced;
 	}
 
+	// vote process
+	private boolean checkVoteProcess() {
+		if (voteStep == VoteStep.CANCEL) {
+			voteStep = VoteStep.NOTHING;
+			return true;
+		}
+		return voteStep == VoteStep.VOTE_PROCESS;
+	}
+
 	private record VoteSnapshot(boolean haveEquality, int voteAlive, int voteEquality, int voteMajority) {}
 
 	private VoteSnapshot snapshotVoteState() {
@@ -177,16 +191,17 @@ public class SlotCircle {
 
 		int pyloriSlotIndex = nominated.getSlot().getIndex();
 
-		TagResolver[] resolvers = new TagResolver[] {
+		TagResolver resolvers = TagResolver.resolver(
 			Placeholder.parsed("target", nominated.getName()),
 			Placeholder.parsed("vote_alive", Integer.toString(snap.voteAlive)),
 			Placeholder.parsed("vote_majority", Integer.toString(snap.voteMajority))
-		};
+		);
 
+		setVoteStep(VoteStep.VOTE_PROCESS);
 		unlockAll();
 		game.broadcast("<gold>there is <vote_alive> players alive", resolvers);
 		
-		new TickSequence(RedClocktower.plugin(), this::isVoteProcessCanceled)
+		new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
 			.then(40L, () -> {
 				game.broadcast("<gold>a majority of <vote_majority> votes is required to place <b><target></b> on the pylori", resolvers);
 			})
@@ -194,7 +209,8 @@ public class SlotCircle {
 			.then(20L, () -> game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.2f))
 			.then(20L, () -> {
 				game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.1f);
-				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex), 20L);
+				new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
+					.then(20L, slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex)).run();
 			})
 			.run();
 	}
@@ -209,11 +225,11 @@ public class SlotCircle {
 			slot.lock();
 
 			if (currentIndex == startIndex)
-			{
-				new TickSequence(RedClocktower.plugin(), this::isVoteProcessCanceled).then(20L, finishVoteProcess()).run();
-				return;
-			}
-			new TickSequence(RedClocktower.plugin(), this::isVoteProcessCanceled).then(20L, slotVoteProcessRunnable(currentIndex, startIndex)).run();
+				new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
+					.then(20L, finishVoteProcess()).run();
+			else
+				new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
+					.then(20L, slotVoteProcessRunnable(currentIndex, startIndex)).run();
 		};
 	}
 
@@ -224,13 +240,13 @@ public class SlotCircle {
 			// count & power & use token
 			int votes = getAllSeated().mapToInt(Seated::useVote).sum();
 
-			TagResolver[] resolvers = new TagResolver[]{
+			TagResolver resolvers = TagResolver.resolver(
 				Placeholder.parsed("last", snap.haveEquality ? sentenced.getName() : ""),
 				Placeholder.parsed("target", nominated.getName()),
 				Placeholder.parsed("vote_alive", Integer.toString(snap.voteAlive)),
 				Placeholder.parsed("vote_count", Integer.toString(votes)),
 				Placeholder.parsed("vote_majority", Integer.toString(snap.voteMajority))
-			};
+			);
 
 			//step 0
 			game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.4f);
@@ -270,11 +286,10 @@ public class SlotCircle {
 					, resolvers);
 				};
 
-			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), runnableExe, 40L);
-			new TickSequence(RedClocktower.plugin(), this::isVoteProcessCanceled)
+			new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
 				.then(40L, runnableExe)
 				.then(60L, () -> {
-					//setVoteStep(OldGameVoteStep.NOTHING);
+					setVoteStep(VoteStep.NOTHING);
 					//changeExclusionMode(false);
 					unlockAll();
 				})

@@ -9,12 +9,12 @@ import java.util.function.BooleanSupplier;
 
 public class TickSequence {
 	private final Plugin plugin;
-	private final BooleanSupplier cancelled;
+	private final BooleanSupplier check;
 	private final List<SequenceStep> steps = new ArrayList<>();
 
-	public TickSequence(Plugin plugin, BooleanSupplier cancelled) {
+	public TickSequence(Plugin plugin, BooleanSupplier check) {
 		this.plugin = plugin;
-		this.cancelled = cancelled;
+		this.check = check;
 	}
 
 	public TickSequence then(long delayTicks, Runnable action) {
@@ -28,10 +28,10 @@ public class TickSequence {
 
 	private void runFrom(int index) {
 		if (index >= steps.size()) return;
-		if (cancelled.getAsBoolean()) return;
+		if (!check.getAsBoolean()) return;
 		SequenceStep step = steps.get(index);
 		Bukkit.getScheduler().runTaskLater(plugin, () -> {
-			if (cancelled.getAsBoolean()) return;
+			if (!check.getAsBoolean()) return;
 			step.action().run();
 			runFrom(index + 1);
 		}, step.delayTicks());

@@ -23,6 +23,13 @@ public class CommandToolbox {
 		return false;
 	}
 
+	public static boolean failIfNoPlayers(CommandSender sender, List<Player> players) {
+		return failIf(sender, (players.isEmpty()), "there is no player selected");
+	}
+	public static boolean failIfNoPlayer(CommandSender sender, Player player) {
+		return failIf(sender, (player == null), "there is no player selected");
+	}
+
 	@Contract("_, null -> true; _, !null -> false")
 	public static boolean failIfNoGame(CommandSender sender, BloodGame game) {
 		return failIf(sender, (game == null), "no game setup");
@@ -31,24 +38,17 @@ public class CommandToolbox {
 		return failIf(sender, !game.isStarted(), "the game is not started");
 	}
 
+	public static boolean failIfVoteBusy(CommandSender sender, BloodGame game) {
+		return failIf(sender, game.getCircle().isVoteSystemBusy(), "vote or execution is running");
+	}
+
 	@Deprecated
 	public static boolean failIfNotVotingMoment(CommandSender sender, OldBloodGame game) {
 		return failIf(sender, (!game.isVoteMoment()), "this is not the time to vote");
 	}
 	@Deprecated
-	public static boolean failIfVoteBusy(CommandSender sender, OldBloodGame game) {
-		return failIf(sender, game.isVoteSystemBusy(), "vote or execution is running");
-	}
-	@Deprecated
 	public static boolean failIfNotReady(CommandSender sender, OldBloodGame game) {
 		return failIf(sender, (!game.isReady()), "the game is not ready!");
-	}
-
-	public static boolean failIfNoPlayers(CommandSender sender, List<Player> players) {
-		return failIf(sender, (players.isEmpty()), "there is no player selected");
-	}
-	public static boolean failIfNoPlayer(CommandSender sender, Player player) {
-		return failIf(sender, (player == null), "there is no player selected");
 	}
 
 	public static <T> List<CommandLoopResult<T>> processEach(

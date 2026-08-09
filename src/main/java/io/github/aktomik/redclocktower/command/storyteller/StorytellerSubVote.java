@@ -44,6 +44,7 @@ public class StorytellerSubVote extends BrigadierSub {
 
 		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
 		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
 
 		SlotCircle circle = game.getCircle();
 //		if (player != null)  nominateChange(ctx, player);
