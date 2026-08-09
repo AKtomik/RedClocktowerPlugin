@@ -126,7 +126,7 @@ public class BloodGame {
 	}
 
 	public Stream<OfflinePlayer> getOfflinePlayers() {
-		return getAllSeatedPlayers().map(SeatedPlayer::getOffPlayer);
+		return getAllSeatedPlayers().map(SeatedPlayer::getBloodPlayer).map(BloodPlayer::getOfflinePlayer);
 	}
 
 	public Stream<Player> getOnlinePlayers() {

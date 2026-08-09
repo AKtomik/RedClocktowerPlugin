@@ -169,7 +169,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 				return new CommandLoopResult<>(player, false, "<red>the game is full");
 
 			game.getCircle().getSlot(game.getCircle().getFirstEmptySlotIndex())
-			.assign(new SeatedPlayer(player));
+			.assign(new SeatedPlayer(bloodPlayer));
 
 			return new CommandLoopResult<>(player, true, "added <b><target></b>");
 		});

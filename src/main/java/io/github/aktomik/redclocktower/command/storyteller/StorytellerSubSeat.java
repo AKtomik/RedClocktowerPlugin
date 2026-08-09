@@ -164,7 +164,7 @@ public class StorytellerSubSeat extends BrigadierSub {
 		final Player player = BrigadierToolbox.resolvePlayer(ctx);
 		if (CommandToolbox.failIfNoPlayer(sender, player)) return Command.SINGLE_SUCCESS;
 
-		final Seated seated = new SeatedPlayer(player);
+		final Seated seated = new SeatedPlayer(BloodPlayer.get(player));
 		game.getCircle().getSlot(slotIndex).assign(seated);
 		sender.sendRichMessage("player <yellow><name></yellow> added to the slot <b><number></b>",
 			Placeholder.parsed("number", Integer.toString(slotNumber)),

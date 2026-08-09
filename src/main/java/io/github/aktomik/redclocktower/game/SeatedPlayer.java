@@ -1,16 +1,15 @@
 package io.github.aktomik.redclocktower.game;
 
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.OfflinePlayer;
 
 public class SeatedPlayer extends Seated {
 
-	private final OfflinePlayer offPlayer;
+	private final BloodPlayer bloodPlayer;
 
 	// construct
-	public SeatedPlayer(OfflinePlayer offPlayer) {
-		super(offPlayer.getName());
-		this.offPlayer = offPlayer;
+	public SeatedPlayer(BloodPlayer bloodPlayer) {
+		super(bloodPlayer.getOfflinePlayer().getName());
+		this.bloodPlayer = bloodPlayer;
 	}
 
 	// family override
@@ -29,27 +28,24 @@ public class SeatedPlayer extends Seated {
 	@Override
 	void attached(BloodSlot newSlot) {
 		super.attached(newSlot);
-		BloodPlayer bloodPlayer = BloodPlayer.get(offPlayer);
 		bloodPlayer.attachSeat(this);
 	}
 
 	@Override
 	void detached() {
-		BloodPlayer bloodPlayer = BloodPlayer.get(offPlayer);
 		bloodPlayer.detachSeat();
 		super.detached();
 	}
 
 	// access
-	public OfflinePlayer getOffPlayer() {
-		return offPlayer;
+	public BloodPlayer getBloodPlayer() {
+		return bloodPlayer;
 	}
 
 	// state
 	@Override
 	public void setAlive(boolean alive) {
 		super.setAlive(alive);
-		BloodPlayer bloodPlayer = BloodPlayer.get(offPlayer);
 		bloodPlayer.refreshAliveEffect(alive);
 	}
 
@@ -57,7 +53,6 @@ public class SeatedPlayer extends Seated {
 	@Override
 	protected void applySeatState() {
 		super.applySeatState();
-		BloodPlayer bloodPlayer = BloodPlayer.get(offPlayer);
 		bloodPlayer.refreshNameTag();
 	}
 }
