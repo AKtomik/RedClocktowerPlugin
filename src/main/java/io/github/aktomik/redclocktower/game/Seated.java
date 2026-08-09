@@ -1,12 +1,18 @@
 package io.github.aktomik.redclocktower.game;
 
+import io.github.aktomik.redclocktower.game.town.TownChairPlace;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Location;
+import org.bukkit.entity.Display;
+import org.bukkit.entity.TextDisplay;
+import org.bukkit.util.Transformation;
 
 public abstract class Seated {
 
 	private BloodSlot slot;
+	private TextDisplay textDisplay;
 
 	private final String id;
 	private String name;
@@ -119,16 +125,11 @@ public abstract class Seated {
 	// slot
 	protected void applySeatState() {
 		slot.refreshState(getSeatState());
-		refreshTextDisplay();
+		slot.refreshLabel();
 	}
 
-	// name
-	public void refreshTextDisplay() {
-	}
 
-	public void setTextDisplayVisibility(boolean visible) {
-	}
-
+	// name content
 	public TextColor getTextStateColor() {
 		if (alive) {
 			if (votePull) return NamedTextColor.YELLOW;
@@ -146,6 +147,11 @@ public abstract class Seated {
 	static String digitInCircle(int digit) {
 		if (digit < 0 || digit > 50) return Integer.toString(digit);
 		return "⓪①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘㉙㉚㉛㉜㉝㉞㉟㊱㊲㊳㊴㊵㊶㊷㊸㊹㊺㊻㊼㊽㊾㊿".substring(digit, digit + 1);
+	}
+
+	public Component getTextLabel() {
+		if (alive) return Component.text(name);
+		else return Component.text("☠ " + name).color(NamedTextColor.GRAY);
 	}
 
 	public Component getTextToken() {

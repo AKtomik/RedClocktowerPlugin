@@ -2,6 +2,8 @@ package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.game.town.TownChairPlace;
 import io.github.aktomik.redclocktower.game.town.TownChair;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -10,6 +12,12 @@ import org.bukkit.block.BlockType;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Lightable;
 import org.bukkit.block.data.Powerable;
+import org.bukkit.entity.Display;
+import org.bukkit.entity.TextDisplay;
+import org.bukkit.util.Transformation;
+import org.bukkit.util.Vector;
+
+import java.awt.*;
 
 public class BloodSlot {
 
@@ -19,12 +27,16 @@ public class BloodSlot {
 	private final int index;
 	private Seated seated;
 	private boolean voteLocked;
+	private final TextDisplay label;
+	private boolean labelVisible;
 
 	BloodSlot(BloodGame game, TownChair townChair, int index) {
 		this.game = game;
 		this.townChair = townChair;
 		this.index = index;
 		this.seated = null;
+		this.label = createLabel();
+		this.labelVisible = true;
 		refreshBlock(null);
 		refreshPiston(voteLocked);
 	}
@@ -62,6 +74,7 @@ public class BloodSlot {
 		seated.attached(this);
 		this.seated = seated;
 		refreshBlock(seated.getSeatState());
+		refreshLabel();
 	}
 
 	public void empty() {
@@ -70,6 +83,7 @@ public class BloodSlot {
 		seated.detached();
 		this.seated = null;
 		refreshBlock(null);
+		refreshLabel();
 	}
 
 	// state
@@ -98,6 +112,7 @@ public class BloodSlot {
 		return voteLocked;
 	}
 
+	// block
 	private void refreshBlock(SeatState state) {
 		World world = townChair.getTownHall().getWorld();
 		Location lampPosDown = townChair.getPosition(TownChairPlace.LAMP);
@@ -190,5 +205,34 @@ public class BloodSlot {
 		world.setBlockData(lampPosMinus2, powerBlock);
 		// but if it's a redstone lamp, it will refresh and light off
 		// it is patchable by replacing the block ~5 ticks after piston
+	}
+
+	// label
+	private TextDisplay createLabel() {
+		Location benchLocation = getChair().getPosition(TownChairPlace.BENCH).add(new Vector(0, BloodGame.CHAIR_LABEL_HEIGHT, 0));
+		return benchLocation.getWorld().spawn(benchLocation, TextDisplay.class, text -> {
+			text.setVisibleByDefault(false);
+			text.setBillboard(Display.Billboard.CENTER);
+			text.setAlignment(TextDisplay.TextAlignment.CENTER);
+			text.setSeeThrough(false);
+			text.setDefaultBackground(false);
+			text.setPersistent(false);
+		});
+	}
+
+	public void refreshLabel() {
+		if (label == null || !label.isValid()) return;
+
+		boolean visible = (labelVisible && seated != null);
+		label.setVisibleByDefault(visible);
+		if (!visible) return;
+
+		label.teleport(getChair().getPosition(TownChairPlace.BENCH).add(new Vector(0, 3, 0)));
+		label.text(seated.getTextLabel());
+	}
+
+	public void setLabelVisibility(boolean visible) {
+		this.labelVisible = visible;
+		refreshLabel();
 	}
 }

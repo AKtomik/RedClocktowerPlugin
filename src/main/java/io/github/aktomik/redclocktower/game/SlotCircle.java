@@ -62,6 +62,16 @@ public class SlotCircle {
 		forEachSlots(slot -> slot.setVoteLocked(false));
 	}
 
+	public void showLabels()
+	{
+		forEachSlots(slot -> slot.setLabelVisibility(true));
+	}
+
+	public void hiddeLabels()
+	{
+		forEachSlots(slot -> slot.setLabelVisibility(false));
+	}
+
 	// individual interfaces
 	public BloodSlot getSlot(int index)
 	{

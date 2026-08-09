@@ -56,6 +56,7 @@ public class BloodGame {
 	static final float VOTE_VOLUME = .25f;
 	static final float EVENT_VOLUME = .5f;
 	static final Set<Material> SENSITIVE_INFO_ITEM = Set.of(Material.PAPER, Material.WRITABLE_BOOK, Material.WRITTEN_BOOK);
+	static final float CHAIR_LABEL_HEIGHT = 3f;
 
 	// manage
 	@Nullable
@@ -228,6 +229,7 @@ public class BloodGame {
 	private void setup() {
 		// game
 		circle.lockAll();
+		circle.showLabels();
 		// world
 		world.setTime(10000);
 		world.setGameRule(GameRules.ADVANCE_TIME, false);
@@ -253,6 +255,7 @@ public class BloodGame {
 		getAllSeated().forEach(seated -> seated.setAlive(true));
 		getAllSeated().forEach(seated -> seated.setVotePull(false));
 		circle.unlockAll();
+		circle.showLabels();
 		period = GamePeriod.MEET;
 		// world
 		world.setTime(12000);

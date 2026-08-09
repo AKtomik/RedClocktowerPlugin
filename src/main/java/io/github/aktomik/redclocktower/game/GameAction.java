@@ -16,8 +16,8 @@ public class GameAction {
 	static final Map<GamePeriod, BiConsumer<BloodGame, CommandSender>> periodEnter = Map.ofEntries(
 
 	Map.entry(GamePeriod.MORNING, (game, sender) -> {
-		// game.sitTags();
 		game.getWorld().setTime(0);
+		game.getCircle().showLabels();
 		game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
 			game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .4f);
@@ -30,8 +30,8 @@ public class GameAction {
 	}),
 
 	Map.entry(GamePeriod.FREE, (game, sender) -> {
-		// game.unsitTags();
 		game.getWorld().setTime(6000);
+		game.getCircle().hiddeLabels();
 		game.pingSound(Sound.BLOCK_ANVIL_LAND, BloodGame.EVENT_VOLUME, 1.7f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
 			game.pingSound(Sound.BLOCK_ANVIL_LAND, BloodGame.EVENT_VOLUME, 1.7f);
@@ -44,10 +44,10 @@ public class GameAction {
 	}),
 
 	Map.entry(GamePeriod.MEET, (game, sender) -> {
-		// game.sitTags();
 		game.getWorld().setTime(12500);
-		// game.clearVoteStep();
+		game.getCircle().showLabels();
 		game.getCircle().unlockAll();
+		// game.clearVoteStep();
 		game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .3f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
 			game.pingSound(Sound.BLOCK_BELL_USE, BloodGame.EVENT_VOLUME, .4f);
@@ -60,12 +60,12 @@ public class GameAction {
 	}),
 
 	Map.entry(GamePeriod.NIGHT, (game, sender) -> {
-		//game.unsitTags();
 		game.getWorld().setTime(18000);
 		//game.removeNominatedPlayer();
 		//game.removePyloriPlayer();
 		//game.clearVoteStep();
 		game.getCircle().lockAll();
+		game.getCircle().hiddeLabels();
 		game.pingSound(Sound.ENTITY_ALLAY_HURT, BloodGame.EVENT_VOLUME, .0f);
 		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), () -> {
 			game.pingSound(Sound.BLOCK_WOODEN_DOOR_OPEN, BloodGame.EVENT_VOLUME, .9f);
