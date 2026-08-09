@@ -37,7 +37,7 @@ public class TagmeCommand extends BrigadierCommand {
             Player player = Objects.requireNonNull((Player)ctx.getSource().getExecutor());
             builder.suggest(player.getName());
             BloodPlayer bloodPlayer = BloodPlayer.get(player);
-            if (bloodPlayer.getCustomName() != null) builder.suggest(bloodPlayer.getCustomName());
+            if (bloodPlayer.getName() != null) builder.suggest(bloodPlayer.getName());
             return builder.buildFuture();
         })
         .executes(
@@ -48,12 +48,12 @@ public class TagmeCommand extends BrigadierCommand {
 
             if (input.equalsIgnoreCase(player.getName()))
             {
-                bloodPlayer.setCustomName(null);
-                player.sendRichMessage("<white>changing your display name back to default.");
+                bloodPlayer.setName(player.getName());
+                player.sendRichMessage("<white>changing your display name back to default");
                 return Command.SINGLE_SUCCESS;
             }
 
-            bloodPlayer.setCustomName(input);
+            bloodPlayer.setName(input);
 			player.sendRichMessage("<white>changing your display name to <b><name></b>.", Placeholder.parsed("name", input));
             return Command.SINGLE_SUCCESS;
         })

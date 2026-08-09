@@ -14,6 +14,7 @@ import org.jspecify.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.UUID;
 
 public class BloodPlayer {
@@ -22,9 +23,10 @@ public class BloodPlayer {
 	private SeatedPlayer seated;
 	private BloodGame storytelling;
 	private BloodGame spectating;
-	@Nullable String customName;
+	private String name;
 	private BloodPlayer(OfflinePlayer offlinePlayer) {
 		this.uuid = offlinePlayer.getUniqueId();
+		this.name = offlinePlayer.getName();
 		refreshNameTag();
 	}
 
@@ -155,30 +157,25 @@ public class BloodPlayer {
 
 	// NAME
 
-	public String displayName() {
-		return (customName != null) ? customName : getOfflinePlayer().getName();
-	}
-
-	public void setCustomName(String newName) {
-		customName = newName;
+	public void setName(String newName) {
+		name = newName;
 		refreshNameTag();
 	}
 
 	void onSeatLabelRefresh() {
-		customName = seated.getName();// sync name from seat to blood
+		name = seated.getName();// sync name from seat to blood
 		refreshNameTag(false);
 	}
 
-	@Nullable
-	public String getCustomName() {
-		return customName;
+	public String getName() {
+		return name;
 	}
 
-//	void loadDisplayName() {
+//	void loadName() {
 //		return;
 //	}
 //
-//	void saveDisplayName() {
+//	void saveName() {
 //		return;
 //	}
 
@@ -189,14 +186,14 @@ public class BloodPlayer {
 	private void refreshNameTag(boolean seatedCascadeCall) {
 		if (seatedCascadeCall && seated != null) {
 			// sync name from blood to seat (and refresh seat)
-			seated.setName(displayName());
+			seated.setName(name);
 		}
 
 		Player player = getOnlinePlayer();
 		if (player == null) return;
 
-		Component headName = Component.text(displayName()).color(NamedTextColor.WHITE);
-		Component tabName = Component.text(displayName()).color(NamedTextColor.WHITE);
+		Component headName = Component.text(name).color(NamedTextColor.WHITE);
+		Component tabName = Component.text(name).color(NamedTextColor.WHITE);
 
 		Component tabPrefixToken = Component.empty();
 		int sortNumber = 0;
@@ -225,8 +222,10 @@ public class BloodPlayer {
 		}
 
 		// build
-		if (getCustomName() != null) tabName = tabName.append(Component.text(" ")).append(Component.text(player.getName()).color(NamedTextColor.DARK_GRAY));
-		if (tabPrefixToken != Component.empty()) tabName = tabPrefixToken.append(Component.text(" ")).append(tabName);
+		if (!Objects.equals(getName(), player.getName()))
+			tabName = tabName.append(Component.text(" ")).append(Component.text(player.getName()).color(NamedTextColor.DARK_GRAY));
+		if (tabPrefixToken != Component.empty())
+			tabName = tabPrefixToken.append(Component.text(" ")).append(tabName);
 
 		// edit
 		PlayerRenameTag.changeDisplay(player, headName);

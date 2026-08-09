@@ -107,6 +107,11 @@ public class StorytellerSubPlayer extends BrigadierSub {
 					.executes(subNameChange)
 				)
 			)
+		)
+		.then(Commands.literal("unname")
+			.then(Commands.argument("member", new SeatedArgumentType())
+				.executes(subNameClear)
+			)
 		);
 
 		// misc
@@ -469,6 +474,18 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 		sender.sendRichMessage("you renamed <old_name> to <b><new_name></b>",
 			Placeholder.parsed("old_name", oldName), Placeholder.parsed("new_name", newName)
+		);
+
+		return Command.SINGLE_SUCCESS;
+	});
+
+	Command<CommandSourceStack> subNameClear = GameCommand.wrap((ctx, sender, game) -> {
+		final Seated seated = SeatedArgumentType.getSeated(ctx, "member");
+
+		seated.setName(seated.getId());
+
+		sender.sendRichMessage("you cleared the custom name of <b><default_name></b>",
+			Placeholder.parsed("default_name", seated.getName())
 		);
 
 		return Command.SINGLE_SUCCESS;
