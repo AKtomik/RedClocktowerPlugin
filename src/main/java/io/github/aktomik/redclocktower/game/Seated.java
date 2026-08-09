@@ -5,7 +5,7 @@ import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.scoreboard.Team;
 
-import static io.github.aktomik.redclocktower.utils.MiscFunctions.digitInCircle;
+import static io.github.aktomik.redclocktower.utils.MiscUtils.digitInCircle;
 
 public abstract class Seated {
 

@@ -29,6 +29,8 @@ import org.bukkit.inventory.ItemStack;
 import java.util.List;
 import java.util.Objects;
 
+import static io.github.aktomik.redclocktower.utils.MiscUtils.oxfordJoinConfig;
+
 public class StorytellerSubPlayer extends BrigadierSub {
 
 // build
@@ -238,13 +240,8 @@ public class StorytellerSubPlayer extends BrigadierSub {
 					Placeholder.component("target", spectatorsComponent.getFirst())
 				);
 			else {
-				JoinConfiguration joinConfig = JoinConfiguration.builder()
-					.separator(Component.text(", "))
-					.lastSeparator(Component.text(" and "))
-					.lastSeparatorIfSerial(Component.text(","))
-					.build();
 				sender.sendRichMessage("<targets> are spectating this game",
-					Placeholder.component("targets", Component.join(joinConfig, spectatorsComponent))
+					Placeholder.component("targets", Component.join(oxfordJoinConfig, spectatorsComponent))
 				);
 			}
 		}
@@ -288,13 +285,8 @@ public class StorytellerSubPlayer extends BrigadierSub {
 					Placeholder.component("target", storytellersComponent.getFirst())
 				);
 			else {
-				JoinConfiguration joinConfig = JoinConfiguration.builder()
-					.separator(Component.text(", "))
-					.lastSeparator(Component.text(" and "))
-					.lastSeparatorIfSerial(Component.text(","))
-					.build();
 				sender.sendRichMessage("<targets> are storytelling this game",
-					Placeholder.component("targets", Component.join(joinConfig, storytellersComponent))
+					Placeholder.component("targets", Component.join(oxfordJoinConfig, storytellersComponent))
 				);
 			}
 		}

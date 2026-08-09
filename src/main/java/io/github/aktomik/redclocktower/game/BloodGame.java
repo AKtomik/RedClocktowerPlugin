@@ -50,13 +50,15 @@ public class BloodGame {
 	private static final Map<World, BloodGame> worldToGameMap = new HashMap<>();
 
 	// sett
-	static final NamedTextColor NOMINATE_TEAM_COLOR = NamedTextColor.GOLD;
-	static final NamedTextColor PYLORI_TEAM_COLOR = NamedTextColor.RED;
 	static final float DEFAULT_VOLUME = .25f;
 	static final float VOTE_VOLUME = .25f;
 	static final float EVENT_VOLUME = .5f;
 	static final Set<Material> SENSITIVE_INFO_ITEM = Set.of(Material.PAPER, Material.WRITABLE_BOOK, Material.WRITTEN_BOOK);
 	static final float CHAIR_LABEL_HEIGHT = 3f;
+
+	static final NamedTextColor NOMINATE_TEAM_COLOR = NamedTextColor.GOLD;
+	static final NamedTextColor PYLORI_TEAM_COLOR = NamedTextColor.RED;
+	static final boolean VOTE_BROADCAST_VOTERS = true;
 
 	// manage
 	@Nullable

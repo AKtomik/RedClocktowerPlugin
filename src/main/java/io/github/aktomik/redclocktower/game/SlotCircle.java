@@ -16,6 +16,7 @@ import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
 
+import static io.github.aktomik.redclocktower.game.BloodGame.VOTE_BROADCAST_VOTERS;
 import static io.github.aktomik.redclocktower.game.BloodGame.VOTE_VOLUME;
 
 public class SlotCircle {
@@ -194,16 +195,18 @@ public class SlotCircle {
 		TagResolver resolvers = TagResolver.resolver(
 			Placeholder.parsed("target", nominated.getName()),
 			Placeholder.parsed("vote_alive", Integer.toString(snap.voteAlive)),
-			Placeholder.parsed("vote_majority", Integer.toString(snap.voteMajority))
+			Placeholder.parsed("vote_alive_s", (snap.voteAlive > 1) ? "s" : ""),
+			Placeholder.parsed("vote_majority", Integer.toString(snap.voteMajority)),
+			Placeholder.parsed("vote_majority_s", (snap.voteMajority > 1) ? "s" : "")
 		);
 
 		setVoteStep(VoteStep.VOTE_PROCESS);
 		unlockAll();
-		game.broadcast("<gold>there is <vote_alive> players alive", resolvers);
+		game.broadcast("<gold>there is <vote_alive> player<vote_alive_s> alive", resolvers);
 		
 		new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
 			.then(40L, () -> {
-				game.broadcast("<gold>a majority of <vote_majority> votes is required to place <b><target></b> on the pylori", resolvers);
+				game.broadcast("<gold>a majority of <vote_majority> vote<vote_majority_s> is required to place <b><target></b> on the pylori", resolvers);
 			})
 			.then(40L, () -> game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.3f))
 			.then(20L, () -> game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.2f))
@@ -238,19 +241,30 @@ public class SlotCircle {
 			VoteSnapshot snap = snapshotVoteState();
 
 			// count & power & use token
+			List<Seated> voters = getAllSeated().filter(Seated::getVotePull).toList();
 			int votes = getAllSeated().mapToInt(Seated::useVote).sum();
 
 			TagResolver resolvers = TagResolver.resolver(
-				Placeholder.parsed("last", snap.haveEquality ? sentenced.getName() : ""),
 				Placeholder.parsed("target", nominated.getName()),
 				Placeholder.parsed("vote_alive", Integer.toString(snap.voteAlive)),
+				Placeholder.parsed("vote_alive_s", (snap.voteAlive > 1) ? "s" : ""),
+				Placeholder.parsed("vote_majority", Integer.toString(snap.voteMajority)),
+				Placeholder.parsed("vote_majority_s", (snap.voteMajority > 1) ? "s" : ""),
 				Placeholder.parsed("vote_count", Integer.toString(votes)),
-				Placeholder.parsed("vote_majority", Integer.toString(snap.voteMajority))
+				Placeholder.parsed("vote_count_s", ((votes) > 1) ? "s" : "")
 			);
 
 			//step 0
 			game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.4f);
-			game.broadcast("<gold><vote_count> votes", resolvers);
+			String votesRichString = "<b><gold><vote_count> vote<vote_count_s></b>";
+			if (VOTE_BROADCAST_VOTERS)
+			{
+				if (votes == 0)
+					votesRichString += "<gold>. no one voted.";
+				else
+					votesRichString += "<gold>. player<vote_count_s> who voted:<br><gold>"+String.join(" ", voters.stream().map(Seated::getName).toList());
+			}
+			game.broadcast(votesRichString, resolvers);
 
 			Runnable runnableExe;
 
@@ -261,8 +275,8 @@ public class SlotCircle {
 					setSentenced(nominated, votes);
 					game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 2f);
 					game.broadcast((snap.haveEquality)
-					? "<gold>this is enough for <b><yellow><target></yellow></b> to replace <yellow><last></yellow> on the pylori"
-					: "<gold>this is enough to place <b><yellow><target></yellow></b> on the pylori"
+					? "<gold>this is enough for <b><red><target></red></b> to replace <yellow><last></yellow> on the pylori"
+					: "<gold>this is enough to place <b><red><target></red></b> on the pylori"
 					, resolvers);
 				};
 
