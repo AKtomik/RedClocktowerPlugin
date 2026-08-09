@@ -104,6 +104,12 @@ public abstract class Seated {
 		return votePower;
 	}
 
+	public int useVote() {
+		if (!votePull || !haveVote()) return 0;
+		if (!alive) setVoteToken(false);
+		return votePower;
+	}
+
 	// set states (overridable)
 	public void setTraveller(boolean traveller) {
 		this.traveller = traveller;

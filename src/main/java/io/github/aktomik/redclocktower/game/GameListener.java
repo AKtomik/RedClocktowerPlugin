@@ -75,7 +75,7 @@ public class GameListener implements Listener {
 
 		boolean isGameLever = false;
 		boolean isOwnLever = false;
-		for (BloodSlot slot : circle.getSlotsStream().toList()) {
+		for (BloodSlot slot : circle.getSlotsList()) {
 			if (slot.getChair().getPosition(TownChairPlace.LEVER).equals(loc)) {
 				isGameLever = true;
 				isOwnLever = (slot.getSeated() == seatedPlayer);

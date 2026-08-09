@@ -7,6 +7,7 @@ import io.github.aktomik.redclocktower.commandbuild.arguments.SeatedArgumentType
 import io.github.aktomik.redclocktower.commandbuild.tools.CommandToolbox;
 import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.Seated;
+import io.github.aktomik.redclocktower.game.SlotCircle;
 import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
 import io.github.aktomik.redclocktower.oldgame.OldGameToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
@@ -44,19 +45,21 @@ public class StorytellerSubVote extends BrigadierSub {
 		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
 		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
 
+		SlotCircle circle = game.getCircle();
 //		if (player != null)  nominateChange(ctx, player);
-//		Player nominatedSeated = game.getNominatedPlayer();
-		Seated nominatedSeated = seated;
-		if (nominatedSeated == null)
+		if (seated != null) circle.setNominated(seated);
+		Seated nominated = circle.getNominated();
+
+		if (nominated == null)
 		{
 			sender.sendRichMessage("<red>there is no nominated player");
 			return 0;
 		}
 
 		// the action
-		game.getCircle().startVoteProcess();
+		circle.startVoteProcess();
 		sender.sendRichMessage("<aqua>starting the vote for <b><target></b>",
-			Placeholder.parsed("target", nominatedSeated.getName())
+			Placeholder.parsed("target", nominated.getName())
 		);
 		return Command.SINGLE_SUCCESS;
 	}
