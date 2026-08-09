@@ -207,7 +207,7 @@ public class BloodSlot {
 
 	// label
 	private TextDisplay createLabel() {
-		Location benchLocation = getChair().getPosition(TownChairPlace.BENCH).add(new Vector(0, BloodGame.CHAIR_LABEL_HEIGHT, 0));
+		Location benchLocation = getChair().getPosition(TownChairPlace.BENCH).toCenterLocation().add(new Vector(0, BloodGame.CHAIR_LABEL_HEIGHT, 0));
 		return benchLocation.getWorld().spawn(benchLocation, TextDisplay.class, text -> {
 			text.setVisibleByDefault(false);
 			text.setBillboard(Display.Billboard.CENTER);
@@ -225,7 +225,7 @@ public class BloodSlot {
 		label.setVisibleByDefault(visible);
 		if (visible) {
 			assert seated != null;
-			label.teleport(getChair().getPosition(TownChairPlace.BENCH).add(new Vector(0, 3, 0)));
+			label.teleport(getChair().getPosition(TownChairPlace.BENCH).toCenterLocation().add(new Vector(0, 3, 0)));
 			label.text(seated.getInGameName());
 		}
 
