@@ -2,7 +2,9 @@ package io.github.aktomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
+import io.github.aktomik.redclocktower.commandbuild.arguments.SeatedArgumentType;
 import io.github.aktomik.redclocktower.commandbuild.arguments.SeatedListArgumentType;
 import io.github.aktomik.redclocktower.commandbuild.tools.CommandLoopResult;
 import io.github.aktomik.redclocktower.commandbuild.tools.CommandToolbox;
@@ -68,18 +70,6 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			)
 		)
 
-		// name
-//		.then(Commands.literal("rename")
-//			.then(Commands.argument("member", ArgumentTypes.players())
-//				.executes(subNameChange)
-//			)
-//		)
-//		.then(Commands.literal("unname")
-//			.then(Commands.argument("member", ArgumentTypes.players())
-//				.executes(subNameClear)
-//			)
-//		)
-
 		// modify
 		.then(Commands.literal("set")
 			.then(Commands.argument("members", new SeatedListArgumentType())
@@ -107,6 +97,20 @@ public class StorytellerSubPlayer extends BrigadierSub {
 						.executes(subTravellerChange)
 					)
 				)
+			)
+		)
+
+		// name
+		.then(Commands.literal("rename")
+			.then(Commands.argument("member", new SeatedArgumentType())
+				.then(Commands.argument("new name", StringArgumentType.word())
+					.executes(subNameChange)
+				)
+			)
+		)
+		.then(Commands.literal("unname")
+			.then(Commands.argument("member", new SeatedArgumentType())
+				.executes(subNameClear)
 			)
 		);
 
@@ -457,6 +461,33 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		(changeValue) ? "<b><count></b> <word> now travelling" : "<b><count></b> <word> not travelling anymore",
 		"member is", "members are"
 		);
+		return Command.SINGLE_SUCCESS;
+	});
+
+	// name
+	Command<CommandSourceStack> subNameChange = GameCommand.wrap((ctx, sender, game) -> {
+		final Seated seated = SeatedArgumentType.getSeated(ctx, "member");
+		final String newName = StringArgumentType.getString(ctx, "new name");
+
+		String oldName = seated.getName();
+		seated.setName(newName);
+
+		sender.sendRichMessage("you renamed <old_name> to <b><new_name></b>",
+			Placeholder.parsed("old_name", oldName), Placeholder.parsed("new_name", newName)
+		);
+
+		return Command.SINGLE_SUCCESS;
+	});
+
+	Command<CommandSourceStack> subNameClear = GameCommand.wrap((ctx, sender, game) -> {
+		final Seated seated = SeatedArgumentType.getSeated(ctx, "member");
+
+		seated.setName(seated.getId());
+
+		sender.sendRichMessage("you cleared the custom name of <b><default_name></b>",
+			Placeholder.parsed("default_name", seated.getName())
+		);
+
 		return Command.SINGLE_SUCCESS;
 	});
 
