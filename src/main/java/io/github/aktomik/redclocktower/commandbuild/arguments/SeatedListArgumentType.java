@@ -62,7 +62,7 @@ public class SeatedListArgumentType implements CustomArgumentType<List<Seated>, 
 		if (game == null) throw ERROR_NO_GAME.create();
 
 		String input = readWord(reader);
-		Stream<Seated> seatedStream = game.getAllSeated();
+		Stream<Seated> seatedStream = game.getCircle().getAllSeated();
 
 		if (Objects.equals(input, SELECTOR_ALL)) {
 			List<Seated> foundSeated = seatedStream.toList();
@@ -90,7 +90,7 @@ public class SeatedListArgumentType implements CustomArgumentType<List<Seated>, 
 			World world = sourceStack.getLocation().getWorld();
 			BloodGame game = BloodGame.get(world);
 			if (game == null) return builder.buildFuture();
-			Stream.concat(game.getAllSeated().map(Seated::getName), Stream.of(SELECTOR_ALL))
+			Stream.concat(game.getCircle().getAllSeated().map(Seated::getName), Stream.of(SELECTOR_ALL))
 			.filter(str -> str.toLowerCase().startsWith(builder.getRemaining().toLowerCase()))
 			.forEach(builder::suggest);
 		}

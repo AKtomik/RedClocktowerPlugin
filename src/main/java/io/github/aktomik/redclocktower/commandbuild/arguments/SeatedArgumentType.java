@@ -51,7 +51,7 @@ public class SeatedArgumentType implements CustomArgumentType<Seated, String> {
 		if (game == null) throw ERROR_NO_GAME.create();
 
 		String input = reader.readUnquotedString();
-		List<Seated> foundSeated = game.getAllSeated().filter(seated1 -> Objects.equals(seated1.getName(), input)).toList();
+		List<Seated> foundSeated = game.getCircle().getAllSeated().filter(seated1 -> Objects.equals(seated1.getName(), input)).toList();
 		if (foundSeated.isEmpty()) throw ERROR_UNKNOWN_SEATED.create(input);
 		if (foundSeated.size() > 1) throw new IllegalStateException("found multiples seated with the same name");
 		return foundSeated.getFirst();// size of 1
@@ -63,7 +63,7 @@ public class SeatedArgumentType implements CustomArgumentType<Seated, String> {
 			World world = sourceStack.getLocation().getWorld();
 			BloodGame game = BloodGame.get(world);
 			if (game == null) return builder.buildFuture();
-			game.getAllSeated().map(Seated::getName)
+			game.getCircle().getAllSeated().map(Seated::getName)
 				.forEach(builder::suggest);
 		}
 		return builder.buildFuture();

@@ -129,7 +129,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	// subs
 
 	final Command<CommandSourceStack> subList = GameCommand.wrap((ctx, sender, game) -> {
-		List<Seated> seatedList = game.getAllSeated().toList();
+		List<Seated> seatedList = game.getCircle().getAllSeated().toList();
 		int emptySlotsAmount = game.getCircle().getSlotCount() - seatedList.size();
 		if (seatedList.isEmpty())
 		{
@@ -508,8 +508,8 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		}
 
 		int itemAmount = item.getAmount();
-		long playerCount = game.getOnlinePlayers().count();
-		game.getOnlinePlayers().forEach(loopPlayer -> loopPlayer.give(item));
+		long playerCount = game.getCircle().getOnlinePlayers().count();
+		game.getCircle().getOnlinePlayers().forEach(loopPlayer -> loopPlayer.give(item));
 
 		sender.sendRichMessage(
 			"gave <amount> <item> to <count> <word>",
@@ -525,8 +525,8 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		ItemStack item = ctx.getArgument("item", ItemStack.class);
 
 		int itemAmount = item.getAmount();
-		long playerCount = game.getOnlinePlayers().count();
-		game.getOnlinePlayers().forEach(loopPlayer -> loopPlayer.give(item));
+		long playerCount = game.getCircle().getOnlinePlayers().count();
+		game.getCircle().getOnlinePlayers().forEach(loopPlayer -> loopPlayer.give(item));
 
 		sender.sendRichMessage(
 			"gave <amount> <item> to <count> <word>",

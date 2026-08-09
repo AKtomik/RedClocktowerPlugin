@@ -35,7 +35,7 @@ public class BloodGame {
 		this.townHall = townHall;
 		this.world = townHall.getWorld();
 
-		this.circle = new SlotCircle(this, townHall);
+		this.circle = new SlotCircle(this);
 
 		Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
 		String teamId = "bloodteam-"+world.getName()+"-"+townHall.getTownName();
@@ -130,21 +130,7 @@ public class BloodGame {
 	}
 
 	// players participants
-	public Stream<Seated> getAllSeated() {
-		return circle.getSlotsStream().filter(BloodSlot::isOccupied).map(BloodSlot::getSeated);
-	}
-
-	public Stream<SeatedPlayer> getAllSeatedPlayers() {
-		return getAllSeated().filter(SeatedPlayer.class::isInstance).map(SeatedPlayer.class::cast);
-	}
-
-	public Stream<OfflinePlayer> getOfflinePlayers() {
-		return getAllSeatedPlayers().map(SeatedPlayer::getBloodPlayer).map(BloodPlayer::getOfflinePlayer);
-	}
-
-	public Stream<Player> getOnlinePlayers() {
-		return getOfflinePlayers().map(OfflinePlayer::getPlayer).filter(Objects::nonNull);
-	}
+	// moved to SlotCircle
 
 	// storytellers participants
 	public void addStoryteller(BloodPlayer bloodPlayer) {
@@ -196,7 +182,7 @@ public class BloodGame {
 
 	// all participants
 	public Stream<Player> getAllOnline() {
-		return Stream.concat(Stream.concat(getOnlinePlayers(), getOnlineStorytellers()), getOnlineSpectators());
+		return Stream.concat(Stream.concat(circle.getOnlinePlayers(), getOnlineStorytellers()), getOnlineSpectators());
 	}
 
 	// text utils
@@ -264,8 +250,8 @@ public class BloodGame {
 
 	public void start() {
 		// game
-		getAllSeated().forEach(seated -> seated.setAlive(true));
-		getAllSeated().forEach(seated -> seated.setVotePull(false));
+		circle.getAllSeated().forEach(seated -> seated.setAlive(true));
+		circle.getAllSeated().forEach(seated -> seated.setVotePull(false));
 		circle.unlockAll();
 		circle.showLabels();
 		period = GamePeriod.MEET;
