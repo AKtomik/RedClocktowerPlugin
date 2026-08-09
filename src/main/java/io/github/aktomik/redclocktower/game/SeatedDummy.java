@@ -1,6 +1,7 @@
 package io.github.aktomik.redclocktower.game;
 
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.scoreboard.Team;
 
 public class SeatedDummy extends Seated {
 	public SeatedDummy(int number) {
@@ -16,5 +17,15 @@ public class SeatedDummy extends Seated {
 	@Override
 	public NamedTextColor getSeatedTypeColor() {
 		return NamedTextColor.GOLD;
+	}
+
+	@Override
+	public void addToTeam(Team team) {
+		team.addEntry(getId());
+	}
+
+	@Override
+	public void removeFromTeam(Team team) {
+		team.addEntry(getId());
 	}
 }

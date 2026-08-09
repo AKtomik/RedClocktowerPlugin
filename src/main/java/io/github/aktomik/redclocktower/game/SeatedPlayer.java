@@ -1,6 +1,7 @@
 package io.github.aktomik.redclocktower.game;
 
 import net.kyori.adventure.text.format.NamedTextColor;
+import org.bukkit.scoreboard.Team;
 
 public class SeatedPlayer extends Seated {
 
@@ -21,6 +22,16 @@ public class SeatedPlayer extends Seated {
 	@Override
 	public NamedTextColor getSeatedTypeColor() {
 		return NamedTextColor.YELLOW;
+	}
+
+	@Override
+	public void addToTeam(Team team) {
+		team.addPlayer(bloodPlayer.getOfflinePlayer());
+	}
+
+	@Override
+	public void removeFromTeam(Team team) {
+		team.removePlayer(bloodPlayer.getOfflinePlayer());
 	}
 
 	// internal link

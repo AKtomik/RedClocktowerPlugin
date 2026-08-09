@@ -3,6 +3,7 @@ package io.github.aktomik.redclocktower.game;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.scoreboard.Team;
 
 import static io.github.aktomik.redclocktower.utils.MiscFunctions.digitInCircle;
 
@@ -34,9 +35,12 @@ public abstract class Seated {
 	void attached(BloodSlot newSlot) {
 		if (slot != null) slot.empty();
 		slot = newSlot;
+		addToTeam(newSlot.getGame().getTeam());
 	}
 
 	void detached() {
+		if (slot == null) return;
+		removeFromTeam(slot.getGame().getTeam());
 		slot = null;
 	}
 
@@ -44,6 +48,10 @@ public abstract class Seated {
 	public abstract String getSeatedTypeString();
 
 	public abstract NamedTextColor getSeatedTypeColor();
+
+	public abstract void addToTeam(Team team);
+
+	public abstract void removeFromTeam(Team team);
 
 	// access
 	public String getId() {

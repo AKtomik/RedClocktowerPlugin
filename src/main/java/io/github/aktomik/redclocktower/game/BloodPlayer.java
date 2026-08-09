@@ -240,14 +240,14 @@ public class BloodPlayer {
 		// called by attachSeat
 		if (seated == null) return;
 		refreshAllEffects();
-		seated.getSlot().getGame().getTeam().addPlayer(getOfflinePlayer());
+//		seated.getSlot().getGame().getTeam().addPlayer(getOfflinePlayer());
 	}
 
 	void onSeatLeaved() {
 		// called by detachSeat
 		if (seated == null) return;
 		clearAllEffects();
-		seated.getSlot().getGame().getTeam().removePlayer(getOfflinePlayer());
+//		seated.getSlot().getGame().getTeam().removePlayer(getOfflinePlayer());
 	}
 
 	void onServerJoined() {
