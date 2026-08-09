@@ -1,4 +1,4 @@
-package io.github.aktomik.redclocktower.utils;
+package io.github.aktomik.redclocktower.utils.renametag;
 
 import net.kyori.adventure.text.Component;
 import org.bukkit.GameMode;
@@ -13,11 +13,11 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
 
-public class PlayerNameTagEditor {
+public class PlayerRenameTag {
 
 	private static final Map<UUID, TextDisplay> displays = new HashMap<>();
 
-	private PlayerNameTagEditor() {}
+	private PlayerRenameTag() {}
 
 	private static void createDisplay(Player player, Component displayName) {
 		clearDisplay(player);

@@ -1,4 +1,4 @@
-package io.github.aktomik.redclocktower.utils;
+package io.github.aktomik.redclocktower.utils.renametag;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import io.github.aktomik.redclocktower.RedClocktower;
@@ -11,9 +11,9 @@ import org.bukkit.event.player.PlayerChangedWorldEvent;
 import org.bukkit.event.player.PlayerGameModeChangeEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 
-import static io.github.aktomik.redclocktower.utils.PlayerNameTagEditor.*;
+import static io.github.aktomik.redclocktower.utils.renametag.PlayerRenameTag.*;
 
-public class PlayerNameTagEditorListener implements Listener {
+public class PlayerRenameTagListener implements Listener {
 	@EventHandler
 	public void onQuit(PlayerQuitEvent event) {
 		clearDisplay(event.getPlayer());

@@ -1,19 +1,14 @@
 package io.github.aktomik.redclocktower.game;
 
-import io.github.aktomik.redclocktower.game.town.TownChairPlace;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Location;
-import org.bukkit.entity.Display;
-import org.bukkit.entity.TextDisplay;
-import org.bukkit.util.Transformation;
+
+import static io.github.aktomik.redclocktower.utils.MiscFunctions.digitInCircle;
 
 public abstract class Seated {
 
 	private BloodSlot slot;
-	private TextDisplay textDisplay;
-
 	private final String id;
 	private String name;
 
@@ -139,14 +134,6 @@ public abstract class Seated {
 			else if (!voteToken) return NamedTextColor.DARK_GRAY;
 			else return NamedTextColor.BLUE;
 		}
-	}
-
-	// ⓪①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳
-	// ㉑㉒㉓㉔㉕㉖㉗㉘㉙㉚㉛㉜㉝㉞㉟㊱㊲㊳㊴㊵㊶㊷㊸㊹㊺㊻㊼㊽㊾㊿
-	// ⓿❶❷❸❹❺❻❼❽❾❿⓫⓬⓭⓮⓯⓰⓱⓲⓳⓴
-	static String digitInCircle(int digit) {
-		if (digit < 0 || digit > 50) return Integer.toString(digit);
-		return "⓪①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘㉙㉚㉛㉜㉝㉞㉟㊱㊲㊳㊴㊵㊶㊷㊸㊹㊺㊻㊼㊽㊾㊿".substring(digit, digit + 1);
 	}
 
 	public Component getTextLabel() {

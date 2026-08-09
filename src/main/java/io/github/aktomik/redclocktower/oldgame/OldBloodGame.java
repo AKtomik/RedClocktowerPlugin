@@ -3,7 +3,6 @@ package io.github.aktomik.redclocktower.oldgame;
 import com.mojang.brigadier.context.CommandContext;
 import io.github.aktomik.redclocktower.OldDataKey;
 import io.github.aktomik.redclocktower.RedClocktower;
-import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
 import io.github.aktomik.redclocktower.utils.pdc.UUIDDataType;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import net.kyori.adventure.text.format.NamedTextColor;

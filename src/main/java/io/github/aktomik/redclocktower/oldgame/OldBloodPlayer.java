@@ -1,7 +1,7 @@
 package io.github.aktomik.redclocktower.oldgame;
 
 import io.github.aktomik.redclocktower.OldDataKey;
-import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
+import io.github.aktomik.redclocktower.utils.renametag.PlayerRenameTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -325,7 +325,7 @@ public class OldBloodPlayer {
 	public void clearNameTag()
 	{
 		player.playerListName(Component.text(player.getName()));
-		PlayerNameTagEditor.clearDisplay(player);
+		PlayerRenameTag.clearDisplay(player);
 	}
 
 	public void refreshNameTag()
@@ -374,7 +374,7 @@ public class OldBloodPlayer {
 		"<<token_color>><token_char></<token_color>><gray><prefix_slot></gray> <prefix_death><death_space><main_name> <dark_gray><old_name></dark_gray>",
 			resolvers
 		));
-		PlayerNameTagEditor.changeDisplay(player, mini.deserialize(
+		PlayerRenameTag.changeDisplay(player, mini.deserialize(
 		"<<token_color>><token_char></<token_color>><prefix_death> <main_name>",
 			resolvers
 		));

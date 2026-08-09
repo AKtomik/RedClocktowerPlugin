@@ -1,7 +1,7 @@
 package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.game.town.TownHall;
-import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
+import io.github.aktomik.redclocktower.utils.renametag.PlayerRenameTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.Bukkit;
@@ -221,7 +221,7 @@ public class BloodPlayer {
 		if (tabPrefixToken != Component.empty()) tabName = tabPrefixToken.append(Component.text(" ")).append(tabName);
 
 		// edit
-		PlayerNameTagEditor.changeDisplay(player, headName);
+		PlayerRenameTag.changeDisplay(player, headName);
 		player.playerListName(tabName);
 		player.setPlayerListOrder(sortNumber);
 	}

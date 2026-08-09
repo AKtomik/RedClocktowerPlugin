@@ -6,7 +6,7 @@ import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.GameListener;
 import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
 import io.github.aktomik.redclocktower.oldgame.OldPlayerListener;
-import io.github.aktomik.redclocktower.utils.PlayerNameTagEditorListener;
+import io.github.aktomik.redclocktower.utils.renametag.PlayerRenameTagListener;
 import io.github.aktomik.redclocktower.command.BroadcastCommand;
 import io.github.aktomik.redclocktower.command.storyteller.StorytellerCommand;
 import io.github.aktomik.redclocktower.command.TagmeCommand;
@@ -38,7 +38,7 @@ public final class RedClocktower extends JavaPlugin {
         // setup events
         getServer().getPluginManager().registerEvents(new OldPlayerListener(), this);
         getServer().getPluginManager().registerEvents(new GameListener(), this);
-        getServer().getPluginManager().registerEvents(new PlayerNameTagEditorListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerRenameTagListener(), this);
 
         // load brigadier commands
         BrigadierToolbox.loadCommands(this,
