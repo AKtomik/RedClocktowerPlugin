@@ -4,7 +4,6 @@ import io.github.aktomik.redclocktower.game.town.TownHall;
 import io.github.aktomik.redclocktower.utils.PlayerNameTagEditor;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
-import net.kyori.adventure.text.serializer.legacy.LegacyComponentSerializer;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -178,6 +177,7 @@ public class BloodPlayer {
 //		return;
 //	}
 
+
 	void refreshNameTag() {
 		if (seated != null) seated.setName(displayName());
 
@@ -187,39 +187,40 @@ public class BloodPlayer {
 		Component headName = Component.text(displayName()).color(NamedTextColor.WHITE);
 		Component tabName = Component.text(displayName()).color(NamedTextColor.WHITE);
 
-		Component prefixToken = Component.empty();
+		Component headPrefixToken = Component.empty();
+		Component tabPrefixToken = Component.empty();
 		int sortNumber = 0;
 
 		// playing
 		if (seated != null)
 		{
 			int slotIndex = seated.getSlot().getIndex();
-			prefixToken = prefixToken
-				.append(Component.text("✳").color(NamedTextColor.RED))
-				.append(Component.text(slotIndex + 1).color(NamedTextColor.GRAY));
+			headPrefixToken = headPrefixToken.append(seated.getTextToken());
+			tabPrefixToken = tabPrefixToken.append(seated.getTextDigit());
 			sortNumber = 990 - slotIndex;// I don't think we will ever have 990 players in a game
 		}
 
 		// looking
 		if (storytelling != null)
 		{
-			prefixToken = prefixToken.append(Component.text("❇").color(NamedTextColor.LIGHT_PURPLE));
+			tabPrefixToken = tabPrefixToken.append(Component.text("❇").color(NamedTextColor.LIGHT_PURPLE));
 			sortNumber = 999;
 		}
 		if (spectating != null)
 		{
-			prefixToken = prefixToken.append(Component.text("♟").color(NamedTextColor.GRAY));
+			tabPrefixToken = tabPrefixToken.append(Component.text("♟").color(NamedTextColor.GRAY));
 			sortNumber = 1;
 		}
 
 		// build
 		if (getCustomName() != null) tabName = tabName.append(Component.text(" ")).append(Component.text(player.getName()).color(NamedTextColor.DARK_GRAY));
-		if (prefixToken != Component.empty()) tabName = prefixToken.append(Component.text(" ")).append(tabName);
-		player.setPlayerListOrder(sortNumber);
+		if (headPrefixToken != Component.empty()) headName = headPrefixToken.append(Component.text(" ")).append(headName);
+		if (tabPrefixToken != Component.empty()) tabName = tabPrefixToken.append(Component.text(" ")).append(tabName);
 
 		// edit
 		PlayerNameTagEditor.changeDisplay(player, headName);
 		player.playerListName(tabName);
+		player.setPlayerListOrder(sortNumber);
 	}
 
 	// STATE & EFFECTS

@@ -1,6 +1,8 @@
 package io.github.aktomik.redclocktower.game;
 
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 
 public abstract class Seated {
 
@@ -117,5 +119,34 @@ public abstract class Seated {
 	// slot
 	private void applySeatState() {
 		slot.refreshState(getSeatState());
+	}
+
+	// name
+	public TextColor getTextStateColor() {
+		if (alive) {
+			if (votePull) return NamedTextColor.YELLOW;
+			else return NamedTextColor.RED;
+		} else {
+			if (voteToken) return NamedTextColor.DARK_GRAY;
+			else if (votePull) return NamedTextColor.AQUA;
+			else return NamedTextColor.BLUE;
+		}
+	}
+
+	// ⓪①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳
+	// ㉑㉒㉓㉔㉕㉖㉗㉘㉙㉚㉛㉜㉝㉞㉟㊱㊲㊳㊴㊵㊶㊷㊸㊹㊺㊻㊼㊽㊾㊿
+	// ⓿❶❷❸❹❺❻❼❽❾❿⓫⓬⓭⓮⓯⓰⓱⓲⓳⓴
+	static String digitInCircle(int digit) {
+		if (digit < 0 || digit > 50) return Integer.toString(digit);
+		return "⓪①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯⑰⑱⑲⑳㉑㉒㉓㉔㉕㉖㉗㉘㉙㉚㉛㉜㉝㉞㉟㊱㊲㊳㊴㊵㊶㊷㊸㊹㊺㊻㊼㊽㊾㊿".substring(digit, digit + 1);
+	}
+
+	public Component getTextToken() {
+		String token = (traveller) ? "✳" : "✴";
+		return Component.text(token).color(getTextStateColor());
+	}
+
+	public Component getTextDigit() {
+		return Component.text(digitInCircle(getSlot().getIndex() + 1)).color(getTextStateColor());
 	}
 }
