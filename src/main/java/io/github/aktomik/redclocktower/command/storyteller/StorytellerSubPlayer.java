@@ -118,8 +118,9 @@ public class StorytellerSubPlayer extends BrigadierSub {
 				.executes(subGiveHand)
 			)
 			.then(Commands.literal("item")
-				.then(Commands.argument("item", ArgumentTypes.itemStack()))
+				.then(Commands.argument("item", ArgumentTypes.itemStack())
 					.executes(subGiveItem)
+				)
 			)
 		);
 	}
@@ -505,13 +506,16 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			return Command.SINGLE_SUCCESS;
 		}
 
+		int itemAmount = item.getAmount();
+		long playerCount = game.getOnlinePlayers().count();
 		game.getOnlinePlayers().forEach(loopPlayer -> loopPlayer.give(item));
 
 		sender.sendRichMessage(
 			"gave <amount> <item> to <count> players",
 			Placeholder.component("item", item.displayName()),
-			Placeholder.parsed("amount", Integer.toString(item.getAmount())),
-			Placeholder.parsed("count", Long.toString(game.getOnlinePlayers().count()))
+			Placeholder.parsed("amount", Integer.toString(itemAmount)),
+			Placeholder.parsed("count", Long.toString(playerCount)),
+			Placeholder.parsed("word", (playerCount > 1) ? "players" : "player")
 		);
 		return Command.SINGLE_SUCCESS;
 	});
@@ -519,13 +523,16 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	public final Command<CommandSourceStack> subGiveItem = GameCommand.wrap((ctx, sender, game) -> {
 		ItemStack item = ctx.getArgument("item", ItemStack.class);
 
+		int itemAmount = item.getAmount();
+		long playerCount = game.getOnlinePlayers().count();
 		game.getOnlinePlayers().forEach(loopPlayer -> loopPlayer.give(item));
 
 		sender.sendRichMessage(
 			"gave <amount> <item> to <count> players",
 			Placeholder.component("item", item.displayName()),
-			Placeholder.parsed("amount", Integer.toString(item.getAmount())),
-			Placeholder.parsed("count", Long.toString(game.getOnlinePlayers().count()))
+			Placeholder.parsed("amount", Integer.toString(itemAmount)),
+			Placeholder.parsed("count", Long.toString(playerCount)),
+			Placeholder.parsed("word", (playerCount > 1) ? "players" : "player")
 		);
 		return Command.SINGLE_SUCCESS;
 	});
