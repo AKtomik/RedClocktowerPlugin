@@ -2,6 +2,7 @@ package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.RedClocktower;
 import io.github.aktomik.redclocktower.game.town.TownChair;
+import io.github.aktomik.redclocktower.utils.TickSequence;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.Bukkit;
@@ -160,147 +161,124 @@ public class SlotCircle {
 		return sentenced;
 	}
 
+	private record VoteSnapshot(boolean haveEquality, int voteAlive, int voteEquality, int voteMajority) {}
+
+	private VoteSnapshot snapshotVoteState() {
+		boolean haveEquality = sentenced != null;
+		int voteAlive = (int) getAllSeated().filter(Seated::getAlive).count();
+		int voteEquality = haveEquality ? precedentMajority : -1;
+		int voteMajority = (precedentMajority != null) ? precedentMajority + 1 : Math.ceilDiv(voteAlive, 2);
+		return new VoteSnapshot(haveEquality, voteAlive, voteEquality, voteMajority);
+	}
+
 	public void startVoteProcess()
 	{
-		boolean haveEquality = sentenced != null;
-		int voteAlive = (int)getAllSeated().filter(Seated::getAlive).count();
-		int voteEquality = (haveEquality) ? precedentMajority : -1;
-		int voteMajority = (precedentMajority != null)
-			? precedentMajority + 1 : Math.ceilDiv(voteAlive, 2);
+		VoteSnapshot snap = snapshotVoteState();
 
 		int pyloriSlotIndex = nominated.getSlot().getIndex();
 
 		TagResolver[] resolvers = new TagResolver[] {
 			Placeholder.parsed("target", nominated.getName()),
-			Placeholder.parsed("vote_alive", Integer.toString(voteAlive)),
-			Placeholder.parsed("vote_majority", Integer.toString(voteMajority))
+			Placeholder.parsed("vote_alive", Integer.toString(snap.voteAlive)),
+			Placeholder.parsed("vote_majority", Integer.toString(snap.voteMajority))
 		};
 
-		Runnable startVoteProcessStep4 = () -> {
-			if (isVoteProcessCanceled()) return;
-			game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.1f);
-			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex), 20L);
-		};
-		Runnable startVoteProcessStep3 = () -> {
-			if (isVoteProcessCanceled()) return;
-			game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.2f);
-			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), startVoteProcessStep4, 20L);
-		};
-		Runnable startVoteProcessStep2 = () -> {
-			if (isVoteProcessCanceled()) return;
-			// game.broadcast("<gold>the vote will start in 3 seconds", resolvers);
-			game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.3f);
-			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), startVoteProcessStep3, 20L);
-		};
-		Runnable startVoteProcessStep1 = () -> {
-			if (isVoteProcessCanceled()) return;
-			game.broadcast("<gold>a majority of <vote_majority> votes is required to place <b><target></b> on the pylori", resolvers);
-			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), startVoteProcessStep2, 40L);
-		};
-
-		//step 0
-		//setVoteStep(OldGameVoteStep.VOTE_PROCESS);
-		//changeExclusionMode(nominatedBloodPlayer.isTraveller());
 		unlockAll();
 		game.broadcast("<gold>there is <vote_alive> players alive", resolvers);
-		Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), startVoteProcessStep1, 40L);
+		
+		new TickSequence(RedClocktower.plugin(), this::isVoteProcessCanceled)
+			.then(40L, () -> {
+				game.broadcast("<gold>a majority of <vote_majority> votes is required to place <b><target></b> on the pylori", resolvers);
+			})
+			.then(40L, () -> game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.3f))
+			.then(20L, () -> game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.2f))
+			.then(20L, () -> {
+				game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.1f);
+				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex), 20L);
+			})
+			.run();
 	}
 
 	private Runnable slotVoteProcessRunnable(int lastIndex, int startIndex)
 	{
 		return () -> {
-			if (isVoteProcessCanceled()) return;
-			List<BloodSlot> slots = getSlotsList();
-
 			int currentIndex = lastIndex + 1;
-			if (currentIndex >= slots.size()) currentIndex = 0;
+			if (currentIndex >= slots.length) currentIndex = 0;
 
-			BloodSlot slot = slots.get(currentIndex);
+			BloodSlot slot = slots[currentIndex];
 			slot.lock();
 
 			if (currentIndex == startIndex)
 			{
-				Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishVoteProcess(), 60L);
+				new TickSequence(RedClocktower.plugin(), this::isVoteProcessCanceled).then(20L, finishVoteProcess()).run();
 				return;
 			}
-			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), slotVoteProcessRunnable(currentIndex, startIndex), 20L);
+			new TickSequence(RedClocktower.plugin(), this::isVoteProcessCanceled).then(20L, slotVoteProcessRunnable(currentIndex, startIndex)).run();
 		};
 	}
 
 	private Runnable finishVoteProcess() {
 		return () -> {
-			boolean haveEquality = sentenced != null;
-			int voteAlive = (int)getAllSeated().filter(Seated::getAlive).count();
-			int voteEquality = (haveEquality) ? precedentMajority : -1;
-			int voteMajority = (precedentMajority != null)
-			? precedentMajority + 1 : Math.ceilDiv(voteAlive, 2);
+			VoteSnapshot snap = snapshotVoteState();
 
 			// count & power & use token
 			int votes = getAllSeated().mapToInt(Seated::useVote).sum();
 
 			TagResolver[] resolvers = new TagResolver[]{
-			Placeholder.parsed("last", haveEquality ? sentenced.getName() : ""),
-			Placeholder.parsed("target", nominated.getName()),
-			Placeholder.parsed("vote_alive", Integer.toString(voteAlive)),
-			Placeholder.parsed("vote_count", Integer.toString(votes)),
-			Placeholder.parsed("vote_majority", Integer.toString(voteMajority))
+				Placeholder.parsed("last", snap.haveEquality ? sentenced.getName() : ""),
+				Placeholder.parsed("target", nominated.getName()),
+				Placeholder.parsed("vote_alive", Integer.toString(snap.voteAlive)),
+				Placeholder.parsed("vote_count", Integer.toString(votes)),
+				Placeholder.parsed("vote_majority", Integer.toString(snap.voteMajority))
 			};
 
 			//step 0
-			if (isVoteProcessCanceled()) return;
 			game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.4f);
 			game.broadcast("<gold><vote_count> votes", resolvers);
 
-			//step 2
-			Runnable finishRunnableStep2 = () -> {
-				if (isVoteProcessCanceled()) return;
-				//setVoteStep(OldGameVoteStep.NOTHING);
-				//changeExclusionMode(false);
-				unlockAll();
-			};
+			Runnable runnableExe;
 
-			//step 1
-			Runnable runnableStep1;
-
-			if (votes >= voteMajority)
+			if (votes >= snap.voteMajority)
 				// place/replace
-				runnableStep1 = () -> {
-					if (isVoteProcessCanceled()) return;
+				runnableExe = () -> {
 					removeNominated();
 					setSentenced(nominated, votes);
 					game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 2f);
-					game.broadcast((haveEquality)
+					game.broadcast((snap.haveEquality)
 					? "<gold>this is enough for <b><yellow><target></yellow></b> to replace <yellow><last></yellow> on the pylori"
 					: "<gold>this is enough to place <b><yellow><target></yellow></b> on the pylori"
 					, resolvers);
-					Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishRunnableStep2, 60L);
 				};
 
-			else if (votes == voteEquality)
+			else if (votes == snap.voteEquality)
 				// equality
-				runnableStep1 = () -> {
-					if (isVoteProcessCanceled()) return;
+				runnableExe = () -> {
 					removeNominated();
 					removeSentenced();
 					game.pingSound(Sound.ENTITY_PLAYER_LEVELUP, VOTE_VOLUME, .9f);
 					game.broadcast("<gold><b>EQUALITY!</b> <b><yellow><last></yellow></b> steps down from the pylori", resolvers);
-					Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishRunnableStep2, 60L);
 				};
 
 			else
 				// no/less
-				runnableStep1 = () -> {
-					if (isVoteProcessCanceled()) return;
+				runnableExe = () -> {
 					removeNominated();
 					game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, .9f);
-					game.broadcast((haveEquality)
+					game.broadcast((snap.haveEquality)
 					? "<gold>this is not enough to replace <red><last></red> on the pylori"
 					: "<gold>this is not enough to mount <yellow><target></yellow> on the pylori"
 					, resolvers);
-					Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishRunnableStep2, 60L);
 				};
 
-			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), runnableStep1, 40L);
+			Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), runnableExe, 40L);
+			new TickSequence(RedClocktower.plugin(), this::isVoteProcessCanceled)
+				.then(40L, runnableExe)
+				.then(60L, () -> {
+					//setVoteStep(OldGameVoteStep.NOTHING);
+					//changeExclusionMode(false);
+					unlockAll();
+				})
+				.run();
 		};
 	}
 }
