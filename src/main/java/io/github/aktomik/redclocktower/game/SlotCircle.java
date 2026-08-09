@@ -115,7 +115,7 @@ public class SlotCircle {
 		return getOfflinePlayers().map(OfflinePlayer::getPlayer).filter(Objects::nonNull);
 	}
 
-	// vote interfaces
+	// vote process
 	public boolean isExclusionVote() {
 		return false;
 	}
@@ -124,7 +124,7 @@ public class SlotCircle {
 		return false;
 	}
 
-	// vote process
+	// vote session
 	Integer precedentMajority = null;
 	Seated nominated = null;
 	Seated sentenced = null;
@@ -162,9 +162,11 @@ public class SlotCircle {
 
 	public void startVoteProcess()
 	{
+		boolean haveEquality = sentenced != null;
 		int voteAlive = (int)getAllSeated().filter(Seated::getAlive).count();
+		int voteEquality = (haveEquality) ? precedentMajority : -1;
 		int voteMajority = (precedentMajority != null)
-			? precedentMajority : Math.ceilDiv(voteAlive, 2);
+			? precedentMajority + 1 : Math.ceilDiv(voteAlive, 2);
 
 		int pyloriSlotIndex = nominated.getSlot().getIndex();
 
@@ -227,25 +229,27 @@ public class SlotCircle {
 
 	private Runnable finishVoteProcess() {
 		return () -> {
+			boolean haveEquality = sentenced != null;
 			int voteAlive = (int)getAllSeated().filter(Seated::getAlive).count();
+			int voteEquality = (haveEquality) ? precedentMajority : -1;
 			int voteMajority = (precedentMajority != null)
-			? precedentMajority : Math.ceilDiv(voteAlive, 2);
+			? precedentMajority + 1 : Math.ceilDiv(voteAlive, 2);
 
 			// count & power & use token
 			int votes = getAllSeated().mapToInt(Seated::useVote).sum();
 
-			boolean hadLast = sentenced != null;
 			TagResolver[] resolvers = new TagResolver[]{
-			Placeholder.parsed("last", hadLast ? sentenced.getName() : ""),
+			Placeholder.parsed("last", haveEquality ? sentenced.getName() : ""),
 			Placeholder.parsed("target", nominated.getName()),
 			Placeholder.parsed("vote_alive", Integer.toString(voteAlive)),
+			Placeholder.parsed("vote_count", Integer.toString(votes)),
 			Placeholder.parsed("vote_majority", Integer.toString(voteMajority))
 			};
 
 			//step 0
 			if (isVoteProcessCanceled()) return;
 			game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.4f);
-			game.broadcast("<gold><votes> votes", resolvers);
+			game.broadcast("<gold><vote_count> votes", resolvers);
 
 			//step 2
 			Runnable finishRunnableStep2 = () -> {
@@ -258,21 +262,21 @@ public class SlotCircle {
 			//step 1
 			Runnable runnableStep1;
 
-			if (votes > voteMajority)
+			if (votes >= voteMajority)
 				// place/replace
 				runnableStep1 = () -> {
 					if (isVoteProcessCanceled()) return;
 					removeNominated();
 					setSentenced(nominated, votes);
 					game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 2f);
-					game.broadcast((hadLast)
+					game.broadcast((haveEquality)
 					? "<gold>this is enough for <b><yellow><target></yellow></b> to replace <yellow><last></yellow> on the pylori"
 					: "<gold>this is enough to place <b><yellow><target></yellow></b> on the pylori"
 					, resolvers);
 					Bukkit.getScheduler().runTaskLater(RedClocktower.plugin(), finishRunnableStep2, 60L);
 				};
 
-			else if (votes == voteMajority && hadLast)
+			else if (votes == voteEquality)
 				// equality
 				runnableStep1 = () -> {
 					if (isVoteProcessCanceled()) return;
@@ -289,7 +293,7 @@ public class SlotCircle {
 					if (isVoteProcessCanceled()) return;
 					removeNominated();
 					game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, .9f);
-					game.broadcast((hadLast)
+					game.broadcast((haveEquality)
 					? "<gold>this is not enough to replace <red><last></red> on the pylori"
 					: "<gold>this is not enough to mount <yellow><target></yellow> on the pylori"
 					, resolvers);
