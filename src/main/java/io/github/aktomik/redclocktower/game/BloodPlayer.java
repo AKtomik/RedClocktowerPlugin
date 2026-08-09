@@ -195,7 +195,10 @@ public class BloodPlayer {
 		if (seated != null)
 		{
 			int slotIndex = seated.getSlot().getIndex();
-			headPrefixToken = headPrefixToken.append(seated.getTextToken());
+			if (!seated.getAlive()) {
+				headPrefixToken = headPrefixToken.append(Component.text("☠").color(NamedTextColor.GRAY));
+				headName = headName.color(NamedTextColor.GRAY);
+			}
 			tabPrefixToken = tabPrefixToken.append(seated.getTextDigit());
 			sortNumber = 990 - slotIndex;// I don't think we will ever have 990 players in a game
 		}

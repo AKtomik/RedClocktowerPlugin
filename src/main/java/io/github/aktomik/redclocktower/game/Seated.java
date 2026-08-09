@@ -117,18 +117,25 @@ public abstract class Seated {
 	}
 
 	// slot
-	private void applySeatState() {
+	protected void applySeatState() {
 		slot.refreshState(getSeatState());
+		refreshTextDisplay();
 	}
 
 	// name
+	public void refreshTextDisplay() {
+	}
+
+	public void setTextDisplayVisibility(boolean visible) {
+	}
+
 	public TextColor getTextStateColor() {
 		if (alive) {
 			if (votePull) return NamedTextColor.YELLOW;
 			else return NamedTextColor.RED;
 		} else {
-			if (voteToken) return NamedTextColor.DARK_GRAY;
-			else if (votePull) return NamedTextColor.AQUA;
+			if (votePull) return NamedTextColor.AQUA;
+			else if (!voteToken) return NamedTextColor.DARK_GRAY;
 			else return NamedTextColor.BLUE;
 		}
 	}

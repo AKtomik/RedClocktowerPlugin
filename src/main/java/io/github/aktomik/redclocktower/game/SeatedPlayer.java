@@ -54,4 +54,10 @@ public class SeatedPlayer extends Seated {
 	}
 
 	// name
+	@Override
+	protected void applySeatState() {
+		super.applySeatState();
+		BloodPlayer bloodPlayer = BloodPlayer.get(offPlayer);
+		bloodPlayer.refreshNameTag();
+	}
 }
