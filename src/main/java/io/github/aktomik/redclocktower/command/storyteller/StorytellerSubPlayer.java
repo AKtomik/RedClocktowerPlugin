@@ -12,7 +12,6 @@ import io.github.aktomik.redclocktower.commandbuild.tools.GameCommand;
 import io.github.aktomik.redclocktower.game.BloodPlayer;
 import io.github.aktomik.redclocktower.game.Seated;
 import io.github.aktomik.redclocktower.game.SeatedPlayer;
-import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -24,7 +23,6 @@ import net.kyori.adventure.text.TextComponent;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.Material;
 import org.bukkit.OfflinePlayer;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
@@ -112,16 +110,23 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			.then(Commands.argument("member", new SeatedArgumentType())
 				.executes(subNameClear)
 			)
-		);
+		)
 
-		// misc
-//		.then(Commands.literal("givehand")
-//			.executes(subGiveHand))
+		// give
+		.then(Commands.literal("give")
+			.then(Commands.literal("hand")
+				.executes(subGiveHand)
+			)
+			.then(Commands.literal("item")
+				.then(Commands.argument("item", ArgumentTypes.itemStack()))
+					.executes(subGiveItem)
+			)
+		);
 	}
 
 	// subs
 
-	Command<CommandSourceStack> subList = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subList = GameCommand.wrap((ctx, sender, game) -> {
 		List<Seated> seatedList = game.getAllSeated().toList();
 		int emptySlotsAmount = game.getCircle().getSlotCount() - seatedList.size();
 		if (seatedList.isEmpty())
@@ -158,7 +163,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	});
 
 
-	Command<CommandSourceStack> subAdd = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subAdd = GameCommand.wrap((ctx, sender, game) -> {
 		List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
 		if (CommandToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
@@ -185,7 +190,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	});
 
-	Command<CommandSourceStack> subRemove = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subRemove = GameCommand.wrap((ctx, sender, game) -> {
 		List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
 		if (CommandToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
@@ -219,7 +224,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	});
 
 
-	Command<CommandSourceStack> subSpectatorList = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subSpectatorList = GameCommand.wrap((ctx, sender, game) -> {
 		List<OfflinePlayer> spectators = game.getAllSpectators().toList();
 		if (spectators.isEmpty())
 			sender.sendRichMessage("this game does not have any spectator");
@@ -244,7 +249,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	});
 
-	Command<CommandSourceStack> subSpectatorAdd = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subSpectatorAdd = GameCommand.wrap((ctx, sender, game) -> {
 		List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
 		if (CommandToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
@@ -269,7 +274,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	});
 
 
-	Command<CommandSourceStack> subStorytellerList = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subStorytellerList = GameCommand.wrap((ctx, sender, game) -> {
 		List<OfflinePlayer> storytellers = game.getAllStorytellers().toList();
 		if (storytellers.isEmpty())
 			sender.sendRichMessage("this game does not have a storyteller");
@@ -294,7 +299,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	});
 
-	Command<CommandSourceStack> subStorytellerAdd = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subStorytellerAdd = GameCommand.wrap((ctx, sender, game) -> {
 		List<Player> players = BrigadierToolbox.resolvePlayers(ctx);
 		if (CommandToolbox.failIfNoPlayers(sender, players)) return Command.SINGLE_SUCCESS;
 
@@ -320,7 +325,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 
 
 	// set
-	Command<CommandSourceStack> subAliveCheck = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subAliveCheck = GameCommand.wrap((ctx, sender, game) -> {
 		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 
 		List<CommandLoopResult<Seated>> results = CommandToolbox.processEach(seatedList, seated ->
@@ -334,7 +339,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	});
 
-	Command<CommandSourceStack> subAliveChange = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subAliveChange = GameCommand.wrap((ctx, sender, game) -> {
 		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
 		final String changeString = changeValue ? "alive" : "dead";
@@ -356,7 +361,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	});
 
 
-	Command<CommandSourceStack> subVotingCheck = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subVotingCheck = GameCommand.wrap((ctx, sender, game) -> {
 		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 
 		List<CommandLoopResult<Seated>> results = CommandToolbox.processEach(seatedList, seated ->
@@ -370,7 +375,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	});
 
-	Command<CommandSourceStack> subVotingChange = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subVotingChange = GameCommand.wrap((ctx, sender, game) -> {
 		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
 		final String changeString = changeValue ? "voting" : "not voting";
@@ -392,7 +397,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	});
 
 
-	Command<CommandSourceStack> subTokenCheck = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subTokenCheck = GameCommand.wrap((ctx, sender, game) -> {
 		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 
 		List<CommandLoopResult<Seated>> results = CommandToolbox.processEach(seatedList, seated ->
@@ -406,7 +411,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	});
 
-	Command<CommandSourceStack> subTokenChange = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subTokenChange = GameCommand.wrap((ctx, sender, game) -> {
 		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
 		final String changeString = changeValue ? "giving back" : "taking back";
@@ -429,7 +434,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	});
 
 
-	Command<CommandSourceStack> subTravellerCheck = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subTravellerCheck = GameCommand.wrap((ctx, sender, game) -> {
 		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 
 		List<CommandLoopResult<Seated>> results = CommandToolbox.processEach(seatedList, seated ->
@@ -443,7 +448,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	});
 
-	Command<CommandSourceStack> subTravellerChange = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subTravellerChange = GameCommand.wrap((ctx, sender, game) -> {
 		final List<Seated> seatedList = SeatedListArgumentType.getSeatedList(ctx, "members");
 		final boolean changeValue = BrigadierToolbox.resolveBool("change", ctx);
 		final String changeString = changeValue ? "a traveller" : "not a traveller";
@@ -465,7 +470,7 @@ public class StorytellerSubPlayer extends BrigadierSub {
 	});
 
 	// name
-	Command<CommandSourceStack> subNameChange = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subNameChange = GameCommand.wrap((ctx, sender, game) -> {
 		final Seated seated = SeatedArgumentType.getSeated(ctx, "member");
 		final String newName = StringArgumentType.getString(ctx, "new name");
 
@@ -475,11 +480,10 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		sender.sendRichMessage("you renamed <old_name> to <b><new_name></b>",
 			Placeholder.parsed("old_name", oldName), Placeholder.parsed("new_name", newName)
 		);
-
 		return Command.SINGLE_SUCCESS;
 	});
 
-	Command<CommandSourceStack> subNameClear = GameCommand.wrap((ctx, sender, game) -> {
+	final Command<CommandSourceStack> subNameClear = GameCommand.wrap((ctx, sender, game) -> {
 		final Seated seated = SeatedArgumentType.getSeated(ctx, "member");
 
 		seated.setName(seated.getId());
@@ -487,32 +491,42 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		sender.sendRichMessage("you cleared the custom name of <b><default_name></b>",
 			Placeholder.parsed("default_name", seated.getName())
 		);
-
 		return Command.SINGLE_SUCCESS;
 	});
 
+	// item
+	public final Command<CommandSourceStack> subGiveHand = GameCommand.wrap((ctx, sender, game) -> {
+		Player executorPlayer = Objects.requireNonNull((Player)ctx.getSource().getExecutor());
+		ItemStack item = executorPlayer.getInventory().getItemInMainHand();
 
-	// misc
-	public final Command<CommandSourceStack> subGiveHand = ctx -> {
-		final CommandSender sender = ctx.getSource().getSender();
-		final OldBloodGame game = OldBloodGame.get(ctx);
-
-		Player executorPlayer = (Player)ctx.getSource().getExecutor();
-		ItemStack heldItem = executorPlayer.getInventory().getItemInMainHand();
-
-		if (heldItem.getType() == Material.AIR)
+		if (item.getType() == Material.AIR)
 		{
 			sender.sendRichMessage("<red>you dont have anything in hand");
 			return Command.SINGLE_SUCCESS;
 		}
 
-		heldItem.setAmount(1);
-		game.getAllPlayers().forEach(loopPlayer -> loopPlayer.give(heldItem));
+		game.getOnlinePlayers().forEach(loopPlayer -> loopPlayer.give(item));
 
 		sender.sendRichMessage(
-		"give <item><r> to all players in game.",
-		Placeholder.component("item", heldItem.displayName())
+			"gave <amount> <item> to <count> players",
+			Placeholder.component("item", item.displayName()),
+			Placeholder.parsed("amount", Integer.toString(item.getAmount())),
+			Placeholder.parsed("count", Long.toString(game.getOnlinePlayers().count()))
 		);
 		return Command.SINGLE_SUCCESS;
-	};
+	});
+
+	public final Command<CommandSourceStack> subGiveItem = GameCommand.wrap((ctx, sender, game) -> {
+		ItemStack item = ctx.getArgument("item", ItemStack.class);
+
+		game.getOnlinePlayers().forEach(loopPlayer -> loopPlayer.give(item));
+
+		sender.sendRichMessage(
+			"gave <amount> <item> to <count> players",
+			Placeholder.component("item", item.displayName()),
+			Placeholder.parsed("amount", Integer.toString(item.getAmount())),
+			Placeholder.parsed("count", Long.toString(game.getOnlinePlayers().count()))
+		);
+		return Command.SINGLE_SUCCESS;
+	});
 }
