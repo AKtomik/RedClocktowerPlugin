@@ -122,7 +122,8 @@ public class StorytellerSubPlayer extends BrigadierSub {
 					.executes(subGiveItem)
 				)
 			)
-		);
+		)
+		;
 	}
 
 	// subs

@@ -117,6 +117,18 @@ public class BloodGame {
 		return mini;
 	}
 
+	public boolean isStarted() {
+		return started;
+	}
+
+	public boolean isDead() {
+		return dead;
+	}
+
+	public GamePeriod getPeriod() {
+		return period;
+	}
+
 	// players participants
 	public Stream<Seated> getAllSeated() {
 		return circle.getSlotsStream().filter(BloodSlot::isOccupied).map(BloodSlot::getSeated);
@@ -229,7 +241,7 @@ public class BloodGame {
 	private void setup() {
 		// game
 		circle.lockAll();
-		circle.showLabels();
+		circle.hiddeLabels();
 		// world
 		world.setTime(10000);
 		world.setGameRule(GameRules.ADVANCE_TIME, false);
@@ -286,21 +298,9 @@ public class BloodGame {
 		this.started = false;
 	}
 
-	public boolean isStarted() {
-		return started;
-	}
-
-	public boolean isDead() {
-		return dead;
-	}
-
 	// time
 	public void switchPeriod(GamePeriod period, CommandSender sender) {
 		GameAction.periodEnter.get(period).accept(this, sender);
 		this.period = period;
-	}
-
-	public GamePeriod getPeriod() {
-		return period;
 	}
 }

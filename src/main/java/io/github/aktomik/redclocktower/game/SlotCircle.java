@@ -23,11 +23,6 @@ public class SlotCircle {
 	}
 
 	// global simple interfaces
-	public List<BloodSlot> getSlotsList()
-	{
-		return Arrays.stream(slots).toList();
-	}
-
 	public Stream<BloodSlot> getSlotsStream()
 	{
 		return Arrays.stream(slots);
@@ -93,5 +88,10 @@ public class SlotCircle {
 	// vote interfaces
 	public boolean isExclusionVote() {
 		return false;
+	}
+
+	// vote process
+	public void startVoteProcess() {
+
 	}
 }
