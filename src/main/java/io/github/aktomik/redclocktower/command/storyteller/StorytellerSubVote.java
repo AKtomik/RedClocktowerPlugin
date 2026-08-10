@@ -8,16 +8,11 @@ import io.github.aktomik.redclocktower.commandbuild.tools.CommandToolbox;
 import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.Seated;
 import io.github.aktomik.redclocktower.game.SlotCircle;
-import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
-import io.github.aktomik.redclocktower.oldgame.OldGameToolbox;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
-import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import io.papermc.paper.command.brigadier.argument.ArgumentTypes;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 
 public class StorytellerSubVote extends BrigadierSub {
 
@@ -46,6 +41,13 @@ public class StorytellerSubVote extends BrigadierSub {
 			.executes(ctx -> votingStart(ctx, null))
 			.then(Commands.argument("seated", new SeatedArgumentType())
 				.executes(ctx -> votingStart(ctx, SeatedArgumentType.getSeated(ctx, "seated")))
+			)
+		)
+
+		.then(Commands.literal("execute")
+			.executes(ctx -> executionStart(ctx, null))
+				.then(Commands.argument("seated", new SeatedArgumentType())
+					.executes(ctx -> executionStart(ctx, SeatedArgumentType.getSeated(ctx, "seated")))
 			)
 		)
 		;
@@ -109,7 +111,7 @@ public class StorytellerSubVote extends BrigadierSub {
 		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
 
 		game.getCircle().setSentenced(seated, game.getCircle().getVoteMajority());
-		sender.sendRichMessage("<b><target></b> is <red><b>on the pylori</b></red>.",
+		sender.sendRichMessage("<b><target></b> put on the <red><b>pylori</b></red>.",
 			Placeholder.parsed("target", seated.getName())
 		);
 		return Command.SINGLE_SUCCESS;
@@ -142,4 +144,29 @@ public class StorytellerSubVote extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	}
 
+	private int executionStart(CommandContext<CommandSourceStack> ctx, Seated seated) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
+		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
+
+		SlotCircle circle = game.getCircle();
+		if (seated != null) circle.setNominated(seated);
+		Seated sentenced = circle.getSentenced();
+
+		if (sentenced == null)
+		{
+			sender.sendRichMessage("<red>there is no player on the pylori");
+			return 0;
+		}
+
+		// the action
+		sender.sendRichMessage("<aqua>starting the execution of <b><target></b>",
+			Placeholder.parsed("target", sentenced.getName())
+		);
+		circle.startExecuteProcess(false);
+		return Command.SINGLE_SUCCESS;
+	}
 }

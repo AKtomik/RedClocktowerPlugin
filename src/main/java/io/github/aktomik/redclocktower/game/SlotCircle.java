@@ -2,12 +2,25 @@ package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.RedClocktower;
 import io.github.aktomik.redclocktower.game.town.TownChair;
+import io.github.aktomik.redclocktower.game.town.TownHallPlace;
+import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
+import io.github.aktomik.redclocktower.oldgame.OldBloodSlot;
+import io.github.aktomik.redclocktower.oldgame.OldGamePlace;
+import io.github.aktomik.redclocktower.oldgame.OldGameVoteStep;
 import io.github.aktomik.redclocktower.utils.TickSequence;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
-import org.bukkit.OfflinePlayer;
-import org.bukkit.Sound;
+import org.bukkit.*;
+import org.bukkit.block.BlockType;
+import org.bukkit.block.data.BlockData;
+import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
+import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
+import org.bukkit.potion.PotionEffect;
+import org.bukkit.potion.PotionEffectType;
+import org.bukkit.util.Vector;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
@@ -188,6 +201,12 @@ public class SlotCircle {
 		return sentenced;
 	}
 
+	@Nullable
+	public static Player extractOnlinePlayer(Seated seated) {
+		if (!(seated instanceof SeatedPlayer seatedPlayer)) return null;
+		return seatedPlayer.getBloodPlayer().getOnlinePlayer();
+	}
+
 	// vote process
 	private boolean checkVoteProcess() {
 		if (voteStep == VoteStep.CANCEL) {
@@ -231,7 +250,7 @@ public class SlotCircle {
 		new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
 			.then(40L, () -> {
 				String richString = (snap.haveEquality)
-				? "<gold><vote_equality> vote<vote_equality_s> are needed to remove <red><last></red> from the pylori<br>" +
+				?   "<gold><vote_equality> vote<vote_equality_s> are needed to remove <red><last></red> from the pylori<br>" +
 					"<gold>and <vote_majority> vote<vote_majority_s> are required to place <b><target></b> instead"
 				: "<gold>a majority of <vote_majority> vote<vote_majority_s> is required to place <b><target></b> on the pylori";
 				game.broadcast(richString, resolvers);
@@ -274,20 +293,19 @@ public class SlotCircle {
 			int votes = getAllSeated().mapToInt(Seated::useVote).sum();
 
 			TagResolver resolvers = TagResolver.resolver(
-				snapshotResolver(snap),
-				Placeholder.parsed("vote_count", Integer.toString(votes)),
-				Placeholder.parsed("vote_count_s", (votes > 1) ? "s" : "")
+			snapshotResolver(snap),
+			Placeholder.parsed("vote_count", Integer.toString(votes)),
+			Placeholder.parsed("vote_count_s", (votes > 1) ? "s" : "")
 			);
 
 			//step 0
 			game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.4f);
 			String votesRichString = "<b><gold><vote_count> vote<vote_count_s></b>";
-			if (VOTE_BROADCAST_VOTERS)
-			{
+			if (VOTE_BROADCAST_VOTERS) {
 				if (votes == 0)
 					votesRichString += "<gold>. no one voted.";
 				else
-					votesRichString += "<gold>. player<vote_count_s> who voted:<br><gold>"+String.join(" ", voters.stream().map(Seated::getName).toList());
+					votesRichString += "<gold>. player<vote_count_s> who voted:<br><gold>" + String.join(" ", voters.stream().map(Seated::getName).toList());
 			}
 			game.broadcast(votesRichString, resolvers);
 
@@ -327,13 +345,79 @@ public class SlotCircle {
 				};
 
 			new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
-				.then(40L, runnableExe)
-				.then(60L, () -> {
-					setVoteStep(VoteStep.NOTHING);
-					//changeExclusionMode(false);
-					unlockAll();
-				})
-				.run();
+			.then(40L, runnableExe)
+			.then(60L, () -> {
+				setVoteStep(VoteStep.NOTHING);
+				//changeExclusionMode(false);
+				unlockAll();
+			})
+			.run();
 		};
+	}
+
+	// execution process
+	private boolean checkExecutionProcess() {
+		if (voteStep == VoteStep.CANCEL) {
+			voteStep = VoteStep.NOTHING;
+			return true;
+		}
+		return voteStep == VoteStep.EXECUTION_PROCESS;
+	}
+
+	public void mountBeforeExecution()
+	{
+		if (sentenced == null) return;
+		Player player = extractOnlinePlayer(sentenced);
+		if (player == null) return;
+		Location location = game.getTownHall().getPosition(TownHallPlace.PYLORI).toCenterLocation();
+		Location lastLocation = Objects.requireNonNull(player.getLocation());
+		if (location.distance(lastLocation) < .2) return;
+		player.teleport(location);
+	}
+
+	public void startExecuteProcess(boolean reallyDies)
+	{
+		Seated executedSeated = sentenced;
+		Player executedPlayer = extractOnlinePlayer(executedSeated);
+
+		TagResolver resolvers = Placeholder.parsed("target", executedSeated.getName());
+
+		setVoteStep(VoteStep.EXECUTION_PROCESS);
+		mountBeforeExecution();
+		removeSentenced();
+		game.broadcast("<red><b><target></b> is executed", resolvers);
+
+		Location location = game.getTownHall().getPosition(TownHallPlace.PYLORI).toCenterLocation();
+
+		World world = game.getTownHall().getWorld();
+		Location honeyLocation = game.getTownHall().getPosition(TownHallPlace.PYLORI).add(new Vector(0, -1, 0));
+		honeyLocation.setY(honeyLocation.getY() - 1);
+		BlockData beforeHoney = world.getBlockData(honeyLocation);
+		world.setBlockData(honeyLocation, BlockType.HONEY_BLOCK.createBlockData());
+
+		location.setY(location.getY() + 60);
+		world.spawn(location, FallingBlock.class, falling -> {
+			falling.setBlockData(BlockType.ANVIL.createBlockData());
+			falling.setDropItem(false);
+			falling.setCancelDrop(true);
+			falling.setHurtEntities(true);
+			falling.setDamagePerBlock(999);
+			falling.setFallDistance(999);
+		});
+
+		if (!reallyDies && executedPlayer != null)
+			executedPlayer.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 100, 9, false, false, false));
+
+		new TickSequence(RedClocktower.plugin(), this::checkExecutionProcess)
+		.then(66L, () -> {
+			executedSeated.setAlive(false);
+			if (executedPlayer != null)
+				executedPlayer.setHealth(0);
+		})
+		.then(10L, () -> {
+			world.setBlockData(honeyLocation, beforeHoney);
+			setVoteStep(VoteStep.NOTHING);
+		})
+		.run();
 	}
 }
