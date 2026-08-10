@@ -28,6 +28,20 @@ public class StorytellerSubVote extends BrigadierSub {
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
 
+		.then(Commands.literal("nominate")
+			.executes(this::nominateCheck)
+			.then(Commands.argument("seated", new SeatedArgumentType())
+				.executes(ctx -> nominateChange(ctx, SeatedArgumentType.getSeated(ctx, "seated")))
+			)
+		)
+
+		.then(Commands.literal("pylori")
+			.executes(this::pyloriCheck)
+			.then(Commands.argument("seated", new SeatedArgumentType())
+				.executes(ctx -> pyloriChange(ctx, SeatedArgumentType.getSeated(ctx, "seated")))
+			)
+		)
+
 		.then(Commands.literal("start")
 			.executes(ctx -> votingStart(ctx, null))
 			.then(Commands.argument("seated", new SeatedArgumentType())
@@ -35,6 +49,70 @@ public class StorytellerSubVote extends BrigadierSub {
 			)
 		)
 		;
+	}
+
+
+	private int nominateCheck(CommandContext<CommandSourceStack> ctx) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
+		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+
+		Seated seated = game.getCircle().getNominated();
+		if (seated == null)
+			sender.sendRichMessage("there is no one actually nominated");
+		else
+			sender.sendRichMessage("<b><target></b> is actually nominated",
+				Placeholder.parsed("target", seated.getName())
+			);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private int nominateChange(CommandContext<CommandSourceStack> ctx, Seated seated) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
+		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+
+		game.getCircle().setNominated(seated);
+		sender.sendRichMessage("<b><target></b> is <gold><b>nominated</b></gold>.",
+			Placeholder.parsed("target", seated.getName())
+		);
+		return Command.SINGLE_SUCCESS;
+	}
+
+
+	private int pyloriCheck(CommandContext<CommandSourceStack> ctx) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
+		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+
+		Seated seated = game.getCircle().getSentenced();
+		if (seated == null)
+			sender.sendRichMessage("there is no one on the pylori");
+		else
+			sender.sendRichMessage("<b><target></b> is on the pylori",
+				Placeholder.parsed("target", seated.getName())
+			);
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private int pyloriChange(CommandContext<CommandSourceStack> ctx, Seated seated) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
+		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+
+		game.getCircle().setSentenced(seated, game.getCircle().getVoteMajority());
+		sender.sendRichMessage("<b><target></b> is <red><b>on the pylori</b></red>.",
+			Placeholder.parsed("target", seated.getName())
+		);
+		return Command.SINGLE_SUCCESS;
 	}
 
 
@@ -47,7 +125,6 @@ public class StorytellerSubVote extends BrigadierSub {
 		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
 
 		SlotCircle circle = game.getCircle();
-//		if (player != null)  nominateChange(ctx, player);
 		if (seated != null) circle.setNominated(seated);
 		Seated nominated = circle.getNominated();
 
@@ -58,10 +135,10 @@ public class StorytellerSubVote extends BrigadierSub {
 		}
 
 		// the action
-		circle.startVoteProcess();
 		sender.sendRichMessage("<aqua>starting the vote for <b><target></b>",
 			Placeholder.parsed("target", nominated.getName())
 		);
+		circle.startVoteProcess();
 		return Command.SINGLE_SUCCESS;
 	}
 

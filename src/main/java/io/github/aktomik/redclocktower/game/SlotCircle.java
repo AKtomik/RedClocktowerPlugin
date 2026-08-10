@@ -143,6 +143,18 @@ public class SlotCircle {
 		precedentMajority = null;
 	}
 
+	public int getVoteAlive() {
+		return (int)getAllSeated().filter(Seated::getAlive).count();
+	}
+
+	public int getVoteMajority() {
+		return (precedentMajority != null) ? precedentMajority + 1 : Math.ceilDiv(getVoteAlive(), 2);
+	}
+
+	public int getVoteEquality() {
+		return (sentenced != null) ? precedentMajority : -1;
+	}
+
 	public void setNominated(Seated seated) {
 		nominated = seated;
 		nominated.setNominated(true);
@@ -185,14 +197,13 @@ public class SlotCircle {
 		return voteStep == VoteStep.VOTE_PROCESS;
 	}
 
-	private record VoteSnapshot(boolean haveEquality, int voteAlive, int voteEquality, int voteMajority) {}
+	private record VoteSnapshot(int voteAlive, int voteMajority, boolean haveEquality, int voteEquality) {}
 
 	private VoteSnapshot snapshotVoteState() {
-		boolean haveEquality = sentenced != null;
-		int voteAlive = (int) getAllSeated().filter(Seated::getAlive).count();
-		int voteEquality = haveEquality ? precedentMajority : -1;
-		int voteMajority = (precedentMajority != null) ? precedentMajority + 1 : Math.ceilDiv(voteAlive, 2);
-		return new VoteSnapshot(haveEquality, voteAlive, voteEquality, voteMajority);
+		int voteAlive = getVoteAlive();
+		int voteEquality = getVoteEquality();
+		int voteMajority = getVoteMajority();
+		return new VoteSnapshot(voteAlive, voteMajority, voteEquality != -1, voteEquality);
 	}
 
 	public void startVoteProcess()
