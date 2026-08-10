@@ -8,6 +8,7 @@ import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.Sound;
 import org.bukkit.entity.Player;
+import org.jspecify.annotations.Nullable;
 
 import java.util.Arrays;
 import java.util.List;
@@ -26,8 +27,8 @@ public class SlotCircle {
 
 	VoteStep voteStep = VoteStep.NOTHING;
 	Integer precedentMajority = null;
-	Seated nominated = null;
-	Seated sentenced = null;
+	@Nullable Seated nominated = null;
+	@Nullable Seated sentenced = null;
 
 	SlotCircle(BloodGame game) {
 		this.game = game;
@@ -144,25 +145,33 @@ public class SlotCircle {
 
 	public void setNominated(Seated seated) {
 		nominated = seated;
+		nominated.setNominated(true);
 	}
 
 	public void removeNominated() {
+		if (nominated == null) return;
+		nominated.setNominated(false);
 		nominated = null;
 	}
 
+	@Nullable
 	public Seated getNominated() {
 		return nominated;
 	}
 
 	public void setSentenced(Seated seated, int votes) {
 		sentenced = seated;
+		sentenced.setSentenced(true);
 		precedentMajority = votes;
 	}
 
 	public void removeSentenced() {
+		if (sentenced == null) return;
+		sentenced.setSentenced(false);
 		sentenced = null;
 	}
 
+	@Nullable
 	public Seated getSentenced() {
 		return sentenced;
 	}

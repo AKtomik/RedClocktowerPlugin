@@ -18,6 +18,9 @@ public abstract class Seated {
 	private boolean voteToken = true;
 	private boolean votePull = false;
 
+	private boolean currentlyNominated = false;
+	private boolean currentlySentenced = false;
+
 	private final int votePower = 1;// we will be able to change vote power here
 
 	// construct
@@ -132,6 +135,17 @@ public abstract class Seated {
 		applySeatState();
 	}
 
+	// vote
+	void setNominated(boolean state) {
+		currentlyNominated = state;
+		slot.refreshLabel();
+	}
+
+	void setSentenced(boolean state) {
+		currentlySentenced = state;
+		slot.refreshLabel();
+	}
+
 	// slot
 	protected void applySeatState() {
 		slot.refreshState(getSeatState());
@@ -153,8 +167,14 @@ public abstract class Seated {
 	}
 
 	public Component getInGameName() {
-		if (alive) return Component.text(name);
-		else return Component.text("☠ " + name).color(NamedTextColor.GRAY);
+		Component displayName = Component.text(name);
+
+		if (!alive) displayName = Component.text("☠ " ).append(displayName).color(NamedTextColor.GRAY);
+
+		if (currentlySentenced) displayName = displayName.color(NamedTextColor.RED);
+		else if (currentlyNominated) displayName = displayName.color(NamedTextColor.GOLD);
+
+		return displayName;
 	}
 
 	public Component getTextToken() {
