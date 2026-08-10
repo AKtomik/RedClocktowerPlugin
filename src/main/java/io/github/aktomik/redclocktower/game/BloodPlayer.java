@@ -4,6 +4,8 @@ import io.github.aktomik.redclocktower.game.town.TownHall;
 import io.github.aktomik.redclocktower.utils.renametag.PlayerRenameTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.ShadowColor;
+import net.kyori.adventure.util.ARGBLike;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -223,9 +225,13 @@ public class BloodPlayer {
 
 		// build
 		if (!Objects.equals(getName(), player.getName()))
-			tabName = tabName.append(Component.text(" ")).append(Component.text(player.getName()).color(NamedTextColor.DARK_GRAY));
+			tabName = tabName
+				.append(Component.text(" "))
+				.append(Component.text(player.getName()).color(NamedTextColor.DARK_GRAY).shadowColor(ShadowColor.shadowColor(0)));
 		if (tabPrefixToken != Component.empty())
-			tabName = tabPrefixToken.append(Component.text(" ")).append(tabName);
+			tabName = tabPrefixToken
+				.append(Component.text(" "))
+				.append(tabName);
 
 		// edit
 		PlayerRenameTag.changeDisplay(player, headName);
