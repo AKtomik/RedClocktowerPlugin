@@ -231,8 +231,8 @@ public class SlotCircle {
 		new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
 			.then(40L, () -> {
 				String richString = (snap.haveEquality)
-				?   "<gold><vote_equality> vote<vote_equality_s> are needed for <red><last><red> to step down from the pylori<br>" +
-					"<gold>and <vote_majority> vote<vote_majority_s> are required to place <b><target></b> on the pylori"
+				? "<gold><vote_equality> vote<vote_equality_s> are needed to remove <red><last></red> from the pylori<br>" +
+					"<gold>and <vote_majority> vote<vote_majority_s> are required to place <b><target></b> instead"
 				: "<gold>a majority of <vote_majority> vote<vote_majority_s> is required to place <b><target></b> on the pylori";
 				game.broadcast(richString, resolvers);
 			})
@@ -268,11 +268,16 @@ public class SlotCircle {
 	private Runnable finishVoteProcess() {
 		return () -> {
 			VoteSnapshot snap = snapshotVoteState();
-			TagResolver resolvers = snapshotResolver(snap);
 
 			// count & power & use token
 			List<Seated> voters = getAllSeated().filter(Seated::getVotePull).toList();
 			int votes = getAllSeated().mapToInt(Seated::useVote).sum();
+
+			TagResolver resolvers = TagResolver.resolver(
+				snapshotResolver(snap),
+				Placeholder.parsed("vote_count", Integer.toString(votes)),
+				Placeholder.parsed("vote_count_s", (votes > 1) ? "s" : "")
+			);
 
 			//step 0
 			game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.4f);
@@ -291,8 +296,9 @@ public class SlotCircle {
 			if (votes >= snap.voteMajority)
 				// place/replace
 				runnableExe = () -> {
+					Seated seated = nominated;
 					removeNominated();
-					setSentenced(nominated, votes);
+					setSentenced(seated, votes);
 					game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 2f);
 					game.broadcast((snap.haveEquality)
 					? "<gold>this is enough for <b><red><target></red></b> to replace <yellow><last></yellow> on the pylori"
