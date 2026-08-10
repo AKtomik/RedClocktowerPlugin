@@ -206,19 +206,23 @@ public class SlotCircle {
 		return new VoteSnapshot(voteAlive, voteMajority, voteEquality != -1, voteEquality);
 	}
 
-	public void startVoteProcess()
-	{
-		VoteSnapshot snap = snapshotVoteState();
-
-		int pyloriSlotIndex = nominated.getSlot().getIndex();
-
-		TagResolver resolvers = TagResolver.resolver(
-			Placeholder.parsed("target", nominated.getName()),
+	private TagResolver snapshotResolver(VoteSnapshot snap) {
+		return TagResolver.resolver(
+			Placeholder.parsed("target", (nominated != null) ? nominated.getName() : "<none>"),
+			Placeholder.parsed("last", (sentenced != null) ? sentenced.getName() : "<none>"),
 			Placeholder.parsed("vote_alive", Integer.toString(snap.voteAlive)),
 			Placeholder.parsed("vote_alive_s", (snap.voteAlive > 1) ? "s" : ""),
 			Placeholder.parsed("vote_majority", Integer.toString(snap.voteMajority)),
-			Placeholder.parsed("vote_majority_s", (snap.voteMajority > 1) ? "s" : "")
+			Placeholder.parsed("vote_majority_s", (snap.voteMajority > 1) ? "s" : ""),
+			Placeholder.parsed("vote_equality", Integer.toString(snap.voteEquality)),
+			Placeholder.parsed("vote_equality_s", (snap.voteEquality > 1) ? "s" : "")
 		);
+	}
+
+	public void startVoteProcess()
+	{
+		VoteSnapshot snap = snapshotVoteState();
+		TagResolver resolvers = snapshotResolver(snap);
 
 		setVoteStep(VoteStep.VOTE_PROCESS);
 		unlockAll();
@@ -226,12 +230,17 @@ public class SlotCircle {
 		
 		new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
 			.then(40L, () -> {
-				game.broadcast("<gold>a majority of <vote_majority> vote<vote_majority_s> is required to place <b><target></b> on the pylori", resolvers);
+				String richString = (snap.haveEquality)
+				?   "<gold><vote_equality> vote<vote_equality_s> are needed for <red><last><red> to step down from the pylori<br>" +
+					"<gold>and <vote_majority> vote<vote_majority_s> are required to place <b><target></b> on the pylori"
+				: "<gold>a majority of <vote_majority> vote<vote_majority_s> is required to place <b><target></b> on the pylori";
+				game.broadcast(richString, resolvers);
 			})
 			.then(40L, () -> game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.3f))
 			.then(20L, () -> game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.2f))
 			.then(20L, () -> {
 				game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.1f);
+				int pyloriSlotIndex = nominated.getSlot().getIndex();
 				new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
 					.then(20L, slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex)).run();
 			})
@@ -259,20 +268,11 @@ public class SlotCircle {
 	private Runnable finishVoteProcess() {
 		return () -> {
 			VoteSnapshot snap = snapshotVoteState();
+			TagResolver resolvers = snapshotResolver(snap);
 
 			// count & power & use token
 			List<Seated> voters = getAllSeated().filter(Seated::getVotePull).toList();
 			int votes = getAllSeated().mapToInt(Seated::useVote).sum();
-
-			TagResolver resolvers = TagResolver.resolver(
-				Placeholder.parsed("target", nominated.getName()),
-				Placeholder.parsed("vote_alive", Integer.toString(snap.voteAlive)),
-				Placeholder.parsed("vote_alive_s", (snap.voteAlive > 1) ? "s" : ""),
-				Placeholder.parsed("vote_majority", Integer.toString(snap.voteMajority)),
-				Placeholder.parsed("vote_majority_s", (snap.voteMajority > 1) ? "s" : ""),
-				Placeholder.parsed("vote_count", Integer.toString(votes)),
-				Placeholder.parsed("vote_count_s", ((votes) > 1) ? "s" : "")
-			);
 
 			//step 0
 			game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.4f);
