@@ -8,6 +8,7 @@ import io.github.aktomik.redclocktower.commandbuild.tools.CommandToolbox;
 import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.Seated;
 import io.github.aktomik.redclocktower.game.SlotCircle;
+import io.github.aktomik.redclocktower.game.VoteStep;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
@@ -49,6 +50,10 @@ public class StorytellerSubVote extends BrigadierSub {
 				.then(Commands.argument("seated", new SeatedArgumentType())
 					.executes(ctx -> executionStart(ctx, SeatedArgumentType.getSeated(ctx, "seated")))
 			)
+		)
+
+		.then(Commands.literal("cancel")
+			.executes(this::cancelProcess)
 		)
 		;
 	}
@@ -167,6 +172,59 @@ public class StorytellerSubVote extends BrigadierSub {
 			Placeholder.parsed("target", sentenced.getName())
 		);
 		circle.startExecuteProcess(false);
+		return Command.SINGLE_SUCCESS;
+	}
+
+
+	private int cancelProcess(CommandContext<CommandSourceStack> ctx) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
+		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
+
+		SlotCircle circle = game.getCircle();
+
+		switch (circle.getVoteStep()) {
+			case VoteStep.NOTHING:
+			{
+				if (circle.getNominated() != null)
+				{
+					circle.removeNominated();
+					sender.sendRichMessage("<aqua>the nomination was <red>canceled</red>.");
+				} else if (circle.getSentenced() != null) {
+					circle.removeSentenced();
+					sender.sendRichMessage("<aqua>the pylori was <red>cleared</red>.");
+				} else {
+					// changeExclusionMode(false);
+					circle.unlockAll();
+					sender.sendRichMessage("<aqua>reseting votes pistons.<white> there is nothing else to cancel.");
+				}
+			} break;
+
+			case VoteStep.VOTE_PROCESS:
+			{
+				circle.removeNominated();
+				// changeExclusionMode(false);
+				circle.unlockAll();
+				circle.setVoteStep(VoteStep.CANCEL);
+				sender.sendRichMessage("<aqua><red>canceling</red> the vote...");
+			} break;
+
+			case VoteStep.EXECUTION_PROCESS:
+			{
+				circle.setVoteStep(VoteStep.CANCEL);
+				sender.sendRichMessage("<aqua><red>canceling</red> the execution...");
+			} break;
+
+			case VoteStep.CANCEL:
+			{
+				circle.setVoteStep(VoteStep.NOTHING);
+				sender.sendRichMessage("<aqua><red>force</red> the cancel");
+			} break;
+		}
+
 		return Command.SINGLE_SUCCESS;
 	}
 }

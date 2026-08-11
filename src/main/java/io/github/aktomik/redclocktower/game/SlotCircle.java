@@ -52,17 +52,17 @@ public class SlotCircle {
 	}
 
 	// global simple interfaces
-	private final Stream<BloodSlot> getSlotsStream()
+	private Stream<BloodSlot> getSlotsStream()
 	{
 		return Arrays.stream(slots);
 	}
 
-	public final List<BloodSlot> getSlotsList()
+	public List<BloodSlot> getSlotsList()
 	{
 		return Arrays.stream(slots).toList();
 	}
 
-	public final Integer getSlotCount()
+	public Integer getSlotCount()
 	{
 		return slots.length;
 	}
@@ -137,8 +137,12 @@ public class SlotCircle {
 	}
 
 	// vote session
-	private void setVoteStep(VoteStep step) {
+	public void setVoteStep(VoteStep step) {
 		voteStep = step;
+	}
+
+	public VoteStep getVoteStep() {
+		return voteStep;
 	}
 
 	public boolean isVoteSystemBusy() {
