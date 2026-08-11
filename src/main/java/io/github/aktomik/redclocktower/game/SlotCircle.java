@@ -248,8 +248,8 @@ public class SlotCircle {
 			.then(40L, () -> {
 				String richString = (snap.haveEquality)
 				?   "<gold><vote_equality> vote<vote_equality_s> are needed to remove <red><last></red> from the pylori<br>" +
-					"<gold>and <vote_majority> vote<vote_majority_s> are required to place <b><target></b> instead"
-				: "<gold>a majority of <vote_majority> vote<vote_majority_s> is required to place <b><target></b> on the pylori";
+					"<gold>and <vote_majority> vote<vote_majority_s> are required to place <b><yellow><target></yellow></b> instead"
+				: "<gold>a majority of <vote_majority> vote<vote_majority_s> is required to place <b><yellow><target></yellow></b> on the pylori";
 				game.broadcast(richString, resolvers);
 			})
 			.then(40L, () -> game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.3f))
@@ -316,7 +316,7 @@ public class SlotCircle {
 					setSentenced(seated, votes);
 					game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 2f);
 					game.broadcast((snap.haveEquality)
-					? "<gold>this is enough for <b><red><target></red></b> to replace <yellow><last></yellow> on the pylori"
+					? "<gold>this is enough for <b><red><target></red></b> to replace <green><last></green> on the pylori"
 					: "<gold>this is enough to place <b><red><target></red></b> on the pylori"
 					, resolvers);
 				};
@@ -327,7 +327,7 @@ public class SlotCircle {
 					removeNominated();
 					removeSentenced();
 					game.pingSound(Sound.ENTITY_PLAYER_LEVELUP, VOTE_VOLUME, .9f);
-					game.broadcast("<gold><b>EQUALITY!</b> <b><yellow><last></yellow></b> steps down from the pylori", resolvers);
+					game.broadcast("<gold><b>EQUALITY!</b> <green><last></green> steps down from the pylori", resolvers);
 				};
 
 			else
@@ -337,7 +337,7 @@ public class SlotCircle {
 					game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, .9f);
 					game.broadcast((snap.haveEquality)
 					? "<gold>this is not enough to replace <red><last></red> on the pylori"
-					: "<gold>this is not enough to mount <yellow><target></yellow> on the pylori"
+					: "<gold>this is not enough to mount <green><target></green> on the pylori"
 					, resolvers);
 				};
 
@@ -388,7 +388,6 @@ public class SlotCircle {
 
 		World world = game.getTownHall().getWorld();
 		Location honeyLocation = game.getTownHall().getPosition(TownHallPlace.PYLORI).add(new Vector(0, -1, 0));
-		honeyLocation.setY(honeyLocation.getY() - 1);
 		BlockData beforeHoney = world.getBlockData(honeyLocation);
 		world.setBlockData(honeyLocation, BlockType.HONEY_BLOCK.createBlockData());
 

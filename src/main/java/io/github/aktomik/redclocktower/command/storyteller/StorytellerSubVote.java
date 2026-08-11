@@ -39,7 +39,7 @@ public class StorytellerSubVote extends BrigadierSub {
 			.then(Commands.argument("seated", new SeatedArgumentType())
 				.executes(ctx -> pyloriChange(ctx, SeatedArgumentType.getSeated(ctx, "seated"), null))
 				.then(Commands.argument("votes", IntegerArgumentType.integer(-1, 1000))
-					.executes(ctx -> pyloriChange(ctx, SeatedArgumentType.getSeated(ctx, "seated"), BrigadierToolbox.resolveInt("votes", ctx))
+					.executes(ctx -> pyloriChange(ctx, SeatedArgumentType.getSeated(ctx, "seated"), BrigadierToolbox.resolveInt("votes", ctx)))
 				)
 			)
 		)
@@ -53,11 +53,10 @@ public class StorytellerSubVote extends BrigadierSub {
 
 		.then(Commands.literal("execute")
 			.executes(ctx -> executionStart(ctx, null, true))
-				.then(Commands.argument("seated", new SeatedArgumentType())
-					.executes(ctx -> executionStart(ctx, SeatedArgumentType.getSeated(ctx, "seated"), true))
-					.then(Commands.argument("is deadly", BoolArgumentType.bool())
-						.executes(ctx -> executionStart(ctx, SeatedArgumentType.getSeated(ctx, "seated"), BrigadierToolbox.resolveBool("is deadly", ctx)))
-					)
+			.then(Commands.argument("seated", new SeatedArgumentType())
+				.executes(ctx -> executionStart(ctx, SeatedArgumentType.getSeated(ctx, "seated"), true))
+				.then(Commands.argument("is deadly", BoolArgumentType.bool())
+					.executes(ctx -> executionStart(ctx, SeatedArgumentType.getSeated(ctx, "seated"), BrigadierToolbox.resolveBool("is deadly", ctx)))
 				)
 			)
 		)
@@ -179,7 +178,7 @@ public class StorytellerSubVote extends BrigadierSub {
 		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
 
 		SlotCircle circle = game.getCircle();
-		if (seated != null) circle.setNominated(seated);
+		if (seated != null) circle.setSentenced(seated, -1);
 		Seated sentenced = circle.getSentenced();
 
 		if (sentenced == null)
