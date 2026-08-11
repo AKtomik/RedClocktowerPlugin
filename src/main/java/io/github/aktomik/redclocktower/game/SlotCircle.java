@@ -3,19 +3,12 @@ package io.github.aktomik.redclocktower.game;
 import io.github.aktomik.redclocktower.RedClocktower;
 import io.github.aktomik.redclocktower.game.town.TownChair;
 import io.github.aktomik.redclocktower.game.town.TownHallPlace;
-import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
-import io.github.aktomik.redclocktower.oldgame.OldBloodSlot;
-import io.github.aktomik.redclocktower.oldgame.OldGamePlace;
-import io.github.aktomik.redclocktower.oldgame.OldGameVoteStep;
 import io.github.aktomik.redclocktower.utils.TickSequence;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.*;
 import org.bukkit.block.BlockType;
 import org.bukkit.block.data.BlockData;
-import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Entity;
-import org.bukkit.entity.EntityType;
 import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -379,7 +372,7 @@ public class SlotCircle {
 		player.teleport(location);
 	}
 
-	public void startExecuteProcess(boolean reallyDies)
+	public void startExecuteProcess(boolean deadly)
 	{
 		Seated executedSeated = sentenced;
 		Player executedPlayer = extractOnlinePlayer(executedSeated);
@@ -409,7 +402,7 @@ public class SlotCircle {
 			falling.setFallDistance(999);
 		});
 
-		if (!reallyDies && executedPlayer != null)
+		if (!deadly && executedPlayer != null)
 			executedPlayer.addPotionEffect(new PotionEffect(PotionEffectType.RESISTANCE, 100, 9, false, false, false));
 
 		new TickSequence(RedClocktower.plugin(), this::checkExecutionProcess)

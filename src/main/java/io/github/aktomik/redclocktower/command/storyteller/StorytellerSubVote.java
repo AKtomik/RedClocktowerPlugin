@@ -1,6 +1,8 @@
 package io.github.aktomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
+import com.mojang.brigadier.arguments.BoolArgumentType;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.github.aktomik.redclocktower.commandbuild.arguments.SeatedArgumentType;
@@ -10,6 +12,7 @@ import io.github.aktomik.redclocktower.game.Seated;
 import io.github.aktomik.redclocktower.game.SlotCircle;
 import io.github.aktomik.redclocktower.game.VoteStep;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
+import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
@@ -34,7 +37,10 @@ public class StorytellerSubVote extends BrigadierSub {
 		.then(Commands.literal("pylori")
 			.executes(this::pyloriCheck)
 			.then(Commands.argument("seated", new SeatedArgumentType())
-				.executes(ctx -> pyloriChange(ctx, SeatedArgumentType.getSeated(ctx, "seated")))
+				.executes(ctx -> pyloriChange(ctx, SeatedArgumentType.getSeated(ctx, "seated"), null))
+				.then(Commands.argument("votes", IntegerArgumentType.integer(-1, 1000))
+					.executes(ctx -> pyloriChange(ctx, SeatedArgumentType.getSeated(ctx, "seated"), BrigadierToolbox.resolveInt("votes", ctx))
+				)
 			)
 		)
 
@@ -46,9 +52,13 @@ public class StorytellerSubVote extends BrigadierSub {
 		)
 
 		.then(Commands.literal("execute")
-			.executes(ctx -> executionStart(ctx, null))
+			.executes(ctx -> executionStart(ctx, null, true))
 				.then(Commands.argument("seated", new SeatedArgumentType())
-					.executes(ctx -> executionStart(ctx, SeatedArgumentType.getSeated(ctx, "seated")))
+					.executes(ctx -> executionStart(ctx, SeatedArgumentType.getSeated(ctx, "seated"), true))
+					.then(Commands.argument("is deadly", BoolArgumentType.bool())
+						.executes(ctx -> executionStart(ctx, SeatedArgumentType.getSeated(ctx, "seated"), BrigadierToolbox.resolveBool("is deadly", ctx)))
+					)
+				)
 			)
 		)
 
@@ -114,7 +124,7 @@ public class StorytellerSubVote extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private int pyloriChange(CommandContext<CommandSourceStack> ctx, Seated seated) {
+	private int pyloriChange(CommandContext<CommandSourceStack> ctx, Seated seated, Integer votesAgainst) {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
@@ -123,7 +133,8 @@ public class StorytellerSubVote extends BrigadierSub {
 		if (CommandToolbox.failIfNotVotingMoment(sender, game)) return 0;
 		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
 
-		game.getCircle().setSentenced(seated, game.getCircle().getVoteMajority());
+		if (votesAgainst == null) votesAgainst = game.getCircle().getVoteMajority();
+		game.getCircle().setSentenced(seated, votesAgainst);
 		sender.sendRichMessage("<b><target></b> put on the <red><b>pylori</b></red>.",
 			Placeholder.parsed("target", seated.getName())
 		);
@@ -158,7 +169,7 @@ public class StorytellerSubVote extends BrigadierSub {
 		return Command.SINGLE_SUCCESS;
 	}
 
-	private int executionStart(CommandContext<CommandSourceStack> ctx, Seated seated) {
+	private int executionStart(CommandContext<CommandSourceStack> ctx, Seated seated, boolean deadly) {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
@@ -181,7 +192,7 @@ public class StorytellerSubVote extends BrigadierSub {
 		sender.sendRichMessage("<aqua>starting the execution of <b><target></b>",
 			Placeholder.parsed("target", sentenced.getName())
 		);
-		circle.startExecuteProcess(false);
+		circle.startExecuteProcess(deadly);
 		return Command.SINGLE_SUCCESS;
 	}
 
