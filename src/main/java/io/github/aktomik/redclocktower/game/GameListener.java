@@ -51,6 +51,7 @@ public class GameListener implements Listener {
 	public void onRespawn(PlayerRespawnEvent event) {
 		Player player = event.getPlayer();
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		bloodPlayer.refreshAllEffects();
 		TownHall townHall = bloodPlayer.getSeatedTownHall();
 		if (townHall == null) return;
 		event.setRespawnLocation(townHall.getPosition(TownHallPlace.SPAWN));

@@ -65,6 +65,8 @@ public class StorytellerSubVote extends BrigadierSub {
 
 		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
 		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+		if (CommandToolbox.failIfNotVotingMoment(sender, game)) return 0;
+		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
 
 		Seated seated = game.getCircle().getNominated();
 		if (seated == null)
@@ -82,6 +84,8 @@ public class StorytellerSubVote extends BrigadierSub {
 
 		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
 		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+		if (CommandToolbox.failIfNotVotingMoment(sender, game)) return 0;
+		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
 
 		game.getCircle().setNominated(seated);
 		sender.sendRichMessage("<b><target></b> is <gold><b>nominated</b></gold>.",
@@ -97,6 +101,8 @@ public class StorytellerSubVote extends BrigadierSub {
 
 		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
 		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+		if (CommandToolbox.failIfNotVotingMoment(sender, game)) return 0;
+		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
 
 		Seated seated = game.getCircle().getSentenced();
 		if (seated == null)
@@ -114,6 +120,8 @@ public class StorytellerSubVote extends BrigadierSub {
 
 		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
 		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+		if (CommandToolbox.failIfNotVotingMoment(sender, game)) return 0;
+		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
 
 		game.getCircle().setSentenced(seated, game.getCircle().getVoteMajority());
 		sender.sendRichMessage("<b><target></b> put on the <red><b>pylori</b></red>.",
@@ -129,6 +137,7 @@ public class StorytellerSubVote extends BrigadierSub {
 
 		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
 		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+		if (CommandToolbox.failIfNotVotingMoment(sender, game)) return 0;
 		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
 
 		SlotCircle circle = game.getCircle();
@@ -155,6 +164,7 @@ public class StorytellerSubVote extends BrigadierSub {
 
 		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
 		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+		if (CommandToolbox.failIfNotVotingMoment(sender, game)) return 0;
 		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
 
 		SlotCircle circle = game.getCircle();
@@ -182,6 +192,7 @@ public class StorytellerSubVote extends BrigadierSub {
 
 		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
 		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+		if (CommandToolbox.failIfNotVotingMoment(sender, game)) return 0;
 		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
 
 		SlotCircle circle = game.getCircle();
@@ -199,7 +210,7 @@ public class StorytellerSubVote extends BrigadierSub {
 				} else {
 					// changeExclusionMode(false);
 					circle.unlockAll();
-					sender.sendRichMessage("<aqua>reseting votes pistons.<white> there is nothing else to cancel.");
+					sender.sendRichMessage("<aqua>unlocking all votes.<gray> there is nothing else to cancel.");
 				}
 			} break;
 
