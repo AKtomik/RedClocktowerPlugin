@@ -18,10 +18,11 @@ public class StorytellerSubTime extends BrigadierSub {
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-			.executes(subTimeCheck)
-			.then(Commands.argument("period", EnumArgument.simple(GamePeriod.class, "Invalid game period"))
-				.executes(subTimeChange)
-			);
+		.executes(subTimeCheck)
+		.then(Commands.argument("period", EnumArgument.simple(GamePeriod.class, "Invalid game period"))
+			.executes(subTimeChange)
+		)
+		;
 		}
 
 	Command<CommandSourceStack> subTimeCheck = GameCommand.wrap(((ctx, sender, game) -> {

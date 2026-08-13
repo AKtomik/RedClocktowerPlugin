@@ -38,7 +38,8 @@ public class StorytellerSubGame extends BrigadierSub {
 		)
 		.then(Commands.literal("clear")
 			.executes(subClear)
-		);
+		)
+		;
 	}
 
 	// subs

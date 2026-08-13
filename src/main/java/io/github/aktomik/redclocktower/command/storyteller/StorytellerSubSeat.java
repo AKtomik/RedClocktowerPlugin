@@ -54,7 +54,8 @@ public class StorytellerSubSeat extends BrigadierSub {
 					.executes(subSwitch)
 				)
 			)
-		);
+		)
+		;
 	}
 
 	// sug

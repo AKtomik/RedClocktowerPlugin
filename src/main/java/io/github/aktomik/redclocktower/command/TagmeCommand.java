@@ -31,32 +31,30 @@ public class TagmeCommand extends BrigadierCommand {
     public LiteralArgumentBuilder<CommandSourceStack> root() {
         return base()
         .requires(ctx -> ctx.getExecutor() instanceof Player)
-        .then(
-        Commands.argument("display name", StringArgumentType.word())
-        .suggests((ctx, builder) -> {
-            Player player = Objects.requireNonNull((Player)ctx.getSource().getExecutor());
-            builder.suggest(player.getName());
-            BloodPlayer bloodPlayer = BloodPlayer.get(player);
-            if (bloodPlayer.getName() != null) builder.suggest(bloodPlayer.getName());
-            return builder.buildFuture();
-        })
-        .executes(
-        ctx -> {
-            Player player = Objects.requireNonNull((Player)ctx.getSource().getExecutor());
-            BloodPlayer bloodPlayer = BloodPlayer.get(player);
-            String input = StringArgumentType.getString(ctx, "display name");
+        .then(Commands.argument("display name", StringArgumentType.word())
+            .suggests((ctx, builder) -> {
+                Player player = Objects.requireNonNull((Player)ctx.getSource().getExecutor());
+                builder.suggest(player.getName());
+                BloodPlayer bloodPlayer = BloodPlayer.get(player);
+                if (bloodPlayer.getName() != null) builder.suggest(bloodPlayer.getName());
+                return builder.buildFuture();
+            })
+            .executes(ctx -> {
+                Player player = Objects.requireNonNull((Player)ctx.getSource().getExecutor());
+                BloodPlayer bloodPlayer = BloodPlayer.get(player);
+                String input = StringArgumentType.getString(ctx, "display name");
 
-            if (input.equalsIgnoreCase(player.getName()))
-            {
-                bloodPlayer.setName(player.getName());
-                player.sendRichMessage("<white>changing your display name back to default");
+                if (input.equalsIgnoreCase(player.getName()))
+                {
+                    bloodPlayer.setName(player.getName());
+                    player.sendRichMessage("<white>changing your display name back to default");
+                    return Command.SINGLE_SUCCESS;
+                }
+
+                bloodPlayer.setName(input);
+                player.sendRichMessage("<white>changing your display name to <b><name></b>.", Placeholder.parsed("name", input));
                 return Command.SINGLE_SUCCESS;
-            }
-
-            bloodPlayer.setName(input);
-			player.sendRichMessage("<white>changing your display name to <b><name></b>.", Placeholder.parsed("name", input));
-            return Command.SINGLE_SUCCESS;
-        })
+            })
         );
     }
 }

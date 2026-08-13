@@ -35,19 +35,20 @@ public class BroadcastCommand extends BrigadierCommand {
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
 		.then(Commands.argument("rich message", StringArgumentType.greedyString())
-		.executes(
-		ctx -> {
-			Entity executor = ctx.getSource().getExecutor();
-			if (executor == null) return Command.SINGLE_SUCCESS;
-			String rawMessage = StringArgumentType.getString(ctx, "rich message");
+			.executes(
+			ctx -> {
+				Entity executor = ctx.getSource().getExecutor();
+				if (executor == null) return Command.SINGLE_SUCCESS;
+				String rawMessage = StringArgumentType.getString(ctx, "rich message");
 
-			Bukkit.getServer().sendMessage(MiniMessage.miniMessage().deserialize(rawMessage));
-			for (Player player : Bukkit.getOnlinePlayers()) {
-				Location loc = Objects.requireNonNull(player.getLocation());
-				player.playSound(loc, Sound.ENTITY_ARROW_HIT_PLAYER, SoundCategory.MASTER, .5f, 1f);
+				Bukkit.getServer().sendMessage(MiniMessage.miniMessage().deserialize(rawMessage));
+				for (Player player : Bukkit.getOnlinePlayers()) {
+					Location loc = Objects.requireNonNull(player.getLocation());
+					player.playSound(loc, Sound.ENTITY_ARROW_HIT_PLAYER, SoundCategory.MASTER, .5f, 1f);
+				}
+				return Command.SINGLE_SUCCESS;
 			}
-			return Command.SINGLE_SUCCESS;
-		}
-		));
+			)
+		);
 	}
 }

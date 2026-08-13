@@ -24,6 +24,7 @@ public class StorytellerSubNext extends BrigadierSub {
 				GameAction.next.accept(game, sender);
 				return Command.SINGLE_SUCCESS;
 			})
-		);
+		)
+		;
 	}
 }
