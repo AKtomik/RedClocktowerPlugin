@@ -155,7 +155,25 @@ public abstract class Seated {
 	protected void onSlotLabelRefresh() {}
 
 	// name content
-	public TextColor getTextStateColor() {
+
+	public Component getTag() {
+		Component displayName = Component.text(name);
+		if (!alive) displayName = Component.text("☠ " ).append(displayName);
+		return displayName.color(getTagColor());
+	}
+
+	public TextColor getTagColor() {
+		if (currentlySentenced) return NamedTextColor.RED;
+		else if (currentlyNominated) return NamedTextColor.GOLD;
+		else if (!alive) return NamedTextColor.GRAY;
+		else return NamedTextColor.WHITE;
+	}
+
+	public Component getPrefixDigit() {
+		return Component.text(digitInCircle(getSlot().getIndex() + 1)).color(getPrefixColor());
+	}
+
+	public TextColor getPrefixColor() {
 		if (alive) {
 			if (votePull) return NamedTextColor.YELLOW;
 			else return NamedTextColor.RED;
@@ -164,25 +182,5 @@ public abstract class Seated {
 			else if (!voteToken) return NamedTextColor.DARK_GRAY;
 			else return NamedTextColor.BLUE;
 		}
-	}
-
-	public Component getInGameName() {
-		Component displayName = Component.text(name);
-
-		if (!alive) displayName = Component.text("☠ " ).append(displayName).color(NamedTextColor.GRAY);
-
-		if (currentlySentenced) displayName = displayName.color(NamedTextColor.RED);
-		else if (currentlyNominated) displayName = displayName.color(NamedTextColor.GOLD);
-
-		return displayName;
-	}
-
-	public Component getTextToken() {
-		String token = (traveller) ? "✳" : "✴";
-		return Component.text(token).color(getTextStateColor());
-	}
-
-	public Component getTextDigit() {
-		return Component.text(digitInCircle(getSlot().getIndex() + 1)).color(getTextStateColor());
 	}
 }

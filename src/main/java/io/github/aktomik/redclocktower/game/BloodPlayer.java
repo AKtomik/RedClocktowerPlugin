@@ -5,7 +5,6 @@ import io.github.aktomik.redclocktower.utils.renametag.PlayerRenameTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.ShadowColor;
-import net.kyori.adventure.util.ARGBLike;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -204,22 +203,27 @@ public class BloodPlayer {
 		if (seated != null)
 		{
 			int slotIndex = seated.getSlot().getIndex();
+
 			//hide the name tag when chair label is on
 			if (seated.getSlot().getLabelVisibility()) headName = Component.empty();
-			else headName = seated.getInGameName();
-			tabPrefixToken = tabPrefixToken.append(seated.getTextDigit());
+			else headName = seated.getTag();
+			tabName = tabName.color(seated.getTagColor());
+
+			tabPrefixToken = tabPrefixToken.append(seated.getPrefixDigit());
 			sortNumber = 990 - slotIndex;// I don't think we will ever have 990 players in a game
 		}
 
 		// looking
+		//✳✴❇♟
 		if (storytelling != null)
 		{
-			tabPrefixToken = tabPrefixToken.append(Component.text("❇").color(NamedTextColor.LIGHT_PURPLE));
+			tabPrefixToken = tabPrefixToken.append(Component.text("✴").color(NamedTextColor.LIGHT_PURPLE));
 			sortNumber = 999;
 		}
+		//🞉🞊👁
 		if (spectating != null)
 		{
-			tabPrefixToken = tabPrefixToken.append(Component.text("♟").color(NamedTextColor.GRAY));
+			tabPrefixToken = tabPrefixToken.append(Component.text("\uD83D\uDF8A").color(NamedTextColor.GRAY));
 			sortNumber = 1;
 		}
 

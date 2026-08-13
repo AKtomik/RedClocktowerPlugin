@@ -226,7 +226,7 @@ public class BloodSlot {
 		if (visible) {
 			assert seated != null;
 			label.teleport(getChair().getPosition(TownChairPlace.BENCH).toCenterLocation().add(new Vector(0, 3, 0)));
-			label.text(seated.getInGameName());
+			label.text(seated.getTag());
 		}
 
 		if (seated != null) seated.onSlotLabelRefresh();
