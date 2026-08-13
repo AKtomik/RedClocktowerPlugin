@@ -32,6 +32,7 @@ public class SlotCircle {
 	private final BloodSlot[] slots;
 
 	VoteStep voteStep = VoteStep.NOTHING;
+	boolean voteSession = false;
 	Integer precedentMajority = null;
 	@Nullable Seated nominated = null;
 	@Nullable Seated sentenced = null;
@@ -130,6 +131,24 @@ public class SlotCircle {
 	}
 
 	// vote session
+	public void startVoteSession() {
+		voteSession = true;
+		setVoteStep(VoteStep.NOTHING);
+	}
+
+	public void endVoteSession() {
+		voteSession = false;
+		setVoteStep(VoteStep.NOTHING);
+		removeNominated();
+		removeSentenced();
+		precedentMajority = null;
+	}
+
+	public boolean isInVoteSession() {
+		return voteSession;
+	}
+
+
 	public void setVoteStep(VoteStep step) {
 		voteStep = step;
 	}
@@ -142,16 +161,11 @@ public class SlotCircle {
 		return voteStep != VoteStep.NOTHING;
 	}
 
+
 	public boolean isExclusionVote() {
 		return false;
 	}
 
-	public void cleanVoteSession() {
-		setVoteStep(VoteStep.NOTHING);
-		removeNominated();
-		removeSentenced();
-		precedentMajority = null;
-	}
 
 	public int getVoteAlive() {
 		return (int)getAllSeated().filter(Seated::getAlive).count();

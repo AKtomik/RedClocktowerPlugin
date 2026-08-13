@@ -45,6 +45,7 @@ public class GameAction {
 
 	Map.entry(GamePeriod.MEET, (game, sender) -> {
 		game.getWorld().setTime(12500);
+		game.getCircle().startVoteSession();
 		game.getCircle().showLabels();
 		game.getCircle().unlockAll();
 		// game.clearVoteStep();
@@ -61,6 +62,7 @@ public class GameAction {
 
 	Map.entry(GamePeriod.NIGHT, (game, sender) -> {
 		game.getWorld().setTime(18000);
+		game.getCircle().endVoteSession();
 		//game.removeNominatedPlayer();
 		//game.removePyloriPlayer();
 		//game.clearVoteStep();

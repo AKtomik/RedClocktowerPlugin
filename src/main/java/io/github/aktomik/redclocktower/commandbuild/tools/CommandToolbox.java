@@ -43,7 +43,7 @@ public class CommandToolbox {
 		return failIf(sender, game.getCircle().isVoteSystemBusy(), "vote or execution is running");
 	}
 	public static boolean failIfNotVotingMoment(CommandSender sender, BloodGame game) {
-		return failIf(sender, (game.getPeriod() != GamePeriod.MEET), "this is not the time to vote");
+		return failIf(sender, (!game.getCircle().isInVoteSession()), "this is not the time to vote");
 	}
 
 	public static <T> List<CommandLoopResult<T>> processEach(
