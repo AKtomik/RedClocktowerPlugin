@@ -275,10 +275,12 @@ public class BloodPlayer {
 
 	// global effects
 	void refreshAllEffects() {
+		// must be called only if seated != null
 		refreshAliveEffect(seated.getAlive());
 	}
 
 	void clearAllEffects() {
+		// can be called anyway
 		clearAliveEffect();
 	}
 
