@@ -277,28 +277,35 @@ public class BloodPlayer {
 	void refreshAllEffects() {
 		// must be called only if seated != null
 		refreshAliveEffect(seated.getAlive());
+		refreshGlowerEffect(seated.isGlower());
 	}
 
 	void clearAllEffects() {
 		// can be called anyway
-		clearAliveEffect();
+		refreshAliveEffect(true);
+		refreshGlowerEffect(false);
 	}
 
 	// state effects
-	protected void clearAliveEffect() {
+	protected void refreshAliveEffect(boolean isAlive) {
 		Player player = getOnlinePlayer();
 		if (player == null) return;
-		player.removePotionEffect(PotionEffectType.INVISIBILITY);
-	}
-
-	protected void refreshAliveEffect(boolean alive) {
-		Player player = getOnlinePlayer();
-		if (player == null) return;
-		if (alive)
+		if (isAlive)
 		{
 			player.removePotionEffect(PotionEffectType.INVISIBILITY);
 		} else {
 			player.addPotionEffect(new PotionEffect(PotionEffectType.INVISIBILITY, -1, 9, true, false, false));
+		}
+	}
+
+	protected void refreshGlowerEffect(boolean isGlower) {
+		Player player = getOnlinePlayer();
+		if (player == null) return;
+		if (isGlower)
+		{
+			player.addPotionEffect(new PotionEffect(PotionEffectType.GLOWING, -1, 9, true, false, false));
+		} else {
+			player.removePotionEffect(PotionEffectType.GLOWING);
 		}
 	}
 }

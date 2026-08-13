@@ -3,6 +3,7 @@ package io.github.aktomik.redclocktower.game;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
+import org.bukkit.Color;
 import org.bukkit.scoreboard.Team;
 
 import static io.github.aktomik.redclocktower.utils.MiscUtils.digitInCircle;
@@ -20,6 +21,7 @@ public abstract class Seated {
 
 	private boolean currentlyNominated = false;
 	private boolean currentlySentenced = false;
+	private NamedTextColor glower = null;
 
 	private final int votePower = 1;// we will be able to change vote power here
 
@@ -139,11 +141,34 @@ public abstract class Seated {
 	void setNominated(boolean state) {
 		currentlyNominated = state;
 		slot.refreshLabel();
+		if (state) enableGlower(NamedTextColor.GOLD);
+		else disableGlower();
 	}
 
 	void setSentenced(boolean state) {
 		currentlySentenced = state;
 		slot.refreshLabel();
+		if (state) enableGlower(NamedTextColor.RED);
+		else disableGlower();
+	}
+
+
+	public void enableGlower(NamedTextColor color) {
+		// only one glower
+		slot.getGame().getCircle().getAllSeated().forEach(seated -> disableGlower());
+		this.glower = color;
+	}
+
+	public void disableGlower() {
+		this.glower = null;
+	}
+
+	public boolean isGlower() {
+		return glower != null;
+	}
+
+	public NamedTextColor getGlower() {
+		return glower;
 	}
 
 	// slot
