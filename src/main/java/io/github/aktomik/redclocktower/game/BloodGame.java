@@ -56,8 +56,9 @@ public class BloodGame {
 	static final Set<Material> SENSITIVE_INFO_ITEM = Set.of(Material.PAPER, Material.WRITABLE_BOOK, Material.WRITTEN_BOOK);
 	static final float CHAIR_LABEL_HEIGHT = 3f;
 
-	static final NamedTextColor NOMINATE_TEAM_COLOR = NamedTextColor.GOLD;
-	static final NamedTextColor PYLORI_TEAM_COLOR = NamedTextColor.RED;
+	static final NamedTextColor NOMINATE_GLOW_COLOR = NamedTextColor.GOLD;
+	static final NamedTextColor SENTENCED_GLOW_COLOR = NamedTextColor.RED;
+	static final boolean IS_ONLY_ONE_GLOW = true;
 	static final boolean VOTE_BROADCAST_VOTERS = true;
 
 	// manage

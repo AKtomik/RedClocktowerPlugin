@@ -3,7 +3,6 @@ package io.github.aktomik.redclocktower.game;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.Color;
 import org.bukkit.scoreboard.Team;
 
 import static io.github.aktomik.redclocktower.utils.MiscUtils.digitInCircle;
@@ -141,21 +140,47 @@ public abstract class Seated {
 	void setNominated(boolean state) {
 		currentlyNominated = state;
 		slot.refreshLabel();
-		if (state) enableGlower(NamedTextColor.GOLD);
-		else disableGlower();
+		if (state) {
+			if (BloodGame.IS_ONLY_ONE_GLOW) {
+				slot.getGame().getCircle().getAllSeated().forEach(seated -> disableGlower());
+			}
+			enableGlower(BloodGame.NOMINATE_GLOW_COLOR);
+		} else {
+			disableGlower();
+			if (BloodGame.IS_ONLY_ONE_GLOW) {
+				Seated last = slot.getGame().getCircle().getSentenced();
+				if (last != null)
+				{
+					last.enableGlower(BloodGame.SENTENCED_GLOW_COLOR);
+				}
+			}
+		}
 	}
 
 	void setSentenced(boolean state) {
 		currentlySentenced = state;
 		slot.refreshLabel();
-		if (state) enableGlower(NamedTextColor.RED);
-		else disableGlower();
+		if (state) {
+			if (BloodGame.IS_ONLY_ONE_GLOW) {
+				slot.getGame().getCircle().getAllSeated().forEach(seated -> disableGlower());
+			}
+			enableGlower(BloodGame.SENTENCED_GLOW_COLOR);
+		}
+		else {
+			disableGlower();
+			if (BloodGame.IS_ONLY_ONE_GLOW) {
+				Seated last = slot.getGame().getCircle().getNominated();
+				if (last != null)
+				{
+					last.enableGlower(BloodGame.NOMINATE_GLOW_COLOR);
+				}
+			}
+		}
 	}
 
 
 	public void enableGlower(NamedTextColor color) {
 		// only one glower
-		slot.getGame().getCircle().getAllSeated().forEach(seated -> disableGlower());
 		this.glower = color;
 	}
 
