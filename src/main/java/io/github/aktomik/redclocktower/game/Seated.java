@@ -141,6 +141,9 @@ public abstract class Seated {
 		currentlyNominated = state;
 		slot.refreshLabel();
 		if (state) {
+			if (currentlySentenced) {
+				slot.getGame().getCircle().removeSentenced();
+			}
 			if (BloodGame.IS_ONLY_ONE_GLOW) {
 				slot.getGame().getCircle().getAllSeated().forEach(seated -> disableGlower());
 			}
@@ -161,6 +164,9 @@ public abstract class Seated {
 		currentlySentenced = state;
 		slot.refreshLabel();
 		if (state) {
+			if (currentlyNominated) {
+				slot.getGame().getCircle().removeNominated();
+			}
 			if (BloodGame.IS_ONLY_ONE_GLOW) {
 				slot.getGame().getCircle().getAllSeated().forEach(seated -> disableGlower());
 			}
