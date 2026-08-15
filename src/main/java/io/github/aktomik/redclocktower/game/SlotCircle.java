@@ -6,6 +6,7 @@ import io.github.aktomik.redclocktower.game.town.TownHallPlace;
 import io.github.aktomik.redclocktower.utils.TickSequence;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.ShadowColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.*;
@@ -15,10 +16,7 @@ import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
-import org.bukkit.scoreboard.Criteria;
-import org.bukkit.scoreboard.DisplaySlot;
-import org.bukkit.scoreboard.Objective;
-import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.*;
 import org.bukkit.util.Vector;
 import org.jspecify.annotations.Nullable;
 
@@ -166,13 +164,15 @@ public class SlotCircle {
 		Objective old = sharedScoreboard.getObjective(scoreId);
 		if (old != null) old.unregister();
 
-		Component objectiveName = Component.text("Votes").color(NamedTextColor.GOLD);
+		Component objectiveName = Component.text("votes").color(NamedTextColor.DARK_GRAY).shadowColor(ShadowColor.shadowColor(0));
 		Objective objective = sharedScoreboard.registerNewObjective(scoreId, Criteria.DUMMY, objectiveName);
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
 		for (Seated seated : game.getCircle().getAllSeated().toList()) {
 			int votes = (seated.votedCount != null) ? seated.votedCount : 0;
-			objective.getScore(seated.getName()).setScore(votes);
+			Score score = objective.getScore(seated.getName());
+			score.setScore(votes);
+			score.customName(Component.text(seated.getName()).color(seated.getTagColor()));
 		}
 	}
 
