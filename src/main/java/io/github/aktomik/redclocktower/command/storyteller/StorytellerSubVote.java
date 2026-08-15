@@ -267,8 +267,9 @@ public class StorytellerSubVote extends BrigadierSub {
 		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
 
 		SlotCircle circle = game.getCircle();
-		circle.endVoteSession();
-		sender.sendRichMessage("<aqua><gold>finish</gold> the vote session");
+		circle.cleanScoreboard();
+		circle.removeNominated();
+		sender.sendRichMessage("<aqua>displaying votes as <gold>finished</gold>");
 		game.broadcast("<gold>votes are over. the die is cast.");
 		game.pingSound(Sound.ITEM_TRIDENT_RETURN, BloodGame.EVENT_VOLUME, .0f);
 		return Command.SINGLE_SUCCESS;
