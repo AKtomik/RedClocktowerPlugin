@@ -29,7 +29,7 @@ public class TownHall {
 
 	// construct
 	private TownHall(World world, String townName, PersistentDataContainer pdc) {
-		this.key = townKey(world, townName);
+		this.key = new TownKey(world.getUID(), townName);
 		if (townCreatedObjects.containsKey(key)) throw new RuntimeException("already a constructed TownHall object in townCreatedObjects");
 		townCreatedObjects.put(key, this);
 		this.world = world;
@@ -50,14 +50,16 @@ public class TownHall {
 	public TownKey getKey() {
 		return key;
 	}
+	public String getStringId() {
+		return world.getName()+"-"+townName;
+	}
+	public String getStringId(String prefix) {
+		return prefix + "-" + getStringId();
+	}
 
 	// static town
 	private static NamespacedKey namespaceKey(String townName) {
 		return new NamespacedKey(RedClocktower.plugin(), "townhall." + townName);
-	}
-
-	private static TownKey townKey(World world, String townName) {
-		return new TownKey(world.getUID(), townName);
 	}
 
 	public static Set<String> getWorldTowns(World world)
@@ -74,7 +76,7 @@ public class TownHall {
 	@Nullable
 	public static TownHall find(World world, String townName) {
 		// find in objects
-		TownKey key = townKey(world, townName);
+		TownKey key = new TownKey(world.getUID(), townName);
 		if (townCreatedObjects.containsKey(key))
 			return townCreatedObjects.get(key);
 		// find in pdc

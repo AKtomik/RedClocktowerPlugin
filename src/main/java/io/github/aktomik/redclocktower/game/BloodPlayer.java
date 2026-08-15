@@ -10,6 +10,7 @@ import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.Scoreboard;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -251,6 +252,10 @@ public class BloodPlayer {
 		if (seated == null) return;
 		refreshAllEffects();
 //		seated.getSlot().getGame().getTeam().addPlayer(getOfflinePlayer());
+		Player player = getOnlinePlayer();
+		if (player == null) return;
+		Scoreboard scoreboard = seated.getSlot().getGame().getCircle().getScoreboard();
+		player.setScoreboard(scoreboard);
 	}
 
 	void onSeatLeaved() {
@@ -258,6 +263,10 @@ public class BloodPlayer {
 		if (seated == null) return;
 		clearAllEffects();
 //		seated.getSlot().getGame().getTeam().removePlayer(getOfflinePlayer());
+		Player player = getOnlinePlayer();
+		if (player == null) return;
+		Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+		player.setScoreboard(scoreboard);
 	}
 
 	void onServerJoined() {
@@ -265,12 +274,16 @@ public class BloodPlayer {
 		refreshNameTag();
 		if (seated == null) return;
 		refreshAllEffects();
+		Scoreboard scoreboard = seated.getSlot().getGame().getCircle().getScoreboard();
+		Objects.requireNonNull(getOnlinePlayer()).setScoreboard(scoreboard);
 	}
 
 	void onServerLeaved() {
 		// called by onQuit
 		clearAllEffects();
 		//clearNameTag();// already in PlayerNameTagEditorListener
+		Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+		Objects.requireNonNull(getOnlinePlayer()).setScoreboard(scoreboard);
 	}
 
 	// global effects

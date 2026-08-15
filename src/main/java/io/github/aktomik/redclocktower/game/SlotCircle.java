@@ -4,6 +4,8 @@ import io.github.aktomik.redclocktower.RedClocktower;
 import io.github.aktomik.redclocktower.game.town.TownChair;
 import io.github.aktomik.redclocktower.game.town.TownHallPlace;
 import io.github.aktomik.redclocktower.utils.TickSequence;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import net.kyori.adventure.text.minimessage.tag.resolver.TagResolver;
 import org.bukkit.*;
@@ -13,6 +15,10 @@ import org.bukkit.entity.FallingBlock;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
+import org.bukkit.scoreboard.Criteria;
+import org.bukkit.scoreboard.DisplaySlot;
+import org.bukkit.scoreboard.Objective;
+import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.util.Vector;
 import org.jspecify.annotations.Nullable;
 
@@ -33,6 +39,7 @@ public class SlotCircle {
 	boolean voteSession = false;
 	@Nullable Seated nominated = null;
 	@Nullable Seated sentenced = null;
+	private final Scoreboard sharedScoreboard;
 
 	SlotCircle(BloodGame game) {
 		this.game = game;
@@ -40,6 +47,12 @@ public class SlotCircle {
 		this.slots = IntStream.range(0, chairs.size())
 			.mapToObj(i -> new BloodSlot(game, chairs.get(i), i))
 			.toArray(BloodSlot[]::new);
+		sharedScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+	}
+
+	// get
+	public Scoreboard getScoreboard() {
+		return sharedScoreboard;
 	}
 
 	// global simple interfaces
@@ -131,6 +144,7 @@ public class SlotCircle {
 	public void startVoteSession() {
 		voteSession = true;
 		setVoteStep(VoteStep.NOTHING);
+		refreshScoreboard();
 	}
 
 	public void endVoteSession() {
@@ -139,13 +153,36 @@ public class SlotCircle {
 		removeNominated();
 		removeSentenced();
 		getAllSeated().forEach(seated -> seated.votedCount = null);
+		cleanScoreboard();
 	}
 
 	public boolean isInVoteSession() {
 		return voteSession;
 	}
 
+	// vote score
+	public void refreshScoreboard() {
+		String scoreId = game.getTownHall().getStringId("bloodscore");
+		Objective old = sharedScoreboard.getObjective(scoreId);
+		if (old != null) old.unregister();
 
+		Component objectiveName = Component.text("Votes").color(NamedTextColor.GOLD);
+		Objective objective = sharedScoreboard.registerNewObjective(scoreId, Criteria.DUMMY, objectiveName);
+		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
+
+		for (Seated seated : game.getCircle().getAllSeated().toList()) {
+			int votes = (seated.votedCount != null) ? seated.votedCount : 0;
+			objective.getScore(seated.getName()).setScore(votes);
+		}
+	}
+
+	public void cleanScoreboard() {
+		String scoreId = game.getTownHall().getStringId("bloodscore");
+		Objective old = sharedScoreboard.getObjective(scoreId);
+		if (old != null) old.unregister();
+	}
+
+	// vote step
 	public void setVoteStep(VoteStep step) {
 		voteStep = step;
 	}
@@ -186,12 +223,14 @@ public class SlotCircle {
 	public void setNominated(Seated seated) {
 		nominated = seated;
 		nominated.setNominated(true);
+		refreshScoreboard();
 	}
 
 	public void removeNominated() {
 		if (nominated == null) return;
 		nominated.setNominated(false);
 		nominated = null;
+		refreshScoreboard();
 	}
 
 	@Nullable
@@ -203,12 +242,14 @@ public class SlotCircle {
 		sentenced = seated;
 		sentenced.votedCount = votes;
 		sentenced.setSentenced(true);
+		refreshScoreboard();
 	}
 
 	public void removeSentenced() {
 		if (sentenced == null) return;
 		sentenced.setSentenced(false);
 		sentenced = null;
+		refreshScoreboard();
 	}
 
 	@Nullable
