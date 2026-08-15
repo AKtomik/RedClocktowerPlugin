@@ -172,7 +172,8 @@ public class SlotCircle {
 			int votes = (seated.votedCount != null) ? seated.votedCount : 0;
 			Score score = objective.getScore(seated.getName());
 			score.setScore(votes);
-			score.customName(Component.text(seated.getName()).color(seated.getTagColor()));
+			//score.customName(Component.text(seated.getName()).color(seated.getTagColor()));
+			score.customName(seated.getTag());
 		}
 	}
 
