@@ -149,7 +149,8 @@ public class StorytellerSubVote extends BrigadierSub {
 		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
 
 		if (votesAgainst == null) votesAgainst = game.getCircle().getVoteMajority();
-		game.getCircle().setSentenced(seated, votesAgainst);
+		game.getCircle().setVotedCount(seated, votesAgainst);
+		game.getCircle().setSentenced(seated);
 		sender.sendRichMessage("<b><target></b> put on the <red><b>pylori</b></red>.",
 			Placeholder.parsed("target", seated.getName())
 		);
@@ -221,7 +222,7 @@ public class StorytellerSubVote extends BrigadierSub {
 		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
 
 		SlotCircle circle = game.getCircle();
-		if (seated != null) circle.setSentenced(seated, -1);
+		if (seated != null) circle.setSentenced(seated);
 		Seated sentenced = circle.getSentenced();
 
 		if (sentenced == null)
