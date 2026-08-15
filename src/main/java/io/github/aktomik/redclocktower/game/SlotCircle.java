@@ -450,7 +450,6 @@ public class SlotCircle {
 
 		setVoteStep(VoteStep.EXECUTION_PROCESS);
 		mountBeforeExecution();
-		removeSentenced();
 		game.broadcast("<red><b><target></b> is executed", resolvers);
 
 		Location location = game.getTownHall().getPosition(TownHallPlace.PYLORI).toCenterLocation();
