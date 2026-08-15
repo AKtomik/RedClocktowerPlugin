@@ -291,12 +291,14 @@ public class BloodPlayer {
 		// must be called only if seated != null
 		refreshAliveEffect(seated.getAlive());
 		refreshGlowerEffect(seated.isGlowing());
+		refreshXpLevel(seated.getSlot().getIndex());
 	}
 
 	void clearAllEffects() {
 		// can be called anyway
 		refreshAliveEffect(true);
 		refreshGlowerEffect(false);
+		refreshXpLevel(0);
 	}
 
 	// state effects
@@ -320,5 +322,12 @@ public class BloodPlayer {
 		} else {
 			player.removePotionEffect(PotionEffectType.GLOWING);
 		}
+	}
+
+	protected void refreshXpLevel(int level) {
+		Player player = getOnlinePlayer();
+		if (player == null) return;
+		player.setExp(0);
+		player.setLevel(level);
 	}
 }
