@@ -368,7 +368,7 @@ public class SlotCircle {
 				if (votes == 0)
 					votesRichString += "<gold>. no one voted.";
 				else
-					votesRichString += "<gold>. player<vote_count_s> who voted:<br><gold>" + String.join(" ", voters.stream().map(Seated::getName).toList());
+					votesRichString += "<gold>. player<vote_count_s> who voted:<br><yellow>" + String.join(" ", voters.stream().map(Seated::getName).toList());
 			}
 			game.broadcast(votesRichString, resolvers);
 
