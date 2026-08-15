@@ -47,8 +47,8 @@ public class StorytellerSubVote extends BrigadierSub {
 		)
 
 		.then(Commands.literal("pardon")
-			.then(Commands.argument("seated", new SeatedListArgumentType())
-				.executes(ctx -> nominateChange(ctx, SeatedArgumentType.getSeated(ctx, "seated")))
+			.then(Commands.argument("seated", new SeatedArgumentType())
+				.executes(ctx -> pardonOne(ctx, SeatedArgumentType.getSeated(ctx, "seated")))
 			)
 		)
 
@@ -157,6 +157,31 @@ public class StorytellerSubVote extends BrigadierSub {
 	}
 
 
+	private int pardonOne(CommandContext<CommandSourceStack> ctx, Seated seated) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
+		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+		if (CommandToolbox.failIfNotVotingMoment(sender, game)) return 0;
+		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
+
+		SlotCircle circle = game.getCircle();
+		if (circle.getNominated() == seated)
+		{
+			circle.removeNominated();
+			sender.sendRichMessage("<aqua><target> is not nominated anymore");
+		} else if (circle.getSentenced() == seated) {
+			circle.removeSentenced();
+			sender.sendRichMessage("<aqua><target> was removed from the pylori");
+		} else {
+			sender.sendRichMessage("<gray>there is nothing to pardon to <target>",
+				Placeholder.parsed("target", seated.getName()));
+		}
+		return Command.SINGLE_SUCCESS;
+	}
+
+
 	private int votingStart(CommandContext<CommandSourceStack> ctx, Seated seated) {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
@@ -237,7 +262,7 @@ public class StorytellerSubVote extends BrigadierSub {
 				} else {
 					// changeExclusionMode(false);
 					circle.unlockAll();
-					sender.sendRichMessage("<aqua>unlocking all votes.<gray> there is nothing else to cancel.");
+					sender.sendRichMessage("<gray>there is nothing to cancel.");
 				}
 			} break;
 
