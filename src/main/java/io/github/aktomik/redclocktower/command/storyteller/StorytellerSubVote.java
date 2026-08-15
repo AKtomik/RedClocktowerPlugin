@@ -17,6 +17,7 @@ import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
+import org.bukkit.Sound;
 import org.bukkit.command.CommandSender;
 
 public class StorytellerSubVote extends BrigadierSub {
@@ -69,7 +70,15 @@ public class StorytellerSubVote extends BrigadierSub {
 		)
 
 		.then(Commands.literal("cancel")
-			.executes(this::cancelProcess)
+			.executes(this::cancelOperation)
+		)
+
+		.then(Commands.literal("reset")
+			.executes(this::resetOperation)
+		)
+
+		.then(Commands.literal("finish")
+			.executes(this::finishOperation)
 		)
 		;
 	}
@@ -198,12 +207,13 @@ public class StorytellerSubVote extends BrigadierSub {
 		sender.sendRichMessage("<aqua>starting the execution of <b><target></b>",
 			Placeholder.parsed("target", sentenced.getName())
 		);
+		circle.endVoteSession();
 		circle.startExecuteProcess(deadly);
 		return Command.SINGLE_SUCCESS;
 	}
 
 
-	private int cancelProcess(CommandContext<CommandSourceStack> ctx) {
+	private int cancelOperation(CommandContext<CommandSourceStack> ctx) {
 		final CommandSender sender = ctx.getSource().getSender();
 		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
 
@@ -253,6 +263,40 @@ public class StorytellerSubVote extends BrigadierSub {
 			} break;
 		}
 
+		return Command.SINGLE_SUCCESS;
+	}
+
+
+	private int resetOperation(CommandContext<CommandSourceStack> ctx) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
+		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+		if (CommandToolbox.failIfNotVotingMoment(sender, game)) return 0;
+		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
+
+		SlotCircle circle = game.getCircle();
+		circle.endVoteSession();
+		circle.startVoteSession();
+		sender.sendRichMessage("<aqua><red>reset</red> the vote session");
+		return Command.SINGLE_SUCCESS;
+	}
+
+	private int finishOperation(CommandContext<CommandSourceStack> ctx) {
+		final CommandSender sender = ctx.getSource().getSender();
+		final BloodGame game = BloodGame.get(ctx.getSource().getLocation().getWorld());
+
+		if (CommandToolbox.failIfNoGame(sender, game)) return 0;
+		if (CommandToolbox.failIfNotStarted(sender, game)) return 0;
+		if (CommandToolbox.failIfNotVotingMoment(sender, game)) return 0;
+		if (CommandToolbox.failIfVoteBusy(sender, game)) return 0;
+
+		SlotCircle circle = game.getCircle();
+		circle.endVoteSession();
+		sender.sendRichMessage("<aqua><gold>finish</gold> the vote session");
+		game.broadcast("<gold>votes are over. the die is cast.");
+		game.pingSound(Sound.ITEM_TRIDENT_RETURN, BloodGame.EVENT_VOLUME, .0f);
 		return Command.SINGLE_SUCCESS;
 	}
 }
