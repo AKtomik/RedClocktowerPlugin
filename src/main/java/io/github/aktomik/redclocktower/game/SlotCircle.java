@@ -362,9 +362,6 @@ public class SlotCircle {
 			);
 
 			//step 0
-			Seated seated = nominated;
-			removeNominated();
-			setVotedCount(seated, votes);
 			game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.4f);
 			String votesRichString = "<b><gold><vote_count> vote<vote_count_s></b>";
 			if (VOTE_BROADCAST_VOTERS) {
@@ -380,6 +377,9 @@ public class SlotCircle {
 			if (votes >= snap.voteMajority)
 				// place/replace
 				runnableExe = () -> {
+					setVotedCount(nominated, votes);
+					Seated seated = nominated;
+					removeNominated();
 					setSentenced(seated);
 					game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 2f);
 					game.broadcast((snap.haveEquality)
@@ -391,6 +391,8 @@ public class SlotCircle {
 			else if (votes == snap.voteEquality)
 				// equality
 				runnableExe = () -> {
+					setVotedCount(nominated, votes);
+					removeNominated();
 					removeSentenced();
 					game.pingSound(Sound.ENTITY_PLAYER_LEVELUP, VOTE_VOLUME, .9f);
 					game.broadcast("<gold><b>EQUALITY!</b> <green><last></green> steps down from the pylori", resolvers);
@@ -399,6 +401,8 @@ public class SlotCircle {
 			else
 				// no/less
 				runnableExe = () -> {
+					setVotedCount(nominated, votes);
+					removeNominated();
 					game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, .9f);
 					game.broadcast((snap.haveEquality)
 					? "<gold>this is not enough to replace <red><last></red> on the pylori"
