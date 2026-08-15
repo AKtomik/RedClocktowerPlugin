@@ -235,7 +235,7 @@ public class StorytellerSubVote extends BrigadierSub {
 		sender.sendRichMessage("<aqua>starting the execution of <b><target></b>",
 			Placeholder.parsed("target", sentenced.getName())
 		);
-		circle.endVoteSession();
+		circle.cleanScoreboard();
 		circle.startExecuteProcess(deadly);
 		return Command.SINGLE_SUCCESS;
 	}
