@@ -21,6 +21,7 @@ public abstract class Seated {
 	private boolean currentlyNominated = false;
 	private boolean currentlySentenced = false;
 	private NamedTextColor glower = null;
+	Integer votedCount = null;
 
 	private final int votePower = 1;// we will be able to change vote power here
 
@@ -183,7 +184,6 @@ public abstract class Seated {
 			}
 		}
 	}
-
 
 	public void enableGlower(NamedTextColor color) {
 		// only one glower

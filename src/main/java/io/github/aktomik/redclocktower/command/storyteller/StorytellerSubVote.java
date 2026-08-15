@@ -6,6 +6,7 @@ import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import io.github.aktomik.redclocktower.commandbuild.arguments.SeatedArgumentType;
+import io.github.aktomik.redclocktower.commandbuild.arguments.SeatedListArgumentType;
 import io.github.aktomik.redclocktower.commandbuild.tools.CommandToolbox;
 import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.Seated;
@@ -41,6 +42,12 @@ public class StorytellerSubVote extends BrigadierSub {
 				.then(Commands.argument("votes", IntegerArgumentType.integer(-1, 1000))
 					.executes(ctx -> pyloriChange(ctx, SeatedArgumentType.getSeated(ctx, "seated"), BrigadierToolbox.resolveInt("votes", ctx)))
 				)
+			)
+		)
+
+		.then(Commands.literal("pardon")
+			.then(Commands.argument("seated", new SeatedListArgumentType())
+				.executes(ctx -> nominateChange(ctx, SeatedArgumentType.getSeated(ctx, "seated")))
 			)
 		)
 

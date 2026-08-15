@@ -16,9 +16,7 @@ import org.bukkit.potion.PotionEffectType;
 import org.bukkit.util.Vector;
 import org.jspecify.annotations.Nullable;
 
-import java.util.Arrays;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 import java.util.function.Consumer;
 import java.util.stream.IntStream;
 import java.util.stream.Stream;
@@ -33,7 +31,6 @@ public class SlotCircle {
 
 	VoteStep voteStep = VoteStep.NOTHING;
 	boolean voteSession = false;
-	Integer precedentMajority = null;
 	@Nullable Seated nominated = null;
 	@Nullable Seated sentenced = null;
 
@@ -141,7 +138,7 @@ public class SlotCircle {
 		setVoteStep(VoteStep.NOTHING);
 		removeNominated();
 		removeSentenced();
-		precedentMajority = null;
+		getAllSeated().forEach(seated -> seated.votedCount = null);
 	}
 
 	public boolean isInVoteSession() {
@@ -172,11 +169,18 @@ public class SlotCircle {
 	}
 
 	public int getVoteMajority() {
-		return (precedentMajority != null) ? precedentMajority + 1 : Math.ceilDiv(getVoteAlive(), 2);
+		int currentMajority = Math.ceilDiv(getVoteAlive(), 2);
+		OptionalInt precedentMajority = getAllSeated()
+			.filter(seated -> seated.votedCount != null)
+			.mapToInt(seated -> seated.votedCount)
+			.max();
+		return precedentMajority.isPresent()
+			? Math.max(precedentMajority.getAsInt() + 1, currentMajority)
+			: currentMajority;
 	}
 
 	public int getVoteEquality() {
-		return (sentenced != null) ? precedentMajority : -1;
+		return (sentenced != null) ? sentenced.votedCount : -1;
 	}
 
 	public void setNominated(Seated seated) {
@@ -197,8 +201,8 @@ public class SlotCircle {
 
 	public void setSentenced(Seated seated, int votes) {
 		sentenced = seated;
+		sentenced.votedCount = votes;
 		sentenced.setSentenced(true);
-		precedentMajority = votes;
 	}
 
 	public void removeSentenced() {
