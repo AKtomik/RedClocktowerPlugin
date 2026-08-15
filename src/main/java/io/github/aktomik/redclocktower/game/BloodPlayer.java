@@ -290,7 +290,7 @@ public class BloodPlayer {
 	void refreshAllEffects() {
 		// must be called only if seated != null
 		refreshAliveEffect(seated.getAlive());
-		refreshGlowerEffect(seated.isGlower());
+		refreshGlowerEffect(seated.isGlowing());
 	}
 
 	void clearAllEffects() {

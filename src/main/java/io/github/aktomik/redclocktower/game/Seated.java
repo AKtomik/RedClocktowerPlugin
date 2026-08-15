@@ -20,7 +20,7 @@ public abstract class Seated {
 
 	private boolean currentlyNominated = false;
 	private boolean currentlySentenced = false;
-	private NamedTextColor glower = null;
+	private NamedTextColor glowColor = null;
 	Integer votedCount = null;
 
 	private final int votePower = 1;// we will be able to change vote power here
@@ -146,11 +146,11 @@ public abstract class Seated {
 				slot.getGame().getCircle().removeSentenced();
 			}
 			if (BloodGame.IS_ONLY_ONE_GLOW) {
-				slot.getGame().getCircle().getAllSeated().forEach(seated -> disableGlower());
+				slot.getGame().getCircle().getAllSeated().forEach(seated -> disableGlow());
 			}
 			enableGlower(BloodGame.NOMINATE_GLOW_COLOR);
 		} else {
-			disableGlower();
+			disableGlow();
 			if (BloodGame.IS_ONLY_ONE_GLOW) {
 				Seated last = slot.getGame().getCircle().getSentenced();
 				if (last != null)
@@ -169,12 +169,12 @@ public abstract class Seated {
 				slot.getGame().getCircle().removeNominated();
 			}
 			if (BloodGame.IS_ONLY_ONE_GLOW) {
-				slot.getGame().getCircle().getAllSeated().forEach(seated -> disableGlower());
+				slot.getGame().getCircle().getAllSeated().forEach(seated -> disableGlow());
 			}
 			enableGlower(BloodGame.SENTENCED_GLOW_COLOR);
 		}
 		else {
-			disableGlower();
+			disableGlow();
 			if (BloodGame.IS_ONLY_ONE_GLOW) {
 				Seated last = slot.getGame().getCircle().getNominated();
 				if (last != null)
@@ -187,19 +187,19 @@ public abstract class Seated {
 
 	public void enableGlower(NamedTextColor color) {
 		// only one glower
-		this.glower = color;
+		this.glowColor = color;
 	}
 
-	public void disableGlower() {
-		this.glower = null;
+	public void disableGlow() {
+		this.glowColor = null;
 	}
 
-	public boolean isGlower() {
-		return glower != null;
+	public boolean isGlowing() {
+		return glowColor != null;
 	}
 
-	public NamedTextColor getGlower() {
-		return glower;
+	public NamedTextColor getGlow() {
+		return glowColor;
 	}
 
 	// slot
