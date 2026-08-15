@@ -222,6 +222,7 @@ public class SlotCircle {
 	}
 
 	public void setNominated(Seated seated) {
+		if (nominated != null) removeNominated();
 		nominated = seated;
 		nominated.setNominated(true);
 		refreshScoreboard();
@@ -240,6 +241,7 @@ public class SlotCircle {
 	}
 
 	public void setSentenced(Seated seated, int votes) {
+		if (sentenced != null) removeSentenced();
 		sentenced = seated;
 		sentenced.votedCount = votes;
 		sentenced.setSentenced(true);
