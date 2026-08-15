@@ -252,10 +252,6 @@ public class BloodPlayer {
 		if (seated == null) return;
 		refreshAllEffects();
 //		seated.getSlot().getGame().getTeam().addPlayer(getOfflinePlayer());
-		Player player = getOnlinePlayer();
-		if (player == null) return;
-		Scoreboard scoreboard = seated.getSlot().getGame().getCircle().getScoreboard();
-		player.setScoreboard(scoreboard);
 	}
 
 	void onSeatLeaved() {
@@ -263,10 +259,6 @@ public class BloodPlayer {
 		if (seated == null) return;
 		clearAllEffects();
 //		seated.getSlot().getGame().getTeam().removePlayer(getOfflinePlayer());
-		Player player = getOnlinePlayer();
-		if (player == null) return;
-		Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-		player.setScoreboard(scoreboard);
 	}
 
 	void onServerJoined() {
@@ -274,16 +266,12 @@ public class BloodPlayer {
 		refreshNameTag();
 		if (seated == null) return;
 		refreshAllEffects();
-		Scoreboard scoreboard = seated.getSlot().getGame().getCircle().getScoreboard();
-		Objects.requireNonNull(getOnlinePlayer()).setScoreboard(scoreboard);
 	}
 
 	void onServerLeaved() {
 		// called by onQuit
 		clearAllEffects();
 		//clearNameTag();// already in PlayerNameTagEditorListener
-		Scoreboard scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
-		Objects.requireNonNull(getOnlinePlayer()).setScoreboard(scoreboard);
 	}
 
 	// global effects
@@ -292,6 +280,7 @@ public class BloodPlayer {
 		refreshAliveEffect(seated.getAlive());
 		refreshGlowerEffect(seated.isGlowing());
 		refreshXpLevel(seated.getSlot().getIndex());
+		refreshAttachedScoreboard();
 	}
 
 	void clearAllEffects() {
@@ -299,6 +288,7 @@ public class BloodPlayer {
 		refreshAliveEffect(true);
 		refreshGlowerEffect(false);
 		refreshXpLevel(0);
+		refreshAttachedScoreboard();
 	}
 
 	// state effects
@@ -329,5 +319,15 @@ public class BloodPlayer {
 		if (player == null) return;
 		player.setExp(0);
 		player.setLevel(level);
+	}
+
+	protected void refreshAttachedScoreboard() {
+		Player player = getOnlinePlayer();
+		if (player == null) return;
+		BloodGame game = getRelatedGame();
+		Scoreboard scoreboard = (game != null)
+			? game.getCircle().getScoreboard()
+			: Bukkit.getScoreboardManager().getMainScoreboard();
+		player.setScoreboard(scoreboard);
 	}
 }
