@@ -198,7 +198,8 @@ public class SlotCircle {
 
 
 	public boolean isExclusionVote() {
-		return false;
+		if (nominated == null) return false;
+		return nominated.getTraveller();
 	}
 
 

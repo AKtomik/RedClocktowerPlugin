@@ -84,6 +84,7 @@ public class BloodGame {
 	public void kill() {
 		// players
 		circle.forEachSlots(BloodSlot::empty);
+		circle.endVoteSession();
 		removeAllStorytellers();
 		removeAllSpectators();
 		// world
@@ -257,6 +258,7 @@ public class BloodGame {
 		circle.getAllSeated().forEach(seated -> seated.setVotePull(false));
 		circle.unlockAll();
 		circle.showLabels();
+		circle.endVoteSession();
 		period = GamePeriod.MEET;
 		// world
 		world.setTime(12000);

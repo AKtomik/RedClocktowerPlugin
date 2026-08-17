@@ -112,8 +112,16 @@ public class BloodSlot {
 		if (seated != null && state != null) {
 
 			// exclusion vote case here
+			if (game.getCircle().isExclusionVote())
+			{
+				if (state.votePull()) {
+					lampData = BlockType.GLOWSTONE.createBlockData();
+				} else {
+					lampData = BlockType.REDSTONE_LAMP.createBlockData();
+				}
+			}
 
-			if (state.traveller())
+			else if (state.traveller())
 			{
 				if (state.alive())
 				{
