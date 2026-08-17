@@ -18,22 +18,21 @@ import org.jspecify.annotations.Nullable;
 public class BloodSlot {
 
 	// construct
-	private final TownChair townChair;
 	private final BloodGame game;
+	private final TownChair townChair;
 	private final int index;
+
 	@Nullable
-	private Seated seated;
-	private boolean voteLocked;
+	private Seated seated = null;
+	private boolean voteLocked = true;
+	private boolean labelVisible = true;
 	private final TextDisplay label;
-	private boolean labelVisible;
 
 	BloodSlot(BloodGame game, TownChair townChair, int index) {
 		this.game = game;
 		this.townChair = townChair;
 		this.index = index;
-		this.seated = null;
 		this.label = createLabel();
-		this.labelVisible = true;
 		refreshBlock(null);
 		refreshPiston(voteLocked);
 	}
@@ -95,15 +94,6 @@ public class BloodSlot {
 	public void setVoteLocked(boolean locked) {
 		voteLocked = locked;
 		refreshPiston(locked);
-		refreshLever(false);
-	}
-
-	public void lock() {
-		setVoteLocked(true);
-	}
-
-	public void unlock() {
-		setVoteLocked(false);
 	}
 
 	public boolean isVoteLocked() {
@@ -119,8 +109,7 @@ public class BloodSlot {
 
 		BlockData lampData = BlockType.WAXED_COPPER_BLOCK.createBlockData();
 
-		if (seated != null) {
-			assert state != null;
+		if (seated != null && state != null) {
 
 			// exclusion vote case here
 

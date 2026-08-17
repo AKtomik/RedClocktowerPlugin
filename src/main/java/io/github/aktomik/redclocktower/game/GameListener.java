@@ -1,5 +1,6 @@
 package io.github.aktomik.redclocktower.game;
 
+import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import io.github.aktomik.redclocktower.game.town.TownChairPlace;
 import io.github.aktomik.redclocktower.game.town.TownHall;
 import io.github.aktomik.redclocktower.game.town.TownHallPlace;
@@ -54,7 +55,12 @@ public class GameListener implements Listener {
 		TownHall townHall = bloodPlayer.getSeatedTownHall();
 		if (townHall == null) return;
 		event.setRespawnLocation(townHall.getPosition(TownHallPlace.SPAWN));
-		bloodPlayer.refreshAllEffects();
+	}
+
+	@EventHandler
+	public void onPostRespawn(PlayerPostRespawnEvent event) {
+		Player player = event.getPlayer();
+		BloodPlayer.get(player).refreshAllEffects();
 	}
 
 	// blocks

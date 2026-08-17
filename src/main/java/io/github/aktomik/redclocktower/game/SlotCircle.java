@@ -336,7 +336,7 @@ public class SlotCircle {
 			if (currentIndex >= slots.length) currentIndex = 0;
 
 			BloodSlot slot = slots[currentIndex];
-			slot.lock();
+			slot.setVoteLocked(true);
 
 			if (currentIndex == startIndex)
 				new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
