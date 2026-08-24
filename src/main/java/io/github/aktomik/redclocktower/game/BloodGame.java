@@ -83,8 +83,8 @@ public class BloodGame {
 	// remove it from others references too so it can be garbage collected
 	public void kill() {
 		// players
-		circle.forEachSlots(BloodSlot::empty);
 		circle.endVoteSession();
+		circle.forEachSlots(BloodSlot::empty);
 		removeAllStorytellers();
 		removeAllSpectators();
 		// world
@@ -249,7 +249,7 @@ public class BloodGame {
 
 	private void unsetup() {
 		world.setGameRule(GameRules.ADVANCE_TIME, true);
-		// we could saved the old world rules to set back but can be confusing
+		// we could save the old world rules to set back but can be confusing
 	}
 
 	public void start() {

@@ -5,6 +5,7 @@ import io.github.aktomik.redclocktower.utils.renametag.PlayerRenameTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.ShadowColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -206,7 +207,7 @@ public class BloodPlayer {
 			int slotIndex = seated.getSlot().getIndex();
 
 			//hide the name tag when chair label is on
-			if (seated.getSlot().getLabelVisibility()) headName = Component.empty();
+			if (seated.getSlot().getLabelVisibility()) headName = Component.text("");
 			else headName = seated.getTag();
 			tabName = tabName.color(seated.getTagColor());
 
