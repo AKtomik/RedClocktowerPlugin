@@ -104,7 +104,7 @@ public class GameListener implements Listener {
 		boolean powered = !((Powerable)data).isPowered();
 
 		// allow the lever, but cancel the vote
-		if (powered && !seatedPlayer.canVote()) return;
+		if (!seatedPlayer.canVote()) return;
 
 		// change vote
 		seatedPlayer.setVotePull(powered);
