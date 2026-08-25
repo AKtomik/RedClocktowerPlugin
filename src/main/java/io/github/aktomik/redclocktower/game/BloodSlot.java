@@ -25,6 +25,7 @@ public class BloodSlot {
 	@Nullable
 	private Seated seated = null;
 	private boolean voteLocked = true;
+	private boolean voteLightOn = false;
 	private boolean labelVisible = true;
 	private final TextDisplay label;
 
@@ -87,13 +88,15 @@ public class BloodSlot {
 	void refreshState(SeatState state) {
 		// right now seat block state is not stored and that cool
 		// seatState = state;
+		voteLightOn = state.votePull();
 		refreshBlock(state);
-		refreshLever(state.votePull());
+		refreshLever(voteLightOn);
 	}
 
 	public void setVoteLocked(boolean locked) {
 		voteLocked = locked;
 		refreshPiston(locked);
+		if (!locked) refreshLever(voteLightOn);
 	}
 
 	public boolean isVoteLocked() {
