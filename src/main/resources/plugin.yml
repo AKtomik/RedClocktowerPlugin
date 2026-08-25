@@ -1,14 +1,14 @@
 name: RedClocktower
-version: '0.6.1'
+version: '0.7.0'
 main: io.github.aktomik.redclocktower.RedClocktower
 api-version: '1.21'
 #commands:
-# brigader commands are not handled here
+# we are using brigader commands
 
 permissions:
   redclocktower.player:
     description: Player permission
-    default: op
+    default: true
   redclocktower.storyteller:
     description: Storyteller permission
     default: op
