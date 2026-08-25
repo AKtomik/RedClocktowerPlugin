@@ -476,6 +476,8 @@ public class SlotCircle {
 		new TickSequence(RedClocktower.plugin(), this::checkExecutionProcess)
 		.then(66L, () -> {
 			executedSeated.setAlive(false);
+			String message = deadly ? "<dark_red><lang:death.attack.generic:'<target>'>" : "<dark_purple>but does not die";
+			game.broadcast(message, resolvers);
 			if (executedPlayer != null)
 				executedPlayer.setHealth(0);
 		})

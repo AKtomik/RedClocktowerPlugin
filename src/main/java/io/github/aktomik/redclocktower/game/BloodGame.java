@@ -235,6 +235,7 @@ public class BloodGame {
 		// world
 		world.setTime(10000);
 		world.setGameRule(GameRules.ADVANCE_TIME, false);
+		world.setGameRule(GameRules.SHOW_DEATH_MESSAGES, false);
 		world.setGameRule(GameRules.KEEP_INVENTORY, true);
 		world.setDifficulty(Difficulty.PEACEFUL);
 		// team
@@ -249,6 +250,7 @@ public class BloodGame {
 
 	private void unsetup() {
 		world.setGameRule(GameRules.ADVANCE_TIME, true);
+		world.setGameRule(GameRules.SHOW_DEATH_MESSAGES, true);
 		// we could save the old world rules to set back but can be confusing
 	}
 
