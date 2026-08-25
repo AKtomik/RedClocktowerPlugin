@@ -1,8 +1,6 @@
 package io.github.aktomik.redclocktower.commandbuild.tools;
 
 import io.github.aktomik.redclocktower.game.BloodGame;
-import io.github.aktomik.redclocktower.game.GamePeriod;
-import io.github.aktomik.redclocktower.oldgame.OldBloodGame;
 import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;

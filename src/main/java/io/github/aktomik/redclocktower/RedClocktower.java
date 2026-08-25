@@ -1,19 +1,15 @@
 package io.github.aktomik.redclocktower;
 
+import io.github.aktomik.redclocktower.command.BroadcastCommand;
+import io.github.aktomik.redclocktower.command.TagmeCommand;
 import io.github.aktomik.redclocktower.command.VoteCommand;
+import io.github.aktomik.redclocktower.command.Whosend;
 import io.github.aktomik.redclocktower.command.setup.SetupCommand;
+import io.github.aktomik.redclocktower.command.storyteller.StorytellerCommand;
 import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.GameListener;
-import io.github.aktomik.redclocktower.oldgame.OldBloodPlayer;
-import io.github.aktomik.redclocktower.oldgame.OldPlayerListener;
-import io.github.aktomik.redclocktower.utils.renametag.PlayerRenameTagListener;
-import io.github.aktomik.redclocktower.command.BroadcastCommand;
-import io.github.aktomik.redclocktower.command.storyteller.StorytellerCommand;
-import io.github.aktomik.redclocktower.command.TagmeCommand;
-import io.github.aktomik.redclocktower.command.Whosend;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
-import org.bukkit.Bukkit;
-import org.bukkit.entity.Player;
+import io.github.aktomik.redclocktower.utils.renametag.PlayerRenameTagListener;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -32,11 +28,9 @@ public final class RedClocktower extends JavaPlugin {
         plugin = this;
 
         // setup data keys
-        OldDataKey.init(this);
         DataKey.init(this);
 
         // setup events
-        getServer().getPluginManager().registerEvents(new OldPlayerListener(), this);
         getServer().getPluginManager().registerEvents(new GameListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerRenameTagListener(), this);
 
@@ -55,13 +49,6 @@ public final class RedClocktower extends JavaPlugin {
 
         // game cleanup
         BloodGame.killAll();
-
-        // blood disconnect for all players
-        for (Player player : Bukkit.getOnlinePlayers())
-        {
-            OldBloodPlayer bloodPlayer = OldBloodPlayer.get(player);
-            bloodPlayer.disconnect();
-        }
 
         // message
         getLogger().info("Disabled!");
