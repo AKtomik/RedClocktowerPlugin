@@ -60,7 +60,9 @@ public class GameListener implements Listener {
 	@EventHandler
 	public void onPostRespawn(PlayerPostRespawnEvent event) {
 		Player player = event.getPlayer();
-		BloodPlayer.get(player).refreshAllEffects();
+		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		if (bloodPlayer.getSeated() == null) return;
+		bloodPlayer.refreshAllEffects();
 	}
 
 	// blocks

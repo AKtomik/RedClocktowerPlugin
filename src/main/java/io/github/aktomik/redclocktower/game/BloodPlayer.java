@@ -5,7 +5,6 @@ import io.github.aktomik.redclocktower.utils.renametag.PlayerRenameTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.ShadowColor;
-import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
@@ -285,7 +284,7 @@ public class BloodPlayer {
 	}
 
 	void clearAllEffects() {
-		// can be called anyway
+		// can be called on everyone
 		refreshAliveEffect(true);
 		refreshGlowerEffect(false);
 		refreshXpLevel(0);
