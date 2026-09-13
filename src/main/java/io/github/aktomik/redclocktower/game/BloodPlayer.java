@@ -124,6 +124,7 @@ public class BloodPlayer {
 		this.storytelling = game;
 		// needed for invisibility view
 		storytelling.getTeam().addPlayer(getOfflinePlayer());
+		refreshRelatedEffects();
 		refreshNameTag();
 	}
 
@@ -133,6 +134,7 @@ public class BloodPlayer {
 		storytelling.getTeam().removePlayer(getOfflinePlayer());
 		// then clear the pointer
 		storytelling = null;
+		clearRelatedEffects();
 		refreshNameTag();
 	}
 
@@ -146,6 +148,7 @@ public class BloodPlayer {
 		this.spectating = game;
 		// needed for invisibility view
 		spectating.getTeam().addPlayer(getOfflinePlayer());
+		refreshRelatedEffects();
 		refreshNameTag();
 	}
 
@@ -155,6 +158,7 @@ public class BloodPlayer {
 		spectating.getTeam().removePlayer(getOfflinePlayer());
 		// then clear the pointer
 		spectating = null;
+		clearRelatedEffects();
 		refreshNameTag();
 	}
 
@@ -260,14 +264,14 @@ public class BloodPlayer {
 	void onSeatJoined() {
 		// called by attachSeat
 		if (seated == null) return;
-		refreshEffects();
+		refreshMemberEffects();
 //		seated.getSlot().getGame().getTeam().addPlayer(getOfflinePlayer());
 	}
 
 	void onSeatLeaved() {
 		// called by detachSeat
 		if (seated == null) return;
-		clearEffects();
+		clearMemberEffects();
 //		seated.getSlot().getGame().getTeam().removePlayer(getOfflinePlayer());
 	}
 
@@ -275,30 +279,40 @@ public class BloodPlayer {
 		// called by onJoin
 		refreshNameTag();
 		if (seated == null) return;
-		refreshEffects();
+		refreshMemberEffects();
 	}
 
 	void onServerLeaved() {
 		// called by onQuit
-		clearEffects();
+		clearMemberEffects();
 		//clearNameTag();// already in PlayerNameTagEditorListener
 	}
 
 	// global effects
-	void refreshEffects() {
-		// must be called only if seated != null
-		if (seated == null) throw new RuntimeException("refreshEffects but not seated");
+	void refreshMemberEffects() {
+		if (seated == null) throw new RuntimeException("seated is null");
+		if (getOnlinePlayer() == null) throw new RuntimeException("player is offline");
 		refreshAliveEffect(seated.getAlive());
 		refreshGlowerEffect(seated.isGlowing());
 		refreshXpLevel(seated.getSlot().getIndex());
-		setGameScoreboard(seated.getSlot().getGame().getScoreboard());
+		refreshMemberEffects();
 	}
 
-	void clearEffects() {
-		// can be called on everyone
+	void clearMemberEffects() {
 		refreshAliveEffect(true);
 		refreshGlowerEffect(false);
 		refreshXpLevel(0);
+		clearRelatedEffects();
+	}
+
+	void refreshRelatedEffects() {
+		BloodGame game = getRelatedGame();
+		if (game == null) throw new RuntimeException("related game is null");
+		if (getOnlinePlayer() == null) throw new RuntimeException("player is offline");
+		setGameScoreboard(game.getScoreboard());
+	}
+
+	void clearRelatedEffects() {
 		setGameScoreboard(null);
 	}
 
