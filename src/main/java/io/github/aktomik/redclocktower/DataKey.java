@@ -1,7 +1,6 @@
 package io.github.aktomik.redclocktower;
 
 import io.github.aktomik.redclocktower.game.town.TownChairPlace;
-import io.github.aktomik.redclocktower.game.town.TownGeneralSettings;
 import io.github.aktomik.redclocktower.game.town.TownHallPlace;
 import org.bukkit.NamespacedKey;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -18,13 +17,6 @@ public enum DataKey {
 	TOWN_HALL_POS_SPAWN,
 	TOWN_HALL_POS_PYLORI,
 	TOWN_HALL_POS_BELL,
-
-	TOWN_HALL_SETTINGS_CAN_PLAYER_DROP_MISC,
-	TOWN_HALL_SETTINGS_CAN_PLAYER_DROP_INFO,
-	TOWN_HALL_SETTINGS_CAN_PLAYER_OPEN_CHEST,
-	TOWN_HALL_SETTINGS_CAN_PLAYER_PULL_OTHERS_LEVER,
-	TOWN_HALL_SETTINGS_CLOCK_TICK_SPEED,
-	TOWN_HALL_SETTINGS_DO_EXECUTION_REALLY_KILL,
 
 	TOWN_CHAIR_POS_BENCH,
 	TOWN_CHAIR_POS_LEVER,
