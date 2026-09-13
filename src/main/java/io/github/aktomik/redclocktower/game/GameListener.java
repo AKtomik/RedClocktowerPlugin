@@ -62,7 +62,7 @@ public class GameListener implements Listener {
 		Player player = event.getPlayer();
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		if (bloodPlayer.getSeated() == null) return;
-		bloodPlayer.refreshAllEffects();
+		bloodPlayer.refreshEffects();
 	}
 
 	// blocks

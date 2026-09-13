@@ -260,14 +260,14 @@ public class BloodPlayer {
 	void onSeatJoined() {
 		// called by attachSeat
 		if (seated == null) return;
-		refreshAllEffects();
+		refreshEffects();
 //		seated.getSlot().getGame().getTeam().addPlayer(getOfflinePlayer());
 	}
 
 	void onSeatLeaved() {
 		// called by detachSeat
 		if (seated == null) return;
-		clearAllEffects();
+		clearEffects();
 //		seated.getSlot().getGame().getTeam().removePlayer(getOfflinePlayer());
 	}
 
@@ -275,30 +275,31 @@ public class BloodPlayer {
 		// called by onJoin
 		refreshNameTag();
 		if (seated == null) return;
-		refreshAllEffects();
+		refreshEffects();
 	}
 
 	void onServerLeaved() {
 		// called by onQuit
-		clearAllEffects();
+		clearEffects();
 		//clearNameTag();// already in PlayerNameTagEditorListener
 	}
 
 	// global effects
-	void refreshAllEffects() {
+	void refreshEffects() {
 		// must be called only if seated != null
+		if (seated == null) throw new RuntimeException("refreshEffects but not seated");
 		refreshAliveEffect(seated.getAlive());
 		refreshGlowerEffect(seated.isGlowing());
 		refreshXpLevel(seated.getSlot().getIndex());
-		refreshAttachedScoreboard();
+		setGameScoreboard(seated.getSlot().getGame().getScoreboard());
 	}
 
-	void clearAllEffects() {
+	void clearEffects() {
 		// can be called on everyone
 		refreshAliveEffect(true);
 		refreshGlowerEffect(false);
 		refreshXpLevel(0);
-		refreshAttachedScoreboard();
+		setGameScoreboard(null);
 	}
 
 	// state effects
@@ -331,13 +332,9 @@ public class BloodPlayer {
 		player.setLevel(level);
 	}
 
-	protected void refreshAttachedScoreboard() {
+	protected void setGameScoreboard(Scoreboard scoreboard) {
 		Player player = getOnlinePlayer();
 		if (player == null) return;
-		BloodGame game = getRelatedGame();
-		Scoreboard scoreboard = (game != null)
-			? game.getScoreboard()
-			: Bukkit.getScoreboardManager().getMainScoreboard();
-		player.setScoreboard(scoreboard);
+		player.setScoreboard((scoreboard == null) ? Bukkit.getScoreboardManager().getMainScoreboard() : scoreboard);
 	}
 }
