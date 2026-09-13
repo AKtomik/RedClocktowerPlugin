@@ -40,14 +40,12 @@ public abstract class Seated {
 	void attached(BloodSlot newSlot) {
 		if (slot != null) slot.empty();
 		slot = newSlot;
-		addToTeam(newSlot.getGame().getTeam());
 	}
 
 	void detached() {
 		if (slot == null) return;
 		if (currentlySentenced) slot.getGame().getCircle().removeSentenced();
 		if (currentlyNominated) slot.getGame().getCircle().removeNominated();
-		removeFromTeam(slot.getGame().getTeam());
 		slot = null;
 	}
 
@@ -55,10 +53,6 @@ public abstract class Seated {
 	public abstract String getSeatedTypeString();
 
 	public abstract NamedTextColor getSeatedTypeColor();
-
-	public abstract void addToTeam(Team team);
-
-	public abstract void removeFromTeam(Team team);
 
 	// access
 	public String getId() {

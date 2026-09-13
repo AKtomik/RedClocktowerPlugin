@@ -12,6 +12,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
 import org.bukkit.potion.PotionEffectType;
 import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 import org.jspecify.annotations.NullMarked;
 import org.jspecify.annotations.Nullable;
 
@@ -122,17 +123,12 @@ public class BloodPlayer {
 		if (storytelling != null) storytelling.removeStoryteller(this);
 		if (spectating != null) spectating.removeSpectator(this);
 		this.storytelling = game;
-		// needed for invisibility view
-		storytelling.getTeam().addPlayer(getOfflinePlayer());
 		refreshRelatedEffects();
 		refreshNameTag();
 	}
 
 	void detachStorytelling() {// only one call at BloodGame
 		if (storytelling == null) return;
-		// needed for invisibility view
-		storytelling.getTeam().removePlayer(getOfflinePlayer());
-		// then clear the pointer
 		storytelling = null;
 		clearRelatedEffects();
 		refreshNameTag();
@@ -146,17 +142,12 @@ public class BloodPlayer {
 		if (spectating != null) spectating.removeSpectator(this);
 		if (storytelling != null) storytelling.removeStoryteller(this);
 		this.spectating = game;
-		// needed for invisibility view
-		spectating.getTeam().addPlayer(getOfflinePlayer());
 		refreshRelatedEffects();
 		refreshNameTag();
 	}
 
 	void detachSpectating() {// only one call at BloodGame
 		if (spectating == null) return;
-		// needed for invisibility view
-		spectating.getTeam().removePlayer(getOfflinePlayer());
-		// then clear the pointer
 		spectating = null;
 		clearRelatedEffects();
 		refreshNameTag();
@@ -265,14 +256,12 @@ public class BloodPlayer {
 		// called by attachSeat
 		if (seated == null) return;
 		refreshMemberEffects();
-//		seated.getSlot().getGame().getTeam().addPlayer(getOfflinePlayer());
 	}
 
 	void onSeatLeaved() {
 		// called by detachSeat
 		if (seated == null) return;
 		clearMemberEffects();
-//		seated.getSlot().getGame().getTeam().removePlayer(getOfflinePlayer());
 	}
 
 	void onServerJoined() {
@@ -309,11 +298,13 @@ public class BloodPlayer {
 		BloodGame game = getRelatedGame();
 		if (game == null) throw new RuntimeException("related game is null");
 		if (getOnlinePlayer() == null) throw new RuntimeException("player is offline");
-		setGameScoreboard(game.getScoreboard());
+		applyGameScoreboard(game.getScoreboard());
+		applyGameTeam(game.getTeam());
 	}
 
 	void clearRelatedEffects() {
-		setGameScoreboard(null);
+		applyGameScoreboard(null);
+		applyGameTeam(null);
 	}
 
 	// state effects
@@ -346,9 +337,22 @@ public class BloodPlayer {
 		player.setLevel(level);
 	}
 
-	protected void setGameScoreboard(Scoreboard scoreboard) {
+	protected void applyGameScoreboard(@Nullable Scoreboard scoreboard) {
 		Player player = getOnlinePlayer();
 		if (player == null) return;
-		player.setScoreboard((scoreboard == null) ? Bukkit.getScoreboardManager().getMainScoreboard() : scoreboard);
+		if (scoreboard == null) scoreboard = Bukkit.getScoreboardManager().getMainScoreboard();
+		player.setScoreboard(scoreboard);
+	}
+
+	protected void applyGameTeam(@Nullable Team team) {
+		Player player = getOnlinePlayer();
+		if (player == null) return;
+		if (team == null) {
+			team = player.getScoreboard().getPlayerTeam(player);
+			if (team == null) return;
+			team.removePlayer(player);
+		} else {
+			team.addPlayer(player);
+		}
 	}
 }

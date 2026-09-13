@@ -29,16 +29,6 @@ public class SeatedPlayer extends Seated {
 		return NamedTextColor.YELLOW;
 	}
 
-	@Override
-	public void addToTeam(Team team) {
-		team.addPlayer(bloodPlayer.getOfflinePlayer());
-	}
-
-	@Override
-	public void removeFromTeam(Team team) {
-		team.removePlayer(bloodPlayer.getOfflinePlayer());
-	}
-
 	// internal link
 	// this will avoid same player having two attached seats
 	@Override

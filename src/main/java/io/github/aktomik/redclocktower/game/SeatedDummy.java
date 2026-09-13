@@ -18,14 +18,4 @@ public class SeatedDummy extends Seated {
 	public NamedTextColor getSeatedTypeColor() {
 		return NamedTextColor.GOLD;
 	}
-
-	@Override
-	public void addToTeam(Team team) {
-		team.addEntry(getId());
-	}
-
-	@Override
-	public void removeFromTeam(Team team) {
-		team.addEntry(getId());
-	}
 }
