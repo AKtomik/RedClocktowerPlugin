@@ -45,7 +45,7 @@ public class BroadcastCommand extends BrigadierCommand {
 				String rawMessage = StringArgumentType.getString(ctx, "rich message");
 				NamedTextColor color = ctx.getArgument("color", NamedTextColor.class);
 
-				Bukkit.getServer().sendMessage(MiniMessage.miniMessage().deserialize(rawMessage).color(color));
+				Bukkit.getServer().sendMessage(MiniMessage.miniMessage().deserialize(rawMessage).colorIfAbsent(color));
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					Location loc = Objects.requireNonNull(player.getLocation());
 					player.playSound(loc, Sound.ENTITY_ARROW_HIT_PLAYER, SoundCategory.MASTER, .5f, 1f);
