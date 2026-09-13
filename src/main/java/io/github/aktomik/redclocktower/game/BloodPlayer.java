@@ -336,7 +336,7 @@ public class BloodPlayer {
 		if (player == null) return;
 		BloodGame game = getRelatedGame();
 		Scoreboard scoreboard = (game != null)
-			? game.getCircle().getScoreboard()
+			? game.getScoreboard()
 			: Bukkit.getScoreboardManager().getMainScoreboard();
 		player.setScoreboard(scoreboard);
 	}

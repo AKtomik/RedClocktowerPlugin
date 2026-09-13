@@ -29,19 +29,21 @@ public class BloodGame {
 	private GamePeriod period = GamePeriod.FREE;
 
 	private final World world;// equal to townhall world
+	private final Scoreboard scoreboard;
 	private final Team team;
 
 	private BloodGame(TownHall townHall) {
 		this.townHall = townHall;
 		this.world = townHall.getWorld();
+		this.scoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
+		// Bukkit.getScoreboardManager().getMainScoreboard()
 
 		this.circle = new SlotCircle(this);
 
-		Scoreboard board = Bukkit.getScoreboardManager().getMainScoreboard();
 		String teamId = townHall.getStringId("bloodteam");
-		Team oldTeam = board.getTeam(teamId);
+		Team oldTeam = scoreboard.getTeam(teamId);
 		if (oldTeam != null) oldTeam.unregister();
-		team = board.registerNewTeam(teamId);
+		team = scoreboard.registerNewTeam(teamId);
 
 		setup();
 	}
@@ -107,6 +109,10 @@ public class BloodGame {
 
 	public World getWorld() {
 		return world;
+	}
+
+	public Scoreboard getScoreboard() {
+		return scoreboard;
 	}
 
 	public Team getTeam() {

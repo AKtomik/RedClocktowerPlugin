@@ -37,7 +37,6 @@ public class SlotCircle {
 	boolean voteSession = false;
 	@Nullable Seated nominated = null;
 	@Nullable Seated sentenced = null;
-	private final Scoreboard sharedScoreboard;
 
 	SlotCircle(BloodGame game) {
 		this.game = game;
@@ -45,12 +44,6 @@ public class SlotCircle {
 		this.slots = IntStream.range(0, chairs.size())
 			.mapToObj(i -> new BloodSlot(game, chairs.get(i), i))
 			.toArray(BloodSlot[]::new);
-		sharedScoreboard = Bukkit.getScoreboardManager().getNewScoreboard();
-	}
-
-	// get
-	public Scoreboard getScoreboard() {
-		return sharedScoreboard;
 	}
 
 	// global simple interfaces
@@ -161,11 +154,11 @@ public class SlotCircle {
 	// vote score
 	public void refreshScoreboard() {
 		String scoreId = game.getTownHall().getStringId("bloodscore");
-		Objective old = sharedScoreboard.getObjective(scoreId);
+		Objective old = game.getScoreboard().getObjective(scoreId);
 		if (old != null) old.unregister();
 
 		Component objectiveName = Component.text("votes").color(NamedTextColor.DARK_GRAY).shadowColor(ShadowColor.shadowColor(0));
-		Objective objective = sharedScoreboard.registerNewObjective(scoreId, Criteria.DUMMY, objectiveName);
+		Objective objective = game.getScoreboard().registerNewObjective(scoreId, Criteria.DUMMY, objectiveName);
 		objective.setDisplaySlot(DisplaySlot.SIDEBAR);
 
 		for (Seated seated : game.getCircle().getAllSeated().toList()) {
@@ -179,7 +172,7 @@ public class SlotCircle {
 
 	public void cleanScoreboard() {
 		String scoreId = game.getTownHall().getStringId("bloodscore");
-		Objective old = sharedScoreboard.getObjective(scoreId);
+		Objective old = game.getScoreboard().getObjective(scoreId);
 		if (old != null) old.unregister();
 	}
 
