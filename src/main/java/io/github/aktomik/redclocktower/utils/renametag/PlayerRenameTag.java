@@ -1,6 +1,7 @@
 package io.github.aktomik.redclocktower.utils.renametag;
 
 import net.kyori.adventure.text.Component;
+import org.bukkit.Color;
 import org.bukkit.GameMode;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Display;
@@ -8,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.entity.TextDisplay;
 import org.bukkit.util.Transformation;
 
+import javax.annotation.Nullable;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
@@ -62,6 +64,19 @@ public class PlayerRenameTag {
 		}
 		refreshVisible(player);
 		syncDisplay(player);// not necessary
+	}
+
+	public static void setDisplayBackColor(Player player, @Nullable Color color) {
+		TextDisplay display = displays.get(player.getUniqueId());
+		if (display == null || !display.isValid()) return;
+		display.setDefaultBackground(false);
+		if (color != null) display.setBackgroundColor(color);
+	}
+
+	public static void resetDisplayBackColor(Player player) {
+		TextDisplay display = displays.get(player.getUniqueId());
+		if (display == null || !display.isValid()) return;
+		display.setDefaultBackground(true);
 	}
 
 	public static void clearDisplay(OfflinePlayer player) {

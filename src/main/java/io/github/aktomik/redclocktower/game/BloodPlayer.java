@@ -6,6 +6,7 @@ import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.ShadowColor;
 import org.bukkit.Bukkit;
+import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.potion.PotionEffect;
@@ -194,8 +195,9 @@ public class BloodPlayer {
 		Player player = getOnlinePlayer();
 		if (player == null) return;
 
-		Component headName = Component.text(name).color(NamedTextColor.WHITE);
 		Component tabName = Component.text(name).color(NamedTextColor.WHITE);
+		Component headName = Component.text(name).color(NamedTextColor.WHITE);
+		Color headBackColor = null;// default
 
 		Component tabPrefixToken = Component.empty();
 		int sortNumber = 0;
@@ -205,9 +207,15 @@ public class BloodPlayer {
 		{
 			int slotIndex = seated.getSlot().getIndex();
 
-			//hide the name tag when chair label is on
-			if (seated.getSlot().getLabelVisibility()) headName = Component.text("");
-			else headName = seated.getTag();
+			if (seated.getSlot().getLabelVisibility()) {
+				//hide the name tag when chair label is on
+				headName = Component.text(" ");
+				headBackColor = Color.fromARGB(0, 0, 0, 0);
+			}
+			else {
+				// set to the game name
+				headName = seated.getTag();
+			}
 			tabName = tabName.color(seated.getTagColor());
 
 			tabPrefixToken = tabPrefixToken.append(seated.getPrefixDigit());
@@ -240,6 +248,8 @@ public class BloodPlayer {
 
 		// edit
 		PlayerRenameTag.changeDisplay(player, headName);
+		if (headBackColor == null) PlayerRenameTag.resetDisplayBackColor(player);
+		else PlayerRenameTag.setDisplayBackColor(player, headBackColor);
 		player.playerListName(tabName);
 		player.setPlayerListOrder(sortNumber);
 	}
