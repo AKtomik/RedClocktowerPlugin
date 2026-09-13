@@ -6,6 +6,7 @@ import io.github.aktomik.redclocktower.game.town.TownHall;
 import io.github.aktomik.redclocktower.game.town.TownHallPlace;
 import io.github.aktomik.redclocktower.game.town.TownSettings;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,6 +19,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BellRingEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -226,8 +228,8 @@ public class GameListener implements Listener {
 
 	// damage
 	@EventHandler
-	public void onHurt(EntityDamageByEntityEvent event) {
-		if (event.getDamager() instanceof Player attacker) {
+	public void onHurt(EntityDamageEvent event) {
+		if (event.getDamageSource().getCausingEntity() instanceof Player attacker) {
 			BloodPlayer bloodPlayer = BloodPlayer.get(attacker);
 			TownHall townHall = bloodPlayer.getSeatedTownHall();
 			if (townHall != null) {
