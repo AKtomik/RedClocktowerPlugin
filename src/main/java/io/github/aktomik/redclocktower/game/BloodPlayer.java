@@ -295,7 +295,7 @@ public class BloodPlayer {
 		refreshAliveEffect(seated.getAlive());
 		refreshGlowerEffect(seated.isGlowing());
 		refreshXpLevel(seated.getSlot().getIndex());
-		refreshMemberEffects();
+		refreshRelatedEffects();
 	}
 
 	void clearMemberEffects() {
