@@ -130,6 +130,15 @@ public class TownHall {
 	}
 
 	// data/settings
+	public <T> T getSetting(TownSetting<T> setting) {
+		return pdc.getOrDefault(setting.key(), setting.type(), setting.defaultValue());
+	}
+
+	public <T> void setSetting(TownSetting<T> setting, T value) {
+		pdc.set(setting.key(), setting.type(), value);
+		save();
+	}
+
 	public void setSettingsCanPlayerDropMisc(boolean bool)
 	{
 		pdc.set(DataKey.TOWN_HALL_SETTINGS_CAN_PLAYER_DROP_MISC.key(), PersistentDataType.BOOLEAN, bool);

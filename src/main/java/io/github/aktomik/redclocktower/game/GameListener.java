@@ -4,6 +4,7 @@ import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import io.github.aktomik.redclocktower.game.town.TownChairPlace;
 import io.github.aktomik.redclocktower.game.town.TownHall;
 import io.github.aktomik.redclocktower.game.town.TownHallPlace;
+import io.github.aktomik.redclocktower.game.town.TownSettings;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Location;
 import org.bukkit.Material;
@@ -16,6 +17,7 @@ import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BellRingEvent;
+import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -93,7 +95,7 @@ public class GameListener implements Listener {
 		}
 
 		if (!isGameLever) return;
-		if (!isOwnLever && !game.getTownHall().getSettingsCanPlayerPullOthersLever()) {
+		if (!isOwnLever && !(boolean)game.getTownHall().getSetting(TownSettings.CAN_PLAYER_PULL_OTHERS_LEVER.setting())) {
 			// cancel the lever and the vote
 			event.setCancelled(true);
 			return;
@@ -220,6 +222,11 @@ public class GameListener implements Listener {
 			default:
 				break;
 		}
+	}
+
+	// damage
+	public void onDamage(EntityDamageByEntityEvent event) {
+
 	}
 }
 
