@@ -31,9 +31,9 @@ public final class TownSettings {
 	public static final TownSetting<Boolean> CAN_PLAYER_DROP_INFO = ofBoolean("can_player_drop_info", false);
 	public static final TownSetting<Boolean> CAN_PLAYER_OPEN_CHEST = ofBoolean("can_player_open_chest", true);
 
-	public static final TownSetting<Boolean> ALLOW_PLAYER_HURT_PLAYER = ofBoolean("allow_player_hurt_player", true);
-	public static final TownSetting<Boolean> ALLOW_PLAYER_HURT_OTHER = ofBoolean("allow_player_hurt_other", true);
-	public static final TownSetting<Boolean> ALLOW_PLAYER_HURTED = ofBoolean("allow_player_hurted", true);
+	public static final TownSetting<Boolean> ALLOW_PLAYER_HIT_PLAYER = ofBoolean("allow_player_hit_player", true);
+	public static final TownSetting<Boolean> ALLOW_PLAYER_HIT_OTHER = ofBoolean("allow_player_hit_other", true);
+	public static final TownSetting<Boolean> ALLOW_PLAYER_DAMAGED = ofBoolean("allow_player_damaged", true);
 
 	public static final TownSetting<Boolean> CAN_PLAYER_PULL_EACHOTHER_LEVER = ofBoolean("can_player_pull_eachother_lever", false);
 

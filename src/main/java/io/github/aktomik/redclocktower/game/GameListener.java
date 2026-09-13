@@ -227,21 +227,21 @@ public class GameListener implements Listener {
 	// damage
 	@EventHandler
 	public void onHurt(EntityDamageByEntityEvent event) {
-		if (event.getEntity() instanceof Player victim) {
-			BloodPlayer bloodPlayer = BloodPlayer.get(victim);
-			TownHall townHall = bloodPlayer.getSeatedTownHall();
-			if (townHall != null && !Boolean.TRUE.equals(TownSettings.ALLOW_PLAYER_HURTED.get(townHall))) {
-				event.setCancelled(true);
-				return;
-			}
-		}
 		if (event.getDamager() instanceof Player attacker) {
 			BloodPlayer bloodPlayer = BloodPlayer.get(attacker);
 			TownHall townHall = bloodPlayer.getSeatedTownHall();
 			if (townHall != null) {
 				boolean sameSide = (event.getEntity() instanceof Player victim) && Objects.equals(BloodPlayer.get(victim).getSeatedTownHall(), townHall);
-				if (!Boolean.TRUE.equals((sameSide ? TownSettings.ALLOW_PLAYER_HURT_PLAYER : TownSettings.ALLOW_PLAYER_HURT_OTHER).get(townHall)))
+				if (!Boolean.TRUE.equals((sameSide ? TownSettings.ALLOW_PLAYER_HIT_PLAYER : TownSettings.ALLOW_PLAYER_HIT_OTHER).get(townHall)))
 					event.setCancelled(true);
+				return;
+			}
+		}
+		if (event.getEntity() instanceof Player victim) {
+			BloodPlayer bloodPlayer = BloodPlayer.get(victim);
+			TownHall townHall = bloodPlayer.getSeatedTownHall();
+			if (townHall != null && !Boolean.TRUE.equals(TownSettings.ALLOW_PLAYER_DAMAGED.get(townHall))) {
+				event.setCancelled(true);
 			}
 		}
 	}
