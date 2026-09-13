@@ -4,8 +4,10 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierCommand;
+import io.github.aktomik.redclocktower.utils.brigadier.CollectionArgument;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -34,14 +36,16 @@ public class BroadcastCommand extends BrigadierCommand {
 	// root
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
+		.then(Commands.argument("color", CollectionArgument.of(NamedTextColor.NAMES.keys(), NamedTextColor.NAMES::value))
 		.then(Commands.argument("rich message", StringArgumentType.greedyString())
 			.executes(
 			ctx -> {
 				Entity executor = ctx.getSource().getExecutor();
 				if (executor == null) return Command.SINGLE_SUCCESS;
 				String rawMessage = StringArgumentType.getString(ctx, "rich message");
+				NamedTextColor color = ctx.getArgument("color", NamedTextColor.class);
 
-				Bukkit.getServer().sendMessage(MiniMessage.miniMessage().deserialize(rawMessage));
+				Bukkit.getServer().sendMessage(MiniMessage.miniMessage().deserialize(rawMessage).color(color));
 				for (Player player : Bukkit.getOnlinePlayers()) {
 					Location loc = Objects.requireNonNull(player.getLocation());
 					player.playSound(loc, Sound.ENTITY_ARROW_HIT_PLAYER, SoundCategory.MASTER, .5f, 1f);
@@ -49,6 +53,6 @@ public class BroadcastCommand extends BrigadierCommand {
 				return Command.SINGLE_SUCCESS;
 			}
 			)
-		);
+		));
 	}
 }
