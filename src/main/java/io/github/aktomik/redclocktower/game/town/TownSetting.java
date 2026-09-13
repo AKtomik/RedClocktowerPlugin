@@ -33,10 +33,17 @@ public final class TownSetting<T> {
 	public PersistentDataType<?, T> type() { return type; }
 	public T defaultValue() { return defaultValue; }
 
+	public void set(TownHall townHall, T value) {
+		townHall.setSetting(this, value);
+	}
+	public T get(TownHall townHall) {
+		return townHall.getSetting(this);
+	}
+
 	public void setFromString(TownHall townHall, String input) {
-		townHall.setSetting(this, parser.apply(input));
+		set(townHall, parser.apply(input));
 	}
 	public String getFormatted(TownHall townHall) {
-		return formatter.apply(townHall.getSetting(this));
+		return formatter.apply(get(townHall));
 	}
 }

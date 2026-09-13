@@ -95,7 +95,7 @@ public class GameListener implements Listener {
 		}
 
 		if (!isGameLever) return;
-		if (!isOwnLever && !(boolean)game.getTownHall().getSetting(TownSettings.CAN_PLAYER_PULL_OTHERS_LEVER)) {
+		if (!isOwnLever && !TownSettings.CAN_PLAYER_PULL_OTHERS_LEVER.get(game.getTownHall())) {
 			// cancel the lever and the vote
 			event.setCancelled(true);
 			return;
@@ -205,7 +205,7 @@ public class GameListener implements Listener {
 		TownHall townHall = bloodPlayer.getSeatedTownHall();
 		if (townHall == null) return;
 
-		if (townHall.getSetting(TownSettings.CAN_PLAYER_OPEN_CHEST)) return;
+		if (Boolean.TRUE.equals(TownSettings.CAN_PLAYER_OPEN_CHEST.get(townHall))) return;
 
 		switch (event.getInventory().getType()) {
 			case CHEST,

@@ -42,7 +42,7 @@ public class SetupSubModifySettings extends BrigadierSub {
 		CommandSender sender = ctx.getSource().getSender();
 		TownHall townHall = ctx.getArgument("town", TownHall.class);
 		TownSetting<?> setting = ctx.getArgument("setting", TownSetting.class);
-		final String input = ctx.getArgument("new value", String.class);
+		final String input = ctx.getArgument("value", String.class);
 		setting.setFromString(townHall, input);
 
 		sender.sendRichMessage("setting <u><key></u> set to <aqua><b><value></b>",
