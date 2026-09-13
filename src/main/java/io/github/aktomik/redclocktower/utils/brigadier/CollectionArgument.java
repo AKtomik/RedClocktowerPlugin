@@ -23,7 +23,7 @@ public final class CollectionArgument<T>
 implements CustomArgumentType.Converted<T, String> {
 
 	private static final DynamicCommandExceptionType INVALID_VALUE =
-	new DynamicCommandExceptionType(name -> new LiteralMessage("Unknown value: '" + name + "'"));
+	new DynamicCommandExceptionType(name -> new LiteralMessage("unknown value: '" + name + "'"));
 
 	private final Set<String> values;
 	private final Function<String, T> mapper;

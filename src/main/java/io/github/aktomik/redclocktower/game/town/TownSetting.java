@@ -25,7 +25,7 @@ public final class TownSetting<T> {
 		this.defaultValue = defaultValue;
 		this.parser = parser;
 		this.formatter = formatter;
-		TownSettings.ALL.add(this);
+		TownSettings.ALL.put(id, this);
 	}
 
 	public String id() { return id; }

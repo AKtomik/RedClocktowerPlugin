@@ -139,7 +139,7 @@ public class GameListener implements Listener {
 		if (townHall == null) return false;
 
 		boolean isSensitive = BloodGame.SENSITIVE_INFO_ITEM.contains(item.getType());
-		boolean allowed = isSensitive ? townHall.getSettingsCanPlayerDropInfo() : townHall.getSettingsCanPlayerDropMisc();
+		boolean allowed = townHall.getSetting(isSensitive ? TownSettings.CAN_PLAYER_DROP_INFO : TownSettings.CAN_PLAYER_DROP_MISC);
 		return !allowed;
 	}
 
@@ -205,7 +205,7 @@ public class GameListener implements Listener {
 		TownHall townHall = bloodPlayer.getSeatedTownHall();
 		if (townHall == null) return;
 
-		if (townHall.getSettingsCanPlayerOpenChest()) return;
+		if (townHall.getSetting(TownSettings.CAN_PLAYER_OPEN_CHEST)) return;
 
 		switch (event.getInventory().getType()) {
 			case CHEST,

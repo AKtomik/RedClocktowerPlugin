@@ -1,17 +1,12 @@
 package io.github.aktomik.redclocktower.game.town;
 
-import io.github.aktomik.redclocktower.RedClocktower;
-import org.bukkit.NamespacedKey;
 import org.bukkit.persistence.PersistentDataType;
 
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 
 public final class TownSettings {
 	// lazy to populate it so TownSetting constructor will do it for me
-	static final List<TownSetting<?>> ALL = new ArrayList<>();
+	static final Map<String, TownSetting<?>> ALL = new HashMap<>();
 
 	public static final TownSetting<Boolean> CAN_PLAYER_DROP_MISC = new TownSetting<>(
 		"can_player_drop_misc", PersistentDataType.BOOLEAN, true,
@@ -33,12 +28,8 @@ public final class TownSettings {
 		Boolean::parseBoolean, String::valueOf
 	);
 
-	public static List<TownSetting<?>> all() {
-		return Collections.unmodifiableList(ALL);
-	}
-
-	public static Optional<TownSetting<?>> byId(String id) {
-		return ALL.stream().filter(s -> s.id().equals(id)).findFirst();
+	public static Map<String, TownSetting<?>> map() {
+		return ALL;
 	}
 
 	private TownSettings() {}
