@@ -3,6 +3,7 @@ package io.github.aktomik.redclocktower.game;
 import io.github.aktomik.redclocktower.RedClocktower;
 import io.github.aktomik.redclocktower.game.town.TownChair;
 import io.github.aktomik.redclocktower.game.town.TownHallPlace;
+import io.github.aktomik.redclocktower.game.town.TownSettings;
 import io.github.aktomik.redclocktower.utils.TickSequence;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
@@ -318,7 +319,8 @@ public class SlotCircle {
 				game.pingSound(Sound.BLOCK_ANVIL_LAND, VOTE_VOLUME, 1.1f);
 				int pyloriSlotIndex = nominated.getSlot().getIndex();
 				new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
-					.then(20L, slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex)).run();
+					.then(TownSettings.VOTE_CLOCK_TICK_SPEED.get(game.getTownHall()),
+					slotVoteProcessRunnable(pyloriSlotIndex, pyloriSlotIndex)).run();
 			})
 			.run();
 	}
@@ -332,12 +334,13 @@ public class SlotCircle {
 			BloodSlot slot = slots[currentIndex];
 			slot.setVoteLocked(true);
 
-			if (currentIndex == startIndex)
-				new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
-					.then(20L, finishVoteProcess()).run();
-			else
-				new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
-					.then(20L, slotVoteProcessRunnable(currentIndex, startIndex)).run();
+			new TickSequence(RedClocktower.plugin(), this::checkVoteProcess)
+				.then(
+					TownSettings.VOTE_CLOCK_TICK_SPEED.get(game.getTownHall()),
+					(currentIndex == startIndex)
+						? finishVoteProcess()
+						: slotVoteProcessRunnable(currentIndex, startIndex)
+				).run();
 		};
 	}
 
@@ -471,7 +474,7 @@ public class SlotCircle {
 			executedSeated.setAlive(false);
 			String message = deadly ? "<dark_red><lang:death.attack.generic:'<target>'>" : "<dark_purple>but does not die";
 			game.broadcast(message, resolvers);
-			if (executedPlayer != null)
+			if (executedPlayer != null && Boolean.TRUE.equals(TownSettings.DO_EXECUTION_KILL_PLAYER.get(game.getTownHall())))
 				executedPlayer.setHealth(0);
 		})
 		.then(10L, () -> {

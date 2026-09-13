@@ -5,7 +5,9 @@ import io.github.aktomik.redclocktower.game.town.TownChairPlace;
 import io.github.aktomik.redclocktower.game.town.TownHall;
 import io.github.aktomik.redclocktower.game.town.TownHallPlace;
 import io.github.aktomik.redclocktower.game.town.TownSettings;
+import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -18,6 +20,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BellRingEvent;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityDamageEvent;
 import org.bukkit.event.inventory.InventoryAction;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
@@ -26,6 +29,8 @@ import org.bukkit.event.player.*;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.Nullable;
+
+import java.util.Objects;
 
 public class GameListener implements Listener {
 
@@ -225,8 +230,23 @@ public class GameListener implements Listener {
 	}
 
 	// damage
-	public void onDamage(EntityDamageByEntityEvent event) {
-
+	@EventHandler
+	public void onHurt(EntityDamageByEntityEvent event) {
+		Bukkit.broadcast(Component.text("hurt:" + event.getEntity() + event.getDamager() + event.getCause()));
+		if (event.getDamager() instanceof Player attacker) {
+			BloodPlayer bloodPlayer = BloodPlayer.get(attacker);
+			TownHall townHall = bloodPlayer.getSeatedTownHall();
+			if (townHall == null) return;
+			boolean sameSide = (event.getEntity() instanceof Player victim) && Objects.equals(BloodPlayer.get(victim).getSeatedTownHall(), townHall);
+			if (Boolean.FALSE.equals((sameSide ? TownSettings.CAN_PLAYER_HURT_PLAYER : TownSettings.CAN_PLAYER_HURT_OTHER).get(townHall))) return;
+			event.setCancelled(true);
+		} else if (event.getEntity() instanceof Player victim) {
+			BloodPlayer bloodPlayer = BloodPlayer.get(victim);
+			TownHall townHall = bloodPlayer.getSeatedTownHall();
+			if (townHall == null) return;
+			if (Boolean.FALSE.equals(TownSettings.CAN_PLAYER_HURT_SELF.get(townHall))) return;
+			event.setCancelled(true);
+		}
 	}
 }
 
