@@ -35,7 +35,7 @@ public final class TownSettings {
 	public static final TownSetting<Boolean> ALLOW_PLAYER_HURT_OTHER = ofBoolean("allow_player_hurt_other", true);
 	public static final TownSetting<Boolean> ALLOW_PLAYER_HURTED = ofBoolean("allow_player_hurted", true);
 
-	public static final TownSetting<Boolean> CAN_PLAYER_PULL_OTHERS_LEVER = ofBoolean("can_player_pull_others_lever", false);
+	public static final TownSetting<Boolean> CAN_PLAYER_PULL_EACHOTHER_LEVER = ofBoolean("can_player_pull_eachother_lever", false);
 
 	public static final TownSetting<Integer> VOTE_CLOCK_TICK_SPEED = ofInteger("vote_clock_tick_speed", 20);
 	public static final TownSetting<Boolean> DO_EXECUTION_KILL_PLAYER = ofBoolean("do_execution_kill_player", true);

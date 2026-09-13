@@ -86,18 +86,16 @@ public class GameListener implements Listener {
 		SlotCircle circle = game.getCircle();
 		Location loc = block.getLocation();
 
-		boolean isGameLever = false;
-		boolean isOwnLever = false;
+		Seated seatedLever = null;
 		for (BloodSlot slot : circle.getSlotsList()) {
 			if (slot.getChair().getPosition(TownChairPlace.LEVER).equals(loc)) {
-				isGameLever = true;
-				isOwnLever = (slot.getSeated() == seatedPlayer);
+				seatedLever = slot.getSeated();
 				break;
 			}
 		}
 
-		if (!isGameLever) return;
-		if (!isOwnLever && !TownSettings.CAN_PLAYER_PULL_OTHERS_LEVER.get(game.getTownHall())) {
+		if (seatedLever == null) return;
+		if (seatedLever != seatedPlayer && !Boolean.TRUE.equals(TownSettings.CAN_PLAYER_PULL_EACHOTHER_LEVER.get(game.getTownHall()))) {
 			// cancel the lever and the vote
 			event.setCancelled(true);
 			return;
@@ -108,10 +106,10 @@ public class GameListener implements Listener {
 		boolean powered = !((Powerable)data).isPowered();
 
 		// allow the lever, but cancel the vote
-		if (!seatedPlayer.canVote()) return;
+		if (!seatedLever.canVote()) return;
 
 		// change vote
-		seatedPlayer.setVotePull(powered);
+		seatedLever.setVotePull(powered);
 	}
 
 	@EventHandler(ignoreCancelled = true)
@@ -232,7 +230,7 @@ public class GameListener implements Listener {
 		if (event.getEntity() instanceof Player victim) {
 			BloodPlayer bloodPlayer = BloodPlayer.get(victim);
 			TownHall townHall = bloodPlayer.getSeatedTownHall();
-			if (townHall != null && Boolean.FALSE.equals(TownSettings.ALLOW_PLAYER_HURTED.get(townHall))) {
+			if (townHall != null && !Boolean.TRUE.equals(TownSettings.ALLOW_PLAYER_HURTED.get(townHall))) {
 				event.setCancelled(true);
 				return;
 			}
@@ -242,7 +240,7 @@ public class GameListener implements Listener {
 			TownHall townHall = bloodPlayer.getSeatedTownHall();
 			if (townHall != null) {
 				boolean sameSide = (event.getEntity() instanceof Player victim) && Objects.equals(BloodPlayer.get(victim).getSeatedTownHall(), townHall);
-				if (Boolean.FALSE.equals((sameSide ? TownSettings.ALLOW_PLAYER_HURT_PLAYER : TownSettings.ALLOW_PLAYER_HURT_OTHER).get(townHall)))
+				if (!Boolean.TRUE.equals((sameSide ? TownSettings.ALLOW_PLAYER_HURT_PLAYER : TownSettings.ALLOW_PLAYER_HURT_OTHER).get(townHall)))
 					event.setCancelled(true);
 			}
 		}
