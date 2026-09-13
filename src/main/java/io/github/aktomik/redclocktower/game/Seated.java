@@ -45,6 +45,8 @@ public abstract class Seated {
 
 	void detached() {
 		if (slot == null) return;
+		if (currentlySentenced) slot.getGame().getCircle().removeSentenced();
+		if (currentlyNominated) slot.getGame().getCircle().removeNominated();
 		removeFromTeam(slot.getGame().getTeam());
 		slot = null;
 	}
