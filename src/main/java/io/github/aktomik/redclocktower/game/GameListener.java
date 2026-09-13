@@ -1,12 +1,10 @@
 package io.github.aktomik.redclocktower.game;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
-import io.github.aktomik.redclocktower.game.town.TownChairPlace;
-import io.github.aktomik.redclocktower.game.town.TownHall;
-import io.github.aktomik.redclocktower.game.town.TownHallPlace;
-import io.github.aktomik.redclocktower.game.town.TownSettings;
+import io.github.aktomik.redclocktower.game.town.*;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.Bukkit;
+import org.bukkit.GameMode;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -234,8 +232,10 @@ public class GameListener implements Listener {
 			TownHall townHall = bloodPlayer.getSeatedTownHall();
 			if (townHall != null) {
 				boolean sameSide = (event.getEntity() instanceof Player victim) && Objects.equals(BloodPlayer.get(victim).getSeatedTownHall(), townHall);
-				if (!Boolean.TRUE.equals((sameSide ? TownSettings.ALLOW_PLAYER_HIT_PLAYER : TownSettings.ALLOW_PLAYER_HIT_OTHER).get(townHall)))
+				TownSetting<?> setting = sameSide ? TownSettings.ALLOW_PLAYER_HIT_PLAYER : TownSettings.ALLOW_PLAYER_HIT_OTHER;
+				if (attacker.getGameMode() != GameMode.CREATIVE && !Boolean.TRUE.equals(setting.get(townHall))) {
 					event.setCancelled(true);
+				}
 				return;
 			}
 		}
