@@ -232,20 +232,22 @@ public class GameListener implements Listener {
 	// damage
 	@EventHandler
 	public void onHurt(EntityDamageByEntityEvent event) {
-		Bukkit.broadcast(Component.text("hurt:" + event.getEntity() + event.getDamager() + event.getCause()));
+		if (event.getEntity() instanceof Player victim) {
+			BloodPlayer bloodPlayer = BloodPlayer.get(victim);
+			TownHall townHall = bloodPlayer.getSeatedTownHall();
+			if (townHall != null && Boolean.FALSE.equals(TownSettings.ALLOW_PLAYER_HURTED.get(townHall))) {
+				event.setCancelled(true);
+				return;
+			}
+		}
 		if (event.getDamager() instanceof Player attacker) {
 			BloodPlayer bloodPlayer = BloodPlayer.get(attacker);
 			TownHall townHall = bloodPlayer.getSeatedTownHall();
-			if (townHall == null) return;
-			boolean sameSide = (event.getEntity() instanceof Player victim) && Objects.equals(BloodPlayer.get(victim).getSeatedTownHall(), townHall);
-			if (Boolean.FALSE.equals((sameSide ? TownSettings.CAN_PLAYER_HURT_PLAYER : TownSettings.CAN_PLAYER_HURT_OTHER).get(townHall))) return;
-			event.setCancelled(true);
-		} else if (event.getEntity() instanceof Player victim) {
-			BloodPlayer bloodPlayer = BloodPlayer.get(victim);
-			TownHall townHall = bloodPlayer.getSeatedTownHall();
-			if (townHall == null) return;
-			if (Boolean.FALSE.equals(TownSettings.CAN_PLAYER_HURT_SELF.get(townHall))) return;
-			event.setCancelled(true);
+			if (townHall != null) {
+				boolean sameSide = (event.getEntity() instanceof Player victim) && Objects.equals(BloodPlayer.get(victim).getSeatedTownHall(), townHall);
+				if (Boolean.FALSE.equals((sameSide ? TownSettings.ALLOW_PLAYER_HURT_PLAYER : TownSettings.ALLOW_PLAYER_HURT_OTHER).get(townHall)))
+					event.setCancelled(true);
+			}
 		}
 	}
 }

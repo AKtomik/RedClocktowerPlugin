@@ -22,16 +22,16 @@ public final class TownSettings {
 	);
 
 
-	public static final TownSetting<Boolean> CAN_PLAYER_HURT_PLAYER = new TownSetting<>(
-		"can_player_hurt_player", PersistentDataType.BOOLEAN, false,
+	public static final TownSetting<Boolean> ALLOW_PLAYER_HURT_PLAYER = new TownSetting<>(
+		"allow_player_hurt_player", PersistentDataType.BOOLEAN, true,
 		Boolean::parseBoolean, String::valueOf
 	);
-	public static final TownSetting<Boolean> CAN_PLAYER_HURT_OTHER = new TownSetting<>(
-		"can_player_hurt_other", PersistentDataType.BOOLEAN, false,
+	public static final TownSetting<Boolean> ALLOW_PLAYER_HURT_OTHER = new TownSetting<>(
+		"allow_player_hurt_other", PersistentDataType.BOOLEAN, true,
 		Boolean::parseBoolean, String::valueOf
 	);
-	public static final TownSetting<Boolean> CAN_PLAYER_HURT_SELF = new TownSetting<>(
-		"can_player_hurt_self", PersistentDataType.BOOLEAN, false,
+	public static final TownSetting<Boolean> ALLOW_PLAYER_HURTED = new TownSetting<>(
+		"allow_player_hurted", PersistentDataType.BOOLEAN, true,
 		Boolean::parseBoolean, String::valueOf
 	);
 
