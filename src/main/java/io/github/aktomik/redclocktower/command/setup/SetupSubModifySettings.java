@@ -51,7 +51,14 @@ public class SetupSubModifySettings extends BrigadierSub {
 		TownHall townHall = ctx.getArgument("town", TownHall.class);
 		TownSetting<?> setting = ctx.getArgument("setting", TownSetting.class);
 		final String input = ctx.getArgument("value", String.class);
-		setting.setFromString(townHall, input);
+		try {
+			setting.setFromString(townHall, input);
+		} catch (IllegalArgumentException e) {
+			sender.sendRichMessage("<red>input <b><input></b> is wrong",
+				Placeholder.parsed("input", input)
+			);
+			return 0;
+		}
 
 		sender.sendRichMessage("setting <key> set to <aqua><b><value></b>",
 			Placeholder.parsed("key", setting.id()),

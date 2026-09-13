@@ -49,8 +49,14 @@ public final class TownSetting<T> {
 		return townHall.getSetting(this);
 	}
 
-	public void setFromString(TownHall townHall, String input) {
-		set(townHall, parser.apply(input));
+	public void setFromString(TownHall townHall, String input) throws IllegalArgumentException {
+		T value;
+		try {
+			value = parser.apply(input);
+		} catch (Exception e) {
+			throw new IllegalArgumentException("wrong input for this type");
+		}
+		set(townHall, value);
 	}
 	public String getFormatted(TownHall townHall) {
 		return formatter.apply(get(townHall));
