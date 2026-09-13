@@ -95,7 +95,7 @@ public class GameListener implements Listener {
 		}
 
 		if (!isGameLever) return;
-		if (!isOwnLever && !(boolean)game.getTownHall().getSetting(TownSettings.CAN_PLAYER_PULL_OTHERS_LEVER.setting())) {
+		if (!isOwnLever && !(boolean)game.getTownHall().getSetting(TownSettings.CAN_PLAYER_PULL_OTHERS_LEVER)) {
 			// cancel the lever and the vote
 			event.setCancelled(true);
 			return;
