@@ -8,30 +8,16 @@ import org.bukkit.inventory.ItemStack;
 
 public enum BloodItems {
 
-	BOOK_MEMBERS_LIST("book_members_list",
-		createItem(Component.text("Player List").color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD))
-	),
-	BOOK_STORYTELLER("book_storyteller",
-		createItem(Component.text("Storyteller Toolbox").color(NamedTextColor.LIGHT_PURPLE).decorate(TextDecoration.BOLD))
-	);
-
-	private static ItemStack createItem(ItemStack item, Component name) {
-		item.editMeta(m -> m.displayName(name));
-		return item;
-	}
-	private static ItemStack createItem(Material material, Component name) {
-		return createItem(new ItemStack(material), name);
-	}
-	private static ItemStack createItem(Component name) {
-		return createItem(Material.WRITTEN_BOOK, name);
-	}
-
+	BOOK_MEMBERS_LIST("book_members_list", Material.WRITTEN_BOOK,
+		Component.text("Player List").color(NamedTextColor.GOLD).decorate(TextDecoration.BOLD)),
+	BOOK_STORYTELLER("book_storyteller", Material.WRITTEN_BOOK,
+		Component.text("Storyteller Toolbox").color(NamedTextColor.LIGHT_PURPLE).decorate(TextDecoration.BOLD));
 
 	final String id;
 	final ItemStack item;
-	BloodItems(String id, ItemStack item) {
+	BloodItems(String id, Material material, Component name) {
 		this.id = id;
-		this.item = item;
+		this.item = CustomItems.create(id, material, name);
 	}
 
 	public String id() {
