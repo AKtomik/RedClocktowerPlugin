@@ -65,7 +65,7 @@ implements CustomArgumentType.Converted<E, String> {
 		for (E value : enumClass.getEnumConstants()) {
 			String name = nameMapper.apply(value);
 
-			if (name.startsWith(remaining)) {
+			if (name.contains(remaining)) {
 				builder.suggest(name);
 			}
 		}
