@@ -2,30 +2,22 @@ package io.github.aktomik.redclocktower.command.storyteller;
 
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
-import io.github.aktomik.redclocktower.commandbuild.tools.CommandToolbox;
-import io.github.aktomik.redclocktower.game.BloodGame;
-import io.github.aktomik.redclocktower.game.BloodPlayer;
-import io.github.aktomik.redclocktower.game.GameTeam;
 import io.github.aktomik.redclocktower.game.items.BloodItems;
-import io.github.aktomik.redclocktower.game.town.TownArgumentType;
-import io.github.aktomik.redclocktower.game.town.TownHall;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
 import io.papermc.paper.command.brigadier.Commands;
-import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
-import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class StorytellerSubBook extends BrigadierSub {
 	public String name() {
-		return "game";
+		return "book";
 	}
 
 	public LiteralArgumentBuilder<CommandSourceStack> root() {
 		return base()
-		.then(Commands.literal("book")
+		.then(Commands.literal("give")
 			.then(Commands.argument("blood item id", EnumArgument.simple(BloodItems.class, "wrong blood item id"))
 				.executes(subGive)
 			)

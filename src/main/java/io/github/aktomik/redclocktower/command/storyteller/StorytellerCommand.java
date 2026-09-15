@@ -32,6 +32,8 @@ public class StorytellerCommand extends BrigadierCommand {
         .then(new StorytellerSubPlayer().root())
         .then(new StorytellerSubVote().root())
 
+        .then(new StorytellerSubBook().root())
+
         ;
     }
 }
