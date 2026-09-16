@@ -15,7 +15,7 @@ public final class CustomItems {
 		ItemStack item = new ItemStack(material);
 
 		item.editMeta(meta -> {
-			meta.displayName(name);
+			meta.itemName(name);
 			meta.getPersistentDataContainer().set(
 			ITEM_ID,
 			PersistentDataType.STRING,

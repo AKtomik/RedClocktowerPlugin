@@ -94,6 +94,13 @@ public class BloodPlayer {
 		return null;
 	}
 
+	@Nullable
+	public TownHall getRelatedTownHall() {
+		BloodGame bloodGame = getRelatedGame();
+		if (bloodGame == null) return null;
+		return bloodGame.getTownHall();
+	}
+
 	// LINKS
 
 	// to avoid player being on two seats simultaneously

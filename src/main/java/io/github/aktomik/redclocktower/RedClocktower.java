@@ -8,6 +8,7 @@ import io.github.aktomik.redclocktower.command.setup.SetupCommand;
 import io.github.aktomik.redclocktower.command.storyteller.StorytellerCommand;
 import io.github.aktomik.redclocktower.game.BloodGame;
 import io.github.aktomik.redclocktower.game.GameListener;
+import io.github.aktomik.redclocktower.game.bookui.PlayerBookListener;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierToolbox;
 import io.github.aktomik.redclocktower.utils.renametag.PlayerRenameTagListener;
 import org.bukkit.plugin.Plugin;
@@ -33,6 +34,7 @@ public final class RedClocktower extends JavaPlugin {
         // setup events
         getServer().getPluginManager().registerEvents(new GameListener(), this);
         getServer().getPluginManager().registerEvents(new PlayerRenameTagListener(), this);
+        getServer().getPluginManager().registerEvents(new PlayerBookListener(), this);
 
         // load brigadier commands
         BrigadierToolbox.loadCommands(this,
