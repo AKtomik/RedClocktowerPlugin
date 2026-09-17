@@ -72,33 +72,29 @@ public class GameListener implements Listener {
 		Block block = event.getClickedBlock();
 		if (block == null || block.getType() != Material.LEVER) return;
 
-		Player player = event.getPlayer();
-		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		SeatedPlayer seatedPlayer = bloodPlayer.getSeated();
-		Bukkit.getLogger().info("s1="+seatedPlayer);
-		if (seatedPlayer == null) return;// not in game
-
-		BloodSlot playerSlot = seatedPlayer.getSlot();
-		BloodGame game = playerSlot.getGame();
-		SlotCircle circle = game.getCircle();
 		Location loc = block.getLocation();
 		World world = loc.getWorld();
+		BloodGame game = BloodGame.get(world);
+		if (game == null) return;
+
+		Player player = event.getPlayer();
+		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 
 		BloodSlot slotLever = null;
-		Seated seatedLever = null;
-		Bukkit.getLogger().info("circle="+circle.getSlotsList());
-		for (BloodSlot slot : circle.getSlotsList()) {
+		for (BloodSlot slot : game.getCircle().getSlotsList()) {
 			if (slot.getChair().getPosition(TownChairPlace.LEVER).equals(loc)) {
 				slotLever = slot;
-				seatedLever = slot.getSeated();
 				break;
 			}
 		}
-
 		if (slotLever == null) return;
-		if (!(seatedLever == seatedPlayer && Boolean.TRUE.equals(TownSettings.CAN_PLAYER_PULL_EACHOTHER_LEVER.get(game.getTownHall())))) {
+
+		Seated seatedLever = slotLever.getSeated();
+		if (
+			!Boolean.TRUE.equals(TownSettings.CAN_PLAYER_PULL_EACHOTHER_LEVER.get(game.getTownHall()))
+			&& seatedLever != bloodPlayer.getSeated() && bloodPlayer.getStorytellingGame() != game
+		) {
 			// cancel the lever and the vote
-			Bukkit.getLogger().info("wrong player, cancel");
 			event.setCancelled(true);
 			return;
 		}
@@ -108,17 +104,15 @@ public class GameListener implements Listener {
 		boolean powered = !powerable.isPowered();
 
 		// fake the event (to avoid redstone event)
-		Bukkit.getLogger().info("fake lever");
 		event.setCancelled(true);
 		powerable.setPowered(powered);
 		world.setBlockData(loc, powerable);
-		world.playSound(loc, Sound.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 1f, powered ? 0.6f : 0f);
+		world.playSound(loc, Sound.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 0.5f, powered ? 0.6f : 0f);
 
-		// allow the lever, but cancel the vote
+		// allow the lever, but don't change vote
 		if (seatedLever == null || !seatedLever.canVote()) return;
 
 		// change vote
-		Bukkit.getLogger().info("change vote");
 		seatedLever.setVotePull(powered);
 	}
 
