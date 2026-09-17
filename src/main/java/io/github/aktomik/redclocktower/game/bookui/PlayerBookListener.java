@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 public class PlayerBookListener implements Listener {
 
-	static final int BOOK_LINES_COUNT = 0;
+	static final int BOOK_LINES_COUNT = 14;
 
 	@EventHandler
     public void onPlayerClick(PlayerInteractEvent event) {
