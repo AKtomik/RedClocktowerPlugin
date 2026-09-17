@@ -15,9 +15,14 @@ import org.bukkit.event.block.Action;
 import org.bukkit.event.player.PlayerInteractEvent;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
+import java.util.stream.Collectors;
 
 public class PlayerBookListener implements Listener {
+
+	static final int BOOK_LINES_COUNT = 0;
+
 	@EventHandler
     public void onPlayerClick(PlayerInteractEvent event) {
 		if (!List.of(Action.RIGHT_CLICK_BLOCK, Action.RIGHT_CLICK_AIR).contains(event.getAction())) return;
@@ -38,19 +43,23 @@ public class PlayerBookListener implements Listener {
 			Component bookTitle = Component.text("Player List");
 			Component bookAuthor = Component.text("Server");
 
-			ArrayList<Component> seatedText = new ArrayList<>() { };
-			for (Seated seated : game.getCircle().getAllSeated().toList())
+			List<Seated> seatedList = game.getCircle().getAllSeated().toList();
+			List<ArrayList<Component>> pagesLines = Collections.nCopies(Math.ceilDiv(seatedList.size(), BOOK_LINES_COUNT), new ArrayList<>() { });
+			for (int i = 0; i <seatedList.size(); i++)
 			{
+				Seated seated = seatedList.get(i);
 				String numberText = String.valueOf(seated.getSlot().getIndex() + 1);
-				seatedText.add(Component.empty()
+				pagesLines.get(Math.floorDiv(i, BOOK_LINES_COUNT)).add(Component.empty()
 					.append(Component.text(numberText))
 					.append(Component.text((numberText.length() == 1) ? ".  - " : " - "))
 					.append(Component.text(seated.getName()))
 				);
 			}
 
-			Component pages = Component.text("\n".repeat(5 - Math.floorDiv(seatedText.size(), 2)))
-				.append(Component.join(JoinConfiguration.newlines(), seatedText));
+			List<Component> pages = pagesLines.stream().map(
+					lines -> Component.text("\n".repeat(5 - Math.floorDiv(lines.size(), 2)))
+					.append(Component.join(JoinConfiguration.newlines(), lines)
+				)).collect(Collectors.toUnmodifiableList());
 
 			Book book = Book.book(bookTitle, bookAuthor, pages);
 			player.openBook(book);
