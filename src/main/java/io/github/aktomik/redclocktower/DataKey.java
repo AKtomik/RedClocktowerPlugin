@@ -21,7 +21,6 @@ public enum DataKey {
 	TOWN_CHAIR_POS_BENCH,
 	TOWN_CHAIR_POS_LEVER,
 	TOWN_CHAIR_POS_LAMP,
-	TOWN_CHAIR_POS_HOUSE,
 	;
 
 	// shortcut
@@ -34,8 +33,7 @@ public enum DataKey {
 	public static final Map<TownChairPlace, DataKey> TOWN_CHAIR_POS = Map.ofEntries(
 		Map.entry(TownChairPlace.BENCH, DataKey.TOWN_CHAIR_POS_BENCH),
 		Map.entry(TownChairPlace.LEVER, DataKey.TOWN_CHAIR_POS_LEVER),
-		Map.entry(TownChairPlace.LAMP, DataKey.TOWN_CHAIR_POS_LAMP),
-		Map.entry(TownChairPlace.HOUSE, DataKey.TOWN_CHAIR_POS_HOUSE)
+		Map.entry(TownChairPlace.LAMP, DataKey.TOWN_CHAIR_POS_LAMP)
 	);
 
 	// system

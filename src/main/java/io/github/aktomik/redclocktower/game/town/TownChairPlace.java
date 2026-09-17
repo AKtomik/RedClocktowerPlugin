@@ -3,8 +3,7 @@ package io.github.aktomik.redclocktower.game.town;
 public enum TownChairPlace {
 	BENCH,
 	LEVER,
-	LAMP,
-	HOUSE;
+	LAMP;
 
 	@Override
 	public String toString() {

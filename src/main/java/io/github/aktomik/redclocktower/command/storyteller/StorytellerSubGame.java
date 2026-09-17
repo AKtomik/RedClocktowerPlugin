@@ -90,16 +90,6 @@ public class StorytellerSubGame extends BrigadierSub {
 				}
 			}
 		}
-		for (TownHallPlace place : TownHallPlace.values())
-		{
-			if (townHall.getPosition(place) == null)
-			{
-				sender.sendRichMessage("<red>townhall position <b><place></b> not placed",
-				Placeholder.parsed("place", place.name())
-				);
-				return Command.SINGLE_SUCCESS;
-			}
-		}
 
 		// execute
 		sender.sendRichMessage("<light_purple>setup townhall <b><aqua><town></aqua></b> for a game",
