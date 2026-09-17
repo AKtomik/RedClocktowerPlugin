@@ -3,9 +3,7 @@ package io.github.aktomik.redclocktower.game;
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import io.github.aktomik.redclocktower.game.town.*;
 import net.kyori.adventure.text.minimessage.MiniMessage;
-import org.bukkit.GameMode;
-import org.bukkit.Location;
-import org.bukkit.Material;
+import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Powerable;
@@ -77,36 +75,50 @@ public class GameListener implements Listener {
 		Player player = event.getPlayer();
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		SeatedPlayer seatedPlayer = bloodPlayer.getSeated();
+		Bukkit.getLogger().info("s1="+seatedPlayer);
 		if (seatedPlayer == null) return;// not in game
 
 		BloodSlot playerSlot = seatedPlayer.getSlot();
 		BloodGame game = playerSlot.getGame();
 		SlotCircle circle = game.getCircle();
 		Location loc = block.getLocation();
+		World world = loc.getWorld();
 
+		BloodSlot slotLever = null;
 		Seated seatedLever = null;
+		Bukkit.getLogger().info("circle="+circle.getSlotsList());
 		for (BloodSlot slot : circle.getSlotsList()) {
 			if (slot.getChair().getPosition(TownChairPlace.LEVER).equals(loc)) {
+				slotLever = slot;
 				seatedLever = slot.getSeated();
 				break;
 			}
 		}
 
-		if (seatedLever == null) return;
-		if (seatedLever != seatedPlayer && !Boolean.TRUE.equals(TownSettings.CAN_PLAYER_PULL_EACHOTHER_LEVER.get(game.getTownHall()))) {
+		if (slotLever == null) return;
+		if (!(seatedLever == seatedPlayer && Boolean.TRUE.equals(TownSettings.CAN_PLAYER_PULL_EACHOTHER_LEVER.get(game.getTownHall())))) {
 			// cancel the lever and the vote
+			Bukkit.getLogger().info("wrong player, cancel");
 			event.setCancelled(true);
 			return;
 		}
 
 		// get state
-		BlockData data = block.getBlockData();
-		boolean powered = !((Powerable)data).isPowered();
+		Powerable powerable = (Powerable)block.getBlockData();
+		boolean powered = !powerable.isPowered();
+
+		// fake the event (to avoid redstone event)
+		Bukkit.getLogger().info("fake lever");
+		event.setCancelled(true);
+		powerable.setPowered(powered);
+		world.setBlockData(loc, powerable);
+		world.playSound(loc, Sound.BLOCK_LEVER_CLICK, SoundCategory.BLOCKS, 1f, powered ? 0.6f : 0f);
 
 		// allow the lever, but cancel the vote
-		if (!seatedLever.canVote()) return;
+		if (seatedLever == null || !seatedLever.canVote()) return;
 
 		// change vote
+		Bukkit.getLogger().info("change vote");
 		seatedLever.setVotePull(powered);
 	}
 

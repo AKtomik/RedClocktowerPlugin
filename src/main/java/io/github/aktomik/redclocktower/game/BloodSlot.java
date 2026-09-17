@@ -71,8 +71,8 @@ public class BloodSlot {
 
 		seated.attached(this);
 		this.seated = seated;
-		refreshBlock(seated.getSeatState());
 		refreshLabel();
+		refreshBlock(seated.getSeatState());
 	}
 
 	public void empty() {
@@ -80,8 +80,8 @@ public class BloodSlot {
 
 		seated.detached();
 		this.seated = null;
-		refreshBlock(null);
 		refreshLabel();
+		refreshBlock(null);
 	}
 
 	// state
