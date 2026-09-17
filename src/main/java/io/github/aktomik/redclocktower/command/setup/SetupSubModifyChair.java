@@ -65,8 +65,10 @@ public class SetupSubModifyChair extends BrigadierSub {
 
 		// action
 		townHall.removeLastChair();
-		sender.sendRichMessage("<b><red>removing</red></b> the last chair (now <count> chairs)",
-			Placeholder.parsed("count", Integer.toString(townHall.getChairCount()))
+		chairCount = townHall.getChairCount();
+		sender.sendRichMessage("<b><red>removing</red></b> the last chair (now <count> <word>)",
+			Placeholder.parsed("count", Integer.toString(chairCount)),
+			Placeholder.parsed("word", (chairCount > 1) ? "chairs" : "chair")
 		);
 		return Command.SINGLE_SUCCESS;
 	};
@@ -78,8 +80,10 @@ public class SetupSubModifyChair extends BrigadierSub {
 
 		// action
 		townHall.addNewChair();
-		sender.sendRichMessage("<b><green>adding</green></b> a new chair (now <count> chairs)",
-			Placeholder.parsed("count", Integer.toString(townHall.getChairCount()))
+		int chairCount = townHall.getChairCount();
+		sender.sendRichMessage("<b><green>adding</green></b> a new chair (now <count> <word>)",
+			Placeholder.parsed("count", Integer.toString(chairCount)),
+			Placeholder.parsed("word", (chairCount > 1) ? "chairs" : "chair")
 		);
 		return Command.SINGLE_SUCCESS;
 	};
@@ -95,9 +99,10 @@ public class SetupSubModifyChair extends BrigadierSub {
 		int chairCount = townHall.getChairCount();
 		if (!(0 <= chairIndex && chairIndex < chairCount))
 		{
-			sender.sendRichMessage("<red>there is no chair <number> (actually <count> chairs)",
+			sender.sendRichMessage("<red>there is no chair <number> (actually <count> <word>)",
 				Placeholder.parsed("number", Integer.toString(chairIndex + 1)),
-				Placeholder.parsed("count", Integer.toString(chairCount))
+				Placeholder.parsed("count", Integer.toString(chairCount)),
+				Placeholder.parsed("word", (chairCount > 1) ? "chairs" : "chair")
 			);
 			return  Command.SINGLE_SUCCESS;
 		}
@@ -135,9 +140,10 @@ public class SetupSubModifyChair extends BrigadierSub {
 		int chairCount = townHall.getChairCount();
 		if (!(0 <= chairIndex && chairIndex < chairCount))
 		{
-			sender.sendRichMessage("<red>there is no chair <number> (actually <count> chairs)",
+			sender.sendRichMessage("<red>there is no chair <number> (actually <count> <word>)",
 				Placeholder.parsed("number", Integer.toString(chairIndex + 1)),
-				Placeholder.parsed("count", Integer.toString(chairCount))
+				Placeholder.parsed("count", Integer.toString(chairCount)),
+				Placeholder.parsed("word", (chairCount > 1) ? "chairs" : "chair")
 			);
 			return  Command.SINGLE_SUCCESS;
 		}

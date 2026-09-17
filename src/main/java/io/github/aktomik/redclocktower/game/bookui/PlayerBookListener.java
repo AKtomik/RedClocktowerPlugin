@@ -8,6 +8,7 @@ import io.github.aktomik.redclocktower.game.items.CustomItems;
 import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -35,6 +36,7 @@ public class PlayerBookListener implements Listener {
 		BloodGame game = bloodPlayer.getRelatedGame();
 		if (game == null)
 		{
+			player.sendActionBar(Component.text("you are not in a blood game").color(NamedTextColor.RED));
 			return;
 		}
 

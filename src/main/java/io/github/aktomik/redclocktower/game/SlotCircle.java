@@ -120,6 +120,10 @@ public class SlotCircle {
 		return getSlotsStream().filter(BloodSlot::isOccupied).map(BloodSlot::getSeated);
 	}
 
+	public int getSeatedCount() {
+		return (int)getSlotsStream().filter(BloodSlot::isOccupied).count();
+	}
+
 	public Stream<SeatedPlayer> getAllSeatedPlayers() {
 		return getAllSeated().filter(SeatedPlayer.class::isInstance).map(SeatedPlayer.class::cast);
 	}

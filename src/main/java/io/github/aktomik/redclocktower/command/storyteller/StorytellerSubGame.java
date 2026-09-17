@@ -76,7 +76,8 @@ public class StorytellerSubGame extends BrigadierSub {
 				return Command.SINGLE_SUCCESS;
 			}
 		}
-		for (int i = 0; i < townHall.getChairCount(); i++)
+		int chairCount = townHall.getChairCount();
+		for (int i = 0; i < chairCount; i++)
 		{
 			TownChair chair = Objects.requireNonNull(townHall.getChair(i));
 			for (TownChairPlace place : TownChairPlace.values())
@@ -92,8 +93,10 @@ public class StorytellerSubGame extends BrigadierSub {
 		}
 
 		// execute
-		sender.sendRichMessage("<light_purple>setup townhall <b><aqua><town></aqua></b> for a game",
-			Placeholder.parsed("town", townHall.getTownName())
+		sender.sendRichMessage("<light_purple>setup townhall <b><aqua><town></aqua></b> for a game with <slot_count> <slot_word>",
+			Placeholder.parsed("town", townHall.getTownName()),
+			Placeholder.parsed("slot_count", String.valueOf(chairCount)),
+			Placeholder.parsed("slot_word", (chairCount > 1) ? "slots" : "slot")
 		);
 		BloodGame game = BloodGame.create(townHall);
 		if (sender instanceof Player player)

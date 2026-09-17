@@ -131,22 +131,22 @@ public class StorytellerSubPlayer extends BrigadierSub {
 		if (seatedList.isEmpty())
 		{
 			sender.sendRichMessage("<white>there is not player in game");
-			return Command.SINGLE_SUCCESS;
-		}
-		sender.sendRichMessage("<white>there is <player_amount> players in game:",
-			Placeholder.parsed("player_amount", Integer.toString(seatedList.size()))
-		);
-
-		for (Seated seated : seatedList)
-		{
-
-			String logo = (seated.getAlive()) ? "<white>♟ " : "<gray>☠ ";
-			sender.sendRichMessage(
-				"<logo> <type> <name>",
-				Placeholder.parsed("logo", logo),
-				Placeholder.parsed("type", seated.getSeatedTypeString()),
-				Placeholder.component("name", Component.text(seated.getName()).color(seated.getSeatedTypeColor()))
+		} else {
+			sender.sendRichMessage("<white>there is <player_amount> players in game:",
+				Placeholder.parsed("player_amount", Integer.toString(seatedList.size()))
 			);
+
+			for (Seated seated : seatedList)
+			{
+
+				String logo = (seated.getAlive()) ? "<white>♟ " : "<gray>☠ ";
+				sender.sendRichMessage(
+					"<logo> <type> <name>",
+					Placeholder.parsed("logo", logo),
+					Placeholder.parsed("type", seated.getSeatedTypeString()),
+					Placeholder.component("name", Component.text(seated.getName()).color(seated.getSeatedTypeColor()))
+				);
+			}
 		}
 
 		if (emptySlotsAmount > 0)
@@ -174,12 +174,18 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			if (bloodPlayer.getStorytellingGame() != null)
 				return new CommandLoopResult<>(player, false, "<gray><b><target></b> is a storyteller");
 			if (game.getCircle().isFull())
-				return new CommandLoopResult<>(player, false, "<red>the game is full");
+			{
+				int slotCount = game.getCircle().getSlotCount();
+				int seatedCount = game.getCircle().getSeatedCount();
+				return new CommandLoopResult<>(player, false, "<red>the game is full ("+seatedCount+"/"+slotCount+")");
+			}
 
-			game.getCircle().getSlot(game.getCircle().getFirstEmptySlotIndex())
-			.assign(new SeatedPlayer(bloodPlayer));
+			int slotIndex = game.getCircle().getFirstEmptySlotIndex();
+			game.getCircle().getSlot(slotIndex).assign(new SeatedPlayer(bloodPlayer));
 
-			return new CommandLoopResult<>(player, true, "added <b><target></b>");
+			int slotCount = game.getCircle().getSlotCount();
+			int seatedCount = game.getCircle().getSeatedCount();
+			return new CommandLoopResult<>(player, true, "added <b><target></b> ("+seatedCount+"/"+slotCount+")");
 		});
 
 		CommandToolbox.sendProcessResult(sender, results, Player::getName,
@@ -210,7 +216,9 @@ public class StorytellerSubPlayer extends BrigadierSub {
 			{
 				Seated seated = bloodPlayer.getSeated();
 				Objects.requireNonNull(seated).getSlot().empty();
-				return new CommandLoopResult<>(player, true, "removed player <b><target></b> from the game");
+				int slotCount = game.getCircle().getSlotCount();
+				int seatedCount = game.getCircle().getSeatedCount();
+				return new CommandLoopResult<>(player, true, "removed player <b><target></b> from the game ("+seatedCount+"/"+slotCount+")");
 			}
 			return new CommandLoopResult<>(player, false, "<red><b><target></b> is not in game");
 		});
