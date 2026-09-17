@@ -197,15 +197,4 @@ public class TownHall {
 	private void save() {
 		world.getPersistentDataContainer().set(namespaceKey(townName), PersistentDataType.TAG_CONTAINER, pdc);
 	}
-
-	// player selection
-	private static final Map<CommandSender, TownHall> playerSelection = new HashMap<>();
-
-	@Deprecated public static TownHall getSelection(CommandSender sender) {
-		return playerSelection.get(sender);
-	}
-
-	@Deprecated public static void setSelection(CommandSender sender, TownHall townHall) {
-		playerSelection.put(sender, townHall);
-	}
 }
