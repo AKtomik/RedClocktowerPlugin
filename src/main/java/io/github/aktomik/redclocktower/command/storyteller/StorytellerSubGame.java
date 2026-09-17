@@ -71,7 +71,7 @@ public class StorytellerSubGame extends BrigadierSub {
 			if (townHall.getPosition(place) == null)
 			{
 				sender.sendRichMessage("<red>townhall position <b><place></b> not placed",
-					Placeholder.parsed("place", place.name())
+					Placeholder.parsed("place", place.name().toLowerCase())
 				);
 				return Command.SINGLE_SUCCESS;
 			}
@@ -84,7 +84,7 @@ public class StorytellerSubGame extends BrigadierSub {
 				if (chair.getPosition(place) == null)
 				{
 					sender.sendRichMessage("<red>chair <chair> position <b><place></b> not placed",
-						Placeholder.parsed("chair", String.valueOf(i+1)), Placeholder.parsed("place", place.name())
+						Placeholder.parsed("chair", String.valueOf(i+1)), Placeholder.parsed("place", place.name().toLowerCase())
 					);
 					return Command.SINGLE_SUCCESS;
 				}
