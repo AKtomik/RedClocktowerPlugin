@@ -3,10 +3,9 @@ package io.github.aktomik.redclocktower.command.storyteller;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import io.github.aktomik.redclocktower.commandbuild.tools.CommandToolbox;
-import io.github.aktomik.redclocktower.game.town.TownArgumentType;
+import io.github.aktomik.redclocktower.game.town.*;
 import io.github.aktomik.redclocktower.game.*;
 import io.github.aktomik.redclocktower.game.BloodPlayer;
-import io.github.aktomik.redclocktower.game.town.TownHall;
 import io.github.aktomik.redclocktower.utils.brigadier.BrigadierSub;
 import io.github.aktomik.redclocktower.utils.brigadier.EnumArgument;
 import io.papermc.paper.command.brigadier.CommandSourceStack;
@@ -15,6 +14,8 @@ import net.kyori.adventure.text.minimessage.tag.resolver.Placeholder;
 import org.bukkit.World;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+
+import java.util.Objects;
 
 public class StorytellerSubGame extends BrigadierSub {
 	public String name() {
@@ -62,6 +63,42 @@ public class StorytellerSubGame extends BrigadierSub {
 		{
 			sender.sendRichMessage("<red>there is another game setup in this world");
 			return Command.SINGLE_SUCCESS;
+		}
+
+		// position check
+		for (TownHallPlace place : TownHallPlace.values())
+		{
+			if (townHall.getPosition(place) == null)
+			{
+				sender.sendRichMessage("<red>townhall position <b><place></b> not placed",
+					Placeholder.parsed("place", place.name())
+				);
+				return Command.SINGLE_SUCCESS;
+			}
+		}
+		for (int i = 0; i < townHall.getChairCount(); i++)
+		{
+			TownChair chair = Objects.requireNonNull(townHall.getChair(i));
+			for (TownChairPlace place : TownChairPlace.values())
+			{
+				if (chair.getPosition(place) == null)
+				{
+					sender.sendRichMessage("<red>chair <chair> position <b><place></b> not placed",
+						Placeholder.parsed("chair", String.valueOf(i+1)), Placeholder.parsed("place", place.name())
+					);
+					return Command.SINGLE_SUCCESS;
+				}
+			}
+		}
+		for (TownHallPlace place : TownHallPlace.values())
+		{
+			if (townHall.getPosition(place) == null)
+			{
+				sender.sendRichMessage("<red>townhall position <b><place></b> not placed",
+				Placeholder.parsed("place", place.name())
+				);
+				return Command.SINGLE_SUCCESS;
+			}
 		}
 
 		// execute

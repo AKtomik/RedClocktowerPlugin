@@ -7,7 +7,6 @@ import io.github.aktomik.redclocktower.utils.pdc.PositionDataType;
 import org.bukkit.Location;
 import org.bukkit.NamespacedKey;
 import org.bukkit.World;
-import org.bukkit.command.CommandSender;
 import org.bukkit.persistence.PersistentDataContainer;
 import org.bukkit.persistence.PersistentDataType;
 import org.jspecify.annotations.Nullable;
