@@ -9,6 +9,7 @@ import net.kyori.adventure.inventory.Book;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.JoinConfiguration;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.Listener;
@@ -53,13 +54,13 @@ public class PlayerBookListener implements Listener {
 				String numberText = String.valueOf(seated.getSlot().getIndex() + 1);
 				pagesLines.get(Math.floorDiv(i, BOOK_LINES_COUNT)).add(Component.empty()
 					.append(Component.text(numberText))
-					.append(Component.text((numberText.length() == 1) ? ".  - " : " - "))
+					.append(Component.text((numberText.length() == 1) ? "  - " : "   ") .color(TextColor.color(0, 0, 0)))
 					.append(Component.text(seated.getName()))
 				);
 			}
 
 			List<Component> pages = pagesLines.stream().map(
-					lines -> Component.text("\n".repeat(5 - Math.floorDiv(lines.size(), 2)))
+					lines -> Component.text("\n".repeat(7 - Math.floorDiv(lines.size(), 2)))
 					.append(Component.join(JoinConfiguration.newlines(), lines)
 				)).collect(Collectors.toUnmodifiableList());
 

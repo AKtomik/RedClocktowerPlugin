@@ -89,14 +89,14 @@ public class BloodSlot {
 		// right now seat block state is not stored and that cool
 		// seatState = state;
 		voteLightOn = state.votePull();
-		refreshBlock(state);
 		refreshLever(voteLightOn);
+		refreshBlock(state);
 	}
 
 	public void setVoteLocked(boolean locked) {
 		voteLocked = locked;
-		refreshPiston(locked);
 		if (!locked) refreshLever(voteLightOn);
+		refreshPiston(locked);
 	}
 
 	public boolean isVoteLocked() {
