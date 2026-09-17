@@ -19,6 +19,7 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
+import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.Nullable;
@@ -71,6 +72,7 @@ public class GameListener implements Listener {
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 		Block block = event.getClickedBlock();
 		if (block == null || block.getType() != Material.LEVER) return;
+		if (event.getPlayer().isSneaking()) return;
 
 		Location loc = block.getLocation();
 		World world = loc.getWorld();
@@ -120,14 +122,15 @@ public class GameListener implements Listener {
 	public void onBellRing(BellRingEvent event) {
 		if (!(event.getEntity() instanceof Player player)) return; // not a player
 
-		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		BloodGame game = bloodPlayer.getRelatedGame();
+		Block block = event.getBlock();
+		Location loc = block.getLocation();
+		World world = loc.getWorld();
+		BloodGame game = BloodGame.get(world);
 		if (game == null) return;
 
-		Block bellBlock = event.getBlock();
-		if (!bellBlock.getLocation().equals(game.getTownHall().getPosition(TownHallPlace.BELL))) return;
+		if (!block.getLocation().equals(game.getTownHall().getPosition(TownHallPlace.BELL))) return;
 
-		if (bloodPlayer.getStorytellingGame() == game) {
+		if (BloodPlayer.get(player).getStorytellingGame() == game) {
 			GameAction.next.accept(game, player);
 		} else {
 			event.setCancelled(true);
