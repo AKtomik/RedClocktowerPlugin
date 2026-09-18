@@ -130,7 +130,7 @@ public class TownHall {
 
 	// data/settings
 	public <T> T getSetting(TownSetting<T> setting) {
-		return pdc.getOrDefault(setting.key(), setting.type(), setting.defaultValue());
+		return pdc.getOrDefault(setting.key(), setting.type(), setting.findDefault(this));
 	}
 
 	public <T> void setSetting(TownSetting<T> setting, T value) {

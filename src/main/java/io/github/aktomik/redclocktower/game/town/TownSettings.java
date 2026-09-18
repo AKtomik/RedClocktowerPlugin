@@ -3,12 +3,13 @@ package io.github.aktomik.redclocktower.game.town;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
+import java.util.function.Function;
 
 public final class TownSettings {
 
 	private static TownSetting<Boolean> ofBoolean(String id, boolean defaultValue) {
 		return new TownSetting<>(id, PersistentDataType.BOOLEAN, defaultValue,
-		Boolean::parseBoolean, String::valueOf, () -> List.of("true", "false"));
+		Boolean::parseBoolean, String::valueOf, List.of("true", "false"));
 	}
 
 	private static TownSetting<Integer> ofInteger(String id, int defaultValue) {
@@ -16,16 +17,23 @@ public final class TownSettings {
 		Integer::parseInt, String::valueOf);
 	}
 
+	private static TownSetting<String> ofString(String id, String defaultValue) {
+		return new TownSetting<>(id, PersistentDataType.STRING, defaultValue,
+		Function.identity(), Function.identity(), List.of());
+	}
+
 	private static <E extends Enum<E>> TownSetting<E> ofEnum(String id, Class<E> enumClass, E defaultValue, PersistentDataType<?, E> pdcType) {
 		return new TownSetting<>(id, pdcType, defaultValue,
 		s -> Enum.valueOf(enumClass, s.toUpperCase(Locale.ROOT)),
 		Enum::name,
-		() -> Arrays.stream(enumClass.getEnumConstants()).map(Enum::name).toList());
+		Arrays.stream(enumClass.getEnumConstants()).map(Enum::name).toList());
 	}
 
 
 	// lazy to populate it so TownSetting constructor will do it for me
 	static final Map<String, TownSetting<?>> ALL = new HashMap<>();
+
+	public static final TownSetting<String> TOWNHALL_DISPLAY_NAME = ofString("townhall_display_name", null);
 
 	public static final TownSetting<Boolean> CAN_PLAYER_DROP_MISC = ofBoolean("can_player_drop_misc", true);
 	public static final TownSetting<Boolean> CAN_PLAYER_DROP_INFO = ofBoolean("can_player_drop_info", false);
