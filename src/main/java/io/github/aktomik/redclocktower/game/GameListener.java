@@ -10,6 +10,7 @@ import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
+import net.kyori.adventure.text.serializer.plain.PlainTextComponentSerializer;
 import org.bukkit.*;
 import org.bukkit.block.Block;
 import org.bukkit.block.data.Powerable;
@@ -269,12 +270,20 @@ public class GameListener implements Listener {
 		Player player = event.getPlayer();
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		BloodGame game = bloodPlayer.getRelatedGame();
-		if (game == null) {
+
+		String plainMessage = PlainTextComponentSerializer.plainText().serialize(event.message());
+		boolean exclamationChat = plainMessage.startsWith("!");
+		if (exclamationChat) {
+			plainMessage = plainMessage.substring(1).stripLeading();
+		}
+		Component serializeMessage = MiniMessage.miniMessage().deserialize(plainMessage);
+
+		if (game == null || exclamationChat) {
 			// first case: outside of game
 			ChatRenderer previous = event.renderer();
-			event.renderer((source, vanillaName, message, viewer) ->
+			event.renderer((source, vanillaName, vanillaMessage, viewer) ->
 				// calling the vanilla renderer
-				previous.render(source, Component.text(bloodPlayer.getName()), message, viewer)
+				previous.render(source, Component.text(bloodPlayer.getName()), serializeMessage, viewer)
 			);
 			return;
 		}
@@ -314,6 +323,6 @@ public class GameListener implements Listener {
 			);
 
 		// second case: inside of game
-		event.renderer((source, vanillaName, message, viewer) -> prefix.append(message));
+		event.renderer((source, vanillaName, vanillaMessage, viewer) -> prefix.append(serializeMessage));
 	}
 }
