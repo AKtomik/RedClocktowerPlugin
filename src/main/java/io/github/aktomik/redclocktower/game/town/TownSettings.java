@@ -1,5 +1,8 @@
 package io.github.aktomik.redclocktower.game.town;
 
+import io.github.aktomik.redclocktower.utils.pdc.NamedTextColorDataType;
+import io.github.aktomik.redclocktower.utils.pdc.TextColorDataType;
+import net.kyori.adventure.text.format.NamedTextColor;
 import org.bukkit.persistence.PersistentDataType;
 
 import java.util.*;
@@ -19,7 +22,7 @@ public final class TownSettings {
 
 	private static TownSetting<String> ofString(String id, String defaultValue) {
 		return new TownSetting<>(id, PersistentDataType.STRING, defaultValue,
-		Function.identity(), Function.identity(), List.of());
+		Function.identity(), Function.identity());
 	}
 
 	private static <E extends Enum<E>> TownSetting<E> ofEnum(String id, Class<E> enumClass, E defaultValue, PersistentDataType<?, E> pdcType) {
@@ -33,7 +36,12 @@ public final class TownSettings {
 	// lazy to populate it so TownSetting constructor will do it for me
 	static final Map<String, TownSetting<?>> ALL = new HashMap<>();
 
-	public static final TownSetting<String> TOWNHALL_DISPLAY_NAME = ofString("townhall_display_name", null);
+	public static final TownSetting<String> TOWN_DISPLAY_NAME = ofString("town_display_name", "blood");
+	public static final TownSetting<NamedTextColor> TOWN_DISPLAY_COLOR = new TownSetting<NamedTextColor>("town_display_color",
+		NamedTextColorDataType.INSTANCE, NamedTextColor.WHITE,
+		NamedTextColor.NAMES::value, NamedTextColor.NAMES::key,
+		NamedTextColor.NAMES.keys().stream().toList()
+	);
 
 	public static final TownSetting<Boolean> CAN_PLAYER_DROP_MISC = ofBoolean("can_player_drop_misc", true);
 	public static final TownSetting<Boolean> CAN_PLAYER_DROP_INFO = ofBoolean("can_player_drop_info", false);

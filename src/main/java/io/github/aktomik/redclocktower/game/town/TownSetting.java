@@ -14,30 +14,22 @@ public final class TownSetting<T> {
 	private final NamespacedKey key;
 
 	private final PersistentDataType<?, T> type;
-	private final Function<TownHall, T> defaultFinder;
+	private final T defaultValue;
 
 	private final Function<String, T> parser;
 	private final Function<T, String> formatter;
 	private final List<String> suggestions;
 
-	TownSetting(String id, PersistentDataType<?, T> type, Function<TownHall, T> defaultFinder,
+	TownSetting(String id, PersistentDataType<?, T> type, T defaultValue,
 	Function<String, T> parser, Function<T, String> formatter, List<String> suggestions) {
 		this.id = id;
 		this.key = new NamespacedKey(RedClocktower.plugin(), "townhall.settings." + id);
 		this.type = type;
-		this.defaultFinder = defaultFinder;
+		this.defaultValue = defaultValue;
 		this.parser = parser;
 		this.formatter = formatter;
 		this.suggestions = suggestions;
 		TownSettings.ALL.put(id, this);
-	}
-	TownSetting(String id, PersistentDataType<?, T> type, T defaultValue,
-				Function<String, T> parser, Function<T, String> formatter, List<String> suggestions) {
-		this(id, type, t -> defaultValue, parser, formatter, suggestions);
-	}
-	public TownSetting(String id, PersistentDataType<?, T> type, Function<TownHall, T> defaultFinder,
-					   Function<String, T> parser, Function<T, String> formatter) {
-		this(id, type, defaultFinder, parser, formatter, List.of());
 	}
 	public TownSetting(String id, PersistentDataType<?, T> type, T defaultValue,
 					   Function<String, T> parser, Function<T, String> formatter) {
@@ -47,6 +39,7 @@ public final class TownSetting<T> {
 	public String id() { return id; }
 	public NamespacedKey key() { return key; }
 	public PersistentDataType<?, T> type() { return type; }
+	public T defaultValue() { return defaultValue; }
 	public List<String> suggestions() { return suggestions; }
 
 	public void set(TownHall townHall, T value) {
@@ -55,8 +48,6 @@ public final class TownSetting<T> {
 	public T get(TownHall townHall) {
 		return townHall.getSetting(this);
 	}
-
-	public T findDefault(TownHall townHall) { return findDefault(townHall); }
 
 	public void setFromString(TownHall townHall, String input) throws IllegalArgumentException {
 		T value;
