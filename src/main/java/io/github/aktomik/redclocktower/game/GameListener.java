@@ -273,6 +273,7 @@ public class GameListener implements Listener {
 			// first case: outside of game
 			ChatRenderer previous = event.renderer();
 			event.renderer((source, vanillaName, message, viewer) ->
+				// calling the vanilla renderer
 				previous.render(source, Component.text(bloodPlayer.getName()), message, viewer)
 			);
 			return;
@@ -281,39 +282,38 @@ public class GameListener implements Listener {
 
 		event.viewers().clear();
 		event.viewers().addAll(game.getAllOnline().toList());
-		event.renderer((source, vanillaName, message, viewer) -> {
-			// first case: inside of game
-			String townDisplayName = townHall.getDisplayName();
-			TextColor townDisplayColor = townHall.getSetting(TownSettings.TOWN_DISPLAY_COLOR);
-			String playerDisplayName = bloodPlayer.getName();
-			TextColor playerDisplayColor =
-			(bloodPlayer.getStorytellingGame() == game)
-				? NamedTextColor.LIGHT_PURPLE
-				: (bloodPlayer.getSpectatingGame() == game)
-					? NamedTextColor.GRAY
-					: Optional.ofNullable(bloodPlayer.getSeated()).map(seated -> !seated.getAlive()).orElse(false)
-						? NamedTextColor.BLUE
-						: NamedTextColor.WHITE;
-			return Component.text()
-			.append((
+
+		String townDisplayName = townHall.getDisplayName();
+		TextColor townDisplayColor = townHall.getSetting(TownSettings.TOWN_DISPLAY_COLOR);
+		String playerDisplayName = bloodPlayer.getName();
+		TextColor playerDisplayColor =
+		(bloodPlayer.getStorytellingGame() == game)
+			? NamedTextColor.LIGHT_PURPLE
+			: (bloodPlayer.getSpectatingGame() == game)
+				? NamedTextColor.GRAY
+				: Optional.ofNullable(bloodPlayer.getSeated()).map(seated -> !seated.getAlive()).orElse(false)
+					? NamedTextColor.BLUE
+					: NamedTextColor.WHITE;
+		Component prefix = Component.empty()
+			.append(
+				(
 					Component.text("[")
 					.append(Component.text(townDisplayName).color(townDisplayColor))
 					.append(Component.text("]"))
 				)
 				.color((TextColor.lerp(.5f, townDisplayColor, NamedTextColor.BLACK)))
 				.hoverEvent(HoverEvent.showText(Component.text(townHall.getUnicName())))
-			)
-			.append((
+			).append(
+				(
 					Component.text(" <")
 					.append(Component.text(playerDisplayName).color(playerDisplayColor))
 					.append(Component.text("> "))
 				)
 				.color((TextColor.lerp(.5f, playerDisplayColor, NamedTextColor.BLACK)))
 				.hoverEvent(HoverEvent.showText(Component.text(player.getName())))
-			)
-			.append(message)
-			.build();
-		}
-		);
+			);
+
+		// second case: inside of game
+		event.renderer((source, vanillaName, message, viewer) -> prefix.append(message));
 	}
 }
