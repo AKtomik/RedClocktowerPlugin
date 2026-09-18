@@ -38,7 +38,7 @@ public final class TownSettings {
 
 	public static final TownSetting<String> TOWN_DISPLAY_NAME = ofString("town_display_name", "blood");
 	public static final TownSetting<NamedTextColor> TOWN_DISPLAY_COLOR = new TownSetting<NamedTextColor>("town_display_color",
-		NamedTextColorDataType.INSTANCE, NamedTextColor.WHITE,
+		NamedTextColorDataType.INSTANCE, NamedTextColor.RED,
 		NamedTextColor.NAMES::value, NamedTextColor.NAMES::key,
 		NamedTextColor.NAMES.keys().stream().toList()
 	);
