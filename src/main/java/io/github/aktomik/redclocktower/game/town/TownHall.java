@@ -37,8 +37,11 @@ public class TownHall {
 	}
 
 	// access
-	public String getTownName() {
+	public final String getUnicName() {
 		return this.townName;
+	}
+	public String getDisplayName() {
+		return Objects.requireNonNullElse(readSetting(TownSettings.TOWN_DISPLAY_NAME), getUnicName());
 	}
 	public World getWorld() {
 		return this.world;
@@ -130,7 +133,12 @@ public class TownHall {
 
 	// data/settings
 	public <T> T getSetting(TownSetting<T> setting) {
-		return pdc.getOrDefault(setting.key(), setting.type(), setting.findDefault(this));
+		return pdc.getOrDefault(setting.key(), setting.type(), setting.defaultValue());
+	}
+
+	public <T> T readSetting(TownSetting<T> setting) {
+		// get but without default
+		return pdc.get(setting.key(), setting.type());
 	}
 
 	public <T> void setSetting(TownSetting<T> setting, T value) {

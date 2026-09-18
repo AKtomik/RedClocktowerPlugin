@@ -7,6 +7,7 @@ import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
+import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
 import org.bukkit.block.Block;
@@ -29,6 +30,7 @@ import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class GameListener implements Listener {
@@ -265,19 +267,29 @@ public class GameListener implements Listener {
 	public void onChat(AsyncChatEvent event) {
 		Player player = event.getPlayer();
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		BloodGame game = bloodPlayer.getRelatedGame();
-		if (game == null) return;
+		SeatedPlayer seatedPlayer = bloodPlayer.getSeated();
+		if (seatedPlayer == null) return;
+		BloodGame game = seatedPlayer.getSlot().getGame();
+		TownHall townHall = game.getTownHall();
 
 		event.viewers().clear();
 		event.viewers().addAll(game.getAllOnline().toList());
-		event.renderer((source, displayName, message, viewer) ->
-			Component.text()
-			.append((Component.text("[").append(Component.text("blood").color(NamedTextColor.RED)).append(Component.text("]"))).color(NamedTextColor.DARK_RED))
+		event.renderer((source, displayName, message, viewer) -> {
+			String townDisplayName = townHall.getDisplayName();
+			NamedTextColor townDisplayColor = townHall.getSetting(TownSettings.TOWN_DISPLAY_COLOR);
+			return Component.text()
+			.append((
+					Component.text("[")
+					.append(Component.text(townDisplayName).color(townDisplayColor))
+					.append(Component.text("]"))
+				).color((TextColor.lerp(.5f, townDisplayColor, NamedTextColor.BLACK)))
+			)
 			.append(Component.text(" <"))
-			.append(Component.text(bloodPlayer.getName()))
+			.append(Component.text(bloodPlayer.getName()).color(seatedPlayer.getPrefixColor()))
 			.append(Component.text("> "))
 			.append(message)
-			.build()
+			.build();
+		}
 		);
 	}
 }

@@ -24,9 +24,9 @@ public class SetupSubDelete extends BrigadierSub {
 				TownHall townHall = ctx.getArgument("town", TownHall.class);
 
 				// execute
-				TownHall.delete(townHall.getWorld(), townHall.getTownName());
+				TownHall.delete(townHall.getWorld(), townHall.getUnicName());
 				sender.sendRichMessage("townhall <b><name></b> <red>deleted</red>.",
-					Placeholder.parsed("name", townHall.getTownName())
+					Placeholder.parsed("name", townHall.getUnicName())
 				);
 				return Command.SINGLE_SUCCESS;
 			}

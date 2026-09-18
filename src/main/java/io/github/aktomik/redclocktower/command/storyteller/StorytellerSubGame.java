@@ -55,7 +55,7 @@ public class StorytellerSubGame extends BrigadierSub {
 		if (BloodGame.get(townHall) != null)
 		{
 			sender.sendRichMessage("<red>the townhall <b><town></b> is already setup",
-				Placeholder.parsed("town", townHall.getTownName())
+				Placeholder.parsed("town", townHall.getUnicName())
 			);
 			return Command.SINGLE_SUCCESS;
 		}
@@ -94,7 +94,7 @@ public class StorytellerSubGame extends BrigadierSub {
 
 		// execute
 		sender.sendRichMessage("<light_purple>setup townhall <b><aqua><town></aqua></b> for a game with <slot_count> <slot_word>",
-			Placeholder.parsed("town", townHall.getTownName()),
+			Placeholder.parsed("town", townHall.getUnicName()),
 			Placeholder.parsed("slot_count", String.valueOf(chairCount)),
 			Placeholder.parsed("slot_word", (chairCount > 1) ? "slots" : "slot")
 		);
