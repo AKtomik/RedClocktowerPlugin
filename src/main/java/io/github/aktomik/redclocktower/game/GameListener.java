@@ -6,6 +6,7 @@ import io.papermc.paper.chat.ChatRenderer;
 import io.papermc.paper.event.player.AsyncChatEvent;
 import net.kyori.adventure.audience.Audience;
 import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.event.HoverEvent;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
@@ -267,26 +268,40 @@ public class GameListener implements Listener {
 	public void onChat(AsyncChatEvent event) {
 		Player player = event.getPlayer();
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
-		SeatedPlayer seatedPlayer = bloodPlayer.getSeated();
-		if (seatedPlayer == null) return;
-		BloodGame game = seatedPlayer.getSlot().getGame();
+		BloodGame game = bloodPlayer.getRelatedGame();
+		if (game == null) return;
 		TownHall townHall = game.getTownHall();
 
 		event.viewers().clear();
 		event.viewers().addAll(game.getAllOnline().toList());
 		event.renderer((source, displayName, message, viewer) -> {
 			String townDisplayName = townHall.getDisplayName();
-			NamedTextColor townDisplayColor = townHall.getSetting(TownSettings.TOWN_DISPLAY_COLOR);
+			TextColor townDisplayColor = townHall.getSetting(TownSettings.TOWN_DISPLAY_COLOR);
+			TextColor playerDisplayColor =
+			(bloodPlayer.getStorytellingGame() == game)
+				? NamedTextColor.LIGHT_PURPLE
+				: (bloodPlayer.getSpectatingGame() == game)
+					? NamedTextColor.GRAY
+					: Optional.ofNullable(bloodPlayer.getSeated()).map(seated -> !seated.getAlive()).orElse(false)
+						? NamedTextColor.BLUE
+						: NamedTextColor.WHITE;
 			return Component.text()
 			.append((
 					Component.text("[")
 					.append(Component.text(townDisplayName).color(townDisplayColor))
 					.append(Component.text("]"))
-				).color((TextColor.lerp(.5f, townDisplayColor, NamedTextColor.BLACK)))
+				)
+				.color((TextColor.lerp(.5f, townDisplayColor, NamedTextColor.BLACK)))
+				.hoverEvent(HoverEvent.showText(Component.text(townHall.getUnicName())))
 			)
-			.append(Component.text(" <"))
-			.append(Component.text(bloodPlayer.getName()).color(seatedPlayer.getPrefixColor()))
-			.append(Component.text("> "))
+			.append((
+					Component.text(" <")
+					.append(displayName.color(playerDisplayColor))
+					.append(Component.text("> "))
+				)
+				.color((TextColor.lerp(.5f, playerDisplayColor, NamedTextColor.BLACK)))
+				.hoverEvent(HoverEvent.showText(Component.text(player.getName())))
+			)
 			.append(message)
 			.build();
 		}
