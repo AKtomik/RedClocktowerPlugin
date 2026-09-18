@@ -192,7 +192,7 @@ public class BloodGame {
 
 	// all participants
 	public Stream<Player> getAllOnline() {
-		return Stream.concat(Stream.concat(circle.getOnlinePlayers(), getOnlineStorytellers()), getOnlineSpectators());
+		return Stream.concat(Stream.concat(circle.getOnlinePlayers(), getOnlineStorytellers()), getOnlineSpectators()).distinct();
 	}
 
 	// text utils

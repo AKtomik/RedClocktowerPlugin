@@ -2,14 +2,19 @@ package io.github.aktomik.redclocktower.game;
 
 import com.destroystokyo.paper.event.player.PlayerPostRespawnEvent;
 import io.github.aktomik.redclocktower.game.town.*;
+import io.papermc.paper.chat.ChatRenderer;
+import io.papermc.paper.event.player.AsyncChatEvent;
+import net.kyori.adventure.audience.Audience;
+import net.kyori.adventure.text.Component;
+import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.minimessage.MiniMessage;
 import org.bukkit.*;
 import org.bukkit.block.Block;
-import org.bukkit.block.data.BlockData;
 import org.bukkit.block.data.Powerable;
 import org.bukkit.entity.Player;
 import org.bukkit.event.Cancellable;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.block.Action;
 import org.bukkit.event.block.BellRingEvent;
@@ -19,12 +24,12 @@ import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.event.inventory.InventoryDragEvent;
 import org.bukkit.event.inventory.InventoryOpenEvent;
 import org.bukkit.event.player.*;
-import org.bukkit.inventory.EquipmentSlot;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.jspecify.annotations.Nullable;
 
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 public class GameListener implements Listener {
 
@@ -254,5 +259,25 @@ public class GameListener implements Listener {
 			}
 		}
 	}
-}
+	
+	//@EventHandler(priority = EventPriority.HIGHEST, ignoreCancelled = true)
+	@EventHandler
+	public void onChat(AsyncChatEvent event) {
+		Player player = event.getPlayer();
+		BloodPlayer bloodPlayer = BloodPlayer.get(player);
+		BloodGame game = bloodPlayer.getRelatedGame();
+		if (game == null) return;
 
+		event.viewers().clear();
+		event.viewers().addAll(game.getAllOnline().toList());
+		event.renderer((source, displayName, message, viewer) ->
+			Component.text()
+			.append((Component.text("[").append(Component.text("blood").color(NamedTextColor.RED)).append(Component.text("]"))).color(NamedTextColor.DARK_RED))
+			.append(Component.text(" <"))
+			.append(Component.text(bloodPlayer.getName()))
+			.append(Component.text("> "))
+			.append(message)
+			.build()
+		);
+	}
+}
