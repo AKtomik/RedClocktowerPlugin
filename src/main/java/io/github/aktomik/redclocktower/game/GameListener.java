@@ -269,14 +269,23 @@ public class GameListener implements Listener {
 		Player player = event.getPlayer();
 		BloodPlayer bloodPlayer = BloodPlayer.get(player);
 		BloodGame game = bloodPlayer.getRelatedGame();
-		if (game == null) return;
+		if (game == null) {
+			// first case: outside of game
+			ChatRenderer previous = event.renderer();
+			event.renderer((source, vanillaName, message, viewer) ->
+				previous.render(source, Component.text(bloodPlayer.getName()), message, viewer)
+			);
+			return;
+		}
 		TownHall townHall = game.getTownHall();
 
 		event.viewers().clear();
 		event.viewers().addAll(game.getAllOnline().toList());
-		event.renderer((source, displayName, message, viewer) -> {
+		event.renderer((source, vanillaName, message, viewer) -> {
+			// first case: inside of game
 			String townDisplayName = townHall.getDisplayName();
 			TextColor townDisplayColor = townHall.getSetting(TownSettings.TOWN_DISPLAY_COLOR);
+			String playerDisplayName = bloodPlayer.getName();
 			TextColor playerDisplayColor =
 			(bloodPlayer.getStorytellingGame() == game)
 				? NamedTextColor.LIGHT_PURPLE
@@ -296,7 +305,7 @@ public class GameListener implements Listener {
 			)
 			.append((
 					Component.text(" <")
-					.append(displayName.color(playerDisplayColor))
+					.append(Component.text(playerDisplayName).color(playerDisplayColor))
 					.append(Component.text("> "))
 				)
 				.color((TextColor.lerp(.5f, playerDisplayColor, NamedTextColor.BLACK)))
