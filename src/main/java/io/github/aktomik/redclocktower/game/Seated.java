@@ -107,7 +107,10 @@ public abstract class Seated {
 
 	public int useVote() {
 		if (!votePull || !haveVote()) return 0;
-		if (!alive) setVoteToken(false);
+		if (!alive) {
+			setVoteToken(false);
+			setVotePull(false);
+		}
 		return votePower;
 	}
 
