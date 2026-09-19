@@ -1,10 +1,12 @@
 package io.github.aktomik.redclocktower.game;
 
 import io.github.aktomik.redclocktower.game.town.TownHall;
+import io.github.aktomik.redclocktower.game.town.TownSettings;
 import io.github.aktomik.redclocktower.utils.renametag.PlayerRenameTag;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.ShadowColor;
+import net.kyori.adventure.text.format.TextColor;
 import org.bukkit.Bukkit;
 import org.bukkit.Color;
 import org.bukkit.OfflinePlayer;
@@ -307,11 +309,13 @@ public class BloodPlayer {
 		if (getOnlinePlayer() == null) throw new RuntimeException("player is offline");
 		applyGameScoreboard(game.getScoreboard());
 		applyGameTeam(game.getTeam());
+		applyGameTab(game);
 	}
 
 	void clearRelatedEffects() {
 		applyGameScoreboard(null);
 		applyGameTeam(null);
+		applyGameTab(null);
 	}
 
 	// state effects
@@ -361,5 +365,25 @@ public class BloodPlayer {
 		} else {
 			team.addPlayer(player);
 		}
+	}
+
+	protected void applyGameTab(@Nullable BloodGame game) {
+		Player player = getOnlinePlayer();
+		if (player == null) return;
+		Component header = Component.empty();
+		Component footer = Component.empty();
+		if (game != null) {
+			TextColor brightColor = game.getTownHall().getSetting(TownSettings.TOWN_DISPLAY_COLOR);
+			TextColor nightColor = TextColor.lerp(.5f, brightColor, NamedTextColor.BLACK);
+			footer = Component.text("\n")
+			.append(Component.text("you are in a blood game").color(brightColor))
+			.append(Component.text("\n"))
+			.append((
+				Component.text("in town ")
+				.append(Component.text(game.getTownHall().getDisplayName()))
+			).color(nightColor)
+			);
+		}
+		player.sendPlayerListHeaderAndFooter(header, footer);
 	}
 }
