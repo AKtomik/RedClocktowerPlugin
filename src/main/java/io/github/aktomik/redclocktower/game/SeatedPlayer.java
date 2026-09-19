@@ -1,7 +1,6 @@
 package io.github.aktomik.redclocktower.game;
 
 import net.kyori.adventure.text.format.NamedTextColor;
-import org.bukkit.scoreboard.Team;
 
 public class SeatedPlayer extends Seated {
 
@@ -47,14 +46,14 @@ public class SeatedPlayer extends Seated {
 	@Override
 	public void enableGlower(NamedTextColor color) {
 		super.enableGlower(color);
-		getSlot().getGame().getTeam().color(getGlow());
-		bloodPlayer.refreshGlowerEffect(isGlowing());
+		getSlot().getGame().getTeam().color(color);
+		bloodPlayer.refreshGlowerEffect(true);
 	}
 
 	@Override
-	public void disableGlow() {
-		super.disableGlow();
-		bloodPlayer.refreshGlowerEffect(isGlowing());
+	public void disableGlower() {
+		super.disableGlower();
+		bloodPlayer.refreshGlowerEffect(false);
 	}
 
 	// state

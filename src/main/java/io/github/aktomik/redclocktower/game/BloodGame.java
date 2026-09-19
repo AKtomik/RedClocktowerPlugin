@@ -60,7 +60,7 @@ public class BloodGame {
 
 	static final NamedTextColor NOMINATE_GLOW_COLOR = NamedTextColor.GOLD;
 	static final NamedTextColor SENTENCED_GLOW_COLOR = NamedTextColor.RED;
-	static final boolean IS_ONLY_ONE_GLOW = true;
+	static final boolean ONLY_ONE_SIMULTANEOUS_GLOW = true;
 	static final boolean VOTE_BROADCAST_VOTERS = true;
 
 	// manage

@@ -3,7 +3,6 @@ package io.github.aktomik.redclocktower.game;
 import net.kyori.adventure.text.Component;
 import net.kyori.adventure.text.format.NamedTextColor;
 import net.kyori.adventure.text.format.TextColor;
-import org.bukkit.scoreboard.Team;
 
 import static io.github.aktomik.redclocktower.utils.MiscUtils.digitInCircle;
 
@@ -144,13 +143,13 @@ public abstract class Seated {
 			if (currentlySentenced) {
 				slot.getGame().getCircle().removeSentenced();
 			}
-			if (BloodGame.IS_ONLY_ONE_GLOW) {
-				slot.getGame().getCircle().getAllSeated().forEach(seated -> disableGlow());
+			if (BloodGame.ONLY_ONE_SIMULTANEOUS_GLOW) {
+				slot.getGame().getCircle().getAllSeated().forEach(Seated::disableGlower);
 			}
-			enableGlower(BloodGame.NOMINATE_GLOW_COLOR);
+			this.enableGlower(BloodGame.NOMINATE_GLOW_COLOR);
 		} else {
-			disableGlow();
-			if (BloodGame.IS_ONLY_ONE_GLOW) {
+			this.disableGlower();
+			if (BloodGame.ONLY_ONE_SIMULTANEOUS_GLOW) {
 				Seated last = slot.getGame().getCircle().getSentenced();
 				if (last != null)
 				{
@@ -167,14 +166,14 @@ public abstract class Seated {
 			if (currentlyNominated) {
 				slot.getGame().getCircle().removeNominated();
 			}
-			if (BloodGame.IS_ONLY_ONE_GLOW) {
-				slot.getGame().getCircle().getAllSeated().forEach(seated -> disableGlow());
+			if (BloodGame.ONLY_ONE_SIMULTANEOUS_GLOW) {
+				slot.getGame().getCircle().getAllSeated().forEach(Seated::disableGlower);
 			}
-			enableGlower(BloodGame.SENTENCED_GLOW_COLOR);
+			this.enableGlower(BloodGame.SENTENCED_GLOW_COLOR);
 		}
 		else {
-			disableGlow();
-			if (BloodGame.IS_ONLY_ONE_GLOW) {
+			this.disableGlower();
+			if (BloodGame.ONLY_ONE_SIMULTANEOUS_GLOW) {
 				Seated last = slot.getGame().getCircle().getNominated();
 				if (last != null)
 				{
@@ -185,11 +184,10 @@ public abstract class Seated {
 	}
 
 	public void enableGlower(NamedTextColor color) {
-		// only one glower
 		this.glowColor = color;
 	}
 
-	public void disableGlow() {
+	public void disableGlower() {
 		this.glowColor = null;
 	}
 
