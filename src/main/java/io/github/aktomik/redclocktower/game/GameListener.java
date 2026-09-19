@@ -81,7 +81,10 @@ public class GameListener implements Listener {
 		if (event.getAction() != Action.RIGHT_CLICK_BLOCK) return;
 		Block block = event.getClickedBlock();
 		if (block == null || block.getType() != Material.LEVER) return;
-		if (event.getPlayer().isSneaking()) return;
+		if (event.getPlayer().isSneaking()) {
+			event.setCancelled(true);
+			return;
+		}
 
 		Location loc = block.getLocation();
 		World world = loc.getWorld();
